@@ -58,7 +58,7 @@ ${companyInfo}
 ---
 `;
 
-    const model = ai.getmodel('gemini-1.5-flash-latest');
+    const model = ai.model('gemini-1.5-flash-latest');
     
     const response = await ai.generate({
       model: model,
