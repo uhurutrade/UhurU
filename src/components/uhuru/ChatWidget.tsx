@@ -16,10 +16,13 @@ interface Message {
 }
 
 const MAX_HISTORY_MESSAGES = 10;
+const INITIAL_MESSAGE = "¡Hola! Soy el asistente de IA de UhurU. Pregúntame sobre nuestros servicios, el mercado Forex, opciones de inversión o cómo podemos ayudarte a crecer. ¿En qué te puedo ayudar hoy?";
 
 function logClientTrace(functionName: string, data: any) {
-    const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] uhurulog_${functionName}:`, data);
+    if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
+        const timestamp = new Date().toISOString();
+        console.log(`[${timestamp}] uhurulog_${functionName}:`, data);
+    }
 }
 
 export default function ChatWidget() {
@@ -27,7 +30,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hello! I'm UhurU's AI assistant. How can I help you today?",
+      content: INITIAL_MESSAGE,
     },
   ]);
   const [input, setInput] = useState('');
@@ -71,7 +74,7 @@ export default function ChatWidget() {
       logClientTrace(functionName, { status: 'transition_started' });
       try {
         const historyForAI: HistoryItem[] = messages
-          .filter(msg => msg.content !== "Hello! I'm UhurU's AI assistant. How can I help you today?")
+          .filter(msg => msg.content !== INITIAL_MESSAGE)
           .slice(-MAX_HISTORY_MESSAGES); 
         
         logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
