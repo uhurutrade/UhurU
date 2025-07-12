@@ -1,4 +1,3 @@
-
 'use server';
 
 import type { HistoryItem } from '@/ai/types';
