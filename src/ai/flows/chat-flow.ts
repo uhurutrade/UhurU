@@ -9,12 +9,17 @@
  */
 import OpenAI from 'openai';
 import { z } from 'zod';
+import 'dotenv/config';
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error(
     'The OPENAI_API_KEY environment variable is not set. Please add it to your .env file and restart the server.'
   );
 }
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const companyInfo = `
 # About UhurU Trade Ltd.
@@ -57,10 +62,6 @@ export type ChatInput = z.infer<typeof ChatInputSchema>;
 export type ChatOutput = string;
 
 export async function chat(input: ChatInput): Promise<ChatOutput> {
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-
   const systemPrompt = `You are a friendly and professional AI assistant for UhurU Trade Ltd, a technology and finance consulting company. Your name is "UhurU AI Assistant".
 Your goal is to answer user questions based *only* on the information provided below.
 You must answer in the same language the user is asking (either English or Spanish). Be concise and helpful.
@@ -94,3 +95,5 @@ ${companyInfo}
     throw new Error("Failed to get response from AI service.");
   }
 }
+
+    
