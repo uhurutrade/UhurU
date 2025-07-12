@@ -6,13 +6,14 @@ import { ai } from '@/ai/genkit';
 import { gemini15Flash } from '@genkit-ai/googleai';
 import fs from 'fs/promises';
 import path from 'path';
-import { knowledgeBase } from '../../../chatbot-knowledge';
-import { getSystemPrompt } from '../../../chatbot-prompt';
+import { knowledgeBase } from '@/lib/chatbot/knowledge';
+import { getSystemPrompt } from '@/lib/chatbot/prompt';
+import { headers } from 'next/headers';
 
 async function logTrace(functionName: string, data: any) {
     if (process.env.TRACE === 'ON') {
         const timestamp = new Date().toISOString();
-        const logMessage = `[${timestamp}] uhurulog_${functionName}: ${JSON.stringify(data, null, 2)}\n\n`;
+        const logMessage = `[${timestamp}] uhurulog_${functionName}: ${JSON.stringify(data)}\n`;
         try {
             const logFilePath = path.join(process.cwd(), 'chatbot-log.log');
             await fs.appendFile(logFilePath, logMessage);
@@ -33,7 +34,10 @@ function buildKnowledgePrompt(): string {
 
 export async function chat(newUserMessage: string, history: HistoryItem[]): Promise<string> {
     const functionName = 'chat';
-    await logTrace(functionName, { input_newUserMessage: newUserMessage, input_history: history });
+    const headerList = headers();
+    const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
+    
+    await logTrace(functionName, { ip, input_newUserMessage: newUserMessage, input_history: history });
 
     const chatHistory = history.map(item => ({
         role: item.role === 'assistant' ? 'model' : 'user',
@@ -44,7 +48,7 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
     const systemPrompt = getSystemPrompt(knowledgePrompt);
 
     try {
-        await logTrace(functionName, { status: 'calling_ai_generate' });
+        await logTrace(functionName, { ip, status: 'calling_ai_generate' });
         const response = await ai.generate({
             model: gemini15Flash,
             history: chatHistory,
@@ -52,12 +56,12 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
             system: systemPrompt,
         });
 
-        await logTrace(functionName, { output_ai_response: response.text });
+        await logTrace(functionName, { ip, output_ai_response: response.text });
         return response.text;
 
     } catch (error) {
         const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
-        await logTrace(functionName, { output_error: errorMessage });
+        await logTrace(functionName, { ip, output_error: errorMessage });
         return errorMessage;
     }
 }
