@@ -1,93 +1,62 @@
-
 'use server';
 
 import type { HistoryItem } from '@/ai/types';
-import fs from 'fs/promises';
-import path from 'path';
+import { generate } from 'genkit/ai';
+import { gemini15Flash } from 'genkit-plugin-googleai';
 
-const logFilePath = path.join(process.cwd(), 'trace.log');
+const companyInfo = `
+# About UhurU Trade Ltd.
+UhurU is a young and innovative company with extensive experience in technology and finance.
+Our mission is to help businesses optimize their operations, reduce costs, and strategically plan their tax structures. We specialize in helping companies based in jurisdictions like the United Kingdom, Estonia, the United States, and Cyprus to improve fiscal efficiency and operational costs. We offer a wide range of services designed to help businesses thrive in the modern digital world.
+From AI automation and AI agents to full-stack no-code/low-code app development, we provide cutting-edge solutions that enhance business processes, automate tasks, and enable rapid innovation. With our no-code platforms, businesses can build powerful tools quickly without extensive coding expertise, saving time and resources.
+Our team also has deep experience in Oracle Financials, offering ERP and CRM solutions that streamline financial management and customer relations. Additionally, we automate social media management, email campaigns, invoicing, and community engagement to ensure businesses run efficiently across all platforms.
+At UhurU, we combine technology and finance to deliver strategic solutions tailored to your business needs. Whether you want to optimize your tax structure, automate processes, or develop custom applications, we have the expertise to help your business grow while keeping costs low and productivity high.
+`;
 
-async function logTrace(functionName: string, data: any) {
-  const timestamp = new Date().toISOString();
-  const logMessage = `[${timestamp}] uhurulog_${functionName}: ${JSON.stringify(data, null, 2)}\n\n`;
-  try {
-    await fs.appendFile(logFilePath, logMessage);
-  } catch (error) {
-    console.error('Failed to write to trace.log:', error);
-  }
-}
+const servicesInfo = `
+# Our Services
+- Amazon FBA Consulting: Full-service management for product launch, SEO, PPC marketing, and growth.
+- AI Automation and AI Agents: Custom AI agents for marketing, invoicing, and support to reduce costs.
+- Blockchain and Crypto Solutions: Asset tokenization and DeFi liquidity strategies.
+- Offshore & Localization Strategies: Tax-optimized global business structures.
+- Options and Forex Investment Training: Professional training for secure investment strategies.
+- No-Code App Development: Build portable web and mobile apps with no-code solutions.
+- ERP and CRM Implementation: Oracle Financials consulting for enterprise management.
+- Cloud (SaaS/PaaS) Management: Cost-efficient management of SaaS/PaaS deployments.
+- Flexible All-in-One Tech Package: Scalable tech solutions with PAYG pricing.
+`;
 
 /**
- * Sends a user message and conversation history to a Firebase Function
+ * Sends a user message and conversation history to the Genkit AI model
  * and returns the AI's response.
  * @param newUserMessage The new message from the user.
  * @param history The previous conversation history.
  * @returns A promise that resolves to the chatbot's reply as a string.
  */
 export async function chat(newUserMessage: string, history: HistoryItem[]): Promise<string> {
-  const functionName = 'chat';
-  await logTrace(functionName, { input_newUserMessage: newUserMessage, input_history: history });
-
-  // =================================================================
-  // !! IMPORTANTE !!
-  // Reemplaza esta URL con la URL de tu propia Firebase Function.
-  // La encontrarás en la consola de Firebase > Functions > Dashboard.
-  // Será algo como: https://<region>-<project-id>.cloudfunctions.net/chatUhurU
-  // =================================================================
-  const firebaseFunctionUrl = "https://europe-west1-uhuru-a35ed.cloudfunctions.net/chatUhurU"; // <-- REEMPLAZA ESTA URL
-
-  if (firebaseFunctionUrl.includes("[") || firebaseFunctionUrl.includes("]")) {
-      const errorMessage = "Error de configuración: La URL de la Firebase Function no ha sido configurada en 'src/ai/flows/chat-flow.ts'. Reemplaza el texto de ejemplo por tu URL real.";
-      console.error(errorMessage);
-      await logTrace(functionName, { output_error: errorMessage });
-      return errorMessage;
-  }
-
-  const requestBody = {
-    message: newUserMessage,
-    history: history 
-  };
-
-  await logTrace(functionName, { sending_to_firebase: requestBody });
-  console.log("Enviando a Firebase Function:", JSON.stringify(requestBody, null, 2));
-
   try {
-    const response = await fetch(firebaseFunctionUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
+    const response = await generate({
+      model: gemini15Flash,
+      history: history,
+      prompt: newUserMessage,
+      system: `You are a friendly and helpful AI assistant for UhurU Trade Ltd. Your goal is to answer user questions about the company, its services, and how to contact them.
+        - Be concise and professional.
+        - Use the provided company and services information to answer questions.
+        - If you don't know the answer, say that you can't help with that and suggest they contact the company directly at hello@uhurutrade.com.
+        - Do not answer questions that are not related to UhurU Trade Ltd.
+        
+        HERE IS THE COMPANY INFORMATION:
+        ${companyInfo}
+
+        HERE IS THE SERVICES INFORMATION:
+        ${servicesInfo}
+      `,
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Error Response from Firebase Function (Text):', errorText);
-       await logTrace(functionName, { output_error_response_text: errorText, status: response.status });
-      try {
-        const errorData = JSON.parse(errorText);
-        throw new Error(errorData.error || `Error del servidor: ${response.status}`);
-      } catch (e) {
-        throw new Error(errorText || `Error del servidor: ${response.status}`);
-      }
-    }
-
-    const data = await response.json();
-    await logTrace(functionName, { received_from_firebase: data });
-    
-    if (!data.reply) {
-        console.error("Respuesta inválida de la función:", data);
-        await logTrace(functionName, { output_error: "Invalid response from function, 'reply' field missing." });
-        throw new Error("La respuesta de la función no contenía un campo 'reply'.");
-    }
-    
-    await logTrace(functionName, { output_success: data.reply });
-    return data.reply;
-
+    return response.text();
   } catch (error) {
-    console.error('Error al llamar a la Firebase Function:', error);
-    const errorMessage = error instanceof Error ? `Lo siento, hubo un problema: ${error.message}` : "Lo siento, no pude conectar con el asistente en este momento. Por favor, inténtalo más tarde.";
-    await logTrace(functionName, { output_final_error: errorMessage });
+    console.error('Error calling Genkit generate:', error);
+    const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
     return errorMessage;
   }
 }
