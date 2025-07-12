@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, X, Send, Bot, User, Loader } from 'lucide-react';
-import { chat, ChatInput, ChatOutput } from '@/ai/flows/chat-flow';
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface Message {
@@ -46,24 +45,18 @@ export default function ChatWidget() {
 
     const newMessages: Message[] = [...messages, { role: 'user', content: input }];
     setMessages(newMessages);
+    const currentInput = input;
     setInput('');
     setIsLoading(true);
 
-    try {
-      const response = await chat(input as ChatInput);
+    // Placeholder for backend call
+    setTimeout(() => {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { role: 'assistant', content: response as string },
+        { role: 'assistant', content: "I'm not connected right now, but I'm ready to chat!" },
       ]);
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' },
-      ]);
-    } finally {
       setIsLoading(false);
-    }
+    }, 1000);
   };
   
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
