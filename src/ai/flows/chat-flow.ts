@@ -10,6 +10,12 @@
 import OpenAI from 'openai';
 import { z } from 'zod';
 
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error(
+    'The OPENAI_API_KEY environment variable is not set. Please add it to your .env file and restart the server.'
+  );
+}
+
 const companyInfo = `
 # About UhurU Trade Ltd.
 
@@ -51,12 +57,6 @@ export type ChatInput = z.infer<typeof ChatInputSchema>;
 export type ChatOutput = string;
 
 export async function chat(input: ChatInput): Promise<ChatOutput> {
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error(
-      'The OPENAI_API_KEY environment variable is not set. Please add it to your .env file.'
-    );
-  }
-
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -77,7 +77,7 @@ ${companyInfo}
 
   const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
     { role: 'system', content: systemPrompt },
-    ...input.history.map(item => ({...item})), // Correctly map roles
+    ...input.history,
     { role: 'user', content: input.newUserMessage },
   ];
 
