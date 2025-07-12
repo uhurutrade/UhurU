@@ -68,7 +68,7 @@ export default function ChatWidget() {
     logClientTrace(functionName, { input_newUserMessage: newUserMessage });
 
     const userMessageObject: Message = { role: 'user', content: newUserMessage };
-    setMessages((prevMessages) => [...prevMessages, userMessagedObject]);
+    setMessages((prevMessages) => [...prevMessages, userMessageObject]);
     setInput('');
     
     startTransition(async () => {
