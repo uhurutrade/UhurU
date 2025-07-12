@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, X, Send, Bot, User, Loader } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { chat, ChatInput } from '@/ai/flows/chat-flow';
 import { useToast } from '@/hooks/use-toast';
 
@@ -48,14 +47,12 @@ export default function ChatWidget() {
 
     const newMessages: Message[] = [...messages, { role: 'user', content: input }];
     setMessages(newMessages);
-    const currentInput = input;
     setInput('');
     
     startTransition(async () => {
       try {
-        // Construct history for the AI, excluding the assistant's first greeting
-        const historyForAI = newMessages.slice(1).map((msg) => ({
-            role: msg.role === 'assistant' ? 'model' as const : 'user' as const,
+        const historyForAI: ChatInput['history'] = newMessages.slice(1).map((msg) => ({
+            role: msg.role === 'assistant' ? 'model' : 'user',
             content: msg.content,
         }));
         
@@ -73,8 +70,11 @@ export default function ChatWidget() {
           title: "Error",
           description: "Sorry, I'm having trouble connecting. Please try again later.",
         });
-        // Restore user's message on error
-        setMessages((prevMessages) => prevMessages.slice(0, -1));
+        setMessages((prevMessages) => {
+          const restoredMessages = [...prevMessages];
+          restoredMessages.pop(); 
+          return restoredMessages;
+        });
       }
     });
   };
@@ -87,13 +87,8 @@ export default function ChatWidget() {
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
+      {isOpen && (
+          <div
             className="w-80 h-[28rem] bg-card rounded-lg shadow-2xl flex flex-col border border-border"
           >
             <div className="flex justify-between items-center p-3 border-b border-border bg-card-foreground/5 dark:bg-card-foreground/10 rounded-t-lg">
@@ -166,27 +161,19 @@ export default function ChatWidget() {
                 </Button>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
 
-      <AnimatePresence>
-        {!isOpen && (
-            <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.2 }}
-            >
+      {!isOpen && (
+            <div>
                 <Button
                 onClick={toggleOpen}
                 className="rounded-full h-16 w-16 shadow-lg flex items-center justify-center bg-primary hover:bg-primary/90"
                 >
                 <MessageSquare className="h-8 w-8 text-primary-foreground" />
                 </Button>
-            </motion.div>
+            </div>
         )}
-      </AnimatePresence>
     </div>
   );
 }
