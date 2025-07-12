@@ -1,25 +1,47 @@
 'use server';
 /**
- * @fileOverview A conversational chat AI flow using Genkit.
+ * @fileOverview A conversational chat AI flow using OpenAI.
  *
  * - chat - A function that handles the chat conversation process.
  * - ChatInput - The input type for the chat function.
  * - ChatOutput - The return type for the chat function.
  */
-
-import { promises as fs } from 'fs';
-import path from 'path';
-import { ai } from '@/ai/instance';
+import OpenAI from 'openai';
 import { z } from 'zod';
 
-const companyInfoPromise = fs.readFile(path.join(process.cwd(), 'src', 'data', 'company-info.md'), 'utf-8')
-  .catch(error => {
-    console.error('Error reading company info file:', error);
-    return 'No company information available at the moment.';
-  });
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+
+const companyInfo = `
+# About UhurU Trade Ltd.
+
+UhurU Trade Ltd. is a technology and finance consulting company. Our mission is to help businesses optimize their operations, reduce costs, and strategically plan their tax structures. We are registered in the United Kingdom, company number 15883242. Our registered office is at Unit 13 Freeland Park Wareham Road, Lytchett Matravers, BH16 6FA Poole, UK.
+
+## Our Services
+
+We offer a wide range of services designed to help businesses thrive in the modern digital world.
+
+### Technology Services
+- **AI Automation and AI Agents:** We deploy custom AI agents to automate marketing, invoicing, customer support, and other business processes.
+- **No-Code App Development:** We build and launch Docker-portable web and mobile apps using open-source no-code solutions.
+- **ERP and CRM Implementation:** We offer end-to-end ERP/CRM consulting, specializing in Oracle Financials.
+- **Cloud (SaaS/PaaS) Management:** We manage and optimize your cloud deployments, focusing on cost-efficient, open-source solutions.
+
+### Finance & Business Strategy Services
+- **Amazon FBA Consulting:** We provide full-service management for your e-commerce business on Amazon, from product launch to scalable growth.
+- **Blockchain and Crypto Solutions:** We offer asset tokenization services and DeFi liquidity strategies.
+- **Offshore & Localization Strategies:** We help establish tax-optimized global business structures to protect assets and minimize liabilities.
+- **Options and Forex Investment Training:** We provide professional training in regulated markets for secure investment strategies.
+
+## Contact Information
+- **Email:** hello@uhurutrade.com
+- **Phone:** +44 7517074605
+- **Website:** https://uhurutrade.com
+`;
 
 const HistoryItemSchema = z.object({
-  role: z.enum(['user', 'model']),
+  role: z.enum(['user', 'assistant']),
   content: z.string(),
 });
 
@@ -31,20 +53,7 @@ export type ChatInput = z.infer<typeof ChatInputSchema>;
 export type ChatOutput = string;
 
 export async function chat(input: ChatInput): Promise<ChatOutput> {
-  const response = await chatFlow(input);
-  return response;
-}
-
-const chatFlow = ai.defineFlow(
-  {
-    name: 'chatFlow',
-    inputSchema: ChatInputSchema,
-    outputSchema: z.string(),
-  },
-  async (input) => {
-    const companyInfo = await companyInfoPromise;
-
-    const systemPrompt = `You are a friendly and professional AI assistant for UhurU Trade Ltd, a technology and finance consulting company. Your name is "UhurU AI Assistant".
+  const systemPrompt = `You are a friendly and professional AI assistant for UhurU Trade Ltd, a technology and finance consulting company. Your name is "UhurU AI Assistant".
 Your goal is to answer user questions based *only* on the information provided below.
 You must answer in the same language the user is asking (either English or Spanish). Be concise and helpful.
 
@@ -57,16 +66,22 @@ COMPANY AND SERVICES INFORMATION:
 ${companyInfo}
 ---
 `;
-    
-    const response = await ai.generate({
-      model: 'googleai/gemini-1.5-flash-latest',
-      prompt: input.history.at(-1)?.content ?? '',
-      history: input.history.slice(0, -1),
-      config: {
-        systemPrompt: systemPrompt,
-      },
-    });
 
-    return response.text;
+  const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+    { role: 'system', content: systemPrompt },
+    ...input.history,
+  ];
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: messages,
+      temperature: 0.7,
+      max_tokens: 150,
+    });
+    return response.choices[0].message.content ?? "I'm sorry, I couldn't generate a response.";
+  } catch (error) {
+    console.error("Error calling OpenAI API:", error);
+    throw new Error("Failed to get response from AI service.");
   }
-);
+}
