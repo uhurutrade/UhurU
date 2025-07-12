@@ -41,7 +41,7 @@ We offer a wide range of services designed to help businesses thrive in the mode
 `;
 
 const HistoryItemSchema = z.object({
-  role: z.enum(['user', 'assistant']),
+  role: z.enum(['user', 'assistant', 'system']),
   content: z.string(),
 });
 

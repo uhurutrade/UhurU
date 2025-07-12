@@ -51,8 +51,8 @@ export default function ChatWidget() {
     
     startTransition(async () => {
       try {
-        const historyForAI: ChatInput['history'] = newMessages.slice(1).map((msg) => ({
-            role: msg.role, // Use 'user' or 'assistant' directly
+        const historyForAI = newMessages.map((msg) => ({
+            role: msg.role,
             content: msg.content,
         }));
         
