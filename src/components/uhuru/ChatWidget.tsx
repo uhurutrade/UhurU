@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, X, Send, Bot, User, Loader } from 'lucide-react';
-import { chat, ChatInput } from '@/ai/flows/chat-flow';
+import { chat } from '@/ai/flows/chat-flow';
+import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 
 interface Message {
@@ -46,17 +47,17 @@ export default function ChatWidget() {
     const newUserMessage = input.trim();
     if (newUserMessage === '' || isPending) return;
 
-    setMessages((prevMessages) => [...prevMessages, { role: 'user', content: newUserMessage }]);
+    const newMessages: Message[] = [...messages, { role: 'user', content: newUserMessage }];
+    setMessages(newMessages);
     setInput('');
     
     startTransition(async () => {
       try {
-        const historyForAI = messages.filter(msg => msg.content !== "Hello! I'm UhurU's AI assistant. How can I help you today?");
+        const historyForAI: HistoryItem[] = newMessages
+          .filter(msg => msg.content !== "Hello! I'm UhurU's AI assistant. How can I help you today?")
+          .slice(0, -1); // Exclude the new user message from history, as it's sent separately
 
-        const aiResponse = await chat({
-          history: historyForAI,
-          newUserMessage: newUserMessage
-        });
+        const aiResponse = await chat(newUserMessage, historyForAI);
 
         setMessages((prevMessages) => [
           ...prevMessages,

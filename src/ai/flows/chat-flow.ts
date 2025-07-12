@@ -4,14 +4,9 @@
  * @fileOverview A conversational chat AI flow using OpenAI.
  *
  * - chat - A function that handles the chat conversation process.
- * - ChatInput - The input type for the chat function.
- * - ChatOutput - The return type for the chat function.
  */
 import OpenAI from 'openai';
-import { z } from 'zod';
-
-// Do not use `import 'dotenv/config'` as Next.js handles .env files automatically.
-// Manually importing it can cause conflicts.
+import type { HistoryItem } from '@/ai/types';
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error(
@@ -50,20 +45,9 @@ We offer a wide range of services designed to help businesses thrive in the mode
 - **Website:** https://uhurutrade.com
 `;
 
-const HistoryItemSchema = z.object({
-  role: z.enum(['user', 'assistant']),
-  content: z.string(),
-});
-
-const ChatInputSchema = z.object({
-  history: z.array(HistoryItemSchema),
-  newUserMessage: z.string(),
-});
-
-export type ChatInput = z.infer<typeof ChatInputSchema>;
 export type ChatOutput = string;
 
-export async function chat(input: ChatInput): Promise<ChatOutput> {
+export async function chat(newUserMessage: string, history: HistoryItem[]): Promise<ChatOutput> {
   const systemPrompt = `You are a friendly and professional AI assistant for UhurU Trade Ltd, a technology and finance consulting company. Your name is "UhurU AI Assistant".
 Your goal is to answer user questions based *only* on the information provided below.
 You must answer in the same language the user is asking (either English or Spanish). Be concise and helpful.
@@ -81,10 +65,10 @@ ${companyInfo}
       role: 'system',
       content: systemPrompt,
     },
-    ...input.history,
+    ...history,
     {
       role: 'user',
-      content: input.newUserMessage,
+      content: newUserMessage,
     },
   ];
 
@@ -97,7 +81,10 @@ ${companyInfo}
     });
 
     const choice = response.choices[0].message?.content?.trim();
-    return choice || "I'm sorry, I couldn't generate a response.";
+    if (!choice) {
+       throw new Error("Received an empty response from the AI service.");
+    }
+    return choice;
 
   } catch (error) {
     console.error("Error calling OpenAI API:", error);
