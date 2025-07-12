@@ -9,6 +9,7 @@ import { MessageSquare, X, Send, Bot, User, Loader } from 'lucide-react';
 import { chat } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
+import { chatbotWelcomeMessage } from '../../../chatbot-welcome';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -16,7 +17,7 @@ interface Message {
 }
 
 const MAX_HISTORY_MESSAGES = 10;
-const INITIAL_MESSAGE = "¡Hola! Soy el asistente de IA de UhurU. Pregúntame sobre nuestros servicios, el mercado Forex, opciones de inversión o cómo podemos ayudarte a crecer. ¿En qué te puedo ayudar hoy?";
+const INITIAL_MESSAGE = chatbotWelcomeMessage;
 
 function logClientTrace(functionName: string, data: any) {
     if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
@@ -67,7 +68,7 @@ export default function ChatWidget() {
     logClientTrace(functionName, { input_newUserMessage: newUserMessage });
 
     const userMessageObject: Message = { role: 'user', content: newUserMessage };
-    setMessages((prevMessages) => [...prevMessages, userMessageObject]);
+    setMessages((prevMessages) => [...prevMessages, userMessagedObject]);
     setInput('');
     
     startTransition(async () => {
