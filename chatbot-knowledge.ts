@@ -20,10 +20,14 @@ At UhurU, we combine technology and finance to deliver strategic solutions tailo
 - Cloud (SaaS/PaaS) Management: Cost-efficient management of SaaS/PaaS deployments.
 - Flexible All-in-One Tech Package: Scalable tech solutions with PAYG pricing.
 `,
-  // You can add new knowledge sections here.
-  // For example:
-  // marketStudies: \`
-  // # Market Studies for E-commerce
-  // Our latest study indicates a 20% growth in the pet supplies market...
-  // \`,
+  forexInfo: `
+# Forex Market
+The foreign exchange market, commonly known as Forex, is the largest and most liquid financial market in the world, where currencies from all over the planet are traded. Unlike traditional stock exchanges, Forex operates 24 hours a day, five days a week, making it a dynamic and always-active space for investors.
+
+In this market, currencies are traded in pairs, such as EUR/USD or USD/JPY, and investors speculate on the direction the exchange rate will take. Macroeconomic factors such as central bank interest rates, inflation, employment figures, and geopolitical events directly influence the valuation of these currencies. A Forex investor seeks to profit from price fluctuations, while companies often use it to hedge against currency risk.
+`,
+  investmentStrategy: `
+# Investment Strategy
+Investing in financial markets, whether in Forex, stocks, or commodities, requires careful analysis and disciplined risk management to navigate volatility and seize the opportunities presented by global market fluctuations. A solid strategy involves defining clear goals, understanding your risk tolerance, and diversifying your portfolio to mitigate potential losses. It is crucial to stay informed about market trends and economic indicators to make well-founded decisions.
+`,
 };
