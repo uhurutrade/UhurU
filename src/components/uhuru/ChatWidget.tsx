@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useRef, useEffect, useTransition } from 'react';
@@ -43,20 +42,22 @@ export default function ChatWidget() {
   }, [messages, isPending]);
 
   const handleSend = async () => {
-    if (input.trim() === '' || isPending) return;
+    const newUserMessage = input.trim();
+    if (newUserMessage === '' || isPending) return;
 
-    const newMessages: Message[] = [...messages, { role: 'user', content: input }];
+    const newMessages: Message[] = [...messages, { role: 'user', content: newUserMessage }];
     setMessages(newMessages);
     setInput('');
     
     startTransition(async () => {
       try {
-        const historyForAI = newMessages.map((msg) => ({
-            role: msg.role,
-            content: msg.content,
-        }));
-        
-        const aiResponse = await chat({ history: historyForAI });
+        // Prepare history, excluding the initial system message if it's there
+        const historyForAI = messages.filter(msg => msg.role !== 'assistant' || msg.content !== "Hello! I'm UhurU's AI assistant. How can I help you today?");
+
+        const aiResponse = await chat({ 
+          history: historyForAI,
+          newUserMessage: newUserMessage
+        });
 
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -70,11 +71,8 @@ export default function ChatWidget() {
           title: "Error",
           description: "Sorry, I'm having trouble connecting. Please try again later.",
         });
-        setMessages((prevMessages) => {
-          const restoredMessages = [...prevMessages];
-          restoredMessages.pop(); 
-          return restoredMessages;
-        });
+        // Rollback the user message on error
+        setMessages((prevMessages) => prevMessages.slice(0, -1));
       }
     });
   };

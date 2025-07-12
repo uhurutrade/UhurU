@@ -41,12 +41,13 @@ We offer a wide range of services designed to help businesses thrive in the mode
 `;
 
 const HistoryItemSchema = z.object({
-  role: z.enum(['user', 'assistant', 'system']),
+  role: z.enum(['user', 'assistant']),
   content: z.string(),
 });
 
 const ChatInputSchema = z.object({
   history: z.array(HistoryItemSchema),
+  newUserMessage: z.string(),
 });
 
 export type ChatInput = z.infer<typeof ChatInputSchema>;
@@ -69,7 +70,8 @@ ${companyInfo}
 
   const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
     { role: 'system', content: systemPrompt },
-    ...input.history,
+    ...input.history.map(item => ({...item, role: item.role === 'assistant' ? 'assistant' : 'user'})),
+    { role: 'user', content: input.newUserMessage },
   ];
 
   try {
