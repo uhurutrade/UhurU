@@ -1,8 +1,9 @@
+
 'use server';
 
 import type { HistoryItem } from '@/ai/types';
-import { generate } from 'genkit/ai';
-import { gemini15Flash } from 'genkit-plugin-googleai';
+import { ai } from '@/ai/genkit';
+import { gemini15Flash } from '@genkit-ai/googleai';
 
 const companyInfo = `
 # About UhurU Trade Ltd.
@@ -34,10 +35,15 @@ const servicesInfo = `
  * @returns A promise that resolves to the chatbot's reply as a string.
  */
 export async function chat(newUserMessage: string, history: HistoryItem[]): Promise<string> {
+  const chatHistory = history.map(item => ({
+      role: item.role === 'assistant' ? 'model' : 'user',
+      content: [{ text: item.content }]
+  }));
+
   try {
-    const response = await generate({
+    const response = await ai.generate({
       model: gemini15Flash,
-      history: history,
+      history: chatHistory,
       prompt: newUserMessage,
       system: `You are a friendly and helpful AI assistant for UhurU Trade Ltd. Your goal is to answer user questions about the company, its services, and how to contact them.
         - Be concise and professional.
@@ -53,7 +59,7 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
       `,
     });
 
-    return response.text();
+    return response.text;
   } catch (error) {
     console.error('Error calling Genkit generate:', error);
     const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
