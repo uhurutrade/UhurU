@@ -52,7 +52,7 @@ export default function ChatWidget() {
     startTransition(async () => {
       try {
         const historyForAI: ChatInput['history'] = newMessages.slice(1).map((msg) => ({
-            role: msg.role === 'assistant' ? 'model' : 'user',
+            role: msg.role, // Use 'user' or 'assistant' directly
             content: msg.content,
         }));
         
