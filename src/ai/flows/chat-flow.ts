@@ -15,7 +15,9 @@ async function logTrace(functionName: string, data: any) {
         const timestamp = new Date().toISOString();
         const logMessage = `[${timestamp}] uhurulog_${functionName}: ${JSON.stringify(data)}\n`;
         try {
-            const logFilePath = path.join(process.cwd(), 'chatbot-log.log');
+            const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
+            const logFilePath = path.join(logDirectory, 'chatbot-log.log');
+            await fs.mkdir(logDirectory, { recursive: true });
             await fs.appendFile(logFilePath, logMessage);
         } catch (error) {
             console.error('Failed to write to chatbot-log.log', error);
