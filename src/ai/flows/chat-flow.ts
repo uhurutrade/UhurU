@@ -70,7 +70,7 @@ ${companyInfo}
 
   const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
     { role: 'system', content: systemPrompt },
-    ...input.history.map(item => ({...item, role: item.role === 'assistant' ? 'assistant' : 'user'})),
+    ...input.history.map(item => ({...item})), // Correctly map roles
     { role: 'user', content: input.newUserMessage },
   ];
 
