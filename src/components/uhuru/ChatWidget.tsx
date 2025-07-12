@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useRef, useEffect, useTransition } from 'react';
@@ -45,17 +46,14 @@ export default function ChatWidget() {
     const newUserMessage = input.trim();
     if (newUserMessage === '' || isPending) return;
 
-    const currentMessages = [...messages, { role: 'user', content: newUserMessage }];
-    setMessages(currentMessages);
+    setMessages((prevMessages) => [...prevMessages, { role: 'user', content: newUserMessage }]);
     setInput('');
     
     startTransition(async () => {
       try {
-        // The history sent to the API should not include the new user message,
-        // as it's passed in a separate parameter.
         const historyForAI = messages.filter(msg => msg.content !== "Hello! I'm UhurU's AI assistant. How can I help you today?");
 
-        const aiResponse = await chat({ 
+        const aiResponse = await chat({
           history: historyForAI,
           newUserMessage: newUserMessage
         });
