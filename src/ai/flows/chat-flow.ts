@@ -1,22 +1,14 @@
 
 'use server';
 /**
- * @fileOverview A conversational chat AI flow using OpenAI.
+ * @fileOverview A conversational chat AI flow using Google Gemini.
  *
  * - chat - A function that handles the chat conversation process.
  */
+import { ai } from '@/ai/genkit';
 import type { HistoryItem } from '@/ai/types';
-import OpenAI from 'openai';
-
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error(
-    'The OPENAI_API_KEY environment variable is not set. Please add it to your .env file and restart the server.'
-  );
-}
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { generate } from 'genkit/ai';
+import { gemini15Flash } from '@genkit-ai/googleai';
 
 const companyInfo = `
 # About UhurU Trade Ltd.
@@ -60,34 +52,36 @@ ${companyInfo}
 ---
 `;
 
-  const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-    {
-      role: 'system',
-      content: systemPrompt,
-    },
-    ...history,
-    {
-      role: 'user',
-      content: newUserMessage,
-    },
-  ];
+  // Map roles: 'assistant' to 'model' for Gemini
+  const geminiHistory = history.map(item => ({
+    role: item.role === 'assistant' ? 'model' : 'user',
+    content: [{ text: item.content }]
+  }));
+
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: messages,
-      temperature: 0.7,
-      max_tokens: 250,
+    const response = await generate({
+      model: gemini15Flash,
+      prompt: newUserMessage,
+      config: {
+        temperature: 0.7,
+      },
+      history: [
+        // Start with the system prompt as the first turn from the user
+        { role: 'user', content: [{ text: systemPrompt }] },
+        { role: 'model', content: [{ text: 'Ok, I understand. I am ready to help.' }] },
+        ...geminiHistory
+      ],
     });
 
-    const choice = completion.choices[0].message?.content?.trim();
+    const choice = response.text;
     if (!choice) {
        throw new Error("Received an empty response from the AI service.");
     }
     return choice;
 
   } catch (error) {
-    console.error("Error calling OpenAI API:", error);
+    console.error("Error calling Gemini API:", error);
     throw new Error("Failed to get response from AI service.");
   }
 }
