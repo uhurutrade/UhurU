@@ -5,8 +5,8 @@
  *
  * - chat - A function that handles the chat conversation process.
  */
-import OpenAI from 'openai';
 import type { HistoryItem } from '@/ai/types';
+import OpenAI from 'openai';
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error(
@@ -48,7 +48,7 @@ We offer a wide range of services designed to help businesses thrive in the mode
 export type ChatOutput = string;
 
 export async function chat(newUserMessage: string, history: HistoryItem[]): Promise<ChatOutput> {
-  const systemPrompt = `You are a friendly and professional AI assistant for UhurU Trade Ltd, a technology and finance consulting company. Your name is "UhurU AI Assistant".
+  const systemPrompt = `You are a friendly and professional AI assistant for UhurU Trade Ltd. Your name is "UhurU AI Assistant".
 Your goal is to answer user questions based *only* on the information provided below.
 You must answer in the same language the user is asking (either English or Spanish). Be concise and helpful.
 
@@ -73,14 +73,14 @@ ${companyInfo}
   ];
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
       messages: messages,
       temperature: 0.7,
       max_tokens: 250,
     });
 
-    const choice = response.choices[0].message?.content?.trim();
+    const choice = completion.choices[0].message?.content?.trim();
     if (!choice) {
        throw new Error("Received an empty response from the AI service.");
     }
