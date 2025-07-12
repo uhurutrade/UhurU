@@ -15,6 +15,8 @@ interface Message {
   content: string;
 }
 
+const MAX_HISTORY_MESSAGES = 10;
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -47,15 +49,17 @@ export default function ChatWidget() {
     const newUserMessage = input.trim();
     if (newUserMessage === '' || isPending) return;
 
-    const newMessages: Message[] = [...messages, { role: 'user', content: newUserMessage }];
-    setMessages(newMessages);
+    const currentMessages: Message[] = [...messages, { role: 'user', content: newUserMessage }];
+    setMessages(currentMessages);
     setInput('');
     
     startTransition(async () => {
       try {
-        const historyForAI: HistoryItem[] = newMessages
+        // Build the history for the AI, excluding the initial greeting and the latest user message
+        const historyForAI: HistoryItem[] = currentMessages
           .filter(msg => msg.content !== "Hello! I'm UhurU's AI assistant. How can I help you today?")
-          .slice(0, -1); // Exclude the new user message from history, as it's sent separately
+          .slice(0, -1) // Exclude the new user message, as it's sent separately
+          .slice(-MAX_HISTORY_MESSAGES); // Limit history size
 
         const aiResponse = await chat(newUserMessage, historyForAI);
 
