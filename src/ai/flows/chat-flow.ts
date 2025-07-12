@@ -1,9 +1,16 @@
-
 'use server';
+/**
+ * @fileOverview A conversational chat AI flow using Genkit.
+ *
+ * - chat - A function that handles the chat conversation process.
+ * - ChatInput - The input type for the chat function.
+ * - ChatOutput - The return type for the chat function.
+ */
 
-import OpenAI from 'openai';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { ai } from '@/ai/instance';
+import { z } from 'zod';
 
 const companyInfoPromise = fs.readFile(path.join(process.cwd(), 'src', 'data', 'company-info.md'), 'utf-8')
   .catch(error => {
@@ -11,24 +18,33 @@ const companyInfoPromise = fs.readFile(path.join(process.cwd(), 'src', 'data', '
     return 'No company information available at the moment.';
   });
 
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const HistoryItemSchema = z.object({
+  role: z.enum(['user', 'model']),
+  content: z.string(),
 });
 
-export type ChatInput = {
-  history: {
-    role: 'user' | 'model';
-    content: string;
-  }[];
-};
+const ChatInputSchema = z.object({
+  history: z.array(HistoryItemSchema),
+});
 
+export type ChatInput = z.infer<typeof ChatInputSchema>;
 export type ChatOutput = string;
 
 export async function chat(input: ChatInput): Promise<ChatOutput> {
-  const companyInfo = await companyInfoPromise;
+  const { text } = await chatFlow(input);
+  return text;
+}
 
-  const systemPrompt = `You are a friendly and professional AI assistant for UhurU Trade Ltd, a technology and finance consulting company. Your name is "UhurU AI Assistant".
+const chatFlow = ai.defineFlow(
+  {
+    name: 'chatFlow',
+    inputSchema: ChatInputSchema,
+    outputSchema: z.string(),
+  },
+  async (input) => {
+    const companyInfo = await companyInfoPromise;
+
+    const systemPrompt = `You are a friendly and professional AI assistant for UhurU Trade Ltd, a technology and finance consulting company. Your name is "UhurU AI Assistant".
 Your goal is to answer user questions based *only* on the information provided below.
 You must answer in the same language the user is asking (either English or Spanish). Be concise and helpful.
 
@@ -42,29 +58,17 @@ ${companyInfo}
 ---
 `;
 
-  const lastUserMessage = input.history.at(-1);
-  const conversationHistory = input.history.slice(0, -1);
-
-  const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-    { role: 'system', content: systemPrompt },
-    ...conversationHistory.map(msg => ({
-      role: msg.role === 'model' ? 'assistant' as const : 'user' as const,
-      content: msg.content,
-    })),
-  ];
-
-  if (lastUserMessage) {
-    messages.push({ role: 'user', content: lastUserMessage.content });
-  }
-
-  try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: messages,
+    const model = ai.getmodel('gemini-1.5-flash-latest');
+    
+    const response = await ai.generate({
+      model: model,
+      prompt: input.history.at(-1)?.content ?? '',
+      history: input.history.slice(0, -1),
+      config: {
+        systemPrompt: systemPrompt,
+      },
     });
-    return response.choices[0].message.content ?? "I'm sorry, I'm having trouble responding right now. Please try again later.";
-  } catch (error) {
-    console.error("Error calling OpenAI API:", error);
-    return "I'm sorry, an error occurred while connecting to the AI service. Please check the server logs for more details.";
+
+    return response.text;
   }
-}
+);
