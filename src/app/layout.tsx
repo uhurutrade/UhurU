@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Inter, Poppins } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster";
+import ChatWidget from '@/components/uhuru/ChatWidget';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -45,6 +46,7 @@ export default function RootLayout({
           disableTransitionOnChange={false}
         >
           {children}
+          <ChatWidget />
           <Toaster />
         </ThemeProvider>
       </body>

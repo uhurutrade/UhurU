@@ -1,12 +1,14 @@
 
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, X, Send, Bot, User, Loader } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { chat, ChatInput } from '@/ai/flows/chat-flow';
+import { useToast } from '@/hooks/use-toast';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -22,8 +24,9 @@ export default function ChatWidget() {
     },
   ]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const toggleOpen = () => setIsOpen(!isOpen);
 
@@ -38,25 +41,42 @@ export default function ChatWidget() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isPending]);
 
   const handleSend = async () => {
-    if (input.trim() === '' || isLoading) return;
+    if (input.trim() === '' || isPending) return;
 
     const newMessages: Message[] = [...messages, { role: 'user', content: input }];
     setMessages(newMessages);
     const currentInput = input;
     setInput('');
-    setIsLoading(true);
+    
+    startTransition(async () => {
+      try {
+        // Construct history for the AI, excluding the assistant's first greeting
+        const historyForAI = newMessages.slice(1).map((msg) => ({
+            role: msg.role === 'assistant' ? 'model' as const : 'user' as const,
+            content: msg.content,
+        }));
+        
+        const aiResponse = await chat({ history: historyForAI });
 
-    // Placeholder for backend call
-    setTimeout(() => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { role: 'assistant', content: "I'm not connected right now, but I'm ready to chat!" },
-      ]);
-      setIsLoading(false);
-    }, 1000);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { role: 'assistant', content: aiResponse },
+        ]);
+
+      } catch (error) {
+        console.error("Error calling chat API:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Sorry, I'm having trouble connecting. Please try again later.",
+        });
+        // Restore user's message on error
+        setMessages((prevMessages) => prevMessages.slice(0, -1));
+      }
+    });
   };
   
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -112,7 +132,7 @@ export default function ChatWidget() {
                     )}
                   </div>
                 ))}
-                {isLoading && (
+                {isPending && (
                   <div className="flex items-start gap-3">
                     <div className="bg-primary text-primary-foreground rounded-full p-2">
                       <Bot className="h-5 w-5" />
@@ -132,14 +152,14 @@ export default function ChatWidget() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  disabled={isLoading}
+                  disabled={isPending}
                   className="pr-10"
                 />
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={handleSend}
-                  disabled={isLoading}
+                  disabled={isPending}
                   className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
                 >
                   <Send className="h-4 w-4" />
@@ -160,9 +180,9 @@ export default function ChatWidget() {
             >
                 <Button
                 onClick={toggleOpen}
-                className="rounded-full h-16 w-16 shadow-lg flex items-center justify-center"
+                className="rounded-full h-16 w-16 shadow-lg flex items-center justify-center bg-primary hover:bg-primary/90"
                 >
-                <MessageSquare className="h-8 w-8" />
+                <MessageSquare className="h-8 w-8 text-primary-foreground" />
                 </Button>
             </motion.div>
         )}
