@@ -23,37 +23,51 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
       return errorMessage;
   }
 
+  const requestBody = {
+    message: newUserMessage,
+    history: history 
+  };
+
+  console.log("Enviando a Firebase Function:", JSON.stringify(requestBody, null, 2));
+
   try {
     const response = await fetch(firebaseFunctionUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      // El cuerpo debe coincidir con lo que espera tu Firebase Function.
-      // Aquí enviamos el nuevo mensaje y el historial.
-      body: JSON.stringify({
-        message: newUserMessage,
-        history: history 
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Error from Firebase Function:', errorData);
-      throw new Error(errorData.error || 'Error al conectar con el chatbot.');
+      // Intenta leer el cuerpo del error como texto primero
+      const errorText = await response.text();
+      console.error('Error Response from Firebase Function (Text):', errorText);
+      try {
+        // Intenta parsear como JSON si es posible
+        const errorData = JSON.parse(errorText);
+        throw new Error(errorData.error || `Error del servidor: ${response.status}`);
+      } catch (e) {
+        // Si no es JSON, usa el texto del error
+        throw new Error(errorText || `Error del servidor: ${response.status}`);
+      }
     }
 
     const data = await response.json();
     
     // Asegúrate de que tu función devuelve un objeto con una propiedad 'reply'
     if (!data.reply) {
+        console.error("Respuesta inválida de la función:", data);
         throw new Error("La respuesta de la función no contenía un campo 'reply'.");
     }
 
     return data.reply;
 
   } catch (error) {
-    console.error('Error calling Firebase Function:', error);
+    console.error('Error al llamar a la Firebase Function:', error);
+    if (error instanceof Error) {
+        return `Lo siento, hubo un problema: ${error.message}`;
+    }
     return "Lo siento, no pude conectar con el asistente en este momento. Por favor, inténtalo más tarde.";
   }
 }

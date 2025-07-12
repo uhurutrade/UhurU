@@ -42,24 +42,25 @@ export default function ChatWidget() {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isPending]);
+    if (isOpen) {
+        setTimeout(scrollToBottom, 100);
+    }
+  }, [isOpen, messages, isPending]);
 
   const handleSend = async () => {
     const newUserMessage = input.trim();
     if (newUserMessage === '' || isPending) return;
 
-    const currentMessages: Message[] = [...messages, { role: 'user', content: newUserMessage }];
-    setMessages(currentMessages);
+    const userMessageObject: Message = { role: 'user', content: newUserMessage };
+    setMessages((prevMessages) => [...prevMessages, userMessageObject]);
     setInput('');
     
     startTransition(async () => {
       try {
-        // Build the history for the AI, excluding the initial greeting and the latest user message
-        const historyForAI: HistoryItem[] = currentMessages
+        // Build the history for the AI, excluding the initial greeting
+        const historyForAI: HistoryItem[] = messages
           .filter(msg => msg.content !== "Hello! I'm UhurU's AI assistant. How can I help you today?")
-          .slice(0, -1) // Exclude the new user message, as it's sent separately
-          .slice(-MAX_HISTORY_MESSAGES); // Limit history size
+          .slice(-MAX_HISTORY_MESSAGES); 
 
         const aiResponse = await chat(newUserMessage, historyForAI);
 
@@ -69,14 +70,20 @@ export default function ChatWidget() {
         ]);
 
       } catch (error) {
-        console.error("Error calling chat API:", error);
+        console.error("Error in chat transition:", error);
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        
+        // Add an error message from the assistant
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { role: 'assistant', content: `Error: ${errorMessage}` },
+        ]);
+
         toast({
           variant: "destructive",
-          title: "Error",
+          title: "Chat Error",
           description: "Sorry, I'm having trouble connecting. Please try again later.",
         });
-        // Rollback the user message on error
-        setMessages((prevMessages) => prevMessages.slice(0, -1));
       }
     });
   };
