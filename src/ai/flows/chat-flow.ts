@@ -66,8 +66,6 @@ export async function chat(input: ChatInput): Promise<ChatOutput> {
 Your goal is to answer user questions based *only* on the information provided below.
 You must answer in the same language the user is asking (either English or Spanish). Be concise and helpful.
 
-The user will start by choosing a language. Respond to their choice in the chosen language.
-
 If the user asks something you cannot answer with the provided information, politely say "I can only provide information about UhurU's services and company details. Is there anything specific about UhurU I can help you with?" or in Spanish "Solo puedo proporcionar información sobre los servicios y detalles de la empresa UhurU. ¿Hay algo específico sobre UhurU en lo que pueda ayudarte?". Do not make up information.
 
 ---
@@ -76,24 +74,27 @@ ${companyInfo}
 ---
 `;
 
-  const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-    { role: 'system', content: systemPrompt },
-    ...input.history,
-    { role: 'user', content: input.newUserMessage },
-  ];
+  // Build a single prompt string for the completion API
+  const conversationHistory = input.history
+    .map(item => `${item.role === 'user' ? 'User' : 'Assistant'}: ${item.content}`)
+    .join('\n');
+  
+  const fullPrompt = `${systemPrompt}\n\nHere is the conversation so far:\n${conversationHistory}\n\nUser: ${input.newUserMessage}\nAssistant:`;
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: messages,
+    const response = await openai.completions.create({
+      model: 'gpt-3.5-turbo-instruct',
+      prompt: fullPrompt,
       temperature: 0.7,
-      max_tokens: 150,
+      max_tokens: 250,
+      stop: ["\nUser:", "\nAssistant:"], // Stop generation at the next turn
     });
-    return response.choices[0].message.content ?? "I'm sorry, I couldn't generate a response.";
+
+    const choice = response.choices[0].text.trim();
+    return choice || "I'm sorry, I couldn't generate a response.";
+
   } catch (error) {
     console.error("Error calling OpenAI API:", error);
     throw new Error("Failed to get response from AI service.");
   }
 }
-
-    
