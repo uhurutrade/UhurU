@@ -16,7 +16,7 @@ interface Message {
   content: string;
 }
 
-const MAX_HISTORY_MESSAGES = 10;
+const MAX_HISTORY_MESSAGES = 20;
 const INITIAL_MESSAGE = chatbotWelcomeMessage;
 
 function logClientTrace(functionName: string, data: any) {
