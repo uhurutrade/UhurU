@@ -12,7 +12,7 @@ export default function Hero() {
         <div className="flex flex-col justify-center space-y-6">
           <div className="space-y-4">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none font-headline">
-              When we talk tech, money listens,,,,
+              When we talk tech, money listens....
             </h1>
             <p className="max-w-[600px] text-muted-foreground md:text-xl">
               AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments
