@@ -31,8 +31,8 @@ export type ChatInput = z.infer<typeof ChatInputSchema>;
 export type ChatOutput = string;
 
 export async function chat(input: ChatInput): Promise<ChatOutput> {
-  const { text } = await chatFlow(input);
-  return text;
+  const response = await chatFlow(input);
+  return response;
 }
 
 const chatFlow = ai.defineFlow(
@@ -59,7 +59,7 @@ ${companyInfo}
 `;
     
     const response = await ai.generate({
-      model: 'gemini-1.5-flash-latest',
+      model: 'googleai/gemini-1.5-flash-latest',
       prompt: input.history.at(-1)?.content ?? '',
       history: input.history.slice(0, -1),
       config: {
