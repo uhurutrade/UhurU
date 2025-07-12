@@ -45,14 +45,15 @@ export default function ChatWidget() {
     const newUserMessage = input.trim();
     if (newUserMessage === '' || isPending) return;
 
-    const newMessages: Message[] = [...messages, { role: 'user', content: newUserMessage }];
-    setMessages(newMessages);
+    const currentMessages = [...messages, { role: 'user', content: newUserMessage }];
+    setMessages(currentMessages);
     setInput('');
     
     startTransition(async () => {
       try {
-        // Prepare history, excluding the initial system message if it's there
-        const historyForAI = messages.filter(msg => msg.role !== 'assistant' || msg.content !== "Hello! I'm UhurU's AI assistant. How can I help you today?");
+        // The history sent to the API should not include the new user message,
+        // as it's passed in a separate parameter.
+        const historyForAI = messages.filter(msg => msg.content !== "Hello! I'm UhurU's AI assistant. How can I help you today?");
 
         const aiResponse = await chat({ 
           history: historyForAI,
