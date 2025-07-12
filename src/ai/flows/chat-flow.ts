@@ -9,7 +9,9 @@
  */
 import OpenAI from 'openai';
 import { z } from 'zod';
-import 'dotenv/config';
+
+// Do not use `import 'dotenv/config'` as Next.js handles .env files automatically.
+// Manually importing it can cause conflicts.
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error(
@@ -74,23 +76,27 @@ ${companyInfo}
 ---
 `;
 
-  // Build a single prompt string for the completion API
-  const conversationHistory = input.history
-    .map(item => `${item.role === 'user' ? 'User' : 'Assistant'}: ${item.content}`)
-    .join('\n');
-  
-  const fullPrompt = `${systemPrompt}\n\nHere is the conversation so far:\n${conversationHistory}\n\nUser: ${input.newUserMessage}\nAssistant:`;
+  const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+    {
+      role: 'system',
+      content: systemPrompt,
+    },
+    ...input.history,
+    {
+      role: 'user',
+      content: input.newUserMessage,
+    },
+  ];
 
   try {
-    const response = await openai.completions.create({
-      model: 'gpt-3.5-turbo-instruct',
-      prompt: fullPrompt,
+    const response = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: messages,
       temperature: 0.7,
       max_tokens: 250,
-      stop: ["\nUser:", "\nAssistant:"], // Stop generation at the next turn
     });
 
-    const choice = response.choices[0].text.trim();
+    const choice = response.choices[0].message?.content?.trim();
     return choice || "I'm sorry, I couldn't generate a response.";
 
   } catch (error) {
