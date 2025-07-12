@@ -1,0 +1,13 @@
+[2025-07-12T21:33:13.464Z] uhurulog_chat: {
+  "input_newUserMessage": "q idiomas sabes?",
+  "input_history": []
+}
+
+[2025-07-12T21:33:13.474Z] uhurulog_chat: {
+  "status": "calling_ai_generate"
+}
+
+[2025-07-12T21:33:13.479Z] uhurulog_chat: {
+  "output_error": "Sorry, there was a problem: FAILED_PRECONDITION: Please pass in the API key or set the GEMINI_API_KEY or GOOGLE_API_KEY environment variable.\nFor more details see https://genkit.dev/docs/plugins/google-genai"
+}
+
