@@ -9,7 +9,7 @@ import { MessageSquare, X, Send, Bot, User, Loader } from 'lucide-react';
 import { chat } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
-import { chatbotWelcomeMessage } from '../../../chatbot-welcome';
+import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 
 interface Message {
   role: 'user' | 'assistant';

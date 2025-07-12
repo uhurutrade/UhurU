@@ -6,8 +6,8 @@ import { ai } from '@/ai/genkit';
 import { gemini15Flash } from '@genkit-ai/googleai';
 import fs from 'fs/promises';
 import path from 'path';
-import { knowledgeBase } from '../../../chatbot-knowledge';
-import { getSystemPrompt } from '../../../chatbot-prompt';
+import { knowledgeBase } from '@/chatbot/chatbot-knowledge';
+import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 import { headers } from 'next/headers';
 
 async function logTrace(functionName: string, data: any) {
