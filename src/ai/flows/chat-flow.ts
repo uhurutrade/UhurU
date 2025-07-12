@@ -31,11 +31,13 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
   // =================================================================
   // !! IMPORTANTE !!
   // Reemplaza esta URL con la URL de tu propia Firebase Function.
+  // La encontrarás en la consola de Firebase > Functions > Dashboard.
+  // Será algo como: https://<region>-<project-id>.cloudfunctions.net/chatUhurU
   // =================================================================
   const firebaseFunctionUrl = "https://europe-west1-uhuru-a35ed.cloudfunctions.net/chatUhurU"; // <-- REEMPLAZA ESTA URL
 
   if (firebaseFunctionUrl.includes("[") || firebaseFunctionUrl.includes("]")) {
-      const errorMessage = "Error de configuración: La URL de la Firebase Function no ha sido configurada en 'src/ai/flows/chat-flow.ts'.";
+      const errorMessage = "Error de configuración: La URL de la Firebase Function no ha sido configurada en 'src/ai/flows/chat-flow.ts'. Reemplaza el texto de ejemplo por tu URL real.";
       console.error(errorMessage);
       await logTrace(functionName, { output_error: errorMessage });
       return errorMessage;
