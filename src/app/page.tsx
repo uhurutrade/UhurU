@@ -4,7 +4,6 @@ import Hero from '@/components/uhuru/hero';
 import Features from '@/components/uhuru/features';
 import Testimonials from '@/components/uhuru/testimonials';
 import Footer from '@/components/uhuru/footer';
-import ChatWidget from '@/components/uhuru/ChatWidget';
 
 export default function Home() {
   return (
@@ -16,7 +15,6 @@ export default function Home() {
         <Testimonials />
       </main>
       <Footer />
-      <ChatWidget />
     </div>
   );
 }
