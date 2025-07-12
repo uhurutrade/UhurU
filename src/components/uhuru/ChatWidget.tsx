@@ -115,7 +115,7 @@ export default function ChatWidget() {
             className="w-80 h-[28rem] bg-card rounded-lg shadow-2xl flex flex-col border border-border"
           >
             <div className="flex justify-between items-center p-3 border-b border-border bg-card-foreground/5 dark:bg-card-foreground/10 rounded-t-lg">
-              <h3 className="text-base font-semibold text-foreground">Chat with UhurU AI</h3>
+              <h3 className="text-base font-semibold text-foreground">UhurU AI Chat</h3>
               <Button variant="ghost" size="icon" onClick={toggleOpen} className="h-8 w-8">
                 <X className="h-4 w-4" />
               </Button>
