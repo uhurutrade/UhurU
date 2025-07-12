@@ -57,11 +57,9 @@ COMPANY AND SERVICES INFORMATION:
 ${companyInfo}
 ---
 `;
-
-    const model = ai.model('gemini-1.5-flash-latest');
     
     const response = await ai.generate({
-      model: model,
+      model: 'gemini-1.5-flash-latest',
       prompt: input.history.at(-1)?.content ?? '',
       history: input.history.slice(0, -1),
       config: {
