@@ -17,6 +17,11 @@ interface Message {
 
 const MAX_HISTORY_MESSAGES = 10;
 
+function logClientTrace(functionName: string, data: any) {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] uhurulog_${functionName}:`, data);
+}
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -30,7 +35,10 @@ export default function ChatWidget() {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const toggleOpen = () => setIsOpen(!isOpen);
+  const toggleOpen = () => {
+    logClientTrace('toggleOpen', { isOpen: !isOpen });
+    setIsOpen(!isOpen);
+  }
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -43,26 +51,32 @@ export default function ChatWidget() {
 
   useEffect(() => {
     if (isOpen) {
+        logClientTrace('useEffect_scrollToBottom', { trigger: 'isOpen_or_messages' });
         setTimeout(scrollToBottom, 100);
     }
   }, [isOpen, messages, isPending]);
 
   const handleSend = async () => {
+    const functionName = 'handleSend';
     const newUserMessage = input.trim();
     if (newUserMessage === '' || isPending) return;
+    
+    logClientTrace(functionName, { input_newUserMessage: newUserMessage });
 
     const userMessageObject: Message = { role: 'user', content: newUserMessage };
     setMessages((prevMessages) => [...prevMessages, userMessageObject]);
     setInput('');
     
     startTransition(async () => {
+      logClientTrace(functionName, { status: 'transition_started' });
       try {
-        // Build the history for the AI, excluding the initial greeting
         const historyForAI: HistoryItem[] = messages
           .filter(msg => msg.content !== "Hello! I'm UhurU's AI assistant. How can I help you today?")
           .slice(-MAX_HISTORY_MESSAGES); 
-
+        
+        logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
         const aiResponse = await chat(newUserMessage, historyForAI);
+        logClientTrace(functionName, { received_aiResponse: aiResponse });
 
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -70,10 +84,9 @@ export default function ChatWidget() {
         ]);
 
       } catch (error) {
-        console.error("Error in chat transition:", error);
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        logClientTrace(functionName, { error_in_transition: errorMessage });
         
-        // Add an error message from the assistant
         setMessages((prevMessages) => [
             ...prevMessages,
             { role: 'assistant', content: `Error: ${errorMessage}` },
@@ -85,6 +98,7 @@ export default function ChatWidget() {
           description: "Sorry, I'm having trouble connecting. Please try again later.",
         });
       }
+      logClientTrace(functionName, { status: 'transition_finished' });
     });
   };
   
