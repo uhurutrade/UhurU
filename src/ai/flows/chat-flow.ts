@@ -80,7 +80,7 @@ const ttsFlow = ai.defineFlow(
         responseModalities: ['AUDIO'],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Zubenelgenubi' },
+            prebuiltVoiceConfig: { voiceName: 'Charon' },
           },
         },
       },
