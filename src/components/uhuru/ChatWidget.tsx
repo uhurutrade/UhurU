@@ -30,6 +30,9 @@ function logClientTrace(functionName: string, data: any) {
     }
 }
 
+// Function to generate a random 6-digit string
+const generateSessionId = () => Math.floor(100000 + Math.random() * 900000).toString();
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -39,12 +42,23 @@ export default function ChatWidget() {
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
   
+  // Use a ref to store the session ID so it persists across re-renders
+  const sessionIdRef = useRef<string | null>(null);
+  
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   
   const { toast } = useToast();
+  
+  // Generate session ID only once when the component mounts
+  useEffect(() => {
+    if (!sessionIdRef.current) {
+        sessionIdRef.current = generateSessionId();
+        logClientTrace('initSession', { sessionId: sessionIdRef.current });
+    }
+  }, []);
 
   const toggleOpen = () => {
     logClientTrace('toggleOpen', { isOpen: !isOpen });
@@ -92,9 +106,9 @@ export default function ChatWidget() {
   const handleSend = async (messageContent: string, isVoiceInput = false) => {
     const functionName = 'handleSend';
     const newUserMessage = messageContent.trim();
-    if (newUserMessage === '' || isPending) return;
+    if (newUserMessage === '' || isPending || !sessionIdRef.current) return;
     
-    logClientTrace(functionName, { input_newUserMessage: newUserMessage, isVoiceInput });
+    logClientTrace(functionName, { input_newUserMessage: newUserMessage, isVoiceInput, sessionId: sessionIdRef.current });
 
     const userMessageId = `user-${Date.now()}`;
     const assistantMessageId = `assistant-${Date.now()}`;
@@ -114,7 +128,7 @@ export default function ChatWidget() {
       try {
         logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
         
-        const { text: aiResponseText, audioDataUri } = await chat(newUserMessage, historyForAI, isVoiceInput);
+        const { text: aiResponseText, audioDataUri } = await chat(newUserMessage, historyForAI, isVoiceInput, sessionIdRef.current!);
         logClientTrace(functionName, { received_aiResponse: aiResponseText, has_audio: !!audioDataUri });
         
         setMessages((prevMessages) => [
@@ -148,6 +162,7 @@ export default function ChatWidget() {
   };
 
   const startRecording = async () => {
+    if (!sessionIdRef.current) return;
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorderRef.current = new MediaRecorder(stream);
@@ -166,7 +181,7 @@ export default function ChatWidget() {
                 logClientTrace('handleMic_onStop', { status: 'transcribing_audio' });
                 startTransition(async () => {
                     try {
-                        const { text } = await speechToText(base64Audio);
+                        const { text } = await speechToText(base64Audio, sessionIdRef.current!);
                         logClientTrace('handleMic_onStop', { transcribed_text: text });
                         if (text) {
                             handleSend(text, true); // Send directly after transcription

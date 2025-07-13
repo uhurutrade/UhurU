@@ -12,14 +12,15 @@ import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'zod';
 import wav from 'wav';
 
-async function logTrace(functionName: string, data: any) {
+async function logTrace(functionName: string, data: any, sessionId?: string) {
     if (process.env.TRACE === 'ON') {
         const timestamp = new Date().toISOString();
         const headerList = headers();
         const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
         
         const logData = { ip, ...data };
-        const logMessage = `[${timestamp}] uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
+        const idPart = sessionId ? `[id:${sessionId}]` : '';
+        const logMessage = `[${timestamp}]${idPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
 
         try {
             const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
@@ -35,7 +36,8 @@ async function logTrace(functionName: string, data: any) {
 export async function chat(
   newUserMessage: string, 
   history: HistoryItem[],
-  isVoiceInput: boolean
+  isVoiceInput: boolean,
+  sessionId: string
 ): Promise<{ text: string; audioDataUri?: string }> {
     const functionName = 'chat';
 
@@ -50,7 +52,7 @@ export async function chat(
       logPayload.input_newUserMessage = newUserMessage;
     }
     
-    await logTrace(functionName, logPayload);
+    await logTrace(functionName, logPayload, sessionId);
 
     const chatHistory = history.map(item => ({
         role: item.role === 'assistant' ? 'model' : 'user',
@@ -61,7 +63,7 @@ export async function chat(
     const systemPrompt = getSystemPrompt(knowledgePrompt);
 
     try {
-        await logTrace(functionName, { status: 'calling_ai_generate' });
+        await logTrace(functionName, { status: 'calling_ai_generate' }, sessionId);
         const response = await ai.generate({
             model: googleAI.model('gemini-1.5-flash-latest'),
             history: chatHistory,
@@ -70,10 +72,10 @@ export async function chat(
         });
 
         const responseText = response.text;
-        await logTrace(functionName, { output_ai_response: responseText });
+        await logTrace(functionName, { output_ai_response: responseText }, sessionId);
 
         if (isVoiceInput) {
-            const { media: audioDataUri } = await textToSpeech(responseText);
+            const { media: audioDataUri } = await textToSpeech(responseText, sessionId);
             return { text: responseText, audioDataUri };
         }
 
@@ -81,7 +83,7 @@ export async function chat(
 
     } catch (error) {
         const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
-        await logTrace(functionName, { output_error: errorMessage });
+        await logTrace(functionName, { output_error: errorMessage }, sessionId);
         return { text: errorMessage };
     }
 }
@@ -89,16 +91,19 @@ export async function chat(
 const ttsFlow = ai.defineFlow(
   {
     name: 'textToSpeechFlow',
-    inputSchema: z.string(),
+    inputSchema: z.object({
+      text: z.string(),
+      sessionId: z.string().optional(),
+    }),
     outputSchema: z.object({
         media: z.string().describe("The base64 encoded WAV audio data URI."),
     }),
   },
-  async (text) => {
+  async ({ text, sessionId }) => {
     if (!text) {
         return { media: '' };
     }
-    await logTrace('textToSpeech', { input_text: text });
+    await logTrace('textToSpeech', { input_text: text }, sessionId);
     
     const { media } = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
@@ -130,8 +135,8 @@ const ttsFlow = ai.defineFlow(
   }
 );
 
-export async function textToSpeech(text: string): Promise<{ media: string }> {
-    return ttsFlow(text);
+export async function textToSpeech(text: string, sessionId?: string): Promise<{ media: string }> {
+    return ttsFlow({ text, sessionId });
 }
 
 const sttFlow = ai.defineFlow(
@@ -139,12 +144,14 @@ const sttFlow = ai.defineFlow(
         name: 'speechToTextFlow',
         inputSchema: z.object({
             audioDataUri: z.string().describe("The base64 encoded audio data URI."),
+            sessionId: z.string().optional(),
         }),
         outputSchema: z.object({
             text: z.string().describe("The transcribed text."),
         }),
     },
-    async ({ audioDataUri }) => {
+    async ({ audioDataUri, sessionId }) => {
+        await logTrace('speechToText_start', { input_audio_received: true }, sessionId);
         const response = await ai.generate({
             model: googleAI.model('gemini-1.5-flash-latest'),
             prompt: [
@@ -153,13 +160,13 @@ const sttFlow = ai.defineFlow(
             ],
         });
         const transcribedText = response.text;
+        await logTrace('speechToText_end', { output_transcribed_text: transcribedText }, sessionId);
         return { text: transcribedText };
     }
 );
 
-export async function speechToText(audioDataUri: string): Promise<{ text: string }> {
-    await logTrace('speechToText', { input_audio_received: true });
-    return sttFlow({ audioDataUri });
+export async function speechToText(audioDataUri: string, sessionId: string): Promise<{ text: string }> {
+    return sttFlow({ audioDataUri, sessionId });
 }
 
 async function toWav(
