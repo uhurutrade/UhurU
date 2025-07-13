@@ -3,21 +3,21 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const KNOWLEDGE_DIR = path.join(process.cwd(), 'src', 'chatbot', 'IAsourcesPrompt');
-const FILENAME_REGEX = /^(\d+)\.(\d+)-(.+)\.txt$/;
+const FILENAME_REGEX = /^(\d+)\.(\d+)-(.+?)-(.+)\.txt$/;
 
 interface KnowledgeContent {
   category: string;
   content: string;
 }
 
-// Helper to extract category name from the filename (e.g., "1.1-Servicios-Generales.txt" -> "Servicios")
+// Helper to extract category name from the filename (e.g., "1.1-Servicios-TextoLibre.txt" -> "Servicios")
 function getCategoryFromFilename(filename: string): string {
     const match = filename.match(FILENAME_REGEX);
-    if (!match) return 'General';
-    
-    // "Servicios-Generales.txt" -> "Servicios"
-    const namePart = match[3]; 
-    return namePart.split('-')[0].replace(/([A-Z])/g, ' $1').trim();
+    // The category is the text between the first and second hyphens (match[3])
+    if (match && match[3]) {
+      return match[3].replace(/([A-Z])/g, ' $1').trim(); // Adds space for camelCase like "SobreNosotros" -> "Sobre Nosotros"
+    }
+    return 'General';
 }
 
 // Reads all valid .txt files from the directory and structures them.
