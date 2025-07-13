@@ -60,7 +60,7 @@ export default function Footer() {
           <div className="border-t border-border pt-6">
               <div className="text-center text-xs text-foreground">
                   <p>
-                      © {new Date().getFullYear()} All rights reserved. Uhuru Trade Ltd. Company no. 15883242 – Unit 13 Freeland Park Wareham Road. Lytchett Matravers – BH16 6FA Poole – UK <Link href="/privacy-policy" className="underline hover:text-foreground">Privacy Policies</Link>
+                      © {new Date().getFullYear()} All rights reserved. Uhuru Trade Ltd. Company no. 15883242 – Unit 13 Freeland Park Wareham Road. Lytchett Matravers – BH16 6FA Poole – UK <Link href="/privacy-policy" className="underline hover:text-foreground">Privacy Policy</Link> • <Link href="/cookie-policy" className="underline hover:text-foreground">Cookie Policy</Link>
                   </p>
               </div>
           </div>
