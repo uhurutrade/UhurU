@@ -38,8 +38,19 @@ export async function chat(
   isVoiceInput: boolean
 ): Promise<{ text: string; audioDataUri?: string }> {
     const functionName = 'chat';
+
+    const logPayload: any = {
+      history: history.map(h => h.content),
+      isVoiceInput
+    };
+
+    if (isVoiceInput) {
+      logPayload.InputAudio = newUserMessage;
+    } else {
+      logPayload.input_newUserMessage = newUserMessage;
+    }
     
-    await logTrace(functionName, { input_newUserMessage: newUserMessage, input_history: history.map(h => h.content), isVoiceInput });
+    await logTrace(functionName, logPayload);
 
     const chatHistory = history.map(item => ({
         role: item.role === 'assistant' ? 'model' : 'user',
@@ -142,7 +153,6 @@ const sttFlow = ai.defineFlow(
             ],
         });
         const transcribedText = response.text;
-        await logTrace('speechToText', { output_transcribed_text: transcribedText });
         return { text: transcribedText };
     }
 );
