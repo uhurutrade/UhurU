@@ -5,14 +5,15 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageSquare, X, Send, Bot, User, Loader, Mic, Play, Pause } from 'lucide-react';
-import { chat, textToSpeech } from '@/ai/flows/chat-flow';
+import { MessageSquare, X, Send, Bot, User, Loader, Mic, Play, Pause, Square } from 'lucide-react';
+import { chat, textToSpeech, speechToText } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { cn } from '@/lib/utils';
 
 interface Message {
+  id: string;
   role: 'user' | 'assistant';
   content: string;
   audioUrl?: string;
@@ -32,50 +33,18 @@ function logClientTrace(functionName: string, data: any) {
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: INITIAL_MESSAGE },
+    { id: 'initial', role: 'assistant', content: INITIAL_MESSAGE },
   ]);
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
+  
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  
   const { toast } = useToast();
-  const recognitionRef = useRef<any>(null);
-
-  useEffect(() => {
-    // Check for SpeechRecognition API support
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.lang = 'es-ES'; // Default language, can be changed
-      recognition.interimResults = false;
-
-      recognition.onstart = () => {
-        setIsRecording(true);
-        logClientTrace('SpeechRecognition', { status: 'started' });
-      };
-      recognition.onend = () => {
-        setIsRecording(false);
-        logClientTrace('SpeechRecognition', { status: 'ended' });
-      };
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        logClientTrace('SpeechRecognition', { transcript });
-        setInput(transcript);
-      };
-      recognition.onerror = (event) => {
-        logClientTrace('SpeechRecognition', { error: event.error });
-        toast({
-            variant: "destructive",
-            title: "Voice Error",
-            description: `Could not recognize voice: ${event.error}`,
-        });
-      };
-      recognitionRef.current = recognition;
-    }
-  }, [toast]);
-
 
   const toggleOpen = () => {
     logClientTrace('toggleOpen', { isOpen: !isOpen });
@@ -98,10 +67,15 @@ export default function ChatWidget() {
     }
   }, [isOpen, messages, isPending]);
 
-  const handleTogglePlay = (audioUrl: string, index: number) => {
-    setMessages(prev => prev.map((msg, i) => ({ ...msg, isPlaying: i === index ? !msg.isPlaying : false })));
+  const handleTogglePlay = (audioUrl: string, messageId: string) => {
+    const isCurrentlyPlaying = messages.find(m => m.id === messageId)?.isPlaying;
 
-    if (audioRef.current && !audioRef.current.paused && messages[index].isPlaying) {
+    setMessages(prev => prev.map((msg) => ({
+      ...msg,
+      isPlaying: msg.id === messageId ? !msg.isPlaying : false,
+    })));
+
+    if (audioRef.current && !audioRef.current.paused && isCurrentlyPlaying) {
       audioRef.current.pause();
     } else {
       if (!audioRef.current) {
@@ -111,39 +85,58 @@ export default function ChatWidget() {
         };
       }
       audioRef.current.src = audioUrl;
-      audioRef.current.play();
+      audioRef.current.play().catch(e => console.error("Error playing audio:", e));
     }
   };
 
-  const handleSend = async () => {
+  const handleSend = async (messageContent: string) => {
     const functionName = 'handleSend';
-    const newUserMessage = input.trim();
+    const newUserMessage = messageContent.trim();
     if (newUserMessage === '' || isPending) return;
     
     logClientTrace(functionName, { input_newUserMessage: newUserMessage });
 
-    const userMessageObject: Message = { role: 'user', content: newUserMessage };
+    const userMessageId = `user-${Date.now()}`;
+    const assistantMessageId = `assistant-${Date.now()}`;
+
+    const userMessageObject: Message = { id: userMessageId, role: 'user', content: newUserMessage };
     setMessages((prevMessages) => [...prevMessages, userMessageObject]);
     setInput('');
     
     startTransition(async () => {
       logClientTrace(functionName, { status: 'transition_started' });
-      try {
-        const historyForAI: HistoryItem[] = messages
-          .filter(msg => msg.content !== INITIAL_MESSAGE)
-          .slice(-MAX_HISTORY_MESSAGES); 
-        
-        logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
-        const aiResponseText = await chat(newUserMessage, historyForAI);
-        logClientTrace(functionName, { received_aiResponse: aiResponseText });
-        
-        const { media: audioDataUri } = await textToSpeech(aiResponseText);
-        logClientTrace(functionName, { received_audio: !!audioDataUri });
+      
+      const historyForAI: HistoryItem[] = messages
+        .filter(msg => msg.content !== INITIAL_MESSAGE)
+        .slice(-MAX_HISTORY_MESSAGES); 
 
+      try {
+        logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
+        
+        // Call chat and textToSpeech in parallel
+        const chatPromise = chat(newUserMessage, historyForAI);
+        const ttsPromise = chatPromise.then(text => textToSpeech(text));
+
+        // Wait for the text response first
+        const aiResponseText = await chatPromise;
+        logClientTrace(functionName, { received_aiResponse: aiResponseText });
+
+        // Add assistant message with text only, to show it immediately
         setMessages((prevMessages) => [
           ...prevMessages,
-          { role: 'assistant', content: aiResponseText, audioUrl: audioDataUri },
+          { id: assistantMessageId, role: 'assistant', content: aiResponseText },
         ]);
+        
+        // Wait for the audio response
+        const { media: audioDataUri } = await ttsPromise;
+        logClientTrace(functionName, { received_audio: !!audioDataUri });
+
+        // Update the message with the audio URL
+        setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+                msg.id === assistantMessageId ? { ...msg, audioUrl: audioDataUri } : msg
+            )
+        );
 
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
@@ -151,7 +144,7 @@ export default function ChatWidget() {
         
         setMessages((prevMessages) => [
             ...prevMessages,
-            { role: 'assistant', content: `Error: ${errorMessage}` },
+            { id: `error-${Date.now()}`, role: 'assistant', content: `Error: ${errorMessage}` },
         ]);
 
         toast({
@@ -166,23 +159,63 @@ export default function ChatWidget() {
   
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleSend();
+      handleSend(input);
     }
   };
 
+  const startRecording = async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorderRef.current = new MediaRecorder(stream);
+        audioChunksRef.current = [];
+
+        mediaRecorderRef.current.ondataavailable = (event) => {
+            audioChunksRef.current.push(event.data);
+        };
+
+        mediaRecorderRef.current.onstop = async () => {
+            const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.readAsDataURL(audioBlob);
+            reader.onloadend = async () => {
+                const base64Audio = reader.result as string;
+                logClientTrace('handleMic_onStop', { status: 'transcribing_audio' });
+                startTransition(async () => {
+                    try {
+                        const { text } = await speechToText(base64Audio);
+                        logClientTrace('handleMic_onStop', { transcribed_text: text });
+                        setInput(text);
+                    } catch (error) {
+                        toast({ variant: "destructive", title: "Transcription Error", description: "Could not transcribe audio." });
+                    }
+                });
+            };
+            // Stop media tracks to turn off mic indicator
+            stream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorderRef.current.start();
+        setIsRecording(true);
+        logClientTrace('handleMicClick', { status: 'recording_started' });
+    } catch (error) {
+        console.error("Error starting recording:", error);
+        toast({ variant: "destructive", title: "Microphone Error", description: "Could not access microphone." });
+    }
+  };
+
+  const stopRecording = () => {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+          mediaRecorderRef.current.stop();
+          setIsRecording(false);
+          logClientTrace('handleMicClick', { status: 'recording_stopped' });
+      }
+  };
+
   const handleMicClick = () => {
-    if (recognitionRef.current) {
-        if (isRecording) {
-            recognitionRef.current.stop();
-        } else {
-            recognitionRef.current.start();
-        }
+    if (isRecording) {
+      stopRecording();
     } else {
-        toast({
-            variant: "destructive",
-            title: "Unsupported",
-            description: "Your browser does not support voice recognition.",
-        });
+      startRecording();
     }
   };
 
@@ -200,9 +233,9 @@ export default function ChatWidget() {
             </div>
             <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
               <div className="space-y-4">
-                {messages.map((message, index) => (
+                {messages.map((message) => (
                   <div
-                    key={index}
+                    key={message.id}
                     className={`flex items-start gap-3 ${
                       message.role === 'user' ? 'justify-end' : ''
                     }`}
@@ -225,7 +258,7 @@ export default function ChatWidget() {
                           variant="ghost"
                           size="icon"
                           className="h-7 w-7 mt-2"
-                          onClick={() => handleTogglePlay(message.audioUrl!, index)}
+                          onClick={() => handleTogglePlay(message.audioUrl!, message.id)}
                         >
                           {message.isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                         </Button>
@@ -259,23 +292,23 @@ export default function ChatWidget() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   disabled={isPending}
-                  className="pr-10"
+                  className="pr-20"
                 />
                 <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={handleMicClick}
-                        disabled={isPending || !recognitionRef.current}
-                        className={cn("h-8 w-8", isRecording && "text-red-500")}
+                        disabled={isPending && !isRecording}
+                        className={cn("h-8 w-8", isRecording && "text-red-500 hover:text-red-600")}
                     >
-                        <Mic className="h-4 w-4" />
+                        {isRecording ? <Square className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                     </Button>
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={handleSend}
-                        disabled={isPending}
+                        onClick={() => handleSend(input)}
+                        disabled={isPending || input.trim() === ''}
                         className="h-8 w-8"
                     >
                         <Send className="h-4 w-4" />
@@ -299,5 +332,3 @@ export default function ChatWidget() {
     </div>
   );
 }
-
-    

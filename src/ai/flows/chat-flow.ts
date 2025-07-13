@@ -51,8 +51,9 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
             system: systemPrompt,
         });
 
-        await logTrace(functionName, { ip, output_ai_response: response.text });
-        return response.text;
+        const responseText = response.text;
+        await logTrace(functionName, { ip, output_ai_response: responseText });
+        return responseText;
 
     } catch (error) {
         const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
@@ -70,6 +71,9 @@ const ttsFlow = ai.defineFlow(
     }),
   },
   async (text) => {
+    if (!text) {
+        return { media: '' };
+    }
     const { media } = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
       config: {
@@ -87,7 +91,6 @@ const ttsFlow = ai.defineFlow(
       throw new Error('No audio media was returned from the TTS model.');
     }
 
-    // The media URL is a data URI with base64 encoded PCM data
     const audioBuffer = Buffer.from(
       media.url.substring(media.url.indexOf(',') + 1),
       'base64'
@@ -105,6 +108,31 @@ export async function textToSpeech(text: string): Promise<{ media: string }> {
     return ttsFlow(text);
 }
 
+const sttFlow = ai.defineFlow(
+    {
+        name: 'speechToTextFlow',
+        inputSchema: z.object({
+            audioDataUri: z.string().describe("The base64 encoded audio data URI."),
+        }),
+        outputSchema: z.object({
+            text: z.string().describe("The transcribed text."),
+        }),
+    },
+    async ({ audioDataUri }) => {
+        const response = await ai.generate({
+            model: googleAI.model('gemini-1.5-flash-latest'),
+            prompt: [
+                { text: "Transcribe the following audio recording to text." },
+                { media: { url: audioDataUri } },
+            ],
+        });
+        return { text: response.text };
+    }
+);
+
+export async function speechToText(audioDataUri: string): Promise<{ text: string }> {
+    return sttFlow({ audioDataUri });
+}
 
 async function toWav(
   pcmData: Buffer,
@@ -132,5 +160,3 @@ async function toWav(
     writer.end();
   });
 }
-
-    
