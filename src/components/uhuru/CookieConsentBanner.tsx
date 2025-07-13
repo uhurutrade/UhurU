@@ -9,27 +9,20 @@ export default function CookieConsentBanner() {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // For testing: always show the banner.
-    setShowBanner(true);
-    
-    /*
     const consent = localStorage.getItem('cookie_consent');
     if (!consent) {
       setShowBanner(true);
     }
-    */
   }, []);
 
   const handleAccept = () => {
     localStorage.setItem('cookie_consent', 'accepted');
-    // We keep the banner visible for testing.
-    // setShowBanner(false); 
+    setShowBanner(false); 
   };
 
   const handleDecline = () => {
     localStorage.setItem('cookie_consent', 'declined');
-    // We keep the banner visible for testing.
-    // setShowBanner(false);
+    setShowBanner(false);
   };
 
   if (!showBanner) {
