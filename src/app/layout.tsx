@@ -6,6 +6,7 @@ import { Inter, Poppins } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster";
 import ChatWidget from '@/components/uhuru/ChatWidget';
+import CookieConsentBanner from '@/components/uhuru/CookieConsentBanner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -47,6 +48,7 @@ export default function RootLayout({
         >
           {children}
           <ChatWidget />
+          <CookieConsentBanner />
           <Toaster />
         </ThemeProvider>
       </body>
