@@ -10,7 +10,6 @@ export default function CookieConsentBanner() {
 
   useEffect(() => {
     // For testing: always show the banner.
-    // The original logic is commented out below.
     setShowBanner(true);
     
     /*
@@ -43,7 +42,7 @@ export default function CookieConsentBanner() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-start gap-3">
              <Cookie className="h-6 w-6 sm:h-8 sm:w-8 mt-1 text-primary flex-shrink-0" />
-            <p className="text-sm text-secondary-foreground">
+            <p className="text-xs text-secondary-foreground">
               We use cookies to enhance your browsing experience and analyze site traffic. By clicking "Accept", you agree to our use of cookies. You can decline non-essential cookies. Read our{' '}
               <Link href="/cookie-policy" className="underline hover:text-primary">
                 Cookie Policy
