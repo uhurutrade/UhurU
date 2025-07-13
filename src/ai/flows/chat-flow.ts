@@ -8,6 +8,7 @@ import path from 'path';
 import { knowledgeBase } from '@/chatbot/chatbot-knowledge';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 import { headers } from 'next/headers';
+import { googleAI } from '@genkit-ai/googleai';
 
 async function logTrace(functionName: string, data: any) {
     if (process.env.TRACE === 'ON') {
@@ -51,7 +52,7 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
     try {
         await logTrace(functionName, { ip, status: 'calling_ai_generate' });
         const response = await ai.generate({
-            model: 'googleai/gemini-1.5-flash-latest',
+            model: 'googleai/gemini-1.0-pro',
             history: chatHistory,
             prompt: newUserMessage,
             system: systemPrompt,
