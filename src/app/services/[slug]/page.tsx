@@ -108,6 +108,12 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
   const icon = iconComponents[feature.icon];
   const content = serviceContent[feature.slug] || { paragraphs: [] };
 
+  // This check prevents a 5xx error if a feature has an invalid icon key.
+  if (!icon) {
+    console.error(`Icon not found for feature: ${feature.title}`);
+    notFound();
+  }
+
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
       <SubPageHeader backHref="/#features" backText="Back to Services" />
