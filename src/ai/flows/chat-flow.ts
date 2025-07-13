@@ -3,7 +3,7 @@
 
 import type { HistoryItem } from '@/ai/types';
 import { ai } from '@/ai/genkit';
-import { gemini10Pro } from '@genkit-ai/googleai';
+import { gemini15Flash } from '@genkit-ai/googleai';
 import fs from 'fs/promises';
 import path from 'path';
 import { knowledgeBase } from '@/chatbot/chatbot-knowledge';
@@ -52,7 +52,7 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
     try {
         await logTrace(functionName, { ip, status: 'calling_ai_generate' });
         const response = await ai.generate({
-            model: gemini10Pro,
+            model: gemini15Flash,
             history: chatHistory,
             prompt: newUserMessage,
             system: systemPrompt,
