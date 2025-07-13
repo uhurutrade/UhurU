@@ -5,15 +5,18 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageSquare, X, Send, Bot, User, Loader } from 'lucide-react';
-import { chat } from '@/ai/flows/chat-flow';
+import { MessageSquare, X, Send, Bot, User, Loader, Mic, Play, Pause } from 'lucide-react';
+import { chat, textToSpeech } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
+import { cn } from '@/lib/utils';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+  audioUrl?: string;
+  isPlaying?: boolean;
 }
 
 const MAX_HISTORY_MESSAGES = 50;
@@ -29,15 +32,50 @@ function logClientTrace(functionName: string, data: any) {
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: INITIAL_MESSAGE,
-    },
+    { role: 'assistant', content: INITIAL_MESSAGE },
   ]);
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
+  const [isRecording, setIsRecording] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
+  const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    // Check for SpeechRecognition API support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = 'es-ES'; // Default language, can be changed
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        setIsRecording(true);
+        logClientTrace('SpeechRecognition', { status: 'started' });
+      };
+      recognition.onend = () => {
+        setIsRecording(false);
+        logClientTrace('SpeechRecognition', { status: 'ended' });
+      };
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        logClientTrace('SpeechRecognition', { transcript });
+        setInput(transcript);
+      };
+      recognition.onerror = (event) => {
+        logClientTrace('SpeechRecognition', { error: event.error });
+        toast({
+            variant: "destructive",
+            title: "Voice Error",
+            description: `Could not recognize voice: ${event.error}`,
+        });
+      };
+      recognitionRef.current = recognition;
+    }
+  }, [toast]);
+
 
   const toggleOpen = () => {
     logClientTrace('toggleOpen', { isOpen: !isOpen });
@@ -60,6 +98,23 @@ export default function ChatWidget() {
     }
   }, [isOpen, messages, isPending]);
 
+  const handleTogglePlay = (audioUrl: string, index: number) => {
+    setMessages(prev => prev.map((msg, i) => ({ ...msg, isPlaying: i === index ? !msg.isPlaying : false })));
+
+    if (audioRef.current && !audioRef.current.paused && messages[index].isPlaying) {
+      audioRef.current.pause();
+    } else {
+      if (!audioRef.current) {
+        audioRef.current = new Audio();
+        audioRef.current.onended = () => {
+          setMessages(prev => prev.map(msg => ({ ...msg, isPlaying: false })));
+        };
+      }
+      audioRef.current.src = audioUrl;
+      audioRef.current.play();
+    }
+  };
+
   const handleSend = async () => {
     const functionName = 'handleSend';
     const newUserMessage = input.trim();
@@ -79,12 +134,15 @@ export default function ChatWidget() {
           .slice(-MAX_HISTORY_MESSAGES); 
         
         logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
-        const aiResponse = await chat(newUserMessage, historyForAI);
-        logClientTrace(functionName, { received_aiResponse: aiResponse });
+        const aiResponseText = await chat(newUserMessage, historyForAI);
+        logClientTrace(functionName, { received_aiResponse: aiResponseText });
+        
+        const { media: audioDataUri } = await textToSpeech(aiResponseText);
+        logClientTrace(functionName, { received_audio: !!audioDataUri });
 
         setMessages((prevMessages) => [
           ...prevMessages,
-          { role: 'assistant', content: aiResponse },
+          { role: 'assistant', content: aiResponseText, audioUrl: audioDataUri },
         ]);
 
       } catch (error) {
@@ -109,6 +167,22 @@ export default function ChatWidget() {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSend();
+    }
+  };
+
+  const handleMicClick = () => {
+    if (recognitionRef.current) {
+        if (isRecording) {
+            recognitionRef.current.stop();
+        } else {
+            recognitionRef.current.start();
+        }
+    } else {
+        toast({
+            variant: "destructive",
+            title: "Unsupported",
+            description: "Your browser does not support voice recognition.",
+        });
     }
   };
 
@@ -146,6 +220,16 @@ export default function ChatWidget() {
                       }`}
                     >
                       {message.content}
+                      {message.audioUrl && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 mt-2"
+                          onClick={() => handleTogglePlay(message.audioUrl!, index)}
+                        >
+                          {message.isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                        </Button>
+                      )}
                     </div>
                     {message.role === 'user' && (
                       <div className="bg-muted text-muted-foreground rounded-full p-2">
@@ -167,7 +251,7 @@ export default function ChatWidget() {
               </div>
             </ScrollArea>
             <div className="p-3 border-t border-border">
-              <div className="relative">
+              <div className="relative flex items-center gap-2">
                 <Input
                   type="text"
                   placeholder="Ask something..."
@@ -177,15 +261,26 @@ export default function ChatWidget() {
                   disabled={isPending}
                   className="pr-10"
                 />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleSend}
-                  disabled={isPending}
-                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
+                <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleMicClick}
+                        disabled={isPending || !recognitionRef.current}
+                        className={cn("h-8 w-8", isRecording && "text-red-500")}
+                    >
+                        <Mic className="h-4 w-4" />
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleSend}
+                        disabled={isPending}
+                        className="h-8 w-8"
+                    >
+                        <Send className="h-4 w-4" />
+                    </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -204,3 +299,5 @@ export default function ChatWidget() {
     </div>
   );
 }
+
+    
