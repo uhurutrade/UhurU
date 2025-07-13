@@ -52,8 +52,8 @@ export default function CookiePolicyPage() {
            <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Cookie Type</TableHead>
-                <TableHead>Purpose</TableHead>
+                <TableHead className="text-foreground">Cookie Type</TableHead>
+                <TableHead className="text-foreground">Purpose</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
