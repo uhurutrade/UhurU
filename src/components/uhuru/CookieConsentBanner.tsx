@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -21,13 +20,11 @@ export default function CookieConsentBanner() {
   const handleAccept = () => {
     localStorage.setItem('cookie_consent', 'accepted');
     setShowBanner(false);
-    // Here you would initialize analytics scripts, etc.
   };
 
   const handleDecline = () => {
     localStorage.setItem('cookie_consent', 'declined');
     setShowBanner(false);
-    // When a user declines, non-essential scripts (like analytics) should not be loaded.
   };
 
   if (!showBanner) {
