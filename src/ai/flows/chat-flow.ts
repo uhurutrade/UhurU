@@ -15,7 +15,12 @@ import wav from 'wav';
 async function logTrace(functionName: string, data: any) {
     if (process.env.TRACE === 'ON') {
         const timestamp = new Date().toISOString();
-        const logMessage = `[${timestamp}] uhurulog_${functionName}: ${JSON.stringify(data)}\n`;
+        const headerList = headers();
+        const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
+        
+        const logData = { ip, ...data };
+        const logMessage = `[${timestamp}] uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
+
         try {
             const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
             const logFilePath = path.join(logDirectory, 'chatbot-log.log');
@@ -29,10 +34,8 @@ async function logTrace(functionName: string, data: any) {
 
 export async function chat(newUserMessage: string, history: HistoryItem[]): Promise<string> {
     const functionName = 'chat';
-    const headerList = headers();
-    const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
     
-    await logTrace(functionName, { ip, input_newUserMessage: newUserMessage, input_history: history });
+    await logTrace(functionName, { input_newUserMessage: newUserMessage, input_history: history });
 
     const chatHistory = history.map(item => ({
         role: item.role === 'assistant' ? 'model' : 'user',
@@ -43,7 +46,7 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
     const systemPrompt = getSystemPrompt(knowledgePrompt);
 
     try {
-        await logTrace(functionName, { ip, status: 'calling_ai_generate' });
+        await logTrace(functionName, { status: 'calling_ai_generate' });
         const response = await ai.generate({
             model: googleAI.model('gemini-1.5-flash-latest'),
             history: chatHistory,
@@ -52,12 +55,12 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
         });
 
         const responseText = response.text;
-        await logTrace(functionName, { ip, output_ai_response: responseText });
+        await logTrace(functionName, { output_ai_response: responseText });
         return responseText;
 
     } catch (error) {
         const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
-        await logTrace(functionName, { ip, output_error: errorMessage });
+        await logTrace(functionName, { output_error: errorMessage });
         return errorMessage;
     }
 }
@@ -71,6 +74,7 @@ const ttsFlow = ai.defineFlow(
     }),
   },
   async (text) => {
+    await logTrace('textToSpeech', { input_text: text });
     if (!text) {
         return { media: '' };
     }
@@ -126,11 +130,14 @@ const sttFlow = ai.defineFlow(
                 { media: { url: audioDataUri } },
             ],
         });
-        return { text: response.text };
+        const transcribedText = response.text;
+        await logTrace('speechToText', { output_transcribed_text: transcribedText });
+        return { text: transcribedText };
     }
 );
 
 export async function speechToText(audioDataUri: string): Promise<{ text: string }> {
+    await logTrace('speechToText', { input_audio_received: true });
     return sttFlow({ audioDataUri });
 }
 
