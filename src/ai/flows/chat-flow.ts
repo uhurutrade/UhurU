@@ -32,10 +32,14 @@ async function logTrace(functionName: string, data: any) {
     }
 }
 
-export async function chat(newUserMessage: string, history: HistoryItem[]): Promise<string> {
+export async function chat(
+  newUserMessage: string, 
+  history: HistoryItem[],
+  isVoiceInput: boolean
+): Promise<{ text: string; audioDataUri?: string }> {
     const functionName = 'chat';
     
-    await logTrace(functionName, { input_newUserMessage: newUserMessage, input_history: history });
+    await logTrace(functionName, { input_newUserMessage: newUserMessage, input_history: history.map(h => h.content), isVoiceInput });
 
     const chatHistory = history.map(item => ({
         role: item.role === 'assistant' ? 'model' : 'user',
@@ -56,12 +60,18 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
 
         const responseText = response.text;
         await logTrace(functionName, { output_ai_response: responseText });
-        return responseText;
+
+        if (isVoiceInput) {
+            const { media: audioDataUri } = await textToSpeech(responseText);
+            return { text: responseText, audioDataUri };
+        }
+
+        return { text: responseText };
 
     } catch (error) {
         const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
         await logTrace(functionName, { output_error: errorMessage });
-        return errorMessage;
+        return { text: errorMessage };
     }
 }
 
@@ -74,10 +84,11 @@ const ttsFlow = ai.defineFlow(
     }),
   },
   async (text) => {
-    await logTrace('textToSpeech', { input_text: text });
     if (!text) {
         return { media: '' };
     }
+    await logTrace('textToSpeech', { input_text: text });
+    
     const { media } = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
       config: {

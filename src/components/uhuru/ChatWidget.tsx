@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, X, Send, Bot, User, Loader, Mic, Play, Pause, Square } from 'lucide-react';
-import { chat, textToSpeech, speechToText } from '@/ai/flows/chat-flow';
+import { chat, speechToText } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
@@ -89,12 +89,12 @@ export default function ChatWidget() {
     }
   };
 
-  const handleSend = async (messageContent: string) => {
+  const handleSend = async (messageContent: string, isVoiceInput = false) => {
     const functionName = 'handleSend';
     const newUserMessage = messageContent.trim();
     if (newUserMessage === '' || isPending) return;
     
-    logClientTrace(functionName, { input_newUserMessage: newUserMessage });
+    logClientTrace(functionName, { input_newUserMessage: newUserMessage, isVoiceInput });
 
     const userMessageId = `user-${Date.now()}`;
     const assistantMessageId = `assistant-${Date.now()}`;
@@ -108,35 +108,19 @@ export default function ChatWidget() {
       
       const historyForAI: HistoryItem[] = messages
         .filter(msg => msg.content !== INITIAL_MESSAGE)
-        .slice(-MAX_HISTORY_MESSAGES); 
+        .slice(-MAX_HISTORY_MESSAGES)
+        .map(msg => ({ role: msg.role, content: msg.content }));
 
       try {
         logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
         
-        // Call chat and textToSpeech in parallel
-        const chatPromise = chat(newUserMessage, historyForAI);
-        const ttsPromise = chatPromise.then(text => textToSpeech(text));
-
-        // Wait for the text response first
-        const aiResponseText = await chatPromise;
-        logClientTrace(functionName, { received_aiResponse: aiResponseText });
-
-        // Add assistant message with text only, to show it immediately
+        const { text: aiResponseText, audioDataUri } = await chat(newUserMessage, historyForAI, isVoiceInput);
+        logClientTrace(functionName, { received_aiResponse: aiResponseText, has_audio: !!audioDataUri });
+        
         setMessages((prevMessages) => [
           ...prevMessages,
-          { id: assistantMessageId, role: 'assistant', content: aiResponseText },
+          { id: assistantMessageId, role: 'assistant', content: aiResponseText, audioUrl: audioDataUri },
         ]);
-        
-        // Wait for the audio response
-        const { media: audioDataUri } = await ttsPromise;
-        logClientTrace(functionName, { received_audio: !!audioDataUri });
-
-        // Update the message with the audio URL
-        setMessages((prevMessages) =>
-            prevMessages.map((msg) =>
-                msg.id === assistantMessageId ? { ...msg, audioUrl: audioDataUri } : msg
-            )
-        );
 
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
@@ -159,7 +143,7 @@ export default function ChatWidget() {
   
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleSend(input);
+      handleSend(input, false);
     }
   };
 
@@ -184,7 +168,9 @@ export default function ChatWidget() {
                     try {
                         const { text } = await speechToText(base64Audio);
                         logClientTrace('handleMic_onStop', { transcribed_text: text });
-                        setInput(text);
+                        if (text) {
+                            handleSend(text, true); // Send directly after transcription
+                        }
                     } catch (error) {
                         toast({ variant: "destructive", title: "Transcription Error", description: "Could not transcribe audio." });
                     }
@@ -307,7 +293,7 @@ export default function ChatWidget() {
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleSend(input)}
+                        onClick={() => handleSend(input, false)}
                         disabled={isPending || input.trim() === ''}
                         className="h-8 w-8"
                     >
