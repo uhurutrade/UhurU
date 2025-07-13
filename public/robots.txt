@@ -1,16 +1,12 @@
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
 #
-# To allow all robots to crawl your site, use:
-# User-agent: *
-# Allow: /
-#
-# To prevent all robots from crawling your site, use:
-# User-agent: *
-# Disallow: /
-
+# To allow most search engines to crawl your site:
 User-agent: *
 Allow: /
+
+# Disallow crawling of Next.js system files
 Disallow: /_next/
 Disallow: /api/
 
+# Provide sitemap location
 Sitemap: https://uhurutrade.com/sitemap.xml
