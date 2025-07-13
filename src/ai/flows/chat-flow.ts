@@ -52,7 +52,7 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
     try {
         await logTrace(functionName, { ip, status: 'calling_ai_generate' });
         const response = await ai.generate({
-            model: 'googleai/gemini-1.0-pro',
+            model: googleAI.model('gemini-1.5-flash-latest'),
             history: chatHistory,
             prompt: newUserMessage,
             system: systemPrompt,
