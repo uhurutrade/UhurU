@@ -1,39 +1,62 @@
 
-export const knowledgeBase = {
-  companyInfo: `
-# About UhurU Trade Ltd.
-UhurU is a young and innovative company with extensive experience in technology and finance.
-Our mission is to help businesses optimize their operations, reduce costs, and strategically plan their tax structures. We specialize in helping companies based in jurisdictions like the United Kingdom, Estonia, the United States, and Cyprus to improve fiscal efficiency and operational costs. We offer a wide range of services designed to help businesses thrive in the modern digital world.
-From AI automation and AI agents to full-stack no-code/low-code app development, we provide cutting-edge solutions that enhance business processes, automate tasks, and enable rapid innovation. With our no-code platforms, businesses can build powerful tools quickly without extensive coding expertise, saving time and resources.
-Our team also has deep experience in Oracle Financials, offering ERP and CRM solutions that streamline financial management and customer relations. Additionally, we automate social media management, email campaigns, invoicing, and community engagement to ensure businesses run efficiently across all platforms.
-At UhurU, we combine technology and finance to deliver strategic solutions tailored to your business needs. Whether you want to optimize your tax structure, automate processes, or develop custom applications, we have the expertise to help your business grow while keeping costs low and productivity high.
-`,
-  servicesInfo: `
-# Our Services
-- Amazon FBA Consulting: Full-service management for product launch, SEO, PPC marketing, and growth.
-- AI Automation and AI Agents: Custom AI agents for marketing, invoicing, and support to reduce costs.
-- Blockchain and Crypto Solutions: Asset tokenization and DeFi liquidity strategies.
-- Offshore & Localization Strategies: Tax-optimized global business structures.
-- Options and Forex Investment Training: Professional training for secure investment strategies.
-- No-Code App Development: Build portable web and mobile apps with no-code solutions.
-- ERP and CRM Implementation: Oracle Financials consulting for enterprise management.
-- Cloud (SaaS/PaaS) Management: Cost-efficient management of SaaS/PaaS deployments.
-- Flexible All-in-One Tech Package: Scalable tech solutions with PAYG pricing.
-`,
-  forexInfo: `
-# Forex Market
-The foreign exchange market, commonly known as Forex, is the largest and most liquid financial market in the world, where currencies from all over the planet are traded. Unlike traditional stock exchanges, Forex operates 24 hours a day, five days a week, making it a dynamic and always-active space for investors.
+import fs from 'fs/promises';
+import path from 'path';
 
-In this market, currencies are traded in pairs, such as EUR/USD or USD/JPY, and investors speculate on the direction the exchange rate will take. Macroeconomic factors such as central bank interest rates, inflation, employment figures, and geopolitical events directly influence the valuation of these currencies. A Forex investor seeks to profit from price fluctuations, while companies often use it to hedge against currency risk.
-`,
-  investmentStrategy: `
-# Investment Strategy
-Investing in financial markets, whether in Forex, stocks, or commodities, requires careful analysis and disciplined risk management to navigate volatility and seize the opportunities presented by global market fluctuations. A solid strategy involves defining clear goals, understanding your risk tolerance, and diversifying your portfolio to mitigate potential losses. It is crucial to stay informed about market trends and economic indicators to make well-founded decisions.
-`,
-  vanillaOptionsInfo: `
-# Vanilla Options
-Vanilla options are financial derivatives that grant their buyer the right, but not the obligation, to buy or sell an underlying asset at a predetermined price (strike price) on or before a specific date (expiration date). They are called "vanilla" because they are the most basic and straightforward options, without additional complex features.
+const KNOWLEDGE_DIR = path.join(process.cwd(), 'src', 'chatbot', 'IAsourcesPrompt');
+const FILENAME_REGEX = /^(\d+)\.(\d+)-(.+)\.txt$/;
 
-There are two main types: call options and put options. A call option gives the holder the right to buy the asset, and is used by investors who believe the price of the asset will rise. Conversely, a put option gives the right to sell the asset, and is useful for those who expect the price to fall. The price paid for this right is called the "premium" and represents the maximum risk of the operation for the buyer. Options can be an attractive investment tool, either to speculate on market movements with a risk limited to the premium, or as a hedging strategy to protect an existing portfolio from potential losses.
-`,
-};
+interface KnowledgeContent {
+  category: string;
+  content: string;
+}
+
+// Helper to extract category name from the filename (e.g., "1.1-Servicios-Generales.txt" -> "Servicios")
+function getCategoryFromFilename(filename: string): string {
+    const match = filename.match(FILENAME_REGEX);
+    if (!match) return 'General';
+    
+    // "Servicios-Generales.txt" -> "Servicios"
+    const namePart = match[3]; 
+    return namePart.split('-')[0].replace(/([A-Z])/g, ' $1').trim();
+}
+
+// Reads all valid .txt files from the directory and structures them.
+async function getKnowledgeContent(): Promise<KnowledgeContent[]> {
+  try {
+    const files = await fs.readdir(KNOWLEDGE_DIR);
+    const knowledgePromises = files
+      .filter(file => FILENAME_REGEX.test(file))
+      .map(async (file) => {
+        const filePath = path.join(KNOWLEDGE_DIR, file);
+        const content = await fs.readFile(filePath, 'utf-8');
+        const category = getCategoryFromFilename(file);
+        return { category, content };
+      });
+    return Promise.all(knowledgePromises);
+  } catch (error) {
+    console.error("Error reading knowledge base directory:", error);
+    return []; // Return empty knowledge base on error
+  }
+}
+
+// Builds the final prompt string for the AI
+export async function buildKnowledgePrompt(): Promise<string> {
+  const allContent = await getKnowledgeContent();
+  if (allContent.length === 0) return '';
+
+  const groupedByCategory = allContent.reduce((acc, { category, content }) => {
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(content);
+    return acc;
+  }, {} as Record<string, string[]>);
+  
+  let knowledgeString = '';
+  for (const [category, contents] of Object.entries(groupedByCategory)) {
+    knowledgeString += `\n# KNOWLEDGE SECTION: ${category.toUpperCase()}\n`;
+    knowledgeString += contents.join('\n---\n');
+  }
+
+  return knowledgeString.trim();
+}

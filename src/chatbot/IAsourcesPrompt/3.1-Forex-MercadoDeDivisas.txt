@@ -1,0 +1,4 @@
+# Forex Market
+The foreign exchange market, commonly known as Forex, is the largest and most liquid financial market in the world, where currencies from all over the planet are traded. Unlike traditional stock exchanges, Forex operates 24 hours a day, five days a week, making it a dynamic and always-active space for investors.
+
+In this market, currencies are traded in pairs, such as EUR/USD or USD/JPY, and investors speculate on the direction the exchange rate will take. Macroeconomic factors such as central bank interest rates, inflation, employment figures, and geopolitical events directly influence the valuation of these currencies. A Forex investor seeks to profit from price fluctuations, while companies often use it to hedge against currency risk.

@@ -5,7 +5,7 @@ import type { HistoryItem } from '@/ai/types';
 import { ai } from '@/ai/genkit';
 import fs from 'fs/promises';
 import path from 'path';
-import { knowledgeBase } from '@/chatbot/chatbot-knowledge';
+import { buildKnowledgePrompt } from '@/chatbot/chatbot-knowledge';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 import { headers } from 'next/headers';
 import { googleAI } from '@genkit-ai/googleai';
@@ -25,15 +25,6 @@ async function logTrace(functionName: string, data: any) {
     }
 }
 
-function buildKnowledgePrompt(): string {
-  let knowledgeString = '';
-  for (const [key, value] of Object.entries(knowledgeBase)) {
-    const title = key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
-    knowledgeString += `\n# KNOWLEDGE SECTION: ${title}\n${value}\n`;
-  }
-  return knowledgeString;
-}
-
 export async function chat(newUserMessage: string, history: HistoryItem[]): Promise<string> {
     const functionName = 'chat';
     const headerList = headers();
@@ -46,7 +37,7 @@ export async function chat(newUserMessage: string, history: HistoryItem[]): Prom
         content: [{ text: item.content }]
     }));
 
-    const knowledgePrompt = buildKnowledgePrompt();
+    const knowledgePrompt = await buildKnowledgePrompt();
     const systemPrompt = getSystemPrompt(knowledgePrompt);
 
     try {
