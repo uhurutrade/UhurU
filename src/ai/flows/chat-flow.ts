@@ -14,7 +14,10 @@ import wav from 'wav';
 
 async function logTrace(functionName: string, data: any, sessionId?: string) {
     if (process.env.TRACE === 'ON') {
-        const timestamp = new Date().toISOString();
+        const now = new Date();
+        const pad = (num: number) => num.toString().padStart(2, '0');
+        const timestamp = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        
         const headerList = headers();
         const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
         
