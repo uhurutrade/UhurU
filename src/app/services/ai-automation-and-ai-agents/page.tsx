@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
@@ -178,7 +177,7 @@ export default function AiAutomationPage() {
                   <CardTitle className="text-3xl font-bold font-headline">Why Choose UhurU for AI Automation?</CardTitle>
                   <CardDescription>
                     Are you ready to transform your business? If you feel the pressure to reduce costs and know you need to boost efficiency to stay competitive, you&apos;re in the right place. Let&apos;s build the future of your operations together.
-                  </d-card-description>
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {whyUsPoints.map((point, index) => (
