@@ -10,6 +10,7 @@ import AmazonFbaPage from '../amazon-fba/page';
 import ErpCrmPage from '../erp-and-crm/page';
 import SubPageHeader from '@/components/uhuru/subpage-header';
 import AiAutomationPage from '../ai-automation-and-ai-agents/page';
+import BlockchainCryptoPage from '../blockchain-and-crypto/page';
 
 const iconComponents: { [key: string]: React.ReactNode } = {
   ShoppingCart: <ShoppingCart className="h-10 w-10" />,
@@ -24,13 +25,6 @@ const iconComponents: { [key: string]: React.ReactNode } = {
 };
 
 const serviceContent: { [key: string]: { paragraphs: string[] } } = {
-  'blockchain-and-crypto': {
-    paragraphs: [
-      "Step into the future of finance with our Blockchain and Crypto services. We empower businesses to tokenize assets, launch innovative projects, and attract global investors through secure, decentralized capital strategies. Our expertise lies in transforming traditional assets like equity, real estate, or products into liquid, tradable digital tokens on the blockchain, opening up new avenues for monetization and investment.",
-      "We offer end-to-end support, including the design of custom tokens and self-executing smart contracts that are tailored to your business model and compliant with regulatory standards. Our team also specializes in creating and optimizing DeFi (Decentralized Finance) liquidity strategies, building robust liquidity pools that enhance visibility, foster investor confidence, and maximize funding opportunities for your project.",
-      "From initial concept to public launch, we guide you through every step of the tokenization process. We ensure your project adheres to global compliance frameworks while leveraging the inherent transparency and trustless architecture of blockchain technology to build a modern, borderless financial foundation for your venture."
-    ]
-  },
   'business-localization-strategies': {
     paragraphs: [
       "Navigate the complexities of global expansion with our Business Localization and Offshore Strategies. We specialize in designing compliant international corporate frameworks that protect your assets, optimize your tax liabilities, and position your business for sustainable growth. Our service is ideal for entrepreneurs and established companies looking to legally separate personal wealth from business risks while enhancing fiscal efficiency.",
@@ -94,6 +88,9 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
   }
   if (params.slug === 'ai-automation-and-ai-agents') {
     return <AiAutomationPage />;
+  }
+  if (params.slug === 'blockchain-and-crypto') {
+    return <BlockchainCryptoPage />;
   }
 
   const feature = features.find((f) => f.slug === params.slug);
