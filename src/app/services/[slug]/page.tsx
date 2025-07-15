@@ -13,6 +13,7 @@ import AmazonFbaPage from '../amazon-fba/page';
 import ErpCrmPage from '../erp-and-crm/page';
 import AiAutomationPage from '../ai-automation-and-ai-agents/page';
 import BlockchainCryptoPage from '../blockchain-and-crypto/page';
+import BusinessLocalizationPage from '../business-localization-strategies/page';
 
 
 const iconComponents: { [key: string]: React.ReactNode } = {
@@ -28,13 +29,6 @@ const iconComponents: { [key: string]: React.ReactNode } = {
 };
 
 const serviceContent: { [key: string]: { paragraphs: string[] } } = {
-  'business-localization-strategies': {
-    paragraphs: [
-      "Navigate the complexities of global expansion with our Business Localization and Offshore Strategies. We specialize in designing compliant international corporate frameworks that protect your assets, optimize your tax liabilities, and position your business for sustainable growth. Our service is ideal for entrepreneurs and established companies looking to legally separate personal wealth from business risks while enhancing fiscal efficiency.",
-      "Our process begins with a thorough jurisdiction analysis, where we identify the most advantageous, tax-friendly regions that align with your long-term business objectives. We then guide you through the process of legally shielding your personal assets from corporate liabilities, ensuring your wealth is secure. Our primary goal is to minimize your tax burden through compliant international structuring, leveraging legal frameworks to your advantage.",
-      "We provide an end-to-end setup service that covers every aspect of establishing your international presence. This includes company formation in strategic jurisdictions, establishing offshore banking relationships, and managing all necessary regulatory filings to ensure you remain fully compliant. Let us handle the complexity of global finance so you can focus on running your business."
-    ]
-  },
   'vanilla-options-and-forex-investment': {
     paragraphs: [
       "Master the world's largest and most liquid financial markets with our expert training in Vanilla Options and Forex Investment. This service is designed for individuals and institutions seeking to build secure, high-liquidity investment portfolios using regulated and transparent trading instruments. We focus on low-risk, structured strategies that provide predictable payoff profiles and protect your capital.",
@@ -83,7 +77,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 
 export default function ServicePage({ params }: { params: { slug: string } }) {
-  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto'];
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies'];
   if (dedicatedPages.includes(params.slug)) {
     // This route should not handle dedicated pages.
     // Next.js will prioritize the specific page file.
@@ -141,7 +135,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
 }
 
 export async function generateStaticParams() {
-  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto'];
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies'];
   // Generate params only for services that DON'T have a dedicated page.
   return features
     .filter(feature => !dedicatedPages.includes(feature.slug))
