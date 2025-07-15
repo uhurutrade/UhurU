@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     default: 'UhurU - Tech & Finance Solutions',
     template: `%s | UhurU`,
   },
-  description: 'AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments.',
+  description: 'AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments',
 };
 
 export default function RootLayout({
