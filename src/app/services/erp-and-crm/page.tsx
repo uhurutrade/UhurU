@@ -52,14 +52,14 @@ export default function ErpCrmPage() {
       <SubPageHeader backHref="/#features" backText="Back to Services" />
       <main className="flex-1 py-12 md:py-24 lg:py-32">
         <div className="container mx-auto max-w-5xl px-4 md:px-10">
-          <div className="space-y-12">
+          <div className="space-y-16">
             
             <section className="text-center">
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-primary">
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-foreground">
                 ERP & CRM Implementation
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
-                Struggling with fragmented business systems? We implement tailored ERP/CRM platforms for unified operations.
+                Struggling with fragmented business systems? We implement tailored ERP & CRM platforms for unified, efficient, and scalable operations.
               </p>
             </section>
 
@@ -82,18 +82,11 @@ export default function ErpCrmPage() {
             </section>
 
             <section>
-              <Card className="bg-secondary/50">
-                <CardHeader>
-                  <CardTitle className="text-3xl font-bold font-headline">More.. Oracle Consulting</CardTitle>
-                  <CardDescription className='text-xl'>Expertise in Digital Transformation for Global Enterprises</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <h3 className='text-2xl font-semibold font-headline'>Oracle ERP Financials - R11-R12-Fusion</h3>
-                    <h4 className='text-lg font-semibold mt-2'>Transform Your Oracle Ecosystem with 20+ Years of Expertise</h4>
-                    <p className="mt-4 text-muted-foreground">
-                    As a hybrid Oracle Functional & Technical Consultant, I bridge financial workflows with cutting-edge Oracle technologies. With 8+ years focused on EBS R11/R12 and Fusion Cloud implementations, I empower businesses to streamline operations, reduce costs, and ensure compliance. My dual expertise in finance and IT delivers solutions that are technically robust and strategically aligned with your goals.
+              <Card className="bg-secondary/50 p-8 text-center">
+                  <h2 className="text-3xl font-bold font-headline">Oracle Consulting Expertise</h2>
+                  <p className="mt-4 max-w-3xl mx-auto text-muted-foreground">
+                    As hybrid Oracle Functional & Technical Consultants, we bridge financial workflows with cutting-edge Oracle technologies. With over 20 years of expertise, including 8+ years focused on EBS R11/R12 and Fusion Cloud, we empower businesses to streamline operations, reduce costs, and ensure compliance.
                   </p>
-                </CardContent>
               </Card>
             </section>
             
@@ -102,6 +95,9 @@ export default function ErpCrmPage() {
                     <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
                         Core Services for Enterprises
                     </h2>
+                     <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
+                        Our dual expertise in finance and IT delivers solutions that are technically robust and strategically aligned with your business goals.
+                    </p>
                 </div>
                 
                 <div className="grid gap-6 md:grid-cols-2">

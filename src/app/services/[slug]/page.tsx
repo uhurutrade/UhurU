@@ -8,10 +8,12 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import SubPageHeader from '@/components/uhuru/subpage-header';
 
+// These pages have their own dedicated component.
 import AmazonFbaPage from '../amazon-fba/page';
 import ErpCrmPage from '../erp-and-crm/page';
 import AiAutomationPage from '../ai-automation-and-ai-agents/page';
 import BlockchainCryptoPage from '../blockchain-and-crypto/page';
+
 
 const iconComponents: { [key: string]: React.ReactNode } = {
   ShoppingCart: <ShoppingCart className="h-10 w-10" />,
@@ -81,25 +83,18 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 
 export default function ServicePage({ params }: { params: { slug: string } }) {
-  // These slugs have dedicated pages and should not be handled by this component.
-  // Next.js will prioritize the dedicated page over this dynamic route.
-  // This dynamic route now serves as a fallback for other services.
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto'];
+  if (dedicatedPages.includes(params.slug)) {
+    // This route should not handle dedicated pages.
+    // Next.js will prioritize the specific page file.
+    // We can return notFound() to be safe.
+    notFound();
+  }
 
   const feature = features.find((f) => f.slug === params.slug);
 
   if (!feature) {
     notFound();
-  }
-
-  // If a dedicated page exists for a slug, Next.js should automatically use it.
-  // This dynamic page will only render for slugs without a dedicated page file.
-  // For safety, we can double-check we are not rendering a slug that has a page.
-  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto'];
-  if (dedicatedPages.includes(params.slug)) {
-    // This should technically not be reached if file-based routing works as expected,
-    // but it's a good safeguard.
-    console.warn(`Dynamic route is trying to render a dedicated page for slug: ${params.slug}`);
-    // We let it render the generic template as a fallback, but the ideal fix is file-based routing.
   }
 
   const icon = iconComponents[feature.icon];
@@ -114,25 +109,31 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
       <SubPageHeader backHref="/#features" backText="Back to Services" />
       <main className="flex-1 py-12 md:py-24 lg:py-32">
-        <div className="container mx-auto max-w-4xl px-4 md:px-10">
-          <Card className="bg-card shadow-lg">
-            <CardHeader>
-              <div className="flex items-center gap-4">
-                <div className="text-accent">{icon}</div>
-                <CardTitle className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl font-headline">
-                  {feature.title}
-                </CardTitle>
-              </div>
-              <CardDescription className="pt-2 text-lg">
+        <div className="container mx-auto max-w-5xl px-4 md:px-10">
+          <div className="space-y-12">
+            <section className="text-center">
+              <div className="mb-4 flex justify-center text-accent">{icon}</div>
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-foreground">
+                {feature.title}
+              </h1>
+              <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
                 {feature.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 text-muted-foreground">
-              {content.paragraphs.map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
-            </CardContent>
-          </Card>
+              </p>
+            </section>
+            
+            <section>
+              <Card className="bg-card shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-3xl font-bold font-headline">Service Details</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-muted-foreground">
+                  {content.paragraphs.map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+                </CardContent>
+              </Card>
+            </section>
+          </div>
         </div>
       </main>
     </div>

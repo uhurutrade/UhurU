@@ -104,7 +104,7 @@ export default function AmazonFbaPage() {
       <SubPageHeader backHref="/#features" backText="Back to Services" />
       <main className="flex-1 py-12 md:py-24 lg:py-32">
         <div className="container mx-auto max-w-5xl px-4 md:px-10">
-          <div className="space-y-12">
+          <div className="space-y-16">
             
             <section className="text-center">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-foreground">
@@ -134,25 +134,21 @@ export default function AmazonFbaPage() {
             </section>
 
             <section>
-              <Card className="bg-secondary/50">
-                <CardContent className="p-8">
-                  <h2 className="text-3xl font-bold font-headline">More.. Business Setup: Your Path to E-commerce Success</h2>
-                  <p className="mt-4 text-muted-foreground">
-                    Launching and scaling a successful business on Amazon FBA (Fulfillment by Amazon) can be incredibly complex. At Uhurutrade, we transform this complexity into a clear opportunity. With our integrated expertise, we guide you through every step to establish, optimize, and grow your brand within Amazon’s vast ecosystem, ensuring a profitable and scalable operation.
+              <Card className="bg-secondary/50 p-8 text-center">
+                  <h2 className="text-3xl font-bold font-headline">Your Path to E-commerce Success</h2>
+                  <p className="mt-4 max-w-3xl mx-auto text-muted-foreground">
+                    Launching and scaling a successful business on Amazon FBA can be complex. We transform this complexity into a clear opportunity, guiding you through every step to establish, optimize, and grow your brand within Amazon’s vast ecosystem.
                   </p>
- We’re here to help you navigate the intricacies of product sourcing, listing optimization, inventory management, and strategic marketing to maximize your potential. We translate this deep experience into robust, future-proof solutions for your business.
-
-                </CardContent>
               </Card>
             </section>
             
-            <section className='space-y-8'>
+            <section className='space-y-12'>
                 <div className='text-center'>
                     <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
                         Essential Services for Your Amazon FBA Success
                     </h2>
-                    <p className="mt-4 text-lg text-muted-foreground">
-                        Our strategic approach and deep understanding of the e-commerce landscape equip you with the tools and knowledge necessary to stand out in a competitive market and achieve sustainable growth.
+                    <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
+                        Our strategic approach and deep understanding of the e-commerce landscape equip you with the tools and knowledge necessary to stand out and achieve sustainable growth.
                     </p>
                 </div>
                 
@@ -176,16 +172,19 @@ export default function AmazonFbaPage() {
             <section>
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-3xl font-bold font-headline">Our Methodology: Data-Driven Expertise for Your Growth</CardTitle>
+                  <CardTitle className="text-3xl font-bold font-headline">Our Methodology: Data-Driven Expertise</CardTitle>
                   <CardDescription>
-                    At Uhurutrade, we combine a profound understanding of Amazon’s complex algorithms with rigorous data analysis to ensure your business doesn’t just survive, but truly thrives. From initial product selection to continuous advertising optimization, your success on Amazon is our top priority.
+                    We combine a profound understanding of Amazon’s complex algorithms with rigorous data analysis to ensure your business doesn’t just survive, but truly thrives.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {methodologyPoints.map((point, index) => (
-                    <div key={index}>
-                      <h4 className="font-semibold text-foreground">{point.title}</h4>
-                      <p className="text-muted-foreground">{point.description}</p>
+                    <div key={index} className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-foreground">{point.title}</h4>
+                        <p className="text-muted-foreground">{point.description}</p>
+                      </div>
                     </div>
                   ))}
                 </CardContent>

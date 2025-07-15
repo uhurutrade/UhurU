@@ -86,21 +86,19 @@ export default function AiAutomationPage() {
                 AI Automation & Custom Agents
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
-                In today&apos;s fast-paced business landscape, efficiency and scalability aren&apos;t just goals—they&apos;re imperatives. To thrive, you need to do more with less, adapt faster, and focus your human capital on strategic growth. Our AI Automation and Custom Agent services are precisely designed to catalyze a profound transformation in your organization. We don&apos;t just help you unlock significant cost savings; we elevate your operational efficiency to unprecedented levels, allowing your business to perform at its peak.
+                Elevate your operational efficiency with our AI Automation and Custom Agent services. We deploy intelligent systems to reinvent your business processes.
               </p>
             </section>
 
-             <section>
-              <Card className="bg-secondary/50">
-                <CardHeader>
-                    <CardTitle className="text-3xl font-bold font-headline">Strategic End-to-End Automation: Redefining How You Work</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="mt-4 text-muted-foreground">
-                    We go beyond simple task automation to strategically optimize your key processes from end-to-end. Imagine a future where mundane, repetitive tasks across your enterprise are handled autonomously, allowing your teams to dedicate their energy to innovation and complex problem-solving.
-                  </p>
-                </CardContent>
-              </Card>
+            <section>
+              <div className="text-center">
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
+                  Strategic End-to-End Automation
+                </h2>
+                <p className="mt-4 text-lg text-muted-foreground">
+                  We go beyond simple task automation to strategically optimize your key processes from end-to-end, allowing your teams to dedicate their energy to innovation and complex problem-solving.
+                </p>
+              </div>
             </section>
 
             <section className="space-y-8">
@@ -115,22 +113,20 @@ export default function AiAutomationPage() {
                   </div>
                 ))}
               </div>
-                 <p className="text-center text-muted-foreground">
-                    All these processes are orchestrated by intelligent, self-adapting AI systems that continuously learn and improve, ensuring your operations are always optimized and ready for the future.
-                </p>
+              <p className="text-center text-muted-foreground">
+                  All these processes are orchestrated by intelligent, self-adapting AI systems that continuously learn and improve, ensuring your operations are always optimized and ready for the future.
+              </p>
             </section>
 
             <section>
-              <Card className="bg-secondary/50">
-                <CardHeader>
-                    <CardTitle className="text-3xl font-bold font-headline">Custom-Trained AI Agents: Your Intelligent, Ever-Ready Team</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="mt-4 text-muted-foreground">
-                    The true power of AI lies in its adaptability and specificity. We go far beyond generic solutions to develop custom AI agents—digital brains meticulously trained on your company&apos;s unique proprietary data and knowledge. This means they don&apos;t just process information; they understand the specific context of your business, your customers, and your internal operations. This deep contextual understanding enables them to deliver highly relevant, real-time insights and automate complex decision-making that previously required constant human oversight.
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="text-center">
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
+                  Custom-Trained AI Agents
+                </h2>
+                <p className="mt-4 text-lg text-muted-foreground">
+                  The true power of AI lies in its adaptability. We develop custom AI agents meticulously trained on your company's unique proprietary data, enabling them to deliver highly relevant, real-time insights and automate complex decision-making.
+                </p>
+              </div>
             </section>
             
             <section className="space-y-8">
@@ -146,7 +142,7 @@ export default function AiAutomationPage() {
                     ))}
                 </div>
                  <p className="text-center text-muted-foreground">
-                    Each AI solution we create is meticulously tailored to your specific needs, ensuring a seamless and secure integration with your existing software stack and providing a clear path to scalable, data-driven operations.
+                    Each AI solution we create is meticulously tailored to your specific needs, ensuring a seamless and secure integration with your existing software stack.
                 </p>
             </section>
 
@@ -154,19 +150,17 @@ export default function AiAutomationPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className='text-2xl font-headline'>24/7 Scalable Operations</CardTitle>
-                        <CardDescription>Unleashing Limitless Productivity</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className='text-muted-foreground'>Imagine a business that never sleeps, constantly optimizing and delivering results without the proportional increase in overhead. Our AI solutions work tirelessly, around the clock, allowing you to scale operations to meet peak demands, enter new markets, or manage sudden growth surges without proportional cost increases related to staffing or infrastructure. This translates directly into sustained competitive advantage and accelerated business growth.</p>
+                        <p className='text-muted-foreground'>Our AI solutions work tirelessly, around the clock, allowing you to scale operations to meet peak demands without a proportional increase in overhead. This translates directly into sustained competitive advantage and accelerated business growth.</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader>
                         <CardTitle className='text-2xl font-headline'>Seamless & Secure Integration</CardTitle>
-                        <CardDescription>Harmony in Your Tech Stack</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className='text-muted-foreground'>We understand that adopting new technology shouldn&apos;t mean overhauling your existing infrastructure. We prioritize seamless and secure integration of our AI solutions with your current tools (CRM, ERP, etc.). Our end-to-end service includes a thorough analysis of your current workflows, identification of automation opportunities, custom development, and ongoing maintenance and optimization to guarantee long-term peak performance and adaptability.</p>
+                        <p className='text-muted-foreground'>We prioritize seamless and secure integration of our AI solutions with your current tools (CRM, ERP, etc.). Our end-to-end service includes thorough analysis, custom development, and ongoing maintenance.</p>
                     </CardContent>
                 </Card>
             </section>
@@ -174,10 +168,10 @@ export default function AiAutomationPage() {
             <section className="space-y-8">
               <div className="text-center">
                 <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
-                  The Automation Revolution: Our Open-Source & Low-Code Tool-Stack Advantage
+                  Our Open-Source & Low-Code Tool-Stack
                 </h2>
                 <p className="mt-4 text-lg text-muted-foreground">
-                  Our commitment to building robust, flexible, and cost-effective AI automation solutions is underpinned by leveraging a vibrant ecosystem of open-source tools and low-code/no-code platforms. This strategic choice gives you unparalleled freedom from proprietary vendor lock-in, reduces licensing costs, and grants you full control over your data and infrastructure.
+                  Our commitment to open-source tools gives you unparalleled freedom from proprietary vendor lock-in, reduces licensing costs, and grants you full control over your data and infrastructure.
                 </p>
               </div>
 
@@ -200,7 +194,7 @@ export default function AiAutomationPage() {
                   <CardTitle className="text-3xl font-bold font-headline">Why Choose UhurU for AI Automation?</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-muted-foreground">Are you ready to truly transform your business? If you feel the pressure to reduce operational costs and know you need to boost efficiency significantly to stay competitive in today&apos;s market, you&apos;re in the right place. It&apos;s not just about optimizing; it&apos;s about redefining how your business operates. Let&apos;s build the future of your operations together, freeing the unexplored potential of your human talent and catapulting your productivity to new heights.</p>
+                  <p className="text-muted-foreground">Ready to truly transform your business? It's not just about optimizing; it's about redefining how your business operates. Let's build the future of your operations together, freeing the unexplored potential of your human talent and catapulting your productivity to new heights.</p>
                   {whyUsPoints.map((point, index) => (
                     <div key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
@@ -209,7 +203,7 @@ export default function AiAutomationPage() {
                   ))}
                    <div className="pt-4">
                     <p className="text-foreground">
-                      <strong>Take the next step:</strong> Contact us today for a complimentary audit of your current workflows. Let&apos;s uncover the untapped potential for AI automation in your organization and chart a clear path to a more efficient, agile, and competitive future.
+                      <strong>Take the next step:</strong> Contact us today for a complimentary audit of your current workflows. Let's uncover the untapped potential for AI automation in your organization.
                     </p>
                   </div>
                 </CardContent>

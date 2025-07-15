@@ -1,6 +1,6 @@
 
 import type { Metadata } from 'next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
 import SubPageHeader from '@/components/uhuru/subpage-header';
 
@@ -66,7 +66,7 @@ export default function BlockchainCryptoPage() {
                 Unlock New Growth with Blockchain & Crypto
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
-                Empowering Your Future with Decentralized Solutions. We help businesses and individuals harness this transformative potential, moving beyond traditional structures to build secure, transparent, and globally accessible opportunities.
+                Empowering Your Future with Decentralized Solutions. We help businesses harness this transformative potential to build secure, transparent, and globally accessible opportunities.
               </p>
             </section>
 
@@ -75,8 +75,8 @@ export default function BlockchainCryptoPage() {
                 <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
                   Our Specialized Blockchain & Crypto Services
                 </h2>
-                <p className="mt-4 text-lg text-muted-foreground">
-                  We focus on real-world applications that deliver tangible value. We provide end-to-end support, guiding you through the complexities of the decentralized world.
+                <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
+                  We provide end-to-end support, guiding you through the complexities of the decentralized world. We focus on real-world applications that deliver tangible value.
                 </p>
               </div>
 
@@ -117,7 +117,7 @@ export default function BlockchainCryptoPage() {
                     <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
                         Regulatory Compliance & Security
                     </h2>
-                    <p className="mt-4 text-lg text-muted-foreground">
+                    <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
                         Navigating the dynamic regulatory landscape of blockchain and crypto is critical for long-term success. The integrity and security of your digital assets are our top priority.
                     </p>
                 </div>
@@ -144,6 +144,7 @@ export default function BlockchainCryptoPage() {
                   <CardTitle className="text-3xl font-bold font-headline">Why Choose Us? Your Partner in Decentralization</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">We are more than just consultants; we are your strategic partner in the decentralized revolution. We empower businesses to tokenize assets, launch innovative projects, and attract global investors through secure, decentralized capital strategies.</p>
                   {whyUsPoints.map((point, index) => (
                     <div key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
