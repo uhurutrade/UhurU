@@ -4,7 +4,7 @@ import { CheckCircle2 } from 'lucide-react';
 import SubPageHeader from '@/components/uhuru/subpage-header';
 
 export const metadata: Metadata = {
-  title: 'AI Automation & Custom AI Agents | UhurU',
+  title: 'AI Automation & Custom Agents | UhurU',
   description: 'Elevate your operational efficiency with our AI Automation and Custom Agent services. We deploy intelligent systems to reinvent your business processes.',
 };
 
@@ -86,7 +86,7 @@ export default function AiAutomationPage() {
           <div className="space-y-16">
             <section className="text-center">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-foreground">
-                AI Automation & Custom Agents
+                AI Automation & Custom Agents.
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
                 In today&apos;s fast-paced business landscape, efficiency and scalability aren&apos;t just goals—they&apos;re imperatives. Our AI services are designed to catalyze a profound transformation in your organization, elevating your operational efficiency to unprecedented levels.
@@ -175,9 +175,9 @@ export default function AiAutomationPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-3xl font-bold font-headline">Why Choose UhurU for AI Automation?</CardTitle>
-                  <CardDescription>
+                  <d-card-description>
                     Are you ready to transform your business? If you feel the pressure to reduce costs and know you need to boost efficiency to stay competitive, you&apos;re in the right place. Let&apos;s build the future of your operations together.
-                  </CardDescription>
+                  </d-card-description>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {whyUsPoints.map((point, index) => (
