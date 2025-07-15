@@ -6,9 +6,10 @@ import { ChevronLeft, ShoppingCart, Bot, Bitcoin, Globe, CandlestickChart, AppWi
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import SubPageHeader from '@/components/uhuru/subpage-header';
+
 import AmazonFbaPage from '../amazon-fba/page';
 import ErpCrmPage from '../erp-and-crm/page';
-import SubPageHeader from '@/components/uhuru/subpage-header';
 import AiAutomationPage from '../ai-automation-and-ai-agents/page';
 import BlockchainCryptoPage from '../blockchain-and-crypto/page';
 
@@ -80,23 +81,25 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 
 export default function ServicePage({ params }: { params: { slug: string } }) {
-  if (params.slug === 'amazon-fba') {
-    return <AmazonFbaPage />;
-  }
-  if (params.slug === 'erp-and-crm') {
-    return <ErpCrmPage />;
-  }
-  if (params.slug === 'ai-automation-and-ai-agents') {
-    return <AiAutomationPage />;
-  }
-  if (params.slug === 'blockchain-and-crypto') {
-    return <BlockchainCryptoPage />;
-  }
+  // These slugs have dedicated pages and should not be handled by this component.
+  // Next.js will prioritize the dedicated page over this dynamic route.
+  // This dynamic route now serves as a fallback for other services.
 
   const feature = features.find((f) => f.slug === params.slug);
 
   if (!feature) {
     notFound();
+  }
+
+  // If a dedicated page exists for a slug, Next.js should automatically use it.
+  // This dynamic page will only render for slugs without a dedicated page file.
+  // For safety, we can double-check we are not rendering a slug that has a page.
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto'];
+  if (dedicatedPages.includes(params.slug)) {
+    // This should technically not be reached if file-based routing works as expected,
+    // but it's a good safeguard.
+    console.warn(`Dynamic route is trying to render a dedicated page for slug: ${params.slug}`);
+    // We let it render the generic template as a fallback, but the ideal fix is file-based routing.
   }
 
   const icon = iconComponents[feature.icon];
@@ -137,7 +140,11 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
 }
 
 export async function generateStaticParams() {
-  return features.map((feature) => ({
-    slug: feature.slug,
-  }));
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto'];
+  // Generate params only for services that DON'T have a dedicated page.
+  return features
+    .filter(feature => !dedicatedPages.includes(feature.slug))
+    .map((feature) => ({
+      slug: feature.slug,
+    }));
 }
