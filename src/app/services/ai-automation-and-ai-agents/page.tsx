@@ -82,7 +82,6 @@ export default function AiAutomationPage() {
         <div className="container mx-auto max-w-5xl px-4 md:px-10">
           <div className="space-y-16">
             <section className="text-center">
-              <p className='text-accent font-semibold'>AI Automation & Custom Agents: Your Definitive Competitive Advantage</p>
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-foreground">
                 AI Automation & Custom Agents
               </h1>
@@ -201,7 +200,7 @@ export default function AiAutomationPage() {
                   <CardTitle className="text-3xl font-bold font-headline">Why Choose UhurU for AI Automation?</CardTitle>
                   <CardDescription>
                     Are you ready to truly transform your business? If you feel the pressure to reduce operational costs and know you need to boost efficiency significantly to stay competitive in today&apos;s market, you&apos;re in the right place. It&apos;s not just about optimizing; it&apos;s about redefining how your business operates. Let&apos;s build the future of your operations together, freeing the unexplored potential of your human talent and catapulting your productivity to new heights.
-                  </CardDescription>
+                  </d-card-description>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {whyUsPoints.map((point, index) => (
@@ -224,3 +223,5 @@ export default function AiAutomationPage() {
     </div>
   );
 }
+
+    
