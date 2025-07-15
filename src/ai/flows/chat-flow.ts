@@ -12,6 +12,27 @@ import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'zod';
 import wav from 'wav';
 
+const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
+const logFilePath = path.join(logDirectory, 'chatbot-log.log');
+
+// Self-invoking async function to ensure log file exists on startup
+(async () => {
+  if (process.env.TRACE === 'ON') {
+    try {
+      await fs.mkdir(logDirectory, { recursive: true });
+      await fs.access(logFilePath);
+    } catch (error) {
+      // If the file doesn't exist, create it empty.
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+        await fs.writeFile(logFilePath, '');
+        console.log('Log file created at:', logFilePath);
+      } else {
+        console.error('Error ensuring log file exists:', error);
+      }
+    }
+  }
+})();
+
 async function logTrace(functionName: string, data: any, sessionId?: string) {
     if (process.env.TRACE === 'ON') {
         const now = new Date();
@@ -26,9 +47,6 @@ async function logTrace(functionName: string, data: any, sessionId?: string) {
         const logMessage = `[${timestamp}]${idPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
 
         try {
-            const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
-            const logFilePath = path.join(logDirectory, 'chatbot-log.log');
-            await fs.mkdir(logDirectory, { recursive: true });
             await fs.appendFile(logFilePath, logMessage);
         } catch (error) {
             console.error('Failed to write to chatbot-log.log', error);
