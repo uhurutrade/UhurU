@@ -198,11 +198,9 @@ export default function AiAutomationPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-3xl font-bold font-headline">Why Choose UhurU for AI Automation?</CardTitle>
-                  <CardDescription>
-                    Are you ready to truly transform your business? If you feel the pressure to reduce operational costs and know you need to boost efficiency significantly to stay competitive in today&apos;s market, you&apos;re in the right place. It&apos;s not just about optimizing; it&apos;s about redefining how your business operates. Let&apos;s build the future of your operations together, freeing the unexplored potential of your human talent and catapulting your productivity to new heights.
-                  </d-card-description>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">Are you ready to truly transform your business? If you feel the pressure to reduce operational costs and know you need to boost efficiency significantly to stay competitive in today&apos;s market, you&apos;re in the right place. It&apos;s not just about optimizing; it&apos;s about redefining how your business operates. Let&apos;s build the future of your operations together, freeing the unexplored potential of your human talent and catapulting your productivity to new heights.</p>
                   {whyUsPoints.map((point, index) => (
                     <div key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
@@ -223,5 +221,3 @@ export default function AiAutomationPage() {
     </div>
   );
 }
-
-    
