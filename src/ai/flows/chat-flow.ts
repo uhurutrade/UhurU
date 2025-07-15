@@ -12,8 +12,8 @@ import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'zod';
 import wav from 'wav';
 
-const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
-const logFilePath = path.join(logDirectory, 'chatbot-log.md');
+const logDirectory = path.join(process.cwd(), 'public');
+const logFilePath = path.join(logDirectory, 'chatbot-log.dump');
 
 // Self-invoking async function to ensure log file exists on startup
 (async () => {
@@ -49,7 +49,7 @@ async function logTrace(functionName: string, data: any, sessionId?: string) {
         try {
             await fs.appendFile(logFilePath, logMessage);
         } catch (error) {
-            console.error('Failed to write to chatbot-log.md', error);
+            console.error('Failed to write to chatbot-log.dump', error);
         }
     }
 }
