@@ -9,6 +9,7 @@ import type { Metadata } from 'next';
 import AmazonFbaPage from '../amazon-fba/page';
 import ErpCrmPage from '../erp-and-crm/page';
 import SubPageHeader from '@/components/uhuru/subpage-header';
+import AiAutomationPage from '../ai-automation-and-ai-agents/page';
 
 const iconComponents: { [key: string]: React.ReactNode } = {
   ShoppingCart: <ShoppingCart className="h-10 w-10" />,
@@ -23,13 +24,6 @@ const iconComponents: { [key: string]: React.ReactNode } = {
 };
 
 const serviceContent: { [key: string]: { paragraphs: string[] } } = {
-  'ai-automation-and-ai-agents': {
-    paragraphs: [
-      "Unlock significant cost savings and operational efficiency with our AI Automation and Custom AI Agent services. We specialize in deploying intelligent systems that streamline your core business processes, from marketing and customer support to billing and social media management. Our solutions are designed to minimize human intervention, allowing your team to focus on strategic growth while our AI agents handle repetitive tasks 24/7.",
-      "We develop custom AI agents trained on your company's proprietary data, creating intelligent assistants that provide real-time insights and automate complex decision-making. Whether it's a customer-facing chatbot to improve user engagement or an internal tool to optimize workflows, our AI solutions are tailored to your specific needs, ensuring seamless integration with your existing software stack and providing a clear path to scalable, data-driven operations.",
-      "Our end-to-end service includes a thorough analysis of your current workflows, identification of automation opportunities, custom development, and ongoing maintenance. By leveraging the power of AI, we help you reduce operational overhead, increase productivity, and gain a competitive edge in your industry."
-    ]
-  },
   'blockchain-and-crypto': {
     paragraphs: [
       "Step into the future of finance with our Blockchain and Crypto services. We empower businesses to tokenize assets, launch innovative projects, and attract global investors through secure, decentralized capital strategies. Our expertise lies in transforming traditional assets like equity, real estate, or products into liquid, tradable digital tokens on the blockchain, opening up new avenues for monetization and investment.",
@@ -98,6 +92,9 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
   if (params.slug === 'erp-and-crm') {
     return <ErpCrmPage />;
   }
+  if (params.slug === 'ai-automation-and-ai-agents') {
+    return <AiAutomationPage />;
+  }
 
   const feature = features.find((f) => f.slug === params.slug);
 
@@ -108,7 +105,6 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
   const icon = iconComponents[feature.icon];
   const content = serviceContent[feature.slug] || { paragraphs: [] };
 
-  // This check prevents a 5xx error if a feature has an invalid icon key.
   if (!icon) {
     console.error(`Icon not found for feature: ${feature.title}`);
     notFound();
