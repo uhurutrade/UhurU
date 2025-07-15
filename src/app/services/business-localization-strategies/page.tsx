@@ -29,18 +29,18 @@ const whyConsiderPoints = [
 ];
 
 const jurisdictionAnalysisPoints = [
-  "Favorable tax treaties and specific corporate incentives.",
-  "Long-term political and economic stability.",
-  "Robust yet flexible regulatory frameworks and ease of doing business.",
-  "International reputation and adherence to compliance standards (e.g., OECD guidelines).",
-  "Sophisticated banking infrastructure and strong financial privacy laws."
+  "Analysis of favorable tax treaties and specific corporate incentives.",
+  "Assessment of long-term political and economic stability.",
+  "Evaluation of robust yet flexible regulatory frameworks and ease of doing business.",
+  "Review of international reputation and adherence to compliance standards (e.g., OECD guidelines).",
+  "Access to sophisticated banking infrastructure and strong financial privacy laws."
 ];
 
 const endToEndServices = [
-  "Company Formation: Full incorporation of your legal entity (e.g., LLC, IBC) in the chosen strategic jurisdiction.",
+  "Company Formation: Full incorporation of your legal entity (e.g., Trust, LLC, IBC) in the chosen strategic jurisdiction.",
   "Offshore Banking Introductions: Facilitating the opening of corporate and personal bank accounts with reputable international institutions.",
   "Regulatory Filings & Maintenance: Managing all necessary legal and regulatory documentation to ensure seamless and continuous compliance.",
-  "Ongoing Strategic Counsel: Providing proactive guidance and support to help you adapt to evolving international regulations and maintain your structure's integrity."
+  "Ongoing Strategic Counsel: Providing proactive guidance to adapt to evolving international regulations and maintain your structure's integrity."
 ];
 
 const cryptoServices = [
@@ -59,7 +59,7 @@ export default function BusinessLocalizationPage() {
         <div className="container mx-auto max-w-5xl px-4 md:px-10">
           <div className="space-y-16">
             <section className="text-center">
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-primary">
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-foreground">
                 Offshore & Localization Strategies
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
@@ -154,18 +154,9 @@ export default function BusinessLocalizationPage() {
                 </CardContent>
               </Card>
             </section>
-
-            <section className="text-center">
-              <p className="text-lg text-foreground font-semibold">
-                Ready to explore how offshore and localization strategies can benefit you or your business, including your digital assets? Contact us today for a confidential consultation.
-              </p>
-            </section>
-
           </div>
         </div>
       </main>
     </div>
   );
 }
-
-    
