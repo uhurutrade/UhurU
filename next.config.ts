@@ -1,13 +1,14 @@
-import type {NextConfig} from 'next';
+// next.config.ts
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
   devIndicators: {
     allowedDevOrigins: [
-        '*.cloudworkstations.dev',
+      '*.cloudworkstations.dev',
     ],
   },
-  output: 'standalone',
+  // La línea 'output: 'standalone',' ha sido eliminada para usar el modo normal.
   typescript: {
     ignoreBuildErrors: true,
   },

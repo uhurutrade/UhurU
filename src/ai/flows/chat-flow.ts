@@ -12,7 +12,7 @@ import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'zod';
 import wav from 'wav';
 
-const logDirectory = path.join(process.cwd(), 'public');
+const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
 const logFilePath = path.join(logDirectory, 'chatbot-log.dump');
 
 // Self-invoking async function to ensure log file exists on startup
