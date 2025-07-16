@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -34,7 +35,7 @@ export default function Hero() {
                     loop
                     muted
                     playsInline
-                    className="h-full w-full object-contain"
+                    className="h-full w-full object-cover"
                 >
                 </video>
             </div>
