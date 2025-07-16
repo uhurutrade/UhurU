@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -39,9 +38,6 @@ export default function Hero() {
                     className="h-full w-full object-cover"
                 >
                 </video>
-            </div>
-            <div className="absolute transition-transform duration-500 ease-in-out group-hover:scale-110">
-                <Logo isHero={true} />
             </div>
         </div>
       </div>
