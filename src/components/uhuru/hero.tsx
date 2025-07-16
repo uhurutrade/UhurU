@@ -31,7 +31,7 @@ export default function Hero() {
         <div className="group relative mx-auto flex h-[300px] w-[300px] items-center justify-center">
             <div className="h-full w-full overflow-hidden rounded-full shadow-lg transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:shadow-primary/50">
                 <video
-                    src="/videos/hero-video.mp4"
+                    src="/videos/UhurU.mp4"
                     autoPlay
                     loop
                     muted
