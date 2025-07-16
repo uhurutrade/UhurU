@@ -23,7 +23,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
 # local env files
 .env*.local
@@ -33,14 +32,9 @@ pnpm-debug.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
-# studio
-.firebase
+# Studio
+.studio
 
-# Log files
-src/chatbot/kaka.md
-
-/src/chatbot/chatbot-log.ts
-/src/chatbot/chatbot-log.dump
-/public/chatbot-log.dump
+# Custom
+/src/chatbot/chatbot.log
