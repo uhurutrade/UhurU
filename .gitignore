@@ -23,12 +23,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
 # local env files
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
 
 # vercel
 .vercel
@@ -37,5 +35,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# uhuru specifics
-/src/chatbot/chatbot-log.md
+# studio
+.firebase
+
+# Log files
+src/chatbot/kaka.md
