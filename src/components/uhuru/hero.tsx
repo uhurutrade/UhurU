@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -28,9 +27,9 @@ export default function Hero() {
           </div>
         </div>
         <div className="group relative mx-auto flex h-[300px] w-[300px] items-center justify-center">
-            <div className="h-full w-full overflow-hidden rounded-full shadow-lg transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:shadow-primary/50 border-4 border-black dark:border-white">
+            <div className="h-full w-full overflow-hidden rounded-full shadow-lg transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:shadow-primary/50">
                 <video
-                    src="/videos/UhurU.mp4?v=2"
+                    src="/videos/UhurU.mp4?v=3"
                     autoPlay
                     loop
                     muted
