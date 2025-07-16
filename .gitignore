@@ -40,3 +40,7 @@ next-env.d.ts
 
 # Log files
 src/chatbot/kaka.md
+
+/src/chatbot/chatbot-log.ts
+/src/chatbot/chatbot-log.dump
+/public/chatbot-log.dump
