@@ -1,8 +1,8 @@
+
 "use client";
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import Logo from './logo';
 
 export default function Hero() {
 
@@ -35,7 +35,7 @@ export default function Hero() {
                     loop
                     muted
                     playsInline
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain"
                 >
                 </video>
             </div>
