@@ -34,7 +34,7 @@ export default function Hero() {
                     loop
                     muted
                     playsInline
-                    className="h-full w-full object-contain scale-90"
+                    className="h-full w-full object-contain"
                 >
                 </video>
             </div>
