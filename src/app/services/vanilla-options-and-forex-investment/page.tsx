@@ -81,7 +81,7 @@ export default function VanillaOptionsAndForexPage() {
           <div className="space-y-16">
             <section className="text-center">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-foreground">
-                Welcome to UhurU: Empowering Your Financial and Business Future
+                Forex & Vanilla Options Investment
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
                 At UhurU, we believe in unlocking potential. Our philosophy is rooted in "Uhuru" (freedom), aiming to liberate your financial assets and business operations from risk and inefficiency, paving the way for sustainable success.
