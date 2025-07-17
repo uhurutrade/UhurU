@@ -41,20 +41,20 @@ const optionsStrategies = [
 
 const wealthStrategies = [
     {
-        title: "Gestión de Cartera con Forex",
-        description: "Utilizamos el mercado de divisas no solo para la especulación, sino como una herramienta estratégica para la diversificación y la cobertura contra riesgos inflacionarios y geopolíticos, creando una base sólida y líquida para su patrimonio."
+        title: "Portfolio Management with Forex",
+        description: "We use the currency market not just for speculation, but as a strategic tool for diversification and hedging against inflationary and geopolitical risks, creating a solid and liquid foundation for your wealth."
     },
     {
-        title: "Generación de Flujo de Caja con Opciones",
-        description: "Implementamos estrategias avanzadas como la venta de Put Spreads y Covered Calls para generar ingresos recurrentes y reducir la base de coste de sus activos, transformando la volatilidad del mercado en una fuente de rendimiento predecible."
+        title: "Cash Flow Generation with Options",
+        description: "We implement advanced strategies like selling Put Spreads and Covered Calls to generate recurring income and reduce the cost basis of your assets, transforming market volatility into a source of predictable returns."
     },
     {
-        title: "Cobertura y Exposición con Futuros",
-        description: "Integramos el uso de contratos de futuros para ofrecer una cobertura precisa sobre carteras de acciones o materias primas, así como para obtener una exposición diversificada a nuevos mercados con un uso eficiente del capital."
+        title: "Hedging and Exposure with Futures",
+        description: "We integrate the use of futures contracts to provide precise hedging for stock or commodity portfolios, as well as to gain diversified exposure to new markets with efficient use of capital."
     },
     {
-        title: "Planificación y Sinergia",
-        description: "El verdadero poder reside en la combinación sinérgica de estos instrumentos. Diseñamos un plan patrimonial a largo plazo donde el Forex estabiliza, las opciones generan flujo de caja y los futuros protegen y expanden su cartera de manera controlada."
+        title: "Planning and Synergy",
+        description: "The true power lies in the synergistic combination of these instruments. We design a long-term wealth plan where Forex provides stability, options generate cash flow, and futures protect and expand your portfolio in a controlled manner."
     }
 ];
 
