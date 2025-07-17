@@ -39,32 +39,25 @@ const optionsStrategies = [
     }
 ];
 
-const cryptoServices = [
+const wealthStrategies = [
     {
-        title: "Understanding Crypto Trends",
-        description: "We provide insights into current cryptocurrency trends, including the impact of Spot ETFs, Bitcoin halving events, and the rise of tokenized Real-World Assets (RWAs)."
+        title: "Gestión de Cartera con Forex",
+        description: "Utilizamos el mercado de divisas no solo para la especulación, sino como una herramienta estratégica para la diversificación y la cobertura contra riesgos inflacionarios y geopolíticos, creando una base sólida y líquida para su patrimonio."
     },
     {
-        title: "Strategic Crypto Integration",
-        description: "For those with an appetite for innovation, we guide you on how to prudently integrate cryptocurrencies into a diversified portfolio, focusing on low-risk entry strategies like Dollar-Cost Averaging (DCA) and identifying established, liquid assets."
+        title: "Generación de Flujo de Caja con Opciones",
+        description: "Implementamos estrategias avanzadas como la venta de Put Spreads y Covered Calls para generar ingresos recurrentes y reducir la base de coste de sus activos, transformando la volatilidad del mercado en una fuente de rendimiento predecible."
     },
     {
-        title: "Security and Best Practices",
-        description: "Learn essential security protocols and best practices for managing digital assets, from secure storage solutions to understanding market liquidity."
+        title: "Cobertura y Exposición con Futuros",
+        description: "Integramos el uso de contratos de futuros para ofrecer una cobertura precisa sobre carteras de acciones o materias primas, así como para obtener una exposición diversificada a nuevos mercados con un uso eficiente del capital."
+    },
+    {
+        title: "Planificación y Sinergia",
+        description: "El verdadero poder reside en la combinación sinérgica de estos instrumentos. Diseñamos un plan patrimonial a largo plazo donde el Forex estabiliza, las opciones generan flujo de caja y los futuros protegen y expanden su cartera de manera controlada."
     }
 ];
 
-const itConsultingPoints = [
-    "Technology Roadmap Development: We work with you to create a strategic IT roadmap, aligning technology investments with your long-term business objectives.",
-    "Infrastructure Optimization: From cloud migration to cybersecurity enhancements, we identify inefficiencies and design tailored solutions to improve performance, scalability, and cost-effectiveness.",
-    "Emerging Tech Integration: Stay ahead of the curve with our guidance on integrating cutting-edge technologies that can revolutionize your operations and provide a competitive edge."
-];
-
-const generalConsultingPoints = [
-    "Business Strategy & Development: We help you define clear objectives, develop actionable strategies, and navigate complex market landscapes to achieve your business goals.",
-    "Operational Efficiency: Streamline your processes, reduce waste, and enhance productivity with our expert analysis and implementation support.",
-    "Personalized Mentorship: From aspiring entrepreneurs to seasoned executives, we offer tailored guidance and support to help you overcome challenges and seize opportunities."
-];
 
 const whyUsPoints = [
   'Expert Mentorship: Receive personalized guidance and continuous support from our team of seasoned professionals.',
@@ -81,10 +74,10 @@ export default function VanillaOptionsAndForexPage() {
           <div className="space-y-16">
             <section className="text-center">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-foreground">
-                Forex & Vanilla Options Investment
+                Specialized Financial Strategies in Forex & Options
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
-                At UhurU, we believe in unlocking potential. Our philosophy is rooted in "Uhuru" (freedom), aiming to liberate your financial assets and business operations from risk and inefficiency, paving the way for sustainable success.
+                At UhurU, we believe in unlocking potential. We are a premier consulting firm dedicated to providing specialized financial strategies designed for long-term growth and capital preservation.
               </p>
             </section>
 
@@ -150,14 +143,14 @@ export default function VanillaOptionsAndForexPage() {
              <section className="space-y-8">
               <div className="text-center">
                 <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
-                  Expanding Horizons: Navigating the Crypto Landscape
+                  Building Your Long-Term Wealth Foundation
                 </h2>
                 <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                  The cryptocurrency market presents unique opportunities. We offer specialized consulting to help you navigate this exciting frontier responsibly.
+                  A truly resilient portfolio is built by intelligently combining strategies. We focus on creating a synergistic plan where each financial instrument plays a specific role in your long-term wealth growth and preservation.
                 </p>
               </div>
-              <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-1">
-                {cryptoServices.map((item, index) => (
+              <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+                {wealthStrategies.map((item, index) => (
                   <div key={index} className="flex items-start gap-4">
                     <CheckCircle2 className="h-8 w-8 text-accent mt-1 flex-shrink-0" />
                     <div>
@@ -167,41 +160,6 @@ export default function VanillaOptionsAndForexPage() {
                   </div>
                 ))}
               </div>
-            </section>
-
-            <section>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-3xl font-bold font-headline">Beyond Finance: Holistic Consulting</CardTitle>
-                  <CardDescription>
-                    Our expertise extends beyond financial markets. We offer comprehensive IT and general consulting to optimize operations, drive innovation, and foster sustainable growth.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    <div>
-                        <h4 className="font-semibold text-foreground text-xl mb-3">IT Consulting: Driving Digital Transformation</h4>
-                        <div className="space-y-3">
-                        {itConsultingPoints.map((point, index) => (
-                            <div key={index} className="flex items-start gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
-                                <p className="text-muted-foreground">{point}</p>
-                            </div>
-                        ))}
-                        </div>
-                    </div>
-                    <div>
-                        <h4 className="font-semibold text-foreground text-xl mb-3">General Consulting: Strategic Guidance for Success</h4>
-                        <div className="space-y-3">
-                        {generalConsultingPoints.map((point, index) => (
-                            <div key={index} className="flex items-start gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
-                                <p className="text-muted-foreground">{point}</p>
-                            </div>
-                        ))}
-                        </div>
-                    </div>
-                </CardContent>
-              </Card>
             </section>
 
              <section>
