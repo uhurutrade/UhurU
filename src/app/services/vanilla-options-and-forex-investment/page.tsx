@@ -31,7 +31,7 @@ const optionsStrategies = [
     },
     {
         title: "Income Generation Strategies",
-        description: "Explore proven techniques such as Naked Puts, Iron Condors, and Covered Calls to generate consistent income, reduce portfolio volatility, and enhance returns."
+        description: "Explore proven techniques such as selling Put Spreads and Covered Calls to generate consistent income, reduce portfolio volatility, and enhance returns."
     },
     {
         title: "Capital Preservation Focus",
@@ -74,22 +74,11 @@ export default function VanillaOptionsAndForexPage() {
           <div className="space-y-16">
             <section className="text-center">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline text-foreground">
-                Specialized Financial Strategies in Forex & Options
+                Building Long-Term Wealth with Forex & Options
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
-                At UhurU, we believe in unlocking potential. We are a premier consulting firm dedicated to providing specialized financial strategies designed for long-term growth and capital preservation.
+                Navigate the complexities of global financial markets with UhurU's expert guidance. We specialize in robust, low-risk strategies across the most liquid and regulated asset classes, focusing on predictable outcomes and capital protection.
               </p>
-            </section>
-
-            <section className="space-y-8">
-              <div className="text-center">
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
-                  Financial Mastery: Secure Growth in Dynamic Markets
-                </h2>
-                <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                  Navigate the complexities of global financial markets with UhurU's expert guidance. We specialize in robust, low-risk strategies across the most liquid and regulated asset classes, focusing on predictable outcomes and capital protection.
-                </p>
-              </div>
             </section>
 
             <section>
