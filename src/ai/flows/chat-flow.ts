@@ -5,24 +5,29 @@ import type { HistoryItem } from '@/ai/types';
 import { ai } from '@/ai/genkit';
 import fs from 'fs/promises';
 import path from 'path';
-import { buildKnowledgePrompt } from '@/chatbot/chatbot-knowledge';
-import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 import { headers } from 'next/headers';
 import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'zod';
 import wav from 'wav';
+import { connect, Vector } from 'vectordb';
+import { indexKnowledgeBase } from '@/chatbot/knowledge-indexer';
+import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 
 const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
 const logFilePath = path.join(logDirectory, 'chatbot.log');
 
-// Self-invoking async function to ensure log file exists on startup
+const DB_PATH = path.join(process.cwd(), 'data');
+const embeddingModel = googleAI.embedder('text-embedding-004');
+const TABLE_NAME = 'knowledge';
+
+// Self-invoking async function to ensure log file and vector DB exist on startup
 (async () => {
+  // Ensure log file exists
   if (process.env.TRACE === 'ON') {
     try {
       await fs.mkdir(logDirectory, { recursive: true });
       await fs.access(logFilePath);
     } catch (error) {
-      // If the file doesn't exist, create it empty.
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         await fs.writeFile(logFilePath, '');
         console.log('Log file created at:', logFilePath);
@@ -31,6 +36,8 @@ const logFilePath = path.join(logDirectory, 'chatbot.log');
       }
     }
   }
+  // Index the knowledge base into the vector DB
+  await indexKnowledgeBase();
 })();
 
 async function logTrace(functionName: string, data: any, sessionId?: string) {
@@ -54,6 +61,25 @@ async function logTrace(functionName: string, data: any, sessionId?: string) {
     }
 }
 
+async function retrieveContext(query: string): Promise<string> {
+    const db = await connect(DB_PATH);
+    const table = await db.openTable(TABLE_NAME);
+
+    const queryEmbedding = await embeddingModel.embed(query);
+
+    const searchResults = await table
+        .search(queryEmbedding as Vector)
+        .limit(5)
+        .execute();
+
+    if (searchResults.length === 0) {
+        return "No relevant context found.";
+    }
+
+    const context = searchResults.map(r => r.text).join('\n---\n');
+    return context;
+}
+
 export async function chat(
   newUserMessage: string, 
   history: HistoryItem[],
@@ -61,29 +87,25 @@ export async function chat(
   sessionId: string
 ): Promise<{ text: string; audioDataUri?: string }> {
     const functionName = 'chat';
-
     const logPayload: any = {
       history: history.map(h => h.content),
       isVoiceInput
     };
-
-    if (isVoiceInput) {
-      logPayload.InputAudio = newUserMessage;
-    } else {
-      logPayload.input_newUserMessage = newUserMessage;
-    }
-    
+    if (isVoiceInput) logPayload.InputAudio = newUserMessage;
+    else logPayload.input_newUserMessage = newUserMessage;
     await logTrace(functionName, logPayload, sessionId);
 
-    const chatHistory = history.map(item => ({
-        role: item.role === 'assistant' ? 'model' : 'user',
-        content: [{ text: item.content }]
-    }));
-
-    const knowledgePrompt = await buildKnowledgePrompt();
-    const systemPrompt = getSystemPrompt(knowledgePrompt);
-
     try {
+        const retrievedContext = await retrieveContext(newUserMessage);
+        await logTrace(functionName, { retrieved_context_length: retrievedContext.length }, sessionId);
+
+        const systemPrompt = getSystemPrompt(retrievedContext);
+
+        const chatHistory = history.map(item => ({
+            role: item.role === 'assistant' ? 'model' : 'user',
+            content: [{ text: item.content }]
+        }));
+
         await logTrace(functionName, { status: 'calling_ai_generate' }, sessionId);
         const response = await ai.generate({
             model: googleAI.model('gemini-1.5-flash-latest'),
@@ -121,9 +143,7 @@ const ttsFlow = ai.defineFlow(
     }),
   },
   async ({ text, sessionId }) => {
-    if (!text) {
-        return { media: '' };
-    }
+    if (!text) return { media: '' };
     await logTrace('textToSpeech', { input_text: text }, sessionId);
     
     const { media } = await ai.generate({
@@ -139,20 +159,11 @@ const ttsFlow = ai.defineFlow(
       prompt: text,
     });
 
-    if (!media) {
-      throw new Error('No audio media was returned from the TTS model.');
-    }
+    if (!media) throw new Error('No audio media was returned from the TTS model.');
 
-    const audioBuffer = Buffer.from(
-      media.url.substring(media.url.indexOf(',') + 1),
-      'base64'
-    );
-    
+    const audioBuffer = Buffer.from(media.url.substring(media.url.indexOf(',') + 1), 'base64');
     const wavBase64 = await toWav(audioBuffer);
-
-    return {
-      media: `data:audio/wav;base64,${wavBase64}`,
-    };
+    return { media: `data:audio/wav;base64,${wavBase64}` };
   }
 );
 
@@ -197,21 +208,11 @@ async function toWav(
   sampleWidth = 2
 ): Promise<string> {
   return new Promise((resolve, reject) => {
-    const writer = new wav.Writer({
-      channels,
-      sampleRate: rate,
-      bitDepth: sampleWidth * 8,
-    });
-
+    const writer = new wav.Writer({ channels, sampleRate: rate, bitDepth: sampleWidth * 8 });
     const bufs: any[] = [];
     writer.on('error', reject);
-    writer.on('data', function (d) {
-      bufs.push(d);
-    });
-    writer.on('end', function () {
-      resolve(Buffer.concat(bufs).toString('base64'));
-    });
-
+    writer.on('data', d => bufs.push(d));
+    writer.on('end', () => resolve(Buffer.concat(bufs).toString('base64')));
     writer.write(pcmData);
     writer.end();
   });
