@@ -1,2 +1,3 @@
 
-export const chatbotWelcomeMessage = "¡Hola! Soy el asistente de IA de UhurU. Pregúntame sobre nuestros servicios, el mercado Forex, opciones de inversión o cómo podemos ayudarte a crecer. ¿En qué te puedo ayudar hoy?";
+export const chatbotWelcomeMessage = "Hello! I'm UhurU's AI assistant. Whether you need to uplift your technological edge, optimise your tax planning, or uncover new avenues for investment, I'm on hand to boost your business growth and efficiency.";
+
