@@ -37,7 +37,7 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
       "flex items-center gap-4",
       isMobile ? "flex-col items-start" : "flex-row items-center"
     )}>
-        {isMobile && <Link href="/ai-chat" className="text-sm font-medium text-foreground hover:text-primary">IA Chat</Link>}
+        {isMobile && <Link href="/ai-chat" className="text-sm font-medium text-foreground hover:text-primary">AI Chat</Link>}
         <Link href="mailto:hello@uhurutrade.com" className="text-base text-foreground hover:text-primary">
           hello@uhurutrade.com
         </Link>
@@ -98,7 +98,7 @@ export default function Header() {
 
         <div className="hidden md:flex flex-1 justify-center">
           <Link href="/ai-chat" className="text-xs font-medium text-foreground hover:text-primary transition-colors">
-            IA
+            AI
           </Link>
         </div>
 
