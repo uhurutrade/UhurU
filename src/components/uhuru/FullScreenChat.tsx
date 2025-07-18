@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader, Mic, Play, Pause, Square, Send, Download, PlusSquare, Globe } from 'lucide-react';
+import { Bot, User, Loader, Mic, Play, Pause, Square, Send, Download, PlusSquare, Globe, Paperclip } from 'lucide-react';
 import { chat, speechToText } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
@@ -13,6 +13,16 @@ import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '../ui/card';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+
 
 interface Message {
   id: string;
@@ -43,6 +53,8 @@ export default function FullScreenChat() {
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
+  const [isUploadEnabled, setIsUploadEnabled] = useState(false);
+  const [showUploadAlert, setShowUploadAlert] = useState(false);
   
   const sessionIdRef = useRef<string | null>(null);
   
@@ -59,6 +71,20 @@ export default function FullScreenChat() {
         logClientTrace('initSession', { sessionId: sessionIdRef.current });
     }
   }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const text = e.target.value;
+    setInput(text);
+    // Simple regex to check for something that looks like an email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setIsUploadEnabled(emailRegex.test(text));
+  };
+  
+  const handleFileUploadClick = () => {
+    if (isUploadEnabled) {
+      setShowUploadAlert(true);
+    }
+  };
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -106,14 +132,14 @@ export default function FullScreenChat() {
     const assistantMessageId = `assistant-${Date.now()}`;
 
     const userMessageObject: Message = { id: userMessageId, role: 'user', content: newUserMessage };
-    setMessages((prevMessages) => [...prevMessages, userMessageObject]);
+    const currentHistory = messages.filter(msg => msg.id !== 'initial');
+    setMessages([...currentHistory, userMessageObject]);
     setInput('');
     
     startTransition(async () => {
       logClientTrace(functionName, { status: 'transition_started' });
       
-      const historyForAI: HistoryItem[] = messages
-        .filter(msg => msg.id !== 'initial')
+      const historyForAI: HistoryItem[] = [...currentHistory, userMessageObject]
         .slice(-MAX_HISTORY_MESSAGES)
         .map(msg => ({ role: msg.role, content: msg.content }));
 
@@ -129,12 +155,12 @@ export default function FullScreenChat() {
         ]);
 
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
         logClientTrace(functionName, { error_in_transition: errorMessage });
         
         setMessages((prevMessages) => [
             ...prevMessages,
-            { id: `error-${Date.now()}`, role: 'assistant', content: `Error: ${errorMessage}` },
+            { id: `error-${Date.now()}`, role: 'assistant', content: errorMessage },
         ]);
 
         toast({
@@ -237,125 +263,157 @@ export default function FullScreenChat() {
   };
   
   return (
-    <div className="flex-1 flex flex-col w-full max-w-4xl mx-auto p-4 min-h-0">
-        <div className="flex items-center justify-between pb-4 border-b mb-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Globe className="h-5 w-5" />
-                <span>UhurU AI | All language - Polyglot</span>
-            </div>
-            <div className="flex items-center gap-2">
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" onClick={handleDownload} disabled={messages.length <= 1}>
-                                <Download className="h-5 w-5" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent><p>Download conversation</p></TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" onClick={handleNewChat}>
-                                <PlusSquare className="h-5 w-5" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent><p>New chat</p></TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            </div>
-        </div>
+    <TooltipProvider>
+      <div className="flex-1 flex flex-col w-full max-w-4xl mx-auto p-4 min-h-0">
+          <div className="flex items-center justify-between pb-4 border-b mb-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Globe className="h-5 w-5" />
+                  <span>UhurU AI | All language - Polyglot</span>
+              </div>
+              <div className="flex items-center gap-2">
+                  
+                      <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon" onClick={handleDownload} disabled={messages.length <= 1}>
+                                  <Download className="h-5 w-5" />
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p>Download conversation</p></TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon" onClick={handleNewChat}>
+                                  <PlusSquare className="h-5 w-5" />
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p>New chat</p></TooltipContent>
+                      </Tooltip>
+                  
+              </div>
+          </div>
 
-        <ScrollArea className="flex-1 pr-4 -mr-4" ref={scrollAreaRef}>
-            <div className="space-y-6 pb-4">
-            {messages.map((message) => (
-                <div
-                key={message.id}
-                className={`flex items-start gap-4 ${
-                    message.role === 'user' ? 'justify-end' : ''
-                }`}
-                >
-                {message.role === 'assistant' && (
-                    <div className="bg-primary text-primary-foreground rounded-full p-2.5 flex-shrink-0">
-                    <Bot className="h-6 w-6" />
-                    </div>
-                )}
-                <div
-                    className={`max-w-[80%] rounded-xl p-4 text-base shadow-sm ${
-                    message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted text-muted-foreground'
-                    }`}
-                >
-                    <p className="whitespace-pre-wrap">{message.content}</p>
-                    {message.audioUrl && (
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 mt-2"
-                        onClick={() => handleTogglePlay(message.audioUrl!, message.id)}
-                    >
-                        {message.isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                    </Button>
-                    )}
-                </div>
-                {message.role === 'user' && (
-                    <div className="bg-muted text-muted-foreground rounded-full p-2.5 flex-shrink-0">
-                    <User className="h-6 w-6" />
-                    </div>
-                )}
-                </div>
-            ))}
-            {isPending && (
-                <div className="flex items-start gap-4">
-                <div className="bg-primary text-primary-foreground rounded-full p-2.5">
-                    <Bot className="h-6 w-6" />
-                </div>
-                <div className="bg-muted text-muted-foreground rounded-xl p-4">
-                    <Loader className="h-6 w-6 animate-spin" />
-                </div>
-                </div>
-            )}
-            </div>
-        </ScrollArea>
-        <div className="pt-4 mt-auto">
-            <Card className="relative shadow-lg">
-                <CardContent className="p-2">
-                    <div className="relative flex items-center gap-2">
-                        <Input
-                            type="text"
-                            placeholder="Ask something about UhurU..."
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                            disabled={isPending}
-                            className="text-base h-12 pr-24 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
-                        />
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-                            <Button
+          <ScrollArea className="flex-1 pr-4 -mr-4" ref={scrollAreaRef}>
+              <div className="space-y-6 pb-4">
+              {messages.map((message) => (
+                  <div
+                  key={message.id}
+                  className={`flex items-start gap-4 ${
+                      message.role === 'user' ? 'justify-end' : ''
+                  }`}
+                  >
+                  {message.role === 'assistant' && (
+                      <div className="bg-primary text-primary-foreground rounded-full p-2.5 flex-shrink-0">
+                      <Bot className="h-6 w-6" />
+                      </div>
+                  )}
+                  <div
+                      className={`max-w-[80%] rounded-xl p-4 text-base shadow-sm ${
+                      message.role === 'user'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted text-muted-foreground'
+                      }`}
+                  >
+                      <p className="whitespace-pre-wrap">{message.content}</p>
+                      {message.audioUrl && (
+                      <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 mt-2"
+                          onClick={() => handleTogglePlay(message.audioUrl!, message.id)}
+                      >
+                          {message.isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                      </Button>
+                      )}
+                  </div>
+                  {message.role === 'user' && (
+                      <div className="bg-muted text-muted-foreground rounded-full p-2.5 flex-shrink-0">
+                      <User className="h-6 w-6" />
+                      </div>
+                  )}
+                  </div>
+              ))}
+              {isPending && (
+                  <div className="flex items-start gap-4">
+                  <div className="bg-primary text-primary-foreground rounded-full p-2.5">
+                      <Bot className="h-6 w-6" />
+                  </div>
+                  <div className="bg-muted text-muted-foreground rounded-xl p-4">
+                      <Loader className="h-6 w-6 animate-spin" />
+                  </div>
+                  </div>
+              )}
+              </div>
+          </ScrollArea>
+          <div className="pt-4 mt-auto">
+              <Card className="relative shadow-lg">
+                  <CardContent className="p-2">
+                      <div className="relative flex items-center gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={handleMicClick}
-                                disabled={isPending && !isRecording}
-                                className={cn("h-9 w-9", isRecording && "text-red-500 hover:text-red-600")}
-                            >
-                                {isRecording ? <Square className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleSend(input, false)}
-                                disabled={isPending || input.trim() === ''}
-                                className="h-9 w-9"
-                            >
-                                <Send className="h-5 w-5" />
-                            </Button>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-    </div>
+                                disabled={!isUploadEnabled}
+                                onClick={handleFileUploadClick}
+                                className="h-9 w-9 ml-1"
+                              >
+                                <Paperclip className="h-5 w-5" />
+                              </Button>
+                            </TooltipTrigger>
+                            {!isUploadEnabled && (
+                              <TooltipContent>
+                                <p>Provide an email to enable file upload</p>
+                              </TooltipContent>
+                            )}
+                          </Tooltip>
+
+                          <Input
+                              type="text"
+                              placeholder="Ask something, or enter an email to attach files..."
+                              value={input}
+                              onChange={handleInputChange}
+                              onKeyPress={handleKeyPress}
+                              disabled={isPending}
+                              className="text-base h-12 pr-24 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+                          />
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+                              <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={handleMicClick}
+                                  disabled={isPending && !isRecording}
+                                  className={cn("h-9 w-9", isRecording && "text-red-500 hover:text-red-600")}
+                              >
+                                  {isRecording ? <Square className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+                              </Button>
+                              <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleSend(input, false)}
+                                  disabled={isPending || input.trim() === ''}
+                                  className="h-9 w-9"
+                              >
+                                  <Send className="h-5 w-5" />
+                              </Button>
+                          </div>
+                      </div>
+                  </CardContent>
+              </Card>
+          </div>
+      </div>
+      <AlertDialog open={showUploadAlert} onOpenChange={setShowUploadAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>File Upload Enabled</AlertDialogTitle>
+            <AlertDialogDescription>
+              Thank you for providing your email. You can now send your project documents to the email address you provided. Our team will review them and get back to you shortly.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowUploadAlert(false)}>OK</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </TooltipProvider>
   );
 }
-
-    
