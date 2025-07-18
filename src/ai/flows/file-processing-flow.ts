@@ -21,7 +21,12 @@ const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 const languageCodeMap: { [key: string]: string } = {
     'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German', 'it': 'Italian',
     'pt': 'Portuguese', 'ru': 'Russian', 'zh': 'Chinese', 'ja': 'Japanese', 'ar': 'Arabic',
-    'hi': 'Hindi', 'ms': 'Malay', 'ko': 'Korean', 'nl': 'Dutch',
+    'hi': 'Hindi', 'bn': 'Bengali', 'pa': 'Punjabi', 'jv': 'Javanese', 'ko': 'Korean',
+    'vi': 'Vietnamese', 'te': 'Telugu', 'mr': 'Marathi', 'tr': 'Turkish', 'ta': 'Tamil',
+    'ur': 'Urdu', 'gu': 'Gujarati', 'pl': 'Polish', 'uk': 'Ukrainian', 'nl': 'Dutch',
+    'ms': 'Malay', 'sv': 'Swedish', 'fi': 'Finnish', 'no': 'Norwegian', 'da': 'Danish',
+    'el': 'Greek', 'he': 'Hebrew', 'id': 'Indonesian', 'th': 'Thai', 'cs': 'Czech',
+    'hu': 'Hungarian', 'ro': 'Romanian', 'sk': 'Slovak', 'bg': 'Bulgarian'
 };
 
 
@@ -50,7 +55,7 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
             const logData = { ip, country, ...data };
             const idPart = sessionId ? `[id:${sessionId}]` : '';
 
-            const languageName = languageCode ? languageCodeMap[languageCode] || languageCode : '';
+            const languageName = languageCode ? languageCodeMap[languageCode.toLowerCase()] || languageCode : '';
             const langPart = languageName ? `[language:${languageName}]` : '';
             
             const countryPart = country !== 'N/A' ? `[country:${country}]` : '';

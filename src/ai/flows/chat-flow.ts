@@ -18,7 +18,12 @@ const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 const languageCodeMap: { [key: string]: string } = {
     'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German', 'it': 'Italian',
     'pt': 'Portuguese', 'ru': 'Russian', 'zh': 'Chinese', 'ja': 'Japanese', 'ar': 'Arabic',
-    'hi': 'Hindi', 'ms': 'Malay', 'ko': 'Korean', 'nl': 'Dutch',
+    'hi': 'Hindi', 'bn': 'Bengali', 'pa': 'Punjabi', 'jv': 'Javanese', 'ko': 'Korean',
+    'vi': 'Vietnamese', 'te': 'Telugu', 'mr': 'Marathi', 'tr': 'Turkish', 'ta': 'Tamil',
+    'ur': 'Urdu', 'gu': 'Gujarati', 'pl': 'Polish', 'uk': 'Ukrainian', 'nl': 'Dutch',
+    'ms': 'Malay', 'sv': 'Swedish', 'fi': 'Finnish', 'no': 'Norwegian', 'da': 'Danish',
+    'el': 'Greek', 'he': 'Hebrew', 'id': 'Indonesian', 'th': 'Thai', 'cs': 'Czech',
+    'hu': 'Hungarian', 'ro': 'Romanian', 'sk': 'Slovak', 'bg': 'Bulgarian'
 };
 
 async function logTrace(functionName: string, data: any, sessionId?: string, languageCode?: string) {
@@ -45,7 +50,7 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
             const logData = { ip, country, ...data };
             const idPart = sessionId ? `[id:${sessionId}]` : '';
             
-            const languageName = languageCode ? languageCodeMap[languageCode] || languageCode : '';
+            const languageName = languageCode ? languageCodeMap[languageCode.toLowerCase()] || languageCode : '';
             const langPart = languageName ? `[language:${languageName}]` : '';
 
             const countryPart = country !== 'N/A' ? `[country:${country}]` : '';
@@ -134,7 +139,7 @@ export async function handleFileUpload(fileDataUri: string, fileName: string, se
     await logTrace(functionName, { input_fileName: fileName }, sessionId);
     try {
         const processingResult = await processDocument({ fileDataUri, fileName, sessionId });
-        await logTrace(functionName, { file_summary: processingResult.summary }, sessionId);
+        await logTrace(functionName, { document_summary: processingResult.summary }, sessionId);
 
         const confirmationText = `Hemos recibido y procesado tu documento "${fileName}". Nuestro equipo lo revisará y se pondrá en contacto contigo a la brevedad. Gracias por tu interés.`;
         return { text: confirmationText };
