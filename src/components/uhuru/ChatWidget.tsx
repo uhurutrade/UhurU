@@ -34,7 +34,7 @@ function logClientTrace(functionName: string, data: any) {
 // Function to generate a random 6-digit string
 const generateSessionId = () => Math.floor(100000 + Math.random() * 900000).toString();
 
-export default function ChatWidget() {
+const ChatWidgetContent = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { id: 'initial', role: 'assistant', content: INITIAL_MESSAGE },
@@ -43,7 +43,6 @@ export default function ChatWidget() {
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
   
-  // Use a ref to store the session ID so it persists across re-renders
   const sessionIdRef = useRef<string | null>(null);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -52,19 +51,13 @@ export default function ChatWidget() {
   const audioChunksRef = useRef<Blob[]>([]);
   
   const { toast } = useToast();
-  const pathname = usePathname();
   
-  // Generate session ID only once when the component mounts
   useEffect(() => {
     if (!sessionIdRef.current) {
         sessionIdRef.current = generateSessionId();
         logClientTrace('initSession', { sessionId: sessionIdRef.current });
     }
   }, []);
-
-  if (pathname === '/ai-chat') {
-    return null;
-  }
 
   const toggleOpen = () => {
     logClientTrace('toggleOpen', { isOpen: !isOpen });
@@ -340,4 +333,14 @@ export default function ChatWidget() {
   );
 }
 
-    
+export default function ChatWidget() {
+  const pathname = usePathname();
+
+  // Conditionally render the widget's content, but call the hook unconditionally.
+  // This avoids the "Rendered fewer hooks" error.
+  if (pathname === '/ai-chat') {
+    return null;
+  }
+  
+  return <ChatWidgetContent />;
+}
