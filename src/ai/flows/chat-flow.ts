@@ -22,19 +22,21 @@ async function initializeChatSystem() {
 
     if (process.env.TRACE === 'ON') {
         try {
+            // Ensure the directory exists.
             await fs.mkdir(logDirectory, { recursive: true });
-            await fs.access(logFilePath);
+            
+            // Check if file exists by trying to append to it. If it doesn't exist, it will be created.
+            // This is simpler and more atomic than checking for existence first.
+            await fs.appendFile(logFilePath, '');
+            
+            console.log('Chat tracing is ON. Log file is at:', logFilePath);
         } catch (error) {
-            if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-                await fs.writeFile(logFilePath, '');
-                console.log('Log file created at:', logFilePath);
-            } else {
-                console.error('Error ensuring log file exists:', error);
-            }
+            console.error('Error ensuring log file exists:', error);
+            // If we can't write the log, we disable tracing for this session but don't crash.
+            process.env.TRACE = 'OFF'; 
         }
     }
     isInitialized = true;
-    console.log("Chat system initialized successfully.");
 }
 
 async function logTrace(functionName: string, data: any, sessionId?: string) {
