@@ -64,8 +64,10 @@ export async function chat(
         }));
 
         await logTrace(functionName, { status: 'calling_ai_generate' }, sessionId);
-        const response = await ai.generate({
-            model: googleAI.model('gemini-1.5-flash-latest'),
+        
+        const model = googleAI.model('gemini-1.5-flash-latest');
+        
+        const response = await model.generate({
             history: chatHistory,
             prompt: newUserMessage,
             system: systemPrompt,

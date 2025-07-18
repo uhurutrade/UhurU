@@ -22,7 +22,12 @@ interface Message {
 }
 
 const MAX_HISTORY_MESSAGES = 50;
-const INITIAL_MESSAGE = chatbotWelcomeMessage;
+const INITIAL_MESSAGE_OBJECT: Message = { 
+  id: 'initial', 
+  role: 'assistant', 
+  content: chatbotWelcomeMessage 
+};
+
 
 function logClientTrace(functionName: string, data: any) {
     if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
@@ -36,9 +41,7 @@ const generateSessionId = () => Math.floor(100000 + Math.random() * 900000).toSt
 
 const ChatWidgetContent = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 'initial', role: 'assistant', content: INITIAL_MESSAGE },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE_OBJECT]);
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
@@ -120,7 +123,7 @@ const ChatWidgetContent = () => {
       logClientTrace(functionName, { status: 'transition_started' });
       
       const historyForAI: HistoryItem[] = messages
-        .filter(msg => msg.content !== INITIAL_MESSAGE)
+        .filter(msg => msg.id !== 'initial')
         .slice(-MAX_HISTORY_MESSAGES)
         .map(msg => ({ role: msg.role, content: msg.content }));
 
