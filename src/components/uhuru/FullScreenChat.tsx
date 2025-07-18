@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useRef, useEffect, useTransition } from 'react';
@@ -43,7 +44,6 @@ export default function FullScreenChat() {
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
-  const [isUploadEnabled, setIsUploadEnabled] = useState(false);
   
   const sessionIdRef = useRef<string | null>(null);
   
@@ -62,9 +62,13 @@ export default function FullScreenChat() {
     }
   }, []);
 
+  const isUploadEnabled = messages.some(
+    (msg) => msg.role === 'assistant' && msg.content.includes('He habilitado la opción para adjuntar archivos')
+  );
+
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
-        const viewport = scrollAreaRef.current.querySelector('div');
+        const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
         if (viewport) {
             viewport.scrollTop = viewport.scrollHeight;
         }
@@ -106,18 +110,13 @@ export default function FullScreenChat() {
     const assistantMessageId = `assistant-${Date.now()}`;
 
     const userMessageObject: Message = { id: userMessageId, role: 'user', content: newUserMessage };
-    
-    // Check for email in the message and enable upload if found
-    const currentMessages = messages.filter(m => m.id !== 'initial');
-    if (/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi.test(newUserMessage)) {
-      setIsUploadEnabled(true);
-    }
 
-    setMessages([...currentMessages, userMessageObject]);
+    setMessages((prev) => [...prev, userMessageObject]);
     setInput('');
     
     startTransition(async () => {
-      const historyForAI: HistoryItem[] = [...currentMessages, userMessageObject]
+      const historyForAI: HistoryItem[] = [...messages, userMessageObject]
+        .filter(m => m.id !== 'initial')
         .slice(-MAX_HISTORY_MESSAGES)
         .map(msg => ({ role: msg.role, content: msg.content }));
 
@@ -168,8 +167,8 @@ export default function FullScreenChat() {
             content: `Enviaste el archivo: ${file.name}`,
             fileName: file.name
         };
-        const currentMessages = messages.filter(m => m.id !== 'initial');
-        setMessages([...currentMessages, userMessageObject]);
+
+        setMessages(prev => [...prev, userMessageObject]);
         
         startTransition(async () => {
           try {
@@ -190,7 +189,6 @@ export default function FullScreenChat() {
           }
         });
     };
-    // Reset file input value to allow uploading the same file again
     event.target.value = '';
   };
   
@@ -257,7 +255,6 @@ export default function FullScreenChat() {
   const handleNewChat = () => {
     setMessages([INITIAL_MESSAGE_OBJECT]);
     sessionIdRef.current = generateSessionId();
-    setIsUploadEnabled(false);
     toast({ title: "New Chat Started" });
   };
   
