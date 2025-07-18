@@ -15,44 +15,21 @@ import { retrieveKnowledge } from '@/chatbot/knowledge-retriever';
 const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
 const logFilePath = path.join(logDirectory, 'chatbot.log');
 
-let isInitialized = false;
-
-async function initializeChatSystem() {
-    if (isInitialized) return;
-
-    if (process.env.TRACE === 'ON') {
-        try {
-            // Ensure the directory exists.
-            await fs.mkdir(logDirectory, { recursive: true });
-            
-            // Check if file exists by trying to append to it. If it doesn't exist, it will be created.
-            // This is simpler and more atomic than checking for existence first.
-            await fs.appendFile(logFilePath, '');
-            
-            console.log('Chat tracing is ON. Log file is at:', logFilePath);
-        } catch (error) {
-            console.error('Error ensuring log file exists:', error);
-            // If we can't write the log, we disable tracing for this session but don't crash.
-            process.env.TRACE = 'OFF'; 
-        }
-    }
-    isInitialized = true;
-}
-
 async function logTrace(functionName: string, data: any, sessionId?: string) {
     if (process.env.TRACE === 'ON') {
-        const now = new Date();
-        const pad = (num: number) => num.toString().padStart(2, '0');
-        const timestamp = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-        
-        const headerList = headers();
-        const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
-        
-        const logData = { ip, ...data };
-        const idPart = sessionId ? `[id:${sessionId}]` : '';
-        const logMessage = `[${timestamp}]${idPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
-
         try {
+            await fs.mkdir(logDirectory, { recursive: true });
+            const now = new Date();
+            const pad = (num: number) => num.toString().padStart(2, '0');
+            const timestamp = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+            
+            const headerList = headers();
+            const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
+            
+            const logData = { ip, ...data };
+            const idPart = sessionId ? `[id:${sessionId}]` : '';
+            const logMessage = `[${timestamp}]${idPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
+
             await fs.appendFile(logFilePath, logMessage);
         } catch (error) {
             console.error('Failed to write to chatbot.log', error);
@@ -66,8 +43,6 @@ export async function chat(
   isVoiceInput: boolean,
   sessionId: string
 ): Promise<{ text: string; audioDataUri?: string }> {
-    await initializeChatSystem();
-
     const functionName = 'chat';
     const logPayload: any = {
       history: history.map(h => h.content),
@@ -78,11 +53,9 @@ export async function chat(
     await logTrace(functionName, logPayload, sessionId);
 
     try {
-        // 1. Retrieve the most relevant knowledge based on the user's message.
         const knowledgeContext = await retrieveKnowledge(newUserMessage);
         logTrace(functionName, { retrieved_knowledge_length: knowledgeContext.length }, sessionId);
 
-        // 2. Get the system prompt with the retrieved context.
         const systemPrompt = getSystemPrompt(knowledgeContext);
         
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId);
@@ -154,7 +127,6 @@ const ttsFlow = ai.defineFlow(
 );
 
 export async function textToSpeech(text: string, sessionId?: string): Promise<{ media: string }> {
-    await initializeChatSystem();
     return ttsFlow({ text, sessionId });
 }
 
@@ -185,7 +157,6 @@ const sttFlow = ai.defineFlow(
 );
 
 export async function speechToText(audioDataUri: string, sessionId: string): Promise<{ text: string }> {
-    await initializeChatSystem();
     return sttFlow({ audioDataUri, sessionId });
 }
 
