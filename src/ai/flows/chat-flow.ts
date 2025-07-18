@@ -58,16 +58,17 @@ export async function chat(
         
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId);
 
-        const chatHistory = history.map(item => ({
+        const chatHistory = history
+          .filter(item => item.role !== 'assistant' || (item.role === 'assistant' && item.content))
+          .map(item => ({
             role: item.role === 'assistant' ? 'model' : 'user',
             content: [{ text: item.content }]
         }));
 
         await logTrace(functionName, { status: 'calling_ai_generate' }, sessionId);
         
-        const model = googleAI.model('gemini-1.5-flash-latest');
-        
-        const response = await model.generate({
+        const response = await ai.generate({
+            model: googleAI.model('gemini-1.5-flash-latest'),
             history: chatHistory,
             prompt: newUserMessage,
             system: systemPrompt,
