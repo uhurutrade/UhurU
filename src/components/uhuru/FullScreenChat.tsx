@@ -1,28 +1,17 @@
-
 "use client";
 
 import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader, Mic, Play, Pause, Square, Send, Download, PlusSquare, Globe, Paperclip } from 'lucide-react';
-import { chat, speechToText } from '@/ai/flows/chat-flow';
+import { Bot, User, Loader, Mic, Play, Pause, Square, Send, Download, PlusSquare, Globe, Paperclip, FileText } from 'lucide-react';
+import { chat, speechToText, handleFileUpload as processFile } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '../ui/card';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-
 
 interface Message {
   id: string;
@@ -30,6 +19,7 @@ interface Message {
   content: string;
   audioUrl?: string;
   isPlaying?: boolean;
+  fileName?: string;
 }
 
 const MAX_HISTORY_MESSAGES = 50;
@@ -54,7 +44,6 @@ export default function FullScreenChat() {
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
   const [isUploadEnabled, setIsUploadEnabled] = useState(false);
-  const [showUploadAlert, setShowUploadAlert] = useState(false);
   
   const sessionIdRef = useRef<string | null>(null);
   
@@ -62,6 +51,7 @@ export default function FullScreenChat() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   
   const { toast } = useToast();
   
@@ -71,12 +61,6 @@ export default function FullScreenChat() {
         logClientTrace('initSession', { sessionId: sessionIdRef.current });
     }
   }, []);
-  
-  const handleFileUploadClick = () => {
-    if (isUploadEnabled) {
-      setShowUploadAlert(true);
-    }
-  };
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -118,38 +102,27 @@ export default function FullScreenChat() {
     const newUserMessage = messageContent.trim();
     if (newUserMessage === '' || isPending || !sessionIdRef.current) return;
     
-    // Check for email in the message and enable upload if found
-    const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi;
-    if (emailRegex.test(newUserMessage)) {
-      setIsUploadEnabled(true);
-      toast({
-        title: "File Upload Enabled",
-        description: "You can now attach documents for project evaluation.",
-      });
-    }
-    
-    logClientTrace(functionName, { input_newUserMessage: newUserMessage, isVoiceInput, sessionId: sessionIdRef.current });
-
     const userMessageId = `user-${Date.now()}`;
     const assistantMessageId = `assistant-${Date.now()}`;
 
     const userMessageObject: Message = { id: userMessageId, role: 'user', content: newUserMessage };
-    const currentHistory = messages.filter(msg => msg.id !== 'initial');
-    setMessages([...currentHistory, userMessageObject]);
+    
+    // Check for email in the message and enable upload if found
+    const currentMessages = messages.filter(m => m.id !== 'initial');
+    if (/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi.test(newUserMessage)) {
+      setIsUploadEnabled(true);
+    }
+
+    setMessages([...currentMessages, userMessageObject]);
     setInput('');
     
     startTransition(async () => {
-      logClientTrace(functionName, { status: 'transition_started' });
-      
-      const historyForAI: HistoryItem[] = [...currentHistory, userMessageObject]
+      const historyForAI: HistoryItem[] = [...currentMessages, userMessageObject]
         .slice(-MAX_HISTORY_MESSAGES)
         .map(msg => ({ role: msg.role, content: msg.content }));
 
       try {
-        logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
-        
         const { text: aiResponseText, audioDataUri } = await chat(newUserMessage, historyForAI, isVoiceInput, sessionIdRef.current!);
-        logClientTrace(functionName, { received_aiResponse: aiResponseText, has_audio: !!audioDataUri });
         
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -158,7 +131,6 @@ export default function FullScreenChat() {
 
       } catch (error) {
         const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
-        logClientTrace(functionName, { error_in_transition: errorMessage });
         
         setMessages((prevMessages) => [
             ...prevMessages,
@@ -171,8 +143,55 @@ export default function FullScreenChat() {
           description: "Sorry, I'm having trouble connecting. Please try again later.",
         });
       }
-      logClientTrace(functionName, { status: 'transition_finished' });
     });
+  };
+  
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !sessionIdRef.current) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async (e) => {
+        const fileDataUri = e.target?.result as string;
+        if (!fileDataUri) {
+            toast({ variant: 'destructive', title: 'Error', description: 'Could not read the file.' });
+            return;
+        }
+
+        const userMessageId = `user-file-${Date.now()}`;
+        const assistantMessageId = `assistant-file-${Date.now()}`;
+
+        const userMessageObject: Message = {
+            id: userMessageId,
+            role: 'user',
+            content: `Enviaste el archivo: ${file.name}`,
+            fileName: file.name
+        };
+        const currentMessages = messages.filter(m => m.id !== 'initial');
+        setMessages([...currentMessages, userMessageObject]);
+        
+        startTransition(async () => {
+          try {
+              const response = await processFile(fileDataUri, file.name, sessionIdRef.current!);
+              setMessages(prev => [...prev, {
+                  id: assistantMessageId,
+                  role: 'assistant',
+                  content: response.text
+              }]);
+          } catch (error) {
+              const errorMessage = error instanceof Error ? error.message : "An unknown error occurred while processing the file.";
+              setMessages(prev => [...prev, {
+                  id: `error-${Date.now()}`,
+                  role: 'assistant',
+                  content: `Error processing file: ${errorMessage}`
+              }]);
+              toast({ variant: 'destructive', title: 'File Processing Error', description: errorMessage });
+          }
+        });
+    };
+    // Reset file input value to allow uploading the same file again
+    event.target.value = '';
   };
   
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -198,14 +217,10 @@ export default function FullScreenChat() {
             reader.readAsDataURL(audioBlob);
             reader.onloadend = async () => {
                 const base64Audio = reader.result as string;
-                logClientTrace('handleMic_onStop', { status: 'transcribing_audio' });
                 startTransition(async () => {
                     try {
                         const { text } = await speechToText(base64Audio, sessionIdRef.current!);
-                        logClientTrace('handleMic_onStop', { transcribed_text: text });
-                        if (text) {
-                            handleSend(text, true);
-                        }
+                        if (text) handleSend(text, true);
                     } catch (error) {
                         toast({ variant: "destructive", title: "Transcription Error", description: "Could not transcribe audio." });
                     }
@@ -213,56 +228,37 @@ export default function FullScreenChat() {
             };
             stream.getTracks().forEach(track => track.stop());
         };
-
         mediaRecorderRef.current.start();
         setIsRecording(true);
-        logClientTrace('handleMicClick', { status: 'recording_started' });
     } catch (error) {
-        console.error("Error starting recording:", error);
         toast({ variant: "destructive", title: "Microphone Error", description: "Could not access microphone." });
     }
   };
 
   const stopRecording = () => {
-      if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+      if (mediaRecorderRef.current?.state === "recording") {
           mediaRecorderRef.current.stop();
           setIsRecording(false);
-          logClientTrace('handleMicClick', { status: 'recording_stopped' });
       }
   };
 
-  const handleMicClick = () => {
-    if (isRecording) {
-      stopRecording();
-    } else {
-      startRecording();
-    }
-  };
-
+  const handleMicClick = () => { isRecording ? stopRecording() : startRecording(); };
   const handleDownload = () => {
-    const conversationText = messages
-      .map(msg => `${msg.role.charAt(0).toUpperCase() + msg.role.slice(1)}:\n${msg.content}`)
-      .join('\n\n---------------------------------\n\n');
-    
+    const conversationText = messages.map(msg => `${msg.role.charAt(0).toUpperCase() + msg.role.slice(1)}:\n${msg.content}`).join('\n\n---\n\n');
     const blob = new Blob([conversationText], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    const timestamp = new Date().toISOString().replace(/:/g, '-');
-    link.download = `uhuru-chat-${timestamp}.txt`;
-    document.body.appendChild(link);
+    link.download = `uhuru-chat-${new Date().toISOString().replace(/:/g, '-')}.txt`;
     link.click();
-    document.body.removeChild(link);
     URL.revokeObjectURL(url);
-
-    toast({ title: "Conversation Downloaded", description: "Your chat history has been saved." });
+    toast({ title: "Conversation Downloaded" });
   };
-
   const handleNewChat = () => {
     setMessages([INITIAL_MESSAGE_OBJECT]);
     sessionIdRef.current = generateSessionId();
-    setIsUploadEnabled(false); // Reset upload state on new chat
-    toast({ title: "New Chat Started", description: "Ready for your questions!" });
+    setIsUploadEnabled(false);
+    toast({ title: "New Chat Started" });
   };
   
   return (
@@ -274,75 +270,33 @@ export default function FullScreenChat() {
                   <span>UhurU AI | All language - Polyglot</span>
               </div>
               <div className="flex items-center gap-2">
-                  
-                      <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" onClick={handleDownload} disabled={messages.length <= 1}>
-                                  <Download className="h-5 w-5" />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent><p>Download conversation</p></TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" onClick={handleNewChat}>
-                                  <PlusSquare className="h-5 w-5" />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent><p>New chat</p></TooltipContent>
-                      </Tooltip>
-                  
+                  <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={handleDownload} disabled={messages.length <= 1}><Download className="h-5 w-5" /></Button></TooltipTrigger><TooltipContent><p>Download conversation</p></TooltipContent></Tooltip>
+                  <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={handleNewChat}><PlusSquare className="h-5 w-5" /></Button></TooltipTrigger><TooltipContent><p>New chat</p></TooltipContent></Tooltip>
               </div>
           </div>
-
           <ScrollArea className="flex-1 pr-4 -mr-4" ref={scrollAreaRef}>
               <div className="space-y-6 pb-4">
               {messages.map((message) => (
-                  <div
-                  key={message.id}
-                  className={`flex items-start gap-4 ${
-                      message.role === 'user' ? 'justify-end' : ''
-                  }`}
-                  >
-                  {message.role === 'assistant' && (
-                      <div className="bg-primary text-primary-foreground rounded-full p-2.5 flex-shrink-0">
-                      <Bot className="h-6 w-6" />
+                  <div key={message.id} className={`flex items-start gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}>
+                      {message.role === 'assistant' && (<div className="bg-primary text-primary-foreground rounded-full p-2.5 flex-shrink-0"><Bot className="h-6 w-6" /></div>)}
+                      <div className={`max-w-[80%] rounded-xl p-4 text-base shadow-sm ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
+                          {message.fileName ? (
+                              <div className="flex items-center gap-2">
+                                  <FileText className="h-5 w-5" />
+                                  <span>{message.content}</span>
+                              </div>
+                          ) : (
+                              <p className="whitespace-pre-wrap">{message.content}</p>
+                          )}
+                          {message.audioUrl && (<Button variant="ghost" size="icon" className="h-8 w-8 mt-2" onClick={() => handleTogglePlay(message.audioUrl!, message.id)}>{message.isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}</Button>)}
                       </div>
-                  )}
-                  <div
-                      className={`max-w-[80%] rounded-xl p-4 text-base shadow-sm ${
-                      message.role === 'user'
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-muted-foreground'
-                      }`}
-                  >
-                      <p className="whitespace-pre-wrap">{message.content}</p>
-                      {message.audioUrl && (
-                      <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 mt-2"
-                          onClick={() => handleTogglePlay(message.audioUrl!, message.id)}
-                      >
-                          {message.isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                      </Button>
-                      )}
-                  </div>
-                  {message.role === 'user' && (
-                      <div className="bg-muted text-muted-foreground rounded-full p-2.5 flex-shrink-0">
-                      <User className="h-6 w-6" />
-                      </div>
-                  )}
+                      {message.role === 'user' && (<div className="bg-muted text-muted-foreground rounded-full p-2.5 flex-shrink-0"><User className="h-6 w-6" /></div>)}
                   </div>
               ))}
               {isPending && (
                   <div className="flex items-start gap-4">
-                  <div className="bg-primary text-primary-foreground rounded-full p-2.5">
-                      <Bot className="h-6 w-6" />
-                  </div>
-                  <div className="bg-muted text-muted-foreground rounded-xl p-4">
-                      <Loader className="h-6 w-6 animate-spin" />
-                  </div>
+                      <div className="bg-primary text-primary-foreground rounded-full p-2.5"><Bot className="h-6 w-6" /></div>
+                      <div className="bg-muted text-muted-foreground rounded-xl p-4"><Loader className="h-6 w-6 animate-spin" /></div>
                   </div>
               )}
               </div>
@@ -351,72 +305,23 @@ export default function FullScreenChat() {
               <Card className="relative shadow-lg">
                   <CardContent className="p-2">
                       <div className="relative flex items-center gap-2">
+                          <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".pdf,.doc,.docx,.txt" />
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                disabled={!isUploadEnabled}
-                                onClick={handleFileUploadClick}
-                                className="h-9 w-9 ml-1"
-                              >
-                                <Paperclip className="h-5 w-5" />
-                              </Button>
+                              <Button variant="ghost" size="icon" disabled={!isUploadEnabled} onClick={() => fileInputRef.current?.click()} className="h-9 w-9 ml-1"><Paperclip className="h-5 w-5" /></Button>
                             </TooltipTrigger>
-                            {!isUploadEnabled && (
-                              <TooltipContent>
-                                <p>Provide an email to enable file upload</p>
-                              </TooltipContent>
-                            )}
+                            <TooltipContent><p>{isUploadEnabled ? "Adjuntar documento de proyecto" : "Proporcione un email para habilitar la subida"}</p></TooltipContent>
                           </Tooltip>
-
-                          <Input
-                              type="text"
-                              placeholder="Ask something..."
-                              value={input}
-                              onChange={(e) => setInput(e.target.value)}
-                              onKeyPress={handleKeyPress}
-                              disabled={isPending}
-                              className="text-base h-12 pr-24 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
-                          />
+                          <Input type="text" placeholder="Ask something..." value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress} disabled={isPending} className="text-base h-12 pr-24 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"/>
                           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-                              <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={handleMicClick}
-                                  disabled={isPending && !isRecording}
-                                  className={cn("h-9 w-9", isRecording && "text-red-500 hover:text-red-600")}
-                              >
-                                  {isRecording ? <Square className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-                              </Button>
-                              <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleSend(input, false)}
-                                  disabled={isPending || input.trim() === ''}
-                                  className="h-9 w-9"
-                              >
-                                  <Send className="h-5 w-5" />
-                              </Button>
+                              <Button variant="ghost" size="icon" onClick={handleMicClick} disabled={isPending && !isRecording} className={cn("h-9 w-9", isRecording && "text-red-500 hover:text-red-600")}>{isRecording ? <Square className="h-5 w-5" /> : <Mic className="h-5 w-5" />}</Button>
+                              <Button variant="ghost" size="icon" onClick={() => handleSend(input, false)} disabled={isPending || input.trim() === ''} className="h-9 w-9"><Send className="h-5 w-5" /></Button>
                           </div>
                       </div>
                   </CardContent>
               </Card>
           </div>
       </div>
-      <AlertDialog open={showUploadAlert} onOpenChange={setShowUploadAlert}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>File Upload Enabled</AlertDialogTitle>
-            <AlertDialogDescription>
-              Thank you for providing your email. You can now send your project documents to the email address you provided. Our team will review them and get back to you shortly.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setShowUploadAlert(false)}>OK</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </TooltipProvider>
   );
 }

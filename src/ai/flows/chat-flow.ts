@@ -11,6 +11,7 @@ import { z } from 'zod';
 import wav from 'wav';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 import { retrieveKnowledge } from '@/chatbot/knowledge-retriever';
+import { processDocument } from './file-processing-flow';
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 
@@ -59,7 +60,6 @@ export async function chat(
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId);
 
         const chatHistory = history
-          .filter(item => item.role !== 'assistant' || (item.role === 'assistant' && item.content))
           .map(item => ({
             role: item.role === 'assistant' ? 'model' : 'user',
             content: [{ text: item.content }]
@@ -90,6 +90,24 @@ export async function chat(
         return { text: errorMessage };
     }
 }
+
+export async function handleFileUpload(fileDataUri: string, fileName: string, sessionId: string): Promise<{ text: string }> {
+    const functionName = 'handleFileUpload';
+    await logTrace(functionName, { input_fileName: fileName }, sessionId);
+    try {
+        const processingResult = await processDocument({ fileDataUri, fileName, sessionId });
+        await logTrace(functionName, { file_summary: processingResult.summary }, sessionId);
+
+        const confirmationText = `Hemos recibido y procesado tu documento "${fileName}". Nuestro equipo lo revisará y se pondrá en contacto contigo a la brevedad. Gracias por tu interés.`;
+        return { text: confirmationText };
+
+    } catch (error) {
+        const errorMessage = error instanceof Error ? `Error procesando el archivo: ${error.message}` : "Lo siento, ha ocurrido un error inesperado al procesar el archivo.";
+        await logTrace(functionName, { output_error: errorMessage }, sessionId);
+        return { text: errorMessage };
+    }
+}
+
 
 const ttsFlow = ai.defineFlow(
   {
