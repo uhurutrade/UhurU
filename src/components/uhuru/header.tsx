@@ -97,7 +97,7 @@ export default function Header() {
         </div>
 
         <div className="hidden md:flex flex-1 justify-center">
-          <Link href="/ai-chat" className="text-[10px] font-medium text-foreground hover:text-primary transition-colors">
+          <Link href="/ai-chat" className="text-[9px] font-medium text-foreground hover:text-primary transition-colors">
             AI
           </Link>
         </div>
