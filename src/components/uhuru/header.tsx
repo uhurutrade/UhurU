@@ -35,9 +35,9 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
   <TooltipProvider>
     <div className={cn(
       "flex items-center gap-4",
-      isMobile && "flex-col items-start"
+      isMobile ? "flex-col items-start" : "flex-row items-center"
     )}>
-        <Link href="/ai-chat" className="text-sm font-medium text-foreground hover:text-primary">IA</Link>
+        {isMobile && <Link href="/ai-chat" className="text-sm font-medium text-foreground hover:text-primary">IA Chat</Link>}
         <Link href="mailto:hello@uhurutrade.com" className="text-base text-foreground hover:text-primary">
           hello@uhurutrade.com
         </Link>
@@ -90,13 +90,23 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-zinc-100 dark:bg-background border-border/40 dark:bg-background/95 backdrop-blur-sm">
       <div className="container mx-auto flex h-24 max-w-7xl items-center justify-between px-4 md:px-10">
-        <Link href="/" className="flex items-center" prefetch={false}>
-          <Logo />
-        </Link>
-        <div className="hidden items-center gap-4 md:flex">
+        <div className="flex-1 flex justify-start">
+            <Link href="/" className="flex items-center" prefetch={false}>
+            <Logo />
+            </Link>
+        </div>
+
+        <div className="hidden md:flex flex-1 justify-center">
+          <Link href="/ai-chat" className="text-xs font-medium text-foreground hover:text-primary transition-colors">
+            IA
+          </Link>
+        </div>
+
+        <div className="hidden md:flex flex-1 justify-end items-center gap-4">
           <SocialLinks />
           <ThemeToggle />
         </div>
+
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
           <Sheet>
