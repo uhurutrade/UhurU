@@ -120,7 +120,7 @@ const fileProcessingFlow = ai.defineFlow(
 
     // Return the full output object including summary and extracted text.
     return {
-        summary: summary.summary,
+        summary: summaryOutput.summary,
         extractedText: extractedText,
     };
   }
