@@ -71,14 +71,6 @@ export default function FullScreenChat() {
         logClientTrace('initSession', { sessionId: sessionIdRef.current });
     }
   }, []);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const text = e.target.value;
-    setInput(text);
-    // Simple regex to check for something that looks like an email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    setIsUploadEnabled(emailRegex.test(text));
-  };
   
   const handleFileUploadClick = () => {
     if (isUploadEnabled) {
@@ -125,6 +117,16 @@ export default function FullScreenChat() {
     const functionName = 'handleSend';
     const newUserMessage = messageContent.trim();
     if (newUserMessage === '' || isPending || !sessionIdRef.current) return;
+    
+    // Check for email in the message and enable upload if found
+    const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi;
+    if (emailRegex.test(newUserMessage)) {
+      setIsUploadEnabled(true);
+      toast({
+        title: "File Upload Enabled",
+        description: "You can now attach documents for project evaluation.",
+      });
+    }
     
     logClientTrace(functionName, { input_newUserMessage: newUserMessage, isVoiceInput, sessionId: sessionIdRef.current });
 
@@ -259,6 +261,7 @@ export default function FullScreenChat() {
   const handleNewChat = () => {
     setMessages([INITIAL_MESSAGE_OBJECT]);
     sessionIdRef.current = generateSessionId();
+    setIsUploadEnabled(false); // Reset upload state on new chat
     toast({ title: "New Chat Started", description: "Ready for your questions!" });
   };
   
@@ -369,9 +372,9 @@ export default function FullScreenChat() {
 
                           <Input
                               type="text"
-                              placeholder="Ask something, or enter an email to attach files..."
+                              placeholder="Ask something..."
                               value={input}
-                              onChange={handleInputChange}
+                              onChange={(e) => setInput(e.target.value)}
                               onKeyPress={handleKeyPress}
                               disabled={isPending}
                               className="text-base h-12 pr-24 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
