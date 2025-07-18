@@ -241,7 +241,7 @@ export default function FullScreenChat() {
         <div className="flex items-center justify-between pb-4 border-b mb-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Languages className="h-5 w-5" />
-                <span>UhurU AI | Polyglot</span>
+                <span>UhurU AI | All language - Polyglot</span>
             </div>
             <div className="flex items-center gap-2">
                 <TooltipProvider>
@@ -357,3 +357,5 @@ export default function FullScreenChat() {
     </div>
   );
 }
+
+    

@@ -11,6 +11,7 @@ import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 
 interface Message {
   id: string;
@@ -51,6 +52,7 @@ export default function ChatWidget() {
   const audioChunksRef = useRef<Blob[]>([]);
   
   const { toast } = useToast();
+  const pathname = usePathname();
   
   // Generate session ID only once when the component mounts
   useEffect(() => {
@@ -59,6 +61,10 @@ export default function ChatWidget() {
         logClientTrace('initSession', { sessionId: sessionIdRef.current });
     }
   }, []);
+
+  if (pathname === '/ai-chat') {
+    return null;
+  }
 
   const toggleOpen = () => {
     logClientTrace('toggleOpen', { isOpen: !isOpen });
@@ -333,3 +339,5 @@ export default function ChatWidget() {
     </div>
   );
 }
+
+    
