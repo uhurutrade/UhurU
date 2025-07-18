@@ -9,36 +9,35 @@ import { headers } from 'next/headers';
 import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'zod';
 import wav from 'wav';
-import { connect, Vector } from 'vectordb';
-import { indexKnowledgeBase } from '@/chatbot/knowledge-indexer';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
+import { buildKnowledgePrompt } from '@/chatbot/chatbot-knowledge';
 
 const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
 const logFilePath = path.join(logDirectory, 'chatbot.log');
 
-const DB_PATH = path.join(process.cwd(), 'data');
-const embeddingModel = googleAI.embedder('text-embedding-004');
-const TABLE_NAME = 'knowledge';
+// Use a flag to ensure initialization only runs once
+let isInitialized = false;
 
-// Self-invoking async function to ensure log file and vector DB exist on startup
-(async () => {
-  // Ensure log file exists
-  if (process.env.TRACE === 'ON') {
-    try {
-      await fs.mkdir(logDirectory, { recursive: true });
-      await fs.access(logFilePath);
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-        await fs.writeFile(logFilePath, '');
-        console.log('Log file created at:', logFilePath);
-      } else {
-        console.error('Error ensuring log file exists:', error);
-      }
+async function initializeChatSystem() {
+    if (isInitialized) return;
+
+    // Ensure log file directory exists
+    if (process.env.TRACE === 'ON') {
+        try {
+            await fs.mkdir(logDirectory, { recursive: true });
+            await fs.access(logFilePath);
+        } catch (error) {
+            if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+                await fs.writeFile(logFilePath, '');
+                console.log('Log file created at:', logFilePath);
+            } else {
+                console.error('Error ensuring log file exists:', error);
+            }
+        }
     }
-  }
-  // Index the knowledge base into the vector DB
-  await indexKnowledgeBase();
-})();
+    isInitialized = true;
+    console.log("Chat system initialized successfully.");
+}
 
 async function logTrace(functionName: string, data: any, sessionId?: string) {
     if (process.env.TRACE === 'ON') {
@@ -61,31 +60,14 @@ async function logTrace(functionName: string, data: any, sessionId?: string) {
     }
 }
 
-async function retrieveContext(query: string): Promise<string> {
-    const db = await connect(DB_PATH);
-    const table = await db.openTable(TABLE_NAME);
-
-    const queryEmbedding = await embeddingModel.embed(query);
-
-    const searchResults = await table
-        .search(queryEmbedding as Vector)
-        .limit(5)
-        .execute();
-
-    if (searchResults.length === 0) {
-        return "No relevant context found.";
-    }
-
-    const context = searchResults.map(r => r.text).join('\n---\n');
-    return context;
-}
-
 export async function chat(
   newUserMessage: string, 
   history: HistoryItem[],
   isVoiceInput: boolean,
   sessionId: string
 ): Promise<{ text: string; audioDataUri?: string }> {
+    await initializeChatSystem();
+
     const functionName = 'chat';
     const logPayload: any = {
       history: history.map(h => h.content),
@@ -96,10 +78,10 @@ export async function chat(
     await logTrace(functionName, logPayload, sessionId);
 
     try {
-        const retrievedContext = await retrieveContext(newUserMessage);
-        await logTrace(functionName, { retrieved_context_length: retrievedContext.length }, sessionId);
-
-        const systemPrompt = getSystemPrompt(retrievedContext);
+        const knowledgeBase = await buildKnowledgePrompt();
+        const systemPrompt = getSystemPrompt(knowledgeBase);
+        
+        await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId);
 
         const chatHistory = history.map(item => ({
             role: item.role === 'assistant' ? 'model' : 'user',
