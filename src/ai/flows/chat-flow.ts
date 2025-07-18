@@ -15,7 +15,7 @@ import { processDocument } from './file-processing-flow';
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 
-async function logTrace(functionName: string, data: any, sessionId?: string) {
+async function logTrace(functionName: string, data: any, sessionId?: string, language?: string) {
     if (process.env.TRACE === 'ON') {
         try {
             const now = new Date();
@@ -25,14 +25,40 @@ async function logTrace(functionName: string, data: any, sessionId?: string) {
             const headerList = headers();
             const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
             
-            const logData = { ip, ...data };
+            let country = 'N/A';
+            try {
+                const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
+                if (geoResponse.ok) {
+                    const geoData = await geoResponse.json();
+                    country = geoData.countryCode || 'N/A';
+                }
+            } catch (geoError) {
+                console.error('IP Geolocation failed:', geoError);
+            }
+
+            const logData = { ip, country, ...data };
             const idPart = sessionId ? `[id:${sessionId}]` : '';
-            const logMessage = `[${timestamp}]${idPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
+            const langPart = language ? `[lang:${language}]` : '';
+            const logMessage = `[${timestamp}]${idPart}${langPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
 
             await fs.appendFile(logFilePath, logMessage);
         } catch (error) {
             console.error('Failed to write to chatbot.log', error);
         }
+    }
+}
+
+async function detectLanguage(text: string): Promise<string> {
+    try {
+        const response = await ai.generate({
+            model: googleAI.model('gemini-1.5-flash-latest'),
+            prompt: `Detect the language of the following text and respond only with its two-letter ISO 639-1 code (e.g., "en", "es", "fr"). Text: "${text}"`,
+            config: { temperature: 0 },
+        });
+        return response.text.trim().toLowerCase();
+    } catch (error) {
+        console.error("Language detection failed:", error);
+        return 'N/A'; // Return a default value on failure
     }
 }
 
@@ -43,21 +69,23 @@ export async function chat(
   sessionId: string
 ): Promise<{ text: string; audioDataUri?: string }> {
     const functionName = 'chat';
+    const detectedLang = await detectLanguage(newUserMessage);
+
     const logPayload: any = {
       history: history.map(h => h.content),
       isVoiceInput
     };
     if (isVoiceInput) logPayload.InputAudio = newUserMessage;
     else logPayload.input_newUserMessage = newUserMessage;
-    await logTrace(functionName, logPayload, sessionId);
+    await logTrace(functionName, logPayload, sessionId, detectedLang);
 
     try {
         const knowledgeContext = await retrieveKnowledge(newUserMessage);
-        logTrace(functionName, { retrieved_knowledge_length: knowledgeContext.length }, sessionId);
+        logTrace(functionName, { retrieved_knowledge_length: knowledgeContext.length }, sessionId, detectedLang);
 
         const systemPrompt = getSystemPrompt(knowledgeContext);
         
-        await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId);
+        await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, detectedLang);
 
         const chatHistory = history
           .map(item => ({
@@ -65,7 +93,7 @@ export async function chat(
             content: [{ text: item.content }]
         }));
 
-        await logTrace(functionName, { status: 'calling_ai_generate' }, sessionId);
+        await logTrace(functionName, { status: 'calling_ai_generate' }, sessionId, detectedLang);
         
         const response = await ai.generate({
             model: googleAI.model('gemini-1.5-flash-latest'),
@@ -75,7 +103,7 @@ export async function chat(
         });
 
         const responseText = response.text;
-        await logTrace(functionName, { output_ai_response: responseText }, sessionId);
+        await logTrace(functionName, { output_ai_response: responseText }, sessionId, detectedLang);
 
         if (isVoiceInput) {
             const { media: audioDataUri } = await textToSpeech(responseText, sessionId);
@@ -86,7 +114,7 @@ export async function chat(
 
     } catch (error) {
         const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
-        await logTrace(functionName, { output_error: errorMessage }, sessionId);
+        await logTrace(functionName, { output_error: errorMessage }, sessionId, detectedLang);
         return { text: errorMessage };
     }
 }
@@ -170,7 +198,7 @@ const sttFlow = ai.defineFlow(
             ],
         });
         const transcribedText = response.text;
-        await logTrace('speechToText_end', { output_transcribed_text: transcribedText });
+        await logTrace('speechToText_end', { output_transcribed_text: transcribedText }, sessionId);
         return { text: transcribedText };
     }
 );

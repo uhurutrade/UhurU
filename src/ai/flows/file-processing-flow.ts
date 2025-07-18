@@ -28,8 +28,19 @@ async function logTrace(functionName: string, data: any, sessionId?: string) {
             
             const headerList = headers();
             const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
+
+            let country = 'N/A';
+            try {
+                const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
+                if (geoResponse.ok) {
+                    const geoData = await geoResponse.json();
+                    country = geoData.countryCode || 'N/A';
+                }
+            } catch (geoError) {
+                console.error('IP Geolocation failed:', geoError);
+            }
             
-            const logData = { ip, ...data };
+            const logData = { ip, country, ...data };
             const idPart = sessionId ? `[id:${sessionId}]` : '';
             const logMessage = `[${timestamp}]${idPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
 
@@ -67,7 +78,7 @@ const documentProcessingPrompt = ai.definePrompt({
     The full text content of the document is provided below.
 
     Your tasks are:
-    1.  Extract the full text content of the document.
+    1.  Extract the full text content of the document. This is implicitly done for you, but you must pass it to the output.
     2.  Generate a comprehensive and detailed summary of the document. The summary should be several paragraphs long, highlighting key points, objectives, technologies involved, and any specific requests mentioned by the user.
 
     DOCUMENT CONTENT:
