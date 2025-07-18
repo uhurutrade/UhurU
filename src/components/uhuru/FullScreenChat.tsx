@@ -5,13 +5,14 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader, Mic, Play, Pause, Square, Send } from 'lucide-react';
+import { Bot, User, Loader, Mic, Play, Pause, Square, Send, Download, PlusSquare, BrainCircuit } from 'lucide-react';
 import { chat, speechToText } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '../ui/card';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 interface Message {
   id: string;
@@ -22,7 +23,11 @@ interface Message {
 }
 
 const MAX_HISTORY_MESSAGES = 50;
-const INITIAL_MESSAGE = chatbotWelcomeMessage;
+const INITIAL_MESSAGE_OBJECT: Message = { 
+  id: 'initial', 
+  role: 'assistant', 
+  content: chatbotWelcomeMessage 
+};
 
 function logClientTrace(functionName: string, data: any) {
     if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
@@ -34,9 +39,7 @@ function logClientTrace(functionName: string, data: any) {
 const generateSessionId = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 export default function FullScreenChat() {
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 'initial', role: 'assistant', content: INITIAL_MESSAGE },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE_OBJECT]);
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
@@ -110,7 +113,7 @@ export default function FullScreenChat() {
       logClientTrace(functionName, { status: 'transition_started' });
       
       const historyForAI: HistoryItem[] = messages
-        .filter(msg => msg.content !== INITIAL_MESSAGE)
+        .filter(msg => msg.id !== 'initial')
         .slice(-MAX_HISTORY_MESSAGES)
         .map(msg => ({ role: msg.role, content: msg.content }));
 
@@ -207,9 +210,61 @@ export default function FullScreenChat() {
       startRecording();
     }
   };
+
+  const handleDownload = () => {
+    const conversationText = messages
+      .map(msg => `${msg.role.charAt(0).toUpperCase() + msg.role.slice(1)}:\n${msg.content}`)
+      .join('\n\n---------------------------------\n\n');
+    
+    const blob = new Blob([conversationText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const timestamp = new Date().toISOString().replace(/:/g, '-');
+    link.download = `uhuru-chat-${timestamp}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast({ title: "Conversation Downloaded", description: "Your chat history has been saved." });
+  };
+
+  const handleNewChat = () => {
+    setMessages([INITIAL_MESSAGE_OBJECT]);
+    sessionIdRef.current = generateSessionId();
+    toast({ title: "New Chat Started", description: "Ready for your questions!" });
+  };
   
   return (
     <div className="flex-1 flex flex-col w-full max-w-4xl mx-auto p-4 min-h-0">
+        <div className="flex items-center justify-between pb-4 border-b mb-4">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <BrainCircuit className="h-5 w-5" />
+                <span>UhurU AI | Gemini 1.5 Flash</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" onClick={handleDownload} disabled={messages.length <= 1}>
+                                <Download className="h-5 w-5" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent><p>Download conversation</p></TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" onClick={handleNewChat}>
+                                <PlusSquare className="h-5 w-5" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent><p>New chat</p></TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
+        </div>
+
         <ScrollArea className="flex-1 pr-4 -mr-4" ref={scrollAreaRef}>
             <div className="space-y-6 pb-4">
             {messages.map((message) => (
@@ -225,7 +280,7 @@ export default function FullScreenChat() {
                     </div>
                 )}
                 <div
-                    className={`max-w-[80%] rounded-xl p-4 text-base ${
+                    className={`max-w-[80%] rounded-xl p-4 text-base shadow-sm ${
                     message.role === 'user'
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-muted text-muted-foreground'
@@ -262,8 +317,8 @@ export default function FullScreenChat() {
             )}
             </div>
         </ScrollArea>
-        <div className="pt-4 border-t">
-            <Card className="relative">
+        <div className="pt-4 mt-auto">
+            <Card className="relative shadow-lg">
                 <CardContent className="p-2">
                     <div className="relative flex items-center gap-2">
                         <Input
@@ -273,7 +328,7 @@ export default function FullScreenChat() {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyPress={handleKeyPress}
                             disabled={isPending}
-                            className="text-base h-12 pr-24 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                            className="text-base h-12 pr-24 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
                         />
                         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
                             <Button
