@@ -37,6 +37,7 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
       "flex items-center gap-4",
       isMobile && "flex-col items-start"
     )}>
+        <Link href="/ai-chat" className="text-sm font-medium text-foreground hover:text-primary">IA</Link>
         <Link href="mailto:hello@uhurutrade.com" className="text-base text-foreground hover:text-primary">
           hello@uhurutrade.com
         </Link>
