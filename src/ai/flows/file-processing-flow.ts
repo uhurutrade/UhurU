@@ -68,7 +68,7 @@ const documentProcessingPrompt = ai.definePrompt({
 
     Your tasks are:
     1.  Extract the full text content of the document.
-    2.  Generate a concise, one-paragraph summary of the document.
+    2.  Generate a comprehensive and detailed summary of the document. The summary should be several paragraphs long, highlighting key points, objectives, technologies involved, and any specific requests mentioned by the user.
 
     DOCUMENT CONTENT:
     {{{documentText}}}
@@ -103,7 +103,7 @@ const fileProcessingFlow = ai.defineFlow(
     await logTrace(functionName, {
       fileName: input.fileName,
       status: 'logging_full_content',
-      extractedText: extractedText,
+      document_full_text: extractedText,
     }, input.sessionId);
 
     // Step 3: Generate a summary using the extracted text.
@@ -116,11 +116,11 @@ const fileProcessingFlow = ai.defineFlow(
         throw new Error("Could not generate a summary for the document.");
     }
     
-    await logTrace(functionName, { status: 'finished', summary: summaryOutput.summary }, input.sessionId);
+    await logTrace(functionName, { status: 'finished', document_summary: summaryOutput.summary }, input.sessionId);
 
     // Return the full output object including summary and extracted text.
     return {
-        summary: summaryOutput.summary,
+        summary: summary.summary,
         extractedText: extractedText,
     };
   }
