@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader, Mic, Play, Pause, Square, Send, Download, PlusSquare, BrainCircuit } from 'lucide-react';
+import { Bot, User, Loader, Mic, Play, Pause, Square, Send, Download, PlusSquare, Languages } from 'lucide-react';
 import { chat, speechToText } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
@@ -240,8 +240,8 @@ export default function FullScreenChat() {
     <div className="flex-1 flex flex-col w-full max-w-4xl mx-auto p-4 min-h-0">
         <div className="flex items-center justify-between pb-4 border-b mb-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <BrainCircuit className="h-5 w-5" />
-                <span>UhurU AI | Gemini 1.5 Flash</span>
+                <Languages className="h-5 w-5" />
+                <span>UhurU AI | Polyglot</span>
             </div>
             <div className="flex items-center gap-2">
                 <TooltipProvider>
