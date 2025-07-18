@@ -10,18 +10,16 @@ import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'zod';
 import wav from 'wav';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
-import { buildKnowledgePrompt } from '@/chatbot/chatbot-knowledge';
+import { retrieveKnowledge } from '@/chatbot/knowledge-retriever';
 
 const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
 const logFilePath = path.join(logDirectory, 'chatbot.log');
 
-// Use a flag to ensure initialization only runs once
 let isInitialized = false;
 
 async function initializeChatSystem() {
     if (isInitialized) return;
 
-    // Ensure log file directory exists
     if (process.env.TRACE === 'ON') {
         try {
             await fs.mkdir(logDirectory, { recursive: true });
@@ -78,8 +76,12 @@ export async function chat(
     await logTrace(functionName, logPayload, sessionId);
 
     try {
-        const knowledgeBase = await buildKnowledgePrompt();
-        const systemPrompt = getSystemPrompt(knowledgeBase);
+        // 1. Retrieve the most relevant knowledge based on the user's message.
+        const knowledgeContext = await retrieveKnowledge(newUserMessage);
+        logTrace(functionName, { retrieved_knowledge_length: knowledgeContext.length }, sessionId);
+
+        // 2. Get the system prompt with the retrieved context.
+        const systemPrompt = getSystemPrompt(knowledgeContext);
         
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId);
 
