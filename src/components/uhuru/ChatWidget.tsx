@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageSquare, X, Send, Bot, User, Loader, Mic, Play, Pause, Square } from 'lucide-react';
+import { X, Send, Bot, User, Loader, Mic, Play, Pause, Square } from 'lucide-react';
 import { chat, speechToText } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
@@ -33,6 +33,25 @@ function logClientTrace(functionName: string, data: any) {
 
 // Function to generate a random 6-digit string
 const generateSessionId = () => Math.floor(100000 + Math.random() * 900000).toString();
+
+const UhurUIcon = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="40"
+      height="40"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-9 w-9 text-primary-foreground"
+    >
+        <path d="M8 3V7c0 2.2 1.8 4 4 4s4-1.8 4-4V3" />
+        <path d="M9 21a3 3 0 0 0 6 0" />
+    </svg>
+);
+
 
 const ChatWidgetContent = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -325,7 +344,7 @@ const ChatWidgetContent = () => {
                 onClick={toggleOpen}
                 className="rounded-full h-16 w-16 shadow-lg flex items-center justify-center bg-primary hover:bg-primary/90"
                 >
-                <MessageSquare className="h-8 w-8 text-primary-foreground" />
+                <UhurUIcon />
                 </Button>
             </div>
         )}
