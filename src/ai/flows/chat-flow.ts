@@ -39,7 +39,8 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
             const logData = { ip, country, ...data };
             const idPart = sessionId ? `[id:${sessionId}]` : '';
             const langPart = language ? `[lang:${language}]` : '';
-            const logMessage = `[${timestamp}]${idPart}${langPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
+            const countryPart = country !== 'N/A' ? `[country:${country}]` : '';
+            const logMessage = `[${timestamp}]${idPart}${langPart}${countryPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
 
             await fs.appendFile(logFilePath, logMessage);
         } catch (error) {
