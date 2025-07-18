@@ -12,13 +12,11 @@ import wav from 'wav';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 import { retrieveKnowledge } from '@/chatbot/knowledge-retriever';
 
-const logDirectory = path.join(process.cwd(), 'src', 'chatbot');
-const logFilePath = path.join(logDirectory, 'chatbot.log');
+const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 
 async function logTrace(functionName: string, data: any, sessionId?: string) {
     if (process.env.TRACE === 'ON') {
         try {
-            await fs.mkdir(logDirectory, { recursive: true });
             const now = new Date();
             const pad = (num: number) => num.toString().padStart(2, '0');
             const timestamp = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
