@@ -152,6 +152,7 @@ const ttsFlow = ai.defineFlow(
 );
 
 export async function textToSpeech(text: string, sessionId?: string): Promise<{ media: string }> {
+    await initializeChatSystem();
     return ttsFlow({ text, sessionId });
 }
 
@@ -182,6 +183,7 @@ const sttFlow = ai.defineFlow(
 );
 
 export async function speechToText(audioDataUri: string, sessionId: string): Promise<{ text: string }> {
+    await initializeChatSystem();
     return sttFlow({ audioDataUri, sessionId });
 }
 
