@@ -18,8 +18,15 @@ import { headers } from 'next/headers';
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 
+const languageCodeMap: { [key: string]: string } = {
+    'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German', 'it': 'Italian',
+    'pt': 'Portuguese', 'ru': 'Russian', 'zh': 'Chinese', 'ja': 'Japanese', 'ar': 'Arabic',
+    'hi': 'Hindi', 'ms': 'Malay', 'ko': 'Korean', 'nl': 'Dutch',
+};
+
+
 // Re-using the same logger function from chat-flow
-async function logTrace(functionName: string, data: any, sessionId?: string) {
+async function logTrace(functionName: string, data: any, sessionId?: string, languageCode?: string) {
     if (process.env.TRACE === 'ON') {
         try {
             const now = new Date();
@@ -42,7 +49,12 @@ async function logTrace(functionName: string, data: any, sessionId?: string) {
             
             const logData = { ip, country, ...data };
             const idPart = sessionId ? `[id:${sessionId}]` : '';
-            const logMessage = `[${timestamp}]${idPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
+
+            const languageName = languageCode ? languageCodeMap[languageCode] || languageCode : '';
+            const langPart = languageName ? `[language:${languageName}]` : '';
+            
+            const countryPart = country !== 'N/A' ? `[country:${country}]` : '';
+            const logMessage = `[${timestamp}]${idPart}${langPart}${countryPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
 
             await fs.appendFile(logFilePath, logMessage);
         } catch (error) {

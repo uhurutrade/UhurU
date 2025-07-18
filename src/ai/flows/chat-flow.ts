@@ -15,7 +15,13 @@ import { processDocument } from './file-processing-flow';
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 
-async function logTrace(functionName: string, data: any, sessionId?: string, language?: string) {
+const languageCodeMap: { [key: string]: string } = {
+    'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German', 'it': 'Italian',
+    'pt': 'Portuguese', 'ru': 'Russian', 'zh': 'Chinese', 'ja': 'Japanese', 'ar': 'Arabic',
+    'hi': 'Hindi', 'ms': 'Malay', 'ko': 'Korean', 'nl': 'Dutch',
+};
+
+async function logTrace(functionName: string, data: any, sessionId?: string, languageCode?: string) {
     if (process.env.TRACE === 'ON') {
         try {
             const now = new Date();
@@ -38,7 +44,10 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
 
             const logData = { ip, country, ...data };
             const idPart = sessionId ? `[id:${sessionId}]` : '';
-            const langPart = language ? `[lang:${language}]` : '';
+            
+            const languageName = languageCode ? languageCodeMap[languageCode] || languageCode : '';
+            const langPart = languageName ? `[language:${languageName}]` : '';
+
             const countryPart = country !== 'N/A' ? `[country:${country}]` : '';
             const logMessage = `[${timestamp}]${idPart}${langPart}${countryPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
 
@@ -84,7 +93,7 @@ export async function chat(
         const knowledgeContext = await retrieveKnowledge(newUserMessage);
         logTrace(functionName, { retrieved_knowledge_length: knowledgeContext.length }, sessionId, detectedLang);
 
-        const systemPrompt = getSystemPrompt(knowledgeContext);
+        const systemPrompt = getSystemPrompt(knowledgeContext, detectedLang);
         
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, detectedLang);
 
@@ -107,7 +116,7 @@ export async function chat(
         await logTrace(functionName, { output_ai_response: responseText }, sessionId, detectedLang);
 
         if (isVoiceInput) {
-            const { media: audioDataUri } = await textToSpeech(responseText, sessionId);
+            const { media: audioDataUri } = await textToSpeech(responseText, sessionId, detectedLang);
             return { text: responseText, audioDataUri };
         }
 
@@ -144,14 +153,15 @@ const ttsFlow = ai.defineFlow(
     inputSchema: z.object({
       text: z.string(),
       sessionId: z.string().optional(),
+      languageCode: z.string().optional(),
     }),
     outputSchema: z.object({
         media: z.string().describe("The base64 encoded WAV audio data URI."),
     }),
   },
-  async ({ text, sessionId }) => {
+  async ({ text, sessionId, languageCode }) => {
     if (!text) return { media: '' };
-    await logTrace('textToSpeech', { input_text: text }, sessionId);
+    await logTrace('textToSpeech', { input_text: text }, sessionId, languageCode);
     
     const { media } = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
@@ -174,8 +184,8 @@ const ttsFlow = ai.defineFlow(
   }
 );
 
-export async function textToSpeech(text: string, sessionId?: string): Promise<{ media: string }> {
-    return ttsFlow({ text, sessionId });
+export async function textToSpeech(text: string, sessionId?: string, languageCode?: string): Promise<{ media: string }> {
+    return ttsFlow({ text, sessionId, languageCode });
 }
 
 const sttFlow = ai.defineFlow(
