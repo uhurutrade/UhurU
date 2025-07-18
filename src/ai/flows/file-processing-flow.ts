@@ -52,14 +52,13 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
                 console.error('IP Geolocation failed:', geoError);
             }
             
-            const logData = { ip, country, ...data };
             const idPart = sessionId ? `[id:${sessionId}]` : '';
-
             const languageName = languageCode ? languageCodeMap[languageCode.toLowerCase()] || languageCode : '';
             const langPart = languageName ? `[language:${languageName}]` : '';
-            
-            const countryPart = country !== 'N/A' ? `[country:${country}]` : '';
-            const logMessage = `[${timestamp}]${idPart}${langPart}${countryPart} uhurulog_${functionName}: ${JSON.stringify(logData)}\n`;
+            const countryPart = `[country:${country}]`;
+            const ipPart = `[ip:${ip}]`;
+
+            const logMessage = `[${timestamp}]${idPart}${langPart}${countryPart}${ipPart} uhurulog_${functionName}: ${JSON.stringify(data)}\n`;
 
             await fs.appendFile(logFilePath, logMessage);
         } catch (error) {
