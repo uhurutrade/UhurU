@@ -20,8 +20,9 @@ const getVectorStore = async (): Promise<MemoryVectorStore> => {
 
     console.log("Initializing vector store for the first time...");
 
-    // 1. Initialize the embedding model from Google
+    // 1. Initialize the embedding model from Google, passing the API key explicitly.
     const embeddings = new GoogleGenerativeAIEmbeddings({
+        apiKey: process.env.GOOGLE_API_KEY, // Pass the API key from environment variables
         model: "text-embedding-004", // A powerful and efficient model
     });
 
@@ -64,3 +65,4 @@ export async function retrieveKnowledge(query: string, topK = 5): Promise<string
     // 7. Format the results into a single context string
     return results.map(doc => `Source: ${doc.metadata.source}\nContent: ${doc.pageContent}`).join('\n\n---\n\n');
 }
+
