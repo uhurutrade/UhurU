@@ -72,7 +72,7 @@ async function detectLanguage(text: string): Promise<string> {
         return response.text.trim().toLowerCase();
     } catch (error) {
         console.error("Language detection failed:", error);
-        return 'N/A'; // Return a default value on failure
+        return 'en'; // Default to english on failure
     }
 }
 
@@ -127,7 +127,16 @@ export async function chat(
         return { text: responseText };
 
     } catch (error) {
-        const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
+        let errorMessage: string;
+        if (error instanceof Error && (error.message.includes('503') || error.message.toLowerCase().includes('overloaded'))) {
+            errorMessage = detectedLang === 'es' 
+                ? "Hay demasiados clientes simultáneamente, por favor espere un minuto e inténtelo de nuevo."
+                : "There are too many simultaneous clients, please wait a minute and try again.";
+        } else {
+            errorMessage = error instanceof Error 
+                ? (detectedLang === 'es' ? `Lo siento, ha habido un problema: ${error.message}`: `Sorry, there was a problem: ${error.message}`)
+                : (detectedLang === 'es' ? "Lo siento, no he podido conectar con el asistente en este momento. Por favor, inténtelo de nuevo más tarde." : "Sorry, I couldn't connect to the assistant at this time. Please try again later.");
+        }
         await logTrace(functionName, { output_error: errorMessage }, sessionId, detectedLang);
         return { text: errorMessage };
     }
