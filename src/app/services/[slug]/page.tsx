@@ -14,6 +14,7 @@ import ErpCrmPage from '../erp-and-crm/page';
 import AiAutomationPage from '../ai-automation-and-ai-agents/page';
 import BlockchainCryptoPage from '../blockchain-and-crypto/page';
 import BusinessLocalizationPage from '../business-localization-strategies/page';
+import NoCodeAppDesignPage from '../no-code-app-design/page';
 
 
 const iconComponents: { [key: string]: React.ReactNode } = {
@@ -34,13 +35,6 @@ const serviceContent: { [key: string]: { paragraphs: string[] } } = {
       "Master the world's largest and most liquid financial markets with our expert training in Vanilla Options and Forex Investment. This service is designed for individuals and institutions seeking to build secure, high-liquidity investment portfolios using regulated and transparent trading instruments. We focus on low-risk, structured strategies that provide predictable payoff profiles and protect your capital.",
       "Our curriculum includes comprehensive training on CBOE/CME listed options, where you'll learn to trade derivatives with clearly defined, controlled risk. We demystify complex concepts and provide you with actionable strategies for generating consistent returns. In the Forex market, you will gain access to tailored currency strategies that allow you to capitalize on global macroeconomic trends while managing risk effectively through sophisticated hedging and position-sizing frameworks.",
       "Beyond training, we offer real-time mentorship and continuous support. As a client, you will receive timely market updates, expert analysis, and personalized strategy adjustments from our team of seasoned traders. We are committed to helping you build a resilient, risk-managed portfolio that aligns with your financial goals."
-    ]
-  },
-  'no-code-app-design': {
-    paragraphs: [
-      "Bring your app ideas to life without a traditional development team. Our No-Code App Design service empowers you to build, launch, and scale powerful web, iOS, and Android applications using cutting-edge, open-source no-code platforms. This approach dramatically reduces development time and costs, allowing you to go to market in a matter of weeks.",
-      "We specialize in cross-platform development, creating responsive and intuitive applications with feature-rich, drag-and-drop interfaces. A key advantage of our methodology is portability; all applications are Docker-containerized, meaning you can deploy them seamlessly across any environment—cloud, on-premise, or hybrid—without vendor lock-in. This gives you ultimate control and flexibility over your infrastructure.",
-      "Our service extends beyond the initial launch. We provide lifetime maintenance, including regular updates, security patches, and feature enhancements to ensure your application remains modern, secure, and aligned with your evolving business needs. From a rapid MVP (Minimum Viable Product) to a full-scale enterprise application, we provide the tools and expertise to build your vision."
     ]
   },
   'cloud-saas-paas-management': {
@@ -77,7 +71,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 
 export default function ServicePage({ params }: { params: { slug: string } }) {
-  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies'];
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design'];
   if (dedicatedPages.includes(params.slug)) {
     // This route should not handle dedicated pages.
     // Next.js will prioritize the specific page file.
@@ -135,7 +129,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
 }
 
 export async function generateStaticParams() {
-  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies'];
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design'];
   // Generate params only for services that DON'T have a dedicated page.
   return features
     .filter(feature => !dedicatedPages.includes(feature.slug))
