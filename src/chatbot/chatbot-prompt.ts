@@ -76,5 +76,3 @@ HERE IS THE RETRIEVED KNOWLEDGE CONTEXT:
 ${retrievedKnowledge}
 `;
 }
-
-    

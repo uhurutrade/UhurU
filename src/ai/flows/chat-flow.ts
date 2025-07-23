@@ -134,7 +134,7 @@ export async function chat(
         const knowledgeContext = await retrieveKnowledge(newUserMessage);
         logTrace(functionName, { retrieved_knowledge_length: knowledgeContext.length }, sessionId, languageCode);
 
-        const systemPrompt = getSystemPrompt(knowledgeContext, languageCode, isFirstMessageInSession);
+        const systemPrompt = getSystemPrompt(knowledgeContext, languageCode!, isFirstMessageInSession);
         
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, languageCode);
 
@@ -284,5 +284,3 @@ async function toWav(
     writer.end();
   });
 }
-
-    
