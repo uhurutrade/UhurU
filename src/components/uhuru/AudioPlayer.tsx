@@ -76,7 +76,7 @@ export default function AudioPlayer({
           thumbClassName={sliderThumbSize}
         />
         {duration > 0 && (
-          <span className={cn("text-xs font-mono", isCompact ? "w-16" : "w-20")}>
+          <span className={cn("text-xs font-mono whitespace-nowrap", isCompact ? "w-20" : "w-24")}>
             {formatTime(currentTime)} / {formatTime(duration)}
           </span>
         )}
