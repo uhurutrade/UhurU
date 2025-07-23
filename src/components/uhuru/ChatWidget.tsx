@@ -30,6 +30,7 @@ const INITIAL_MESSAGE_OBJECT: Message = {
   content: chatbotWelcomeMessage 
 };
 
+const languageCodeMap: { [key: string]: string } = { 'en': 'English', 'es': 'Español' };
 
 function logClientTrace(functionName: string, data: any) {
     if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
@@ -46,6 +47,7 @@ const ChatWidgetContent = () => {
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState<string | null>(null);
   
   const sessionIdRef = useRef<string | null>(null);
   const sessionLanguageRef = useRef<string | null>(null);
@@ -73,9 +75,9 @@ const ChatWidgetContent = () => {
     logClientTrace('toggleOpen', { isOpen: !isOpen });
     setIsOpen(!isOpen);
     if (!isOpen && messages.length === 1) {
-        // Reset to initial message if chat is closed and was not used
         setMessages([INITIAL_MESSAGE_OBJECT]);
         sessionLanguageRef.current = null;
+        setCurrentLanguage(null);
     }
   }
 
@@ -142,12 +144,13 @@ const ChatWidgetContent = () => {
       try {
         logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
         
-        const { text: aiResponseText, audioDataUri, detectedSessionLanguage } = await chat(newUserMessage, historyForAI, isVoiceInput, sessionIdRef.current!, sessionLanguageRef.current);
+        const { text: aiResponseText, audioDataUri, sessionLanguage } = await chat(newUserMessage, historyForAI, isVoiceInput, sessionIdRef.current!, sessionLanguageRef.current);
         logClientTrace(functionName, { received_aiResponse: aiResponseText, has_audio: !!audioDataUri });
         
-        if (detectedSessionLanguage) {
-            sessionLanguageRef.current = detectedSessionLanguage;
-            logClientTrace(functionName, { session_language_set: detectedSessionLanguage });
+        if (sessionLanguage) {
+            sessionLanguageRef.current = sessionLanguage;
+            setCurrentLanguage(languageCodeMap[sessionLanguage] || sessionLanguage);
+            logClientTrace(functionName, { session_language_set: sessionLanguage });
         }
         
         setMessages((prevMessages) => [
@@ -291,7 +294,9 @@ const ChatWidgetContent = () => {
               className="w-80 h-[28rem] bg-card rounded-lg shadow-2xl flex flex-col border border-border"
             >
               <div className="flex justify-between items-center p-3 border-b border-border bg-card-foreground/5 dark:bg-card-foreground/10 rounded-t-lg">
-                <h3 className="text-base font-semibold text-foreground">UhurU AI Chat</h3>
+                <h3 className="text-base font-semibold text-foreground">
+                  UhurU AI Chat {currentLanguage && `(${currentLanguage})`}
+                </h3>
                 <Button variant="ghost" size="icon" onClick={toggleOpen} className="h-8 w-8">
                   <X className="h-4 w-4" />
                 </Button>
@@ -423,4 +428,5 @@ export default function ChatWidget() {
   return <ChatWidgetContent />;
 }
 
+    
     

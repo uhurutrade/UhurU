@@ -84,15 +84,13 @@ export async function chat(
   isVoiceInput: boolean,
   sessionId: string,
   sessionLanguage: string | null
-): Promise<{ text: string; audioDataUri?: string; detectedSessionLanguage?: string; }> {
+): Promise<{ text: string; audioDataUri?: string; sessionLanguage: string; }> {
     const functionName = 'chat';
     
     let languageCode = sessionLanguage;
-    let newSessionLanguage: string | undefined = undefined;
 
     if (!languageCode) {
         languageCode = await detectLanguage(newUserMessage);
-        newSessionLanguage = languageCode;
         logTrace(functionName, { status: `new_session_language_detected`, languageCode }, sessionId);
     }
 
@@ -132,10 +130,10 @@ export async function chat(
 
         if (isVoiceInput) {
             const { media: audioDataUri } = await textToSpeech(responseText, sessionId, languageCode);
-            return { text: responseText, audioDataUri, detectedSessionLanguage: newSessionLanguage };
+            return { text: responseText, audioDataUri, sessionLanguage: languageCode };
         }
 
-        return { text: responseText, detectedSessionLanguage: newSessionLanguage };
+        return { text: responseText, sessionLanguage: languageCode };
 
     } catch (error) {
         let errorMessage: string;
@@ -149,7 +147,7 @@ export async function chat(
                 : (languageCode === 'es' ? "Lo siento, no he podido conectar con el asistente en este momento. Por favor, inténtelo de nuevo más tarde." : "Sorry, I couldn't connect to the assistant at this time. Please try again later.");
         }
         await logTrace(functionName, { output_error: errorMessage }, sessionId, languageCode);
-        return { text: errorMessage, detectedSessionLanguage: newSessionLanguage };
+        return { text: errorMessage, sessionLanguage: languageCode };
     }
 }
 
@@ -258,5 +256,7 @@ async function toWav(
     writer.end();
   });
 }
+
+    
 
     

@@ -30,6 +30,8 @@ const INITIAL_MESSAGE_OBJECT: Message = {
   content: chatbotWelcomeMessage 
 };
 
+const languageCodeMap: { [key: string]: string } = { 'en': 'English', 'es': 'Español' };
+
 function logClientTrace(functionName: string, data: any) {
     if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
         const timestamp = new Date().toISOString();
@@ -44,6 +46,7 @@ export default function FullScreenChat() {
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState<string | null>(null);
   
   const sessionIdRef = useRef<string | null>(null);
   const sessionLanguageRef = useRef<string | null>(null);
@@ -122,11 +125,12 @@ export default function FullScreenChat() {
         .map(msg => ({ role: msg.role, content: msg.content }));
 
       try {
-        const { text: aiResponseText, audioDataUri, detectedSessionLanguage } = await chat(newUserMessage, historyForAI, isVoiceInput, sessionIdRef.current!, sessionLanguageRef.current);
+        const { text: aiResponseText, audioDataUri, sessionLanguage } = await chat(newUserMessage, historyForAI, isVoiceInput, sessionIdRef.current!, sessionLanguageRef.current);
         
-        if (detectedSessionLanguage) {
-            sessionLanguageRef.current = detectedSessionLanguage;
-            logClientTrace(functionName, { session_language_set: detectedSessionLanguage });
+        if (sessionLanguage) {
+            sessionLanguageRef.current = sessionLanguage;
+            setCurrentLanguage(languageCodeMap[sessionLanguage] || sessionLanguage);
+            logClientTrace(functionName, { session_language_set: sessionLanguage });
         }
 
         setMessages((prevMessages) => [
@@ -262,6 +266,7 @@ export default function FullScreenChat() {
     setMessages([INITIAL_MESSAGE_OBJECT]);
     sessionIdRef.current = generateSessionId();
     sessionLanguageRef.current = null;
+    setCurrentLanguage(null);
     toast({ title: "New Chat Started" });
   };
   
@@ -271,7 +276,9 @@ export default function FullScreenChat() {
           <div className="flex items-center justify-between pb-4 border-b mb-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Globe className="h-5 w-5" />
-                  <span>UhurU AI | All language - Polyglot</span>
+                  <span>
+                    UhurU AI | {currentLanguage ? `Responding in ${currentLanguage}` : "All language - Polyglot"}
+                  </span>
               </div>
               <div className="flex items-center gap-2">
                   <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={handleDownload} disabled={messages.length <= 1}><Download className="h-5 w-5" /></Button></TooltipTrigger><TooltipContent><p>Download conversation</p></TooltipContent></Tooltip>
@@ -312,7 +319,7 @@ export default function FullScreenChat() {
                           <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".pdf,.doc,.docx,.txt" />
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" disabled={!isUploadEnabled} onClick={() => fileInput.current?.click()} className="h-9 w-9 ml-1"><Paperclip className="h-5 w-5" /></Button>
+                              <Button variant="ghost" size="icon" disabled={!isUploadEnabled} onClick={() => fileInputRef.current?.click()} className="h-9 w-9 ml-1"><Paperclip className="h-5 w-5" /></Button>
                             </TooltipTrigger>
                             <TooltipContent><p>{isUploadEnabled ? "Adjuntar documento de proyecto" : "Proporcione un email para habilitar la subida"}</p></TooltipContent>
                           </Tooltip>
@@ -330,4 +337,5 @@ export default function FullScreenChat() {
   );
 }
 
+    
     
