@@ -30,7 +30,16 @@ const INITIAL_MESSAGE_OBJECT: Message = {
   content: chatbotWelcomeMessage 
 };
 
-const languageCodeMap: { [key: string]: string } = { 'en': 'English', 'es': 'Español' };
+const languageCodeMap: { [key: string]: string } = {
+    'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch', 'it': 'Italiano',
+    'pt': 'Português', 'ru': 'Русский', 'zh': '中文', 'ja': '日本語', 'ar': 'العربية',
+    'hi': 'हिन्दी', 'bn': 'বাংলা', 'pa': 'ਪੰਜਾਬੀ', 'ko': '한국어',
+    'vi': 'Tiếng Việt', 'tr': 'Türkçe', 'pl': 'Polski', 'nl': 'Nederlands',
+    'sv': 'Svenska', 'fi': 'Suomi', 'no': 'Norsk', 'da': 'Dansk',
+    'el': 'Ελληνικά', 'he': 'עברית', 'id': 'Bahasa Indonesia', 'th': 'ภาษาไทย', 'cs': 'Čeština',
+    'hu': 'Magyar', 'ro': 'Română', 'sk': 'Slovenčina', 'bg': 'Български'
+};
+
 
 function logClientTrace(functionName: string, data: any) {
     if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
@@ -149,7 +158,7 @@ const ChatWidgetContent = () => {
         
         if (sessionLanguage) {
             sessionLanguageRef.current = sessionLanguage;
-            setCurrentLanguage(languageCodeMap[sessionLanguage] || sessionLanguage);
+            setCurrentLanguage(languageCodeMap[sessionLanguage.toLowerCase()] || sessionLanguage);
             logClientTrace(functionName, { session_language_set: sessionLanguage });
         }
         
@@ -429,4 +438,6 @@ export default function ChatWidget() {
 }
 
     
+    
+
     

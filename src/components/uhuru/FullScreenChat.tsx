@@ -30,8 +30,22 @@ const INITIAL_MESSAGE_OBJECT: Message = {
   content: chatbotWelcomeMessage 
 };
 
-const languageCodeMap: { [key: string]: string } = { 'en': 'English', 'es': 'Español' };
-const respondingInMap: { [key: string]: string } = { 'en': 'Responding in', 'es': 'Respondiendo en' };
+const languageCodeMap: { [key: string]: string } = {
+    'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch', 'it': 'Italiano',
+    'pt': 'Português', 'ru': 'Русский', 'zh': '中文', 'ja': '日本語', 'ar': 'العربية',
+    'hi': 'हिन्दी', 'bn': 'বাংলা', 'pa': 'ਪੰਜਾਬੀ', 'ko': '한국어',
+    'vi': 'Tiếng Việt', 'tr': 'Türkçe', 'pl': 'Polski', 'nl': 'Nederlands',
+    'sv': 'Svenska', 'fi': 'Suomi', 'no': 'Norsk', 'da': 'Dansk',
+    'el': 'Ελληνικά', 'he': 'עברית', 'id': 'Bahasa Indonesia', 'th': 'ภาษาไทย', 'cs': 'Čeština',
+    'hu': 'Magyar', 'ro': 'Română', 'sk': 'Slovenčina', 'bg': 'Български'
+};
+
+const respondingInMap: { [key: string]: string } = { 
+    'en': 'Responding in', 'es': 'Respondiendo en', 'fr': 'Répondre en', 'de': 'Antworten auf', 'it': 'Rispondendo in',
+    'pt': 'Respondendo em', 'ru': 'Отвечаю на', 'zh': '以...回复', 'ja': 'で応答', 'ar': 'الرد ب',
+    'pl': 'Odpowiadanie w', 'nl': 'Antwoorden in', 'sv': 'Svarar på', 'tr': 'Yanıt veriliyor'
+};
+
 
 function logClientTrace(functionName: string, data: any) {
     if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
@@ -130,7 +144,7 @@ export default function FullScreenChat() {
         
         if (sessionLanguage) {
             sessionLanguageRef.current = sessionLanguage;
-            setSessionLanguageCode(sessionLanguage);
+            setSessionLanguageCode(sessionLanguage.toLowerCase());
             logClientTrace(functionName, { session_language_set: sessionLanguage });
         }
 
@@ -346,3 +360,5 @@ export default function FullScreenChat() {
     </TooltipProvider>
   );
 }
+
+    
