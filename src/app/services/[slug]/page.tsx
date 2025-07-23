@@ -15,6 +15,7 @@ import AiAutomationPage from '../ai-automation-and-ai-agents/page';
 import BlockchainCryptoPage from '../blockchain-and-crypto/page';
 import BusinessLocalizationPage from '../business-localization-strategies/page';
 import NoCodeAppDesignPage from '../no-code-app-design/page';
+import CloudManagementPage from '../cloud-saas-paas-management/page';
 
 
 const iconComponents: { [key: string]: React.ReactNode } = {
@@ -35,13 +36,6 @@ const serviceContent: { [key: string]: { paragraphs: string[] } } = {
       "Master the world's largest and most liquid financial markets with our expert training in Vanilla Options and Forex Investment. This service is designed for individuals and institutions seeking to build secure, high-liquidity investment portfolios using regulated and transparent trading instruments. We focus on low-risk, structured strategies that provide predictable payoff profiles and protect your capital.",
       "Our curriculum includes comprehensive training on CBOE/CME listed options, where you'll learn to trade derivatives with clearly defined, controlled risk. We demystify complex concepts and provide you with actionable strategies for generating consistent returns. In the Forex market, you will gain access to tailored currency strategies that allow you to capitalize on global macroeconomic trends while managing risk effectively through sophisticated hedging and position-sizing frameworks.",
       "Beyond training, we offer real-time mentorship and continuous support. As a client, you will receive timely market updates, expert analysis, and personalized strategy adjustments from our team of seasoned traders. We are committed to helping you build a resilient, risk-managed portfolio that aligns with your financial goals."
-    ]
-  },
-  'cloud-saas-paas-management': {
-    paragraphs: [
-      "Optimize your cloud infrastructure for peak performance, security, and cost-efficiency with our Cloud SaaS & PaaS Management services. We help businesses navigate the complexities of modern cloud environments, eliminating wasteful spending and unlocking the full potential of platforms like AWS, Azure, and Google Cloud. Our goal is to give you a secure, scalable, and affordable infrastructure foundation.",
-      "We provide multi-cloud governance from a unified dashboard, simplifying the management of your resources. Our process includes comprehensive cost-reduction audits where we identify and eliminate inefficiencies by rightsizing services and automating scaling protocols. Furthermore, we specialize in migrating businesses from expensive, proprietary SaaS tools to powerful, customizable, and license-free open-source alternatives, delivering significant long-term savings.",
-      "Security is at the core of our management philosophy. We implement enterprise-grade security protocols, including end-to-end encryption, zero-trust access controls, and continuous compliance monitoring. Let us handle the technical overhead of cloud management so you can focus on innovation and growth."
     ]
   },
   'all-in-one-package': {
@@ -71,7 +65,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 
 export default function ServicePage({ params }: { params: { slug: string } }) {
-  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design'];
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design', 'cloud-saas-paas-management'];
   if (dedicatedPages.includes(params.slug)) {
     // This route should not handle dedicated pages.
     // Next.js will prioritize the specific page file.
@@ -129,7 +123,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
 }
 
 export async function generateStaticParams() {
-  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design'];
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design', 'cloud-saas-paas-management'];
   // Generate params only for services that DON'T have a dedicated page.
   return features
     .filter(feature => !dedicatedPages.includes(feature.slug))
