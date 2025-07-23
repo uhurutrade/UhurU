@@ -93,14 +93,13 @@ export async function chat(
     let languageCode = sessionLanguage;
     let isFirstMessageInSession = false;
 
-    // Detect language if it's not set for the session yet, or if history is empty.
-    if (!languageCode || history.length === 0) {
+    // Detect language if it's not set for the session yet.
+    if (!languageCode) {
         languageCode = await detectLanguage(newUserMessage);
         isFirstMessageInSession = true;
         logTrace(functionName, { status: `new_session_language_detected`, languageCode }, sessionId);
     } else {
-        // For existing sessions, re-evaluate language based on the new message
-        // to see if the user has switched. This handles explicit requests like "speak in German".
+        // For existing sessions, check if the user has switched languages.
         const detectedLang = await detectLanguage(newUserMessage);
         if (detectedLang !== languageCode) {
             logTrace(functionName, { status: `language_change_detected`, from: languageCode, to: detectedLang }, sessionId);
