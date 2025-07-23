@@ -31,6 +31,7 @@ const INITIAL_MESSAGE_OBJECT: Message = {
 };
 
 const languageCodeMap: { [key: string]: string } = { 'en': 'English', 'es': 'Español' };
+const respondingInMap: { [key: string]: string } = { 'en': 'Responding in', 'es': 'Respondiendo en' };
 
 function logClientTrace(functionName: string, data: any) {
     if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
@@ -46,7 +47,7 @@ export default function FullScreenChat() {
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
   const [isRecording, setIsRecording] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState<string | null>(null);
+  const [sessionLanguageCode, setSessionLanguageCode] = useState<string | null>(null);
   
   const sessionIdRef = useRef<string | null>(null);
   const sessionLanguageRef = useRef<string | null>(null);
@@ -129,7 +130,7 @@ export default function FullScreenChat() {
         
         if (sessionLanguage) {
             sessionLanguageRef.current = sessionLanguage;
-            setCurrentLanguage(languageCodeMap[sessionLanguage] || sessionLanguage);
+            setSessionLanguageCode(sessionLanguage);
             logClientTrace(functionName, { session_language_set: sessionLanguage });
         }
 
@@ -266,9 +267,18 @@ export default function FullScreenChat() {
     setMessages([INITIAL_MESSAGE_OBJECT]);
     sessionIdRef.current = generateSessionId();
     sessionLanguageRef.current = null;
-    setCurrentLanguage(null);
+    setSessionLanguageCode(null);
     toast({ title: "New Chat Started" });
   };
+
+  const getDynamicTitle = () => {
+      if (sessionLanguageCode && languageCodeMap[sessionLanguageCode] && respondingInMap[sessionLanguageCode]) {
+          const respondingIn = respondingInMap[sessionLanguageCode];
+          const languageName = languageCodeMap[sessionLanguageCode];
+          return `${respondingIn} ${languageName}`;
+      }
+      return "All language - Polyglot";
+  }
   
   return (
     <TooltipProvider>
@@ -277,7 +287,7 @@ export default function FullScreenChat() {
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Globe className="h-5 w-5" />
                   <span>
-                    UhurU AI | {currentLanguage ? `Responding in ${currentLanguage}` : "All language - Polyglot"}
+                    UhurU AI | {getDynamicTitle()}
                   </span>
               </div>
               <div className="flex items-center gap-2">
@@ -319,14 +329,14 @@ export default function FullScreenChat() {
                           <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".pdf,.doc,.docx,.txt" />
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" disabled={!isUploadEnabled} onClick={() => fileInputRef.current?.click()} className="h-9 w-9 ml-1"><Paperclip className="h-5 w-5" /></Button>
+                              <Button variant="ghost" size="icon" disabled={!isUploadEnabled} onClick={() => fileInput.current?.click()} className="h-9 w-9 ml-1"><Paperclip className="h-5 w-5" /></Button>
                             </TooltipTrigger>
                             <TooltipContent><p>{isUploadEnabled ? "Adjuntar documento de proyecto" : "Proporcione un email para habilitar la subida"}</p></TooltipContent>
                           </Tooltip>
                           <Input type="text" placeholder="Ask something..." value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress} disabled={isPending} className="text-base h-12 pr-24 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"/>
                           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
                               <Button variant="ghost" size="icon" onClick={handleMicClick} disabled={isPending && !isRecording} className={cn("h-9 w-9", isRecording && "text-red-500 hover:text-red-600")}>{isRecording ? <Square className="h-5 w-5" /> : <Mic className="h-5 w-5" />}</Button>
-                              <Button variant="ghost" size="icon" onClick={() => handleSend(input, false)} disabled={isPending || input.trim() === ''} className="h-9 w-9"><Send className="h-5 w-5" /></Button>
+                              <Button variant="ghost" size="icon" onClick={() => handleSend(input, false)} disabled={isPending || input.trim() === ''} className="h-9 w-9"><Send className="h-5 w-5" />}</Button>
                           </div>
                       </div>
                   </CardContent>
@@ -336,6 +346,3 @@ export default function FullScreenChat() {
     </TooltipProvider>
   );
 }
-
-    
-    
