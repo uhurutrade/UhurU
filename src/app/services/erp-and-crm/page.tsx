@@ -12,39 +12,41 @@ export const metadata: Metadata = {
 const erpServices = [
     {
         title: "Oracle Financials Specialization",
-        description: "Configure advanced modules for finance, compliance, and reporting."
+        description: "We configure advanced modules for finance, compliance, and reporting, leveraging deep expertise in GL, AP, AR, FA, and Cash Management."
     },
     {
-        title: "Workflow Automation",
-        description: "Sync sales, inventory, and accounting processes across departments."
+        title: "End-to-End Workflow Automation",
+        description: "We streamline and sync your entire Procure-to-Pay and Order-to-Cash cycles, integrating sales, inventory, and accounting processes."
     },
     {
-        title: "Third-Party Integrations",
-        description: "Connect ERP/CRM systems to existing tools via APIs."
+        title: "Seamless Third-Party Integrations",
+        description: "We connect your ERP/CRM systems with any existing tools and legacy platforms via robust APIs and data conversion strategies."
     },
     {
-        title: "User Training & Support",
-        description: "Offer onboarding sessions and 24/7 troubleshooting."
+        title: "Comprehensive User Training & Support",
+        description: "We offer tailored onboarding sessions, detailed documentation, and ongoing SLA-driven support to empower your teams and resolve issues fast."
     }
 ];
 
 const coreServices = [
-    "ERP Modernization: Seamless upgrades from legacy systems (EBS) to Oracle Fusion Cloud, including data migration (FBDI/ADFdi), configuration, and training.",
-    "End-to-End Implementation: Full lifecycle management for GL, AP, AR, FA, Cash Management, and Procure-to-Pay workflows.",
-    "System Optimization: Troubleshooting and custom extensions for multi-org, multi-ledger environments.",
-    "Compliance & Reporting: BI Publisher and FSG solutions for GDPR, MTD (Making Tax Digital), and cross-border financial compliance.",
-    "Integration & Security: Secure third-party integrations, role-based access control, and workflow automation.",
-    "Ongoing Support: SLA-driven maintenance and proactive enhancements."
+    "ERP Modernization: Seamless migrations and full lifecycle implementations from legacy systems (EBS) to Oracle Fusion Cloud, including data conversion (FBDI/ADFdi), configuration, and go-live support.",
+    "End-to-End Financial Module Implementation: Full management for General Ledger (GL), Accounts Payable (AP), Accounts Receivable (AR), Fixed Assets (FA), Cash Management, and Procure-to-Pay workflows.",
+    "System Optimization & Customization: Bespoke application extensions, performance troubleshooting, and enhancements for complex multi-org, multi-ledger, and multi-currency environments.",
+    "Advanced Compliance & Reporting: Development of custom BI Publisher reports and Financial Statement Generators (FSG) for international standards like GDPR, MTD (Making Tax Digital), and other regulatory requirements.",
+    "Secure Integration & Data Management: Design and implementation of secure third-party interfaces, robust role-based access controls, and automated data validation and conversion processes.",
+    "Proactive Ongoing Support: SLA-driven maintenance, continuous system improvements, and expert liaison with Oracle Support to ensure the long-term integrity and security of your business systems."
 ];
 
 const expertiseList = [
-    "Modules: General Ledger (GL) | Accounts Payable (AP) | Accounts Receivable (AR) | Fixed Assets (FA) | Cash Management (CE)",
-    "Tools: Oracle Fusion Cloud | EBS R11/R12 | BI Publisher | SQL/PLSQL | Unix Scripting | Oracle Data Integrator (ODI)",
-    "System Optimization: Troubleshooting and custom extensions for multi-org, multi-ledger environments.",
-    "Compliance & Reporting: BI Publisher and FSG solutions for GDPR, MTD (Making Tax Digital), and cross-border financial compliance.",
-    "Integration & Security: Secure third-party integrations, role-based access control, and workflow automation.",
-    "Ongoing Support: SLA-driven maintenance and proactive enhancements."
-]
+    {
+        title: "Functional & Business Process Expertise",
+        description: "General Ledger (GL), Accounts Payable (AP), Accounts Receivable (AR), Fixed Assets (FA), Cash Management (CE), Procure-to-Pay (P2P), Order-to-Cash (O2C), iProcurement, Multi-Org & Intercompany Trading."
+    },
+    {
+        title: "Technical Toolset & Development",
+        description: "Oracle Fusion Cloud & EBS R11/R12, SQL/PLSQL, Oracle Forms & Reports, BI Publisher, Oracle Workflow, Oracle Data Integrator (ODI), Unix/Linux Scripting (Korn/Bourne Shell), and Google BigQuery for advanced analytics."
+    }
+];
 
 export default function ErpCrmPage() {
   return (
@@ -83,9 +85,9 @@ export default function ErpCrmPage() {
 
             <section>
               <Card className="bg-secondary/50 p-8 text-center">
-                  <h2 className="text-3xl font-bold font-headline">Oracle Consulting Expertise</h2>
+                  <h2 className="text-3xl font-bold font-headline">Hybrid Oracle Consulting Expertise</h2>
                   <p className="mt-4 max-w-3xl mx-auto text-muted-foreground">
-                    As hybrid Oracle Functional & Technical Consultants, we bridge financial workflows with cutting-edge Oracle technologies. With over 20 years of expertise, including 8+ years focused on EBS R11/R12 and Fusion Cloud, we empower businesses to streamline operations, reduce costs, and ensure compliance.
+                    With over 20 years of dedicated Oracle expertise, we bridge the critical gap between complex financial workflows and cutting-edge Oracle technologies. Our unique hybrid functional-technical background, combined with senior financial management experience, allows us to deliver solutions that are not only technically robust but perfectly aligned with your strategic business goals.
                   </p>
               </Card>
             </section>
@@ -93,10 +95,10 @@ export default function ErpCrmPage() {
             <section className='space-y-8'>
                 <div className='text-center'>
                     <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
-                        Core Services for Enterprises
+                        Core Services for Enterprise Transformation
                     </h2>
                      <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                        Our dual expertise in finance and IT delivers solutions that are technically robust and strategically aligned with your business goals.
+                        Our services cover the full project lifecycle, ensuring a seamless transition and a powerful, unified system that drives business growth and efficiency.
                     </p>
                 </div>
                 
@@ -113,15 +115,26 @@ export default function ErpCrmPage() {
             <section>
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-3xl font-bold font-headline">Technical & Functional Expertise</CardTitle>
+                  <CardTitle className="text-3xl font-bold font-headline">Our Technical & Functional Capabilities</CardTitle>
+                  <CardDescription>
+                    Our proficiency spans the full spectrum of Oracle E-Business Suite and Fusion Cloud, from high-level functional design to deep technical implementation.
+                  </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6">
                   {expertiseList.map((point, index) => (
-                    <div key={index} className='flex items-start gap-3'>
-                      <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
-                      <p className="text-muted-foreground">{point}</p>
+                    <div key={index} className='flex items-start gap-4'>
+                      <CheckCircle2 className="h-8 w-8 text-accent mt-1 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-foreground text-lg">{point.title}</h4>
+                        <p className="text-muted-foreground">{point.description}</p>
+                      </div>
                     </div>
                   ))}
+                  <div className="pt-4">
+                    <p className="text-foreground">
+                      <strong>Ready to unify your operations?</strong> Contact us to discover how our deep Oracle expertise can consolidate your systems, automate processes, and provide the financial clarity needed to scale your business.
+                    </p>
+                  </div>
                 </CardContent>
               </Card>
             </section>
