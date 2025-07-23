@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, Send, Bot, User, Loader, Mic, Play, Pause, Square, MessageCircle, Paperclip, FileText } from 'lucide-react';
+import { X, Send, Bot, User, Loader, Mic, Square, MessageCircle, Paperclip, FileText } from 'lucide-react';
 import { chat, speechToText, handleFileUpload as processFile } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
@@ -13,14 +13,19 @@ import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import AudioPlayer from './AudioPlayer';
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   audioUrl?: string;
-  isPlaying?: boolean;
   fileName?: string;
+  audioMetadata?: {
+    duration: number;
+    currentTime: number;
+    isPlaying: boolean;
+  };
 }
 
 const MAX_HISTORY_MESSAGES = 50;
@@ -106,26 +111,39 @@ const ChatWidgetContent = () => {
     }
   }, [isOpen, messages, isPending]);
 
-  const handleTogglePlay = (audioUrl: string, messageId: string) => {
-    const isCurrentlyPlaying = messages.find(m => m.id === messageId)?.isPlaying;
+  const handleAudioAction = (messageId: string, action: 'play' | 'pause' | 'seek' | 'load', value?: number) => {
+    setMessages(prev => prev.map(msg => {
+      if (msg.id === messageId) {
+        const audio = audioRef.current;
+        if (!audio) return msg;
 
-    setMessages(prev => prev.map((msg) => ({
-      ...msg,
-      isPlaying: msg.id === messageId ? !msg.isPlaying : false,
-    })));
-
-    if (audioRef.current && !audioRef.current.paused && isCurrentlyPlaying) {
-      audioRef.current.pause();
-    } else {
-      if (!audioRef.current) {
-        audioRef.current = new Audio();
-        audioRef.current.onended = () => {
-          setMessages(prev => prev.map(msg => ({ ...msg, isPlaying: false })));
-        };
+        switch (action) {
+          case 'load':
+            if (audio.src !== msg.audioUrl) {
+                audio.src = msg.audioUrl!;
+                audio.onloadedmetadata = () => {
+                    setMessages(p => p.map(m => m.id === messageId ? { ...m, audioMetadata: { ...m.audioMetadata!, duration: audio.duration, currentTime: 0 } } : m));
+                };
+                audio.ontimeupdate = () => {
+                    setMessages(p => p.map(m => m.id === messageId ? { ...m, audioMetadata: { ...m.audioMetadata!, currentTime: audio.currentTime } } : m));
+                };
+                audio.onended = () => handleAudioAction(messageId, 'pause');
+            }
+            break;
+          case 'play':
+            audio.play();
+            return { ...msg, audioMetadata: { ...msg.audioMetadata!, isPlaying: true } };
+          case 'pause':
+            audio.pause();
+            return { ...msg, audioMetadata: { ...msg.audioMetadata!, isPlaying: false } };
+          case 'seek':
+            if (value !== undefined) audio.currentTime = value;
+            return { ...msg, audioMetadata: { ...msg.audioMetadata!, currentTime: value! } };
+        }
       }
-      audioRef.current.src = audioUrl;
-      audioRef.current.play().catch(e => console.error("Error playing audio:", e));
-    }
+      // Pause other messages
+      return { ...msg, audioMetadata: msg.audioMetadata ? { ...msg.audioMetadata, isPlaying: false } : undefined };
+    }));
   };
 
   const handleSend = async (messageContent: string, isVoiceInput = false) => {
@@ -162,10 +180,17 @@ const ChatWidgetContent = () => {
             logClientTrace(functionName, { session_language_set: sessionLanguage });
         }
         
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { id: assistantMessageId, role: 'assistant', content: aiResponseText, audioUrl: audioDataUri },
-        ]);
+        const assistantMessage: Message = {
+            id: assistantMessageId,
+            role: 'assistant',
+            content: aiResponseText,
+            audioUrl: audioDataUri,
+            audioMetadata: audioDataUri ? { duration: 0, currentTime: 0, isPlaying: false } : undefined,
+        };
+        setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+        if (audioDataUri) {
+            handleAudioAction(assistantMessageId, 'load');
+        }
 
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
@@ -295,6 +320,12 @@ const ChatWidgetContent = () => {
     }
   };
 
+  useEffect(() => {
+    if (!audioRef.current) {
+        audioRef.current = new Audio();
+    }
+  }, []);
+
   return (
     <TooltipProvider>
       <div className="fixed bottom-6 right-6 z-50">
@@ -339,15 +370,15 @@ const ChatWidgetContent = () => {
                           ) : (
                               <p className="whitespace-pre-wrap">{message.content}</p>
                           )}
-                        {message.audioUrl && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 mt-2"
-                            onClick={() => handleTogglePlay(message.audioUrl!, message.id)}
-                          >
-                            {message.isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                          </Button>
+                        {message.audioUrl && message.audioMetadata && (
+                          <AudioPlayer
+                            isPlaying={message.audioMetadata.isPlaying}
+                            duration={message.audioMetadata.duration}
+                            currentTime={message.audioMetadata.currentTime}
+                            onPlay={() => handleAudioAction(message.id, 'play')}
+                            onPause={() => handleAudioAction(message.id, 'pause')}
+                            onSeek={(time) => handleAudioAction(message.id, 'seek', time)}
+                          />
                         )}
                       </div>
                       {message.role === 'user' && (
@@ -436,8 +467,3 @@ export default function ChatWidget() {
   
   return <ChatWidgetContent />;
 }
-
-    
-    
-
-    

@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader, Mic, Play, Pause, Square, Send, Download, PlusSquare, Globe, Paperclip, FileText } from 'lucide-react';
+import { Bot, User, Loader, Mic, Square, Send, Download, PlusSquare, Globe, Paperclip, FileText } from 'lucide-react';
 import { chat, speechToText, handleFileUpload as processFile } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
@@ -13,14 +13,19 @@ import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '../ui/card';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import AudioPlayer from './AudioPlayer';
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   audioUrl?: string;
-  isPlaying?: boolean;
   fileName?: string;
+  audioMetadata?: {
+    duration: number;
+    currentTime: number;
+    isPlaying: boolean;
+  };
 }
 
 const MAX_HISTORY_MESSAGES = 50;
@@ -99,26 +104,39 @@ export default function FullScreenChat() {
     setTimeout(scrollToBottom, 100);
   }, [messages, isPending]);
 
-  const handleTogglePlay = (audioUrl: string, messageId: string) => {
-    const isCurrentlyPlaying = messages.find(m => m.id === messageId)?.isPlaying;
+  const handleAudioAction = (messageId: string, action: 'play' | 'pause' | 'seek' | 'load', value?: number) => {
+    setMessages(prev => prev.map(msg => {
+      if (msg.id === messageId) {
+        const audio = audioRef.current;
+        if (!audio) return msg;
 
-    setMessages(prev => prev.map((msg) => ({
-      ...msg,
-      isPlaying: msg.id === messageId ? !msg.isPlaying : false,
-    })));
-
-    if (audioRef.current && !audioRef.current.paused && isCurrentlyPlaying) {
-      audioRef.current.pause();
-    } else {
-      if (!audioRef.current) {
-        audioRef.current = new Audio();
-        audioRef.current.onended = () => {
-          setMessages(prev => prev.map(msg => ({ ...msg, isPlaying: false })));
-        };
+        switch (action) {
+          case 'load':
+            if (audio.src !== msg.audioUrl) {
+                audio.src = msg.audioUrl!;
+                audio.onloadedmetadata = () => {
+                    setMessages(p => p.map(m => m.id === messageId ? { ...m, audioMetadata: { ...m.audioMetadata!, duration: audio.duration, currentTime: 0 } } : m));
+                };
+                audio.ontimeupdate = () => {
+                    setMessages(p => p.map(m => m.id === messageId ? { ...m, audioMetadata: { ...m.audioMetadata!, currentTime: audio.currentTime } } : m));
+                };
+                audio.onended = () => handleAudioAction(messageId, 'pause');
+            }
+            break;
+          case 'play':
+            audio.play();
+            return { ...msg, audioMetadata: { ...msg.audioMetadata!, isPlaying: true } };
+          case 'pause':
+            audio.pause();
+            return { ...msg, audioMetadata: { ...msg.audioMetadata!, isPlaying: false } };
+          case 'seek':
+            if (value !== undefined) audio.currentTime = value;
+            return { ...msg, audioMetadata: { ...msg.audioMetadata!, currentTime: value! } };
+        }
       }
-      audioRef.current.src = audioUrl;
-      audioRef.current.play().catch(e => console.error("Error playing audio:", e));
-    }
+      // Pause other messages
+      return { ...msg, audioMetadata: msg.audioMetadata ? { ...msg.audioMetadata, isPlaying: false } : undefined };
+    }));
   };
 
   const handleSend = async (messageContent: string, isVoiceInput = false) => {
@@ -148,11 +166,19 @@ export default function FullScreenChat() {
             setSessionLanguageCode(sessionLanguage.toLowerCase());
             logClientTrace(functionName, { session_language_set: sessionLanguage });
         }
+        
+        const assistantMessage: Message = {
+            id: assistantMessageId,
+            role: 'assistant',
+            content: aiResponseText,
+            audioUrl: audioDataUri,
+            audioMetadata: audioDataUri ? { duration: 0, currentTime: 0, isPlaying: false } : undefined,
+        };
+        setMessages((prevMessages) => [...prevMessages, assistantMessage]);
 
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { id: assistantMessageId, role: 'assistant', content: aiResponseText, audioUrl: audioDataUri },
-        ]);
+        if (audioDataUri) {
+            handleAudioAction(assistantMessageId, 'load');
+        }
 
       } catch (error) {
         const errorMessage = error instanceof Error ? `Sorry, there was a problem: ${error.message}` : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
@@ -294,6 +320,12 @@ export default function FullScreenChat() {
       }
       return "All language - Polyglot";
   }
+
+  useEffect(() => {
+    if (!audioRef.current) {
+        audioRef.current = new Audio();
+    }
+  }, []);
   
   return (
     <TooltipProvider>
@@ -324,7 +356,17 @@ export default function FullScreenChat() {
                           ) : (
                               <p className="whitespace-pre-wrap">{message.content}</p>
                           )}
-                          {message.audioUrl && (<Button variant="ghost" size="icon" className="h-8 w-8 mt-2" onClick={() => handleTogglePlay(message.audioUrl!, message.id)}>{message.isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}</Button>)}
+                          {message.audioUrl && message.audioMetadata && (
+                             <AudioPlayer
+                                isPlaying={message.audioMetadata.isPlaying}
+                                duration={message.audioMetadata.duration}
+                                currentTime={message.audioMetadata.currentTime}
+                                onPlay={() => handleAudioAction(message.id, 'play')}
+                                onPause={() => handleAudioAction(message.id, 'pause')}
+                                onSeek={(time) => handleAudioAction(message.id, 'seek', time)}
+                                isCompact={false}
+                            />
+                          )}
                       </div>
                       {message.role === 'user' && (<div className="bg-muted text-muted-foreground rounded-full p-2.5 flex-shrink-0"><User className="h-6 w-6" /></div>)}
                   </div>
@@ -344,7 +386,7 @@ export default function FullScreenChat() {
                           <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".pdf,.doc,.docx,.txt" />
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" disabled={!isUploadEnabled} onClick={() => fileInput.current?.click()} className="h-9 w-9 ml-1"><Paperclip className="h-5 w-5" /></Button>
+                              <Button variant="ghost" size="icon" disabled={!isUploadEnabled} onClick={() => fileInputRef.current?.click()} className="h-9 w-9 ml-1"><Paperclip className="h-5 w-5" /></Button>
                             </TooltipTrigger>
                             <TooltipContent><p>{isUploadEnabled ? "Adjuntar documento de proyecto" : "Proporcione un email para habilitar la subida"}</p></TooltipContent>
                           </Tooltip>
