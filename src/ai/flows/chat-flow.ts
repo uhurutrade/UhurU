@@ -15,6 +15,7 @@ import { processDocument } from './file-processing-flow';
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 
+// Expanded language map
 const languageCodeMap: { [key: string]: string } = {
     'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German', 'it': 'Italian',
     'pt': 'Portuguese', 'ru': 'Russian', 'zh': 'Chinese', 'ja': 'Japanese', 'ar': 'Arabic',
@@ -66,35 +67,16 @@ async function detectLanguage(text: string): Promise<string> {
     try {
         const response = await ai.generate({
             model: googleAI.model('gemini-1.5-flash-latest'),
-            prompt: `Detect the language of the following text and respond only with its two-letter ISO 639-1 code (e.g., "en", "es", "fr"). Text: "${text}"`,
+            prompt: `Detect the primary language of the following text and respond only with its two-letter ISO 639-1 code (e.g., "en", "es", "fr"). Text: "${text}"`,
             config: { temperature: 0 },
         });
         const detectedLang = response.text.trim().toLowerCase();
+        // Return detected language if it's in our map, otherwise default to English.
         return languageCodeMap[detectedLang] ? detectedLang : 'en';
     } catch (error) {
         console.error("Language detection failed:", error);
+        // Default to English on error.
         return 'en';
-    }
-}
-
-async function detectIntent(text: string): Promise<{ intent: 'change_language' | 'other'; languageCode: string | null }> {
-    try {
-        const response = await ai.generate({
-            model: googleAI.model('gemini-1.5-flash-latest'),
-            prompt: `Analyze the user's intent. Respond with a JSON object.
-- If the user explicitly asks to change the communication language (e.g., "speak in Polish", "cambia a francés"), respond with: {"intent": "change_language", "languageCode": "<iso_639_1_code>"}.
-- For any other request, respond with: {"intent": "other", "languageCode": null}.
-User text: "${text}"`,
-            config: { temperature: 0, responseMimeType: 'application/json' },
-        });
-        const parsedResponse = JSON.parse(response.text);
-        if (parsedResponse.intent === 'change_language' && languageCodeMap[parsedResponse.languageCode]) {
-            return { intent: 'change_language', languageCode: parsedResponse.languageCode };
-        }
-        return { intent: 'other', languageCode: null };
-    } catch (error) {
-        console.error("Intent detection failed:", error);
-        return { intent: 'other', languageCode: null };
     }
 }
 
@@ -109,17 +91,22 @@ export async function chat(
     const functionName = 'chat';
     
     let languageCode = sessionLanguage;
-    let isFirstMessageInSession = !languageCode;
+    let isFirstMessageInSession = false;
 
-    const intentResult = await detectIntent(newUserMessage);
-
-    if (intentResult.intent === 'change_language' && intentResult.languageCode) {
-        languageCode = intentResult.languageCode;
-        isFirstMessageInSession = true; // Treat language change as a "first message" to announce the change
-        logTrace(functionName, { status: `explicit_language_change_detected`, languageCode }, sessionId);
-    } else if (!languageCode) {
+    // Detect language if it's not set for the session yet, or if history is empty.
+    if (!languageCode || history.length === 0) {
         languageCode = await detectLanguage(newUserMessage);
+        isFirstMessageInSession = true;
         logTrace(functionName, { status: `new_session_language_detected`, languageCode }, sessionId);
+    } else {
+        // For existing sessions, re-evaluate language based on the new message
+        // to see if the user has switched. This handles explicit requests like "speak in German".
+        const detectedLang = await detectLanguage(newUserMessage);
+        if (detectedLang !== languageCode) {
+            logTrace(functionName, { status: `language_change_detected`, from: languageCode, to: detectedLang }, sessionId);
+            languageCode = detectedLang;
+            isFirstMessageInSession = true; // Treat language change as a "first message" to announce the change.
+        }
     }
     
     const logPayload: any = {
@@ -134,7 +121,7 @@ export async function chat(
         const knowledgeContext = await retrieveKnowledge(newUserMessage);
         logTrace(functionName, { retrieved_knowledge_length: knowledgeContext.length }, sessionId, languageCode);
 
-        const systemPrompt = getSystemPrompt(knowledgeContext, languageCode!, isFirstMessageInSession);
+        const systemPrompt = getSystemPrompt(knowledgeContext, languageCode, isFirstMessageInSession);
         
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, languageCode);
 
@@ -158,10 +145,10 @@ export async function chat(
 
         if (isVoiceInput) {
             const { media: audioDataUri } = await textToSpeech(responseText, sessionId, languageCode);
-            return { text: responseText, audioDataUri, sessionLanguage: languageCode! };
+            return { text: responseText, audioDataUri, sessionLanguage: languageCode };
         }
 
-        return { text: responseText, sessionLanguage: languageCode! };
+        return { text: responseText, sessionLanguage: languageCode };
 
     } catch (error) {
         let errorMessage: string;
@@ -175,7 +162,7 @@ export async function chat(
                 : (languageCode === 'es' ? "Lo siento, no he podido conectar con el asistente en este momento. Por favor, inténtelo de nuevo más tarde." : "Sorry, I couldn't connect to the assistant at this time. Please try again later.");
         }
         await logTrace(functionName, { output_error: errorMessage }, sessionId, languageCode);
-        return { text: errorMessage, sessionLanguage: languageCode! };
+        return { text: errorMessage, sessionLanguage: languageCode };
     }
 }
 
