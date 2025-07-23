@@ -69,7 +69,9 @@ async function detectLanguage(text: string): Promise<string> {
             prompt: `Detect the language of the following text and respond only with its two-letter ISO 639-1 code (e.g., "en", "es", "fr"). Text: "${text}"`,
             config: { temperature: 0 },
         });
-        return response.text.trim().toLowerCase();
+        const detectedLang = response.text.trim().toLowerCase();
+        // Return 'en' as default if detection is uncertain or returns an unsupported code
+        return languageCodeMap[detectedLang] ? detectedLang : 'en';
     } catch (error) {
         console.error("Language detection failed:", error);
         return 'en'; // Default to english on failure
@@ -80,10 +82,19 @@ export async function chat(
   newUserMessage: string, 
   history: HistoryItem[],
   isVoiceInput: boolean,
-  sessionId: string
-): Promise<{ text: string; audioDataUri?: string }> {
+  sessionId: string,
+  sessionLanguage: string | null
+): Promise<{ text: string; audioDataUri?: string; detectedSessionLanguage?: string; }> {
     const functionName = 'chat';
-    const detectedLang = await detectLanguage(newUserMessage);
+    
+    let languageCode = sessionLanguage;
+    let newSessionLanguage: string | undefined = undefined;
+
+    if (!languageCode) {
+        languageCode = await detectLanguage(newUserMessage);
+        newSessionLanguage = languageCode;
+        logTrace(functionName, { status: `new_session_language_detected`, languageCode }, sessionId);
+    }
 
     const logPayload: any = {
       history: history.map(h => h.content),
@@ -91,15 +102,15 @@ export async function chat(
     };
     if (isVoiceInput) logPayload.InputAudio = newUserMessage;
     else logPayload.input_newUserMessage = newUserMessage;
-    await logTrace(functionName, logPayload, sessionId, detectedLang);
+    await logTrace(functionName, logPayload, sessionId, languageCode);
 
     try {
         const knowledgeContext = await retrieveKnowledge(newUserMessage);
-        logTrace(functionName, { retrieved_knowledge_length: knowledgeContext.length }, sessionId, detectedLang);
+        logTrace(functionName, { retrieved_knowledge_length: knowledgeContext.length }, sessionId, languageCode);
 
-        const systemPrompt = getSystemPrompt(knowledgeContext, detectedLang);
+        const systemPrompt = getSystemPrompt(knowledgeContext, languageCode, !sessionLanguage);
         
-        await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, detectedLang);
+        await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, languageCode);
 
         const chatHistory = history
           .map(item => ({
@@ -107,7 +118,7 @@ export async function chat(
             content: [{ text: item.content }]
         }));
 
-        await logTrace(functionName, { status: 'calling_ai_generate' }, sessionId, detectedLang);
+        await logTrace(functionName, { status: 'calling_ai_generate' }, sessionId, languageCode);
         
         const response = await ai.generate({
             model: googleAI.model('gemini-1.5-flash-latest'),
@@ -117,28 +128,28 @@ export async function chat(
         });
 
         const responseText = response.text;
-        await logTrace(functionName, { output_ai_response: responseText }, sessionId, detectedLang);
+        await logTrace(functionName, { output_ai_response: responseText }, sessionId, languageCode);
 
         if (isVoiceInput) {
-            const { media: audioDataUri } = await textToSpeech(responseText, sessionId, detectedLang);
-            return { text: responseText, audioDataUri };
+            const { media: audioDataUri } = await textToSpeech(responseText, sessionId, languageCode);
+            return { text: responseText, audioDataUri, detectedSessionLanguage: newSessionLanguage };
         }
 
-        return { text: responseText };
+        return { text: responseText, detectedSessionLanguage: newSessionLanguage };
 
     } catch (error) {
         let errorMessage: string;
         if (error instanceof Error && (error.message.includes('503') || error.message.toLowerCase().includes('overloaded'))) {
-            errorMessage = detectedLang === 'es' 
+            errorMessage = languageCode === 'es' 
                 ? "Hay demasiados clientes simultáneamente, por favor espere un minuto e inténtelo de nuevo."
                 : "There are too many simultaneous clients, please wait a minute and try again.";
         } else {
             errorMessage = error instanceof Error 
-                ? (detectedLang === 'es' ? `Lo siento, ha habido un problema: ${error.message}`: `Sorry, there was a problem: ${error.message}`)
-                : (detectedLang === 'es' ? "Lo siento, no he podido conectar con el asistente en este momento. Por favor, inténtelo de nuevo más tarde." : "Sorry, I couldn't connect to the assistant at this time. Please try again later.");
+                ? (languageCode === 'es' ? `Lo siento, ha habido un problema: ${error.message}`: `Sorry, there was a problem: ${error.message}`)
+                : (languageCode === 'es' ? "Lo siento, no he podido conectar con el asistente en este momento. Por favor, inténtelo de nuevo más tarde." : "Sorry, I couldn't connect to the assistant at this time. Please try again later.");
         }
-        await logTrace(functionName, { output_error: errorMessage }, sessionId, detectedLang);
-        return { text: errorMessage };
+        await logTrace(functionName, { output_error: errorMessage }, sessionId, languageCode);
+        return { text: errorMessage, detectedSessionLanguage: newSessionLanguage };
     }
 }
 
@@ -247,3 +258,5 @@ async function toWav(
     writer.end();
   });
 }
+
+    

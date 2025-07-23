@@ -46,6 +46,7 @@ export default function FullScreenChat() {
   const [isRecording, setIsRecording] = useState(false);
   
   const sessionIdRef = useRef<string | null>(null);
+  const sessionLanguageRef = useRef<string | null>(null);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -121,8 +122,13 @@ export default function FullScreenChat() {
         .map(msg => ({ role: msg.role, content: msg.content }));
 
       try {
-        const { text: aiResponseText, audioDataUri } = await chat(newUserMessage, historyForAI, isVoiceInput, sessionIdRef.current!);
+        const { text: aiResponseText, audioDataUri, detectedSessionLanguage } = await chat(newUserMessage, historyForAI, isVoiceInput, sessionIdRef.current!, sessionLanguageRef.current);
         
+        if (detectedSessionLanguage) {
+            sessionLanguageRef.current = detectedSessionLanguage;
+            logClientTrace(functionName, { session_language_set: detectedSessionLanguage });
+        }
+
         setMessages((prevMessages) => [
           ...prevMessages,
           { id: assistantMessageId, role: 'assistant', content: aiResponseText, audioUrl: audioDataUri },
@@ -255,6 +261,7 @@ export default function FullScreenChat() {
   const handleNewChat = () => {
     setMessages([INITIAL_MESSAGE_OBJECT]);
     sessionIdRef.current = generateSessionId();
+    sessionLanguageRef.current = null;
     toast({ title: "New Chat Started" });
   };
   
@@ -305,7 +312,7 @@ export default function FullScreenChat() {
                           <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".pdf,.doc,.docx,.txt" />
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" disabled={!isUploadEnabled} onClick={() => fileInputRef.current?.click()} className="h-9 w-9 ml-1"><Paperclip className="h-5 w-5" /></Button>
+                              <Button variant="ghost" size="icon" disabled={!isUploadEnabled} onClick={() => fileInput.current?.click()} className="h-9 w-9 ml-1"><Paperclip className="h-5 w-5" /></Button>
                             </TooltipTrigger>
                             <TooltipContent><p>{isUploadEnabled ? "Adjuntar documento de proyecto" : "Proporcione un email para habilitar la subida"}</p></TooltipContent>
                           </Tooltip>
@@ -322,3 +329,5 @@ export default function FullScreenChat() {
     </TooltipProvider>
   );
 }
+
+    

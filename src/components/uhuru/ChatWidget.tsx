@@ -48,6 +48,7 @@ const ChatWidgetContent = () => {
   const [isRecording, setIsRecording] = useState(false);
   
   const sessionIdRef = useRef<string | null>(null);
+  const sessionLanguageRef = useRef<string | null>(null);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -74,6 +75,7 @@ const ChatWidgetContent = () => {
     if (!isOpen && messages.length === 1) {
         // Reset to initial message if chat is closed and was not used
         setMessages([INITIAL_MESSAGE_OBJECT]);
+        sessionLanguageRef.current = null;
     }
   }
 
@@ -140,8 +142,13 @@ const ChatWidgetContent = () => {
       try {
         logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
         
-        const { text: aiResponseText, audioDataUri } = await chat(newUserMessage, historyForAI, isVoiceInput, sessionIdRef.current!);
+        const { text: aiResponseText, audioDataUri, detectedSessionLanguage } = await chat(newUserMessage, historyForAI, isVoiceInput, sessionIdRef.current!, sessionLanguageRef.current);
         logClientTrace(functionName, { received_aiResponse: aiResponseText, has_audio: !!audioDataUri });
+        
+        if (detectedSessionLanguage) {
+            sessionLanguageRef.current = detectedSessionLanguage;
+            logClientTrace(functionName, { session_language_set: detectedSessionLanguage });
+        }
         
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -415,3 +422,5 @@ export default function ChatWidget() {
   
   return <ChatWidgetContent />;
 }
+
+    
