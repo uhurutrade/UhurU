@@ -136,7 +136,7 @@ export default function AboutUsPage() {
                       <AccordionTrigger className="text-xl font-headline text-foreground text-left">{service.title}</AccordionTrigger>
                       <AccordionContent className="text-base text-muted-foreground space-y-4">
                         <div>{servicesContent[service.slug]}</div>
-                        <Link href={`/services/${service.slug}`} className="text-sm text-primary hover:underline">
+                        <Link href={`/services/${service.slug}`} className="text-sm text-foreground hover:underline">
                           ...see more
                         </Link>
                       </AccordionContent>
