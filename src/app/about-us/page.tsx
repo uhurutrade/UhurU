@@ -107,7 +107,7 @@ export default function AboutUsPage() {
         <div className="container mx-auto max-w-4xl px-4 md:px-10">
           <Card className="bg-card shadow-lg">
             <CardHeader className="text-center">
-              <CardTitle className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline text-primary">
+              <CardTitle className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline text-foreground">
                 What we bring?
               </CardTitle>
             </CardHeader>

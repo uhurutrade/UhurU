@@ -30,7 +30,7 @@ export default function ContactPage() {
       <SubPageHeader backHref="/" backText="Back to Home" />
       <main className="flex-1 py-12 md:py-24 lg:py-32">
         <div className="container mx-auto max-w-4xl px-4 md:px-10">
-          <h1 className="text-center text-4xl font-bold tracking-tighter sm:text-5xl font-headline text-primary mb-8">
+          <h1 className="text-center text-4xl font-bold tracking-tighter sm:text-5xl font-headline text-foreground mb-8">
             Contact
           </h1>
           <Card className="bg-card shadow-lg">
