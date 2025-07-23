@@ -33,9 +33,10 @@ const INITIAL_MESSAGE_OBJECT: Message = {
 const languageCodeMap: { [key: string]: string } = {
     'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch', 'it': 'Italiano',
     'pt': 'Português', 'ru': 'Русский', 'zh': '中文', 'ja': '日本語', 'ar': 'العربية',
-    'hi': 'हिन्दी', 'bn': 'বাংলা', 'pa': 'ਪੰਜਾਬੀ', 'ko': '한국어',
-    'vi': 'Tiếng Việt', 'tr': 'Türkçe', 'pl': 'Polski', 'nl': 'Nederlands',
-    'sv': 'Svenska', 'fi': 'Suomi', 'no': 'Norsk', 'da': 'Dansk',
+    'hi': 'हिन्दी', 'bn': 'বাংলা', 'pa': 'ਪੰਜਾਬੀ', 'jv': 'Javanese', 'ko': '한국어',
+    'vi': 'Tiếng Việt', 'te': 'Telugu', 'mr': 'Marathi', 'tr': 'Türkçe', 'ta': 'Tamil',
+    'ur': 'Urdu', 'gu': 'Gujarati', 'pl': 'Polski', 'uk': 'Українська', 'nl': 'Nederlands',
+    'ms': 'Bahasa Melayu', 'sv': 'Svenska', 'fi': 'Suomi', 'no': 'Norsk', 'da': 'Dansk',
     'el': 'Ελληνικά', 'he': 'עברית', 'id': 'Bahasa Indonesia', 'th': 'ภาษาไทย', 'cs': 'Čeština',
     'hu': 'Magyar', 'ro': 'Română', 'sk': 'Slovenčina', 'bg': 'Български'
 };
@@ -350,7 +351,7 @@ export default function FullScreenChat() {
                           <Input type="text" placeholder="Ask something..." value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress} disabled={isPending} className="text-base h-12 pr-24 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"/>
                           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
                               <Button variant="ghost" size="icon" onClick={handleMicClick} disabled={isPending && !isRecording} className={cn("h-9 w-9", isRecording && "text-red-500 hover:text-red-600")}>{isRecording ? <Square className="h-5 w-5" /> : <Mic className="h-5 w-5" />}</Button>
-                              <Button variant="ghost" size="icon" onClick={() => handleSend(input, false)} disabled={isPending || input.trim() === ''} className="h-9 w-9"><Send className="h-5 w-5" />}</Button>
+                              <Button variant="ghost" size="icon" onClick={() => handleSend(input, false)} disabled={isPending || input.trim() === ''} className="h-9 w-9"><Send className="h-5 w-5" /></Button>
                           </div>
                       </div>
                   </CardContent>
@@ -360,5 +361,3 @@ export default function FullScreenChat() {
     </TooltipProvider>
   );
 }
-
-    
