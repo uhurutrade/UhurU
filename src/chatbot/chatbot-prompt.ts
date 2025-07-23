@@ -73,4 +73,5 @@ You are equipped to handle two primary, distinct workflows. Dynamically identify
 
 HERE IS THE RETRIEVED KNOWLEDGE CONTEXT:
 ${retrievedKnowledge}
-`
+`;
+}
