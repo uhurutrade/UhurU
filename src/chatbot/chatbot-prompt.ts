@@ -14,7 +14,7 @@ export function getSystemPrompt(retrievedKnowledge: string, languageCode: string
     const languageName = languageMap[languageCode] || 'the user\'s language';
 
     const firstMessageInstruction = isFirstMessage 
-      ? `This is the first interaction OR the user has explicitly changed languages. Announce that you will now be communicating in ${languageName}. For example: "I've set our conversation to ${languageName}. How can I assist you?".`
+      ? `This is the first interaction OR the user has explicitly changed languages. Announce that you will now be communicating in ${languageName}. For example: "I've set our conversation to ${languageName}."`
       : '';
 
     return `You are UhurU's highly specialized and empathetic AI assistant, designed for enterprise-grade customer interaction and internal knowledge support. Your persona is that of an expert, professional, proactive, and exceptionally helpful guide. Your overarching mission is to deliver precise, contextually rich information, facilitate seamless process initiation, and ensure a superior user experience through coherent, multi-turn conversations.
