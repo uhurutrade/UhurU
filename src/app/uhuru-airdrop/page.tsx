@@ -167,9 +167,14 @@ export default function UhuruAirdropPage() {
                             </>
                         )}
                     </Card>
-                    <p className="text-center text-xs text-muted-foreground mt-4">
-                      UhurU Trade Ltd. is the owner of this form. See our <Link href="/privacy-policy" className="underline hover:text-primary">Privacy Policy</Link> and <Link href="/cookie-policy" className="underline hover:text-primary">Cookie Policy</Link>.
-                    </p>
+                    <div className="text-center text-xs text-muted-foreground mt-4 space-y-1">
+                      <p>
+                        <Link href="/airdrop-legal-terms" className="underline hover:text-primary">Legal Terms for Token Airdrop</Link>
+                      </p>
+                      <p>
+                        UhurU Trade Ltd. is the owner of this form. See our <Link href="/privacy-policy" className="underline hover:text-primary">Privacy Policy</Link> and <Link href="/cookie-policy" className="underline hover:text-primary">Cookie Policy</Link>.
+                      </p>
+                    </div>
                 </div>
             </main>
         </div>
