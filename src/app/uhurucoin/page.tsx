@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import SubPageHeader from '@/components/uhuru/subpage-header';
-import { ExternalLink, ShoppingCart, Copy, Check, Info } from 'lucide-react';
+import { ExternalLink, ShoppingCart, Copy, Check, Info, Gift } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
@@ -116,11 +116,18 @@ export default function UhuruCoinPage() {
               </section>
               
               <section className="text-center">
-                <Button asChild size="lg">
-                  <Link href="https://dapp.quickswap.exchange/swap/best/0xc2132D05D31c914a87C6611C10748AEb04B58e8F/0x1bAE132558bEAB063B82300857E8593E3734D1B0" target="_blank" rel="noopener noreferrer">
-                    <ShoppingCart className="mr-2 h-5 w-5" /> Buy on QuickSwap
-                  </Link>
-                </Button>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <Button asChild size="lg" className="w-full sm:w-auto">
+                      <Link href="https://dapp.quickswap.exchange/swap/best/0xc2132D05D31c914a87C6611C10748AEb04B58e8F/0x1bAE132558bEAB063B82300857E8593E3734D1B0" target="_blank" rel="noopener noreferrer">
+                        <ShoppingCart className="mr-2 h-5 w-5" /> Buy on QuickSwap
+                      </Link>
+                    </Button>
+                    <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+                      <Link href="/uhuru-airdrop">
+                        <Gift className="mr-2 h-5 w-5" /> Claim Your Free Airdrop
+                      </Link>
+                    </Button>
+                </div>
               </section>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
