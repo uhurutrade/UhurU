@@ -41,7 +41,7 @@ export default function ContactPage() {
                 <div className="space-y-6 flex-grow">
                   <div>
                     <h2 className="text-2xl font-bold font-headline text-foreground">UhurU Trade Ltd.</h2>
-                    <p className="text-muted-foreground mt-1">
+                    <p className="text-muted-foreground mt-1 text-base">
                       Unit 13 Freeland Park Wareham Road. Lytchett Matravers BH16 6FA Poole – UK
                     </p>
                   </div>

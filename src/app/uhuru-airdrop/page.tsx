@@ -113,7 +113,7 @@ export default function UhuruAirdropPage() {
                                                 <span>Join our Telegram: <a href="https://t.me/uhurutradeuk" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">UhurU Community</a></span>
                                             </li>
                                         </ul>
-                                        <p className="text-xs text-muted-foreground/80 pt-2">
+                                        <p className="text-sm text-muted-foreground pt-2">
                                           ⚠️ Only valid Polygon wallets (e.g., MetaMask, Trust Wallet) will be accepted. Rewards will be distributed after verification.
                                         </p>
                                     </div>

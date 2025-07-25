@@ -11,7 +11,7 @@ export default function Hero() {
       <div className="container mx-auto grid max-w-7xl gap-8 px-4 md:px-10 lg:grid-cols-2 lg:gap-16">
         <div className="flex flex-col justify-center space-y-6">
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none font-headline">
+            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline">
               When we talk tech,money listens
             </h1>
             <p className="max-w-[600px] text-muted-foreground md:text-xl">
