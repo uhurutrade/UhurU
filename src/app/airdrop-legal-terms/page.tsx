@@ -88,7 +88,7 @@ export default function AirdropLegalTermsPage() {
           <p>
             For any questions regarding the Airdrop or these Terms, please contact:
             <br />
-            📧 <a href="mailto:hello@uhurutrade.com" className="underline hover:text-foreground">hello@uhurutrade.com</a>
+            <a href="mailto:hello@uhurutrade.com" className="underline hover:text-foreground">hello@uhurutrade.com</a>
           </p>
         </div>
       </main>
