@@ -37,7 +37,12 @@ const AirdropResult = ({ status, message }: { status: 'success' | 'error', messa
             <AlertTriangle className="h-16 w-16 text-destructive" />
         )}
         <h2 className="text-2xl font-bold font-headline">{status === 'success' ? 'Submission Successful!' : 'An Error Occurred'}</h2>
-        <p className="text-muted-foreground">{message}</p>
+        <p className="text-muted-foreground max-w-sm">{message}</p>
+        {(status === 'success' || status === 'error') && (
+            <Button asChild className="mt-4">
+                <Link href="/">Back to Home</Link>
+            </Button>
+        )}
     </div>
 );
 
