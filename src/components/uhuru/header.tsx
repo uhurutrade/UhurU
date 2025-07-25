@@ -99,26 +99,28 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-zinc-100 dark:bg-background border-border/40 dark:bg-background/95 backdrop-blur-sm">
       <div className="container mx-auto flex h-24 max-w-7xl items-center justify-between px-4 md:px-10">
-        <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center" prefetch={false}>
-              <Logo />
-            </Link>
-            <div className="hidden md:flex">
-                <div className="flex items-center gap-2 rounded-full border bg-muted/50 p-1 transition-all duration-300 hover:shadow-md hover:bg-muted/80">
-                    <Link href="/uhuru-airdrop" className="rounded-full px-4 py-1 text-xs font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
-                        Airdrop
-                    </Link>
-                    <Link href="/uhurucoin" className="rounded-full px-4 py-1 text-xs font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
-                        UhuruCoin
-                    </Link>
-                    <Link href="/ai-chat" className="rounded-full px-4 py-1 text-xs font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
-                        AI Chat
-                    </Link>
-                </div>
+        
+        <div className="flex-shrink-0">
+          <Link href="/" className="flex items-center" prefetch={false}>
+            <Logo />
+          </Link>
+        </div>
+
+        <div className="hidden md:flex flex-1 justify-center">
+            <div className="flex items-center gap-2 rounded-full border bg-muted/50 p-1 transition-all duration-300 hover:shadow-md hover:bg-muted/80">
+                <Link href="/uhuru-airdrop" className="rounded-full px-4 py-1 text-xs font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
+                    Airdrop
+                </Link>
+                <Link href="/uhurucoin" className="rounded-full px-4 py-1 text-xs font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
+                    UhuruCoin
+                </Link>
+                <Link href="/ai-chat" className="rounded-full px-4 py-1 text-xs font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
+                    AI Chat
+                </Link>
             </div>
         </div>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-4 flex-shrink-0">
           <SocialLinks />
           <ThemeToggle />
         </div>
