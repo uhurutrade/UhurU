@@ -108,11 +108,11 @@ export default function UhuruAirdropPage() {
                                         <ul className="space-y-2 text-sm text-muted-foreground">
                                             <li className="flex items-center gap-2">
                                                 <Twitter className="h-4 w-4" />
-                                                <span>Follow us on X/Twitter: <Link href="https://x.com/UhurUtradeUk" target="_blank" className="text-primary hover:underline">@UhurUtradeUk</Link></span>
+                                                <span>Follow us on X/Twitter: <a href="https://x.com/UhurUtradeUk" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@UhurUtradeUk</a></span>
                                             </li>
                                             <li className="flex items-center gap-2">
                                                 <Send className="h-4 w-4" />
-                                                <span>Join our Telegram: <Link href="https://t.me/uhurutradeuk" target="_blank" className="text-primary hover:underline">UhurU Community</Link></span>
+                                                <span>Join our Telegram: <a href="https://t.me/uhurutradeuk" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">UhurU Community</a></span>
                                             </li>
                                         </ul>
                                         <p className="text-xs text-muted-foreground/80 pt-2">
