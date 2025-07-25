@@ -4,7 +4,6 @@
 import { z } from 'zod';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
-import { Resend } from 'resend';
 
 const airdropFormSchema = z.object({
   walletAddress: z.string(),
@@ -16,40 +15,6 @@ const airdropFormSchema = z.object({
 });
 
 type AirdropFormValues = z.infer<typeof airdropFormSchema>;
-
-async function sendNotificationEmail(data: AirdropFormValues) {
-  const resendApiKey = process.env.RESEND_API_KEY;
-  if (!resendApiKey) {
-    console.warn("RESEND_API_KEY is not set. Skipping email notification.");
-    return;
-  }
-  
-  const resend = new Resend(resendApiKey);
-  const adminEmail = "uhurutradeuk@gmail.com";
-
-  try {
-    await resend.emails.send({
-      from: 'Airdrop Notifier <onboarding@resend.dev>',
-      to: adminEmail,
-      subject: '🎉 New Airdrop Submission!',
-      html: `
-        <h1>New Entry for UHURU Coin Airdrop</h1>
-        <p>A new user has submitted their details for the airdrop.</p>
-        <ul>
-          <li><strong>Wallet Address:</strong> ${data.walletAddress}</li>
-          <li><strong>Twitter:</strong> ${data.twitterHandle}</li>
-          <li><strong>Telegram:</strong> ${data.telegramUsername}</li>
-          <li><strong>Email:</strong> ${data.email}</li>
-          <li><strong>How they heard:</strong> ${data.howHeard || 'N/A'}</li>
-        </ul>
-      `,
-    });
-    console.log(`Notification email sent to ${adminEmail}`);
-  } catch (error) {
-    console.error("Error sending notification email via Resend:", error);
-    // We don't want to fail the whole submission if the email fails, so we just log it.
-  }
-}
 
 export async function submitAirdrop(data: AirdropFormValues): Promise<{ success: boolean; error?: string }> {
   // Validate data with Zod server-side
@@ -114,9 +79,6 @@ export async function submitAirdrop(data: AirdropFormValues): Promise<{ success:
     });
 
     console.log('Successfully added a new row to the spreadsheet.');
-
-    // Send email notification in the background (don't await)
-    sendNotificationEmail(parsedData.data);
 
     return { success: true };
 
