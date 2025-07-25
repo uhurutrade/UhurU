@@ -146,7 +146,7 @@ export default function UhuruCoinPage() {
                         </li>
                     ))}
                   </ul>
-                  <div className="text-sm text-muted-foreground space-y-2 pt-4 text-center md:text-left">
+                  <div className="text-sm text-muted-foreground space-y-2 pt-2 text-center md:text-left">
                       <div className="flex items-center gap-2 justify-center md:justify-start">
                           <Info className="h-4 w-4 flex-shrink-0" />
                           <h4 className="font-semibold text-foreground">Why Polygon Network?</h4>
