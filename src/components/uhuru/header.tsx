@@ -105,17 +105,20 @@ export default function Header() {
             </Link>
         </div>
 
-        <div className="hidden md:flex flex-1 justify-center items-center gap-4">
-          <Link href="/uhuru-airdrop" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-            Airdrop
-          </Link>
-          <Link href="/uhurucoin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-            UhuruCoin
-          </Link>
-          <Link href="/ai-chat" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-            AI Chat
-          </Link>
+        <div className="hidden md:flex flex-1 justify-center">
+            <div className="flex items-center gap-2 rounded-full border bg-muted/50 p-1 transition-all duration-300 hover:shadow-md hover:bg-muted/80">
+                <Link href="/uhuru-airdrop" className="rounded-full px-4 py-1 text-sm font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
+                    Airdrop
+                </Link>
+                <Link href="/uhurucoin" className="rounded-full px-4 py-1 text-sm font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
+                    UhuruCoin
+                </Link>
+                <Link href="/ai-chat" className="rounded-full px-4 py-1 text-sm font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
+                    AI Chat
+                </Link>
+            </div>
         </div>
+
 
         <div className="hidden md:flex flex-1 justify-end items-center gap-4">
           <SocialLinks />
