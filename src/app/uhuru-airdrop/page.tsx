@@ -168,7 +168,7 @@ export default function UhuruAirdropPage() {
                         )}
                     </Card>
                     <p className="text-center text-xs text-muted-foreground mt-4">
-                        This content is not created or endorsed by Google. UhurU Trade Ltd. is the owner of this form.
+                      UhurU Trade Ltd. is the owner of this form. See our <Link href="/privacy-policy" className="underline hover:text-primary">Privacy Policy</Link> and <Link href="/cookie-policy" className="underline hover:text-primary">Cookie Policy</Link>.
                     </p>
                 </div>
             </main>
