@@ -44,6 +44,7 @@
     "firebase": "^11.9.1",
     "framer-motion": "11.2.10",
     "genkit": "^1.0.0",
+    "google-spreadsheet": "^4.1.2",
     "langchain": "^0.2.5",
     "lucide-react": "^0.475.0",
     "nanoid": "^5.0.7",

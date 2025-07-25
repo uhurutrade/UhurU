@@ -39,6 +39,7 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
     )}>
         {isMobile && (
           <>
+            <Link href="/uhuru-airdrop" className="text-base font-medium text-foreground hover:text-primary">Airdrop</Link>
             <Link href="/uhurucoin" className="text-base font-medium text-foreground hover:text-primary">UhuruCoin</Link>
             <Link href="/ai-chat" className="text-base font-medium text-foreground hover:text-primary">AI Chat</Link>
             <Link href="/about-us" className="text-lg font-medium text-foreground hover:text-primary">About Us</Link>
@@ -55,37 +56,37 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
         )}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="https://www.instagram.com/uhurutrade/" aria-label="Instagram" prefetch={false}><Instagram className="h-5 w-5 text-foreground hover:text-primary" /></Link>
+                <a href="https://www.instagram.com/uhurutrade/" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><Instagram className="h-5 w-5 text-foreground hover:text-primary" /></a>
               </TooltipTrigger>
               <TooltipContent><p>Instagram</p></TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="https://wa.me/447517074605" aria-label="WhatsApp" prefetch={false}><WhatsAppIcon /></Link>
+                <a href="https://wa.me/447517074605" aria-label="WhatsApp" target="_blank" rel="noopener noreferrer"><WhatsAppIcon /></a>
               </TooltipTrigger>
               <TooltipContent><p>WhatsApp</p></TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="https://www.linkedin.com/company/uhurutrade" aria-label="LinkedIn" prefetch={false}><Linkedin className="h-5 w-5 text-foreground hover:text-primary" /></Link>
+                <a href="https://www.linkedin.com/company/uhurutrade" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><Linkedin className="h-5 w-5 text-foreground hover:text-primary" /></a>
               </TooltipTrigger>
               <TooltipContent><p>LinkedIn</p></TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="https://x.com/UhurUtradeUk" aria-label="X/Twitter" prefetch={false}><XIcon /></Link>
+                <a href="https://x.com/UhurUtradeUk" aria-label="X/Twitter" target="_blank" rel="noopener noreferrer"><XIcon /></a>
               </TooltipTrigger>
               <TooltipContent><p>X / Twitter</p></TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="https://www.amazon.co.uk/dp/B0DN2PJR65" aria-label="Amazon" prefetch={false}><AmazonIcon /></Link>
+                <a href="https://www.amazon.co.uk/dp/B0DN2PJR65" aria-label="Amazon" target="_blank" rel="noopener noreferrer"><AmazonIcon /></a>
               </TooltipTrigger>
               <TooltipContent><p>Amazon</p></TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="https://t.me/uhurutradeuk" aria-label="Telegram" prefetch={false}><Send className="h-5 w-5 text-foreground hover:text-primary" /></Link>
+                <a href="https://t.me/uhurutradeuk" aria-label="Telegram" target="_blank" rel="noopener noreferrer"><Send className="h-5 w-5 text-foreground hover:text-primary" /></a>
               </TooltipTrigger>
               <TooltipContent><p>Telegram</p></TooltipContent>
             </Tooltip>
@@ -105,6 +106,9 @@ export default function Header() {
         </div>
 
         <div className="hidden md:flex flex-1 justify-center items-center gap-4">
+          <Link href="/uhuru-airdrop" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            Airdrop
+          </Link>
           <Link href="/uhurucoin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
             UhuruCoin
           </Link>
