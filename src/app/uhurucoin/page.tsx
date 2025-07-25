@@ -4,8 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import SubPageHeader from '@/components/uhuru/subpage-header';
-import { ExternalLink, ShoppingCart, Copy, Check } from 'lucide-react';
-import type { Metadata } from 'next';
+import { ExternalLink, ShoppingCart, Copy, Check, Info } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
@@ -30,6 +29,7 @@ const explorerLinks = [
     { name: "View on PolygonScan", href: `https://polygonscan.com/token/${contractAddress}` },
     { name: "View on DexTools", href: "https://www.dextools.io/app/en/polygon/pair-explorer/0xe92e1db1c5435d1f4eaf52f67e9a55958c253a96" },
     { name: "View on GeckoTerminal", href: "https://www.geckoterminal.com/polygon_pos/pools/0xe92e1db1c5435d1f4eaf52f67e9a55958c253a96" },
+    { name: "View on DexScreener", href: "https://dexscreener.com/polygon/0xe92e1db1c5435d1f4eaf52f67e9a55958c253a96" }
 ];
 
 const ContractCopyButton = () => {
@@ -74,10 +74,10 @@ export default function UhuruCoinPage() {
           <Card className="bg-card shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline text-foreground">
-                Uhuru Coin
+                Uhuru Coin. Your Trust. Your Token.
               </CardTitle>
               <CardDescription className="text-muted-foreground max-w-2xl mx-auto">
-                The official cryptocurrency of <Link href="https://uhurutrade.com" className="text-primary hover:underline">uhurutrade.com</Link>, designed to reward our community and share our success with you.
+                The official cryptocurrency of uhurutrade.com, designed to reward our community and share our success with you.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-12 pt-6">
@@ -89,7 +89,7 @@ export default function UhuruCoinPage() {
                         <strong>Uhuru Coin (UHURU)</strong> is more than just a cryptocurrency; it's our commitment to you. We believe that our clients are our partners, and as UhurU grows, our community should share in that success. Uhuru Coin is our way of making that happen.
                     </p>
                     <p>
-                        We reward our clients' loyalty by giving back **5% of the value of every contracted service** in Uhuru Coins. For example, if you hire one of our services for £1,000, you will automatically receive £50 worth of UHURU in your wallet. It's that simple.
+                        We reward our clients' loyalty by giving back 5% of the value of every contracted service in Uhuru Coins. For example, if you hire one of our services for £1,000, you will automatically receive £50 worth of UHURU in your wallet. It's that simple.
                     </p>
                     <p>
                         You have complete freedom with your coins. Use them to pay for future UhurU services, hold them as a believer in our long-term vision, or swap them for USDT on the Polygon network at any time. This program is designed to be a tangible benefit, turning your investment in our services into a share in our collective future.
@@ -104,7 +104,7 @@ export default function UhuruCoinPage() {
                 <h2 className="text-2xl font-bold font-headline mb-4 text-center">Token Details</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center max-w-md mx-auto">
                     {tokenDetails.map(detail => (
-                        <div key={detail.label} className="bg-muted/50 p-3 rounded-lg">
+                        <div key={detail.label} className="bg-muted/50 p-3 rounded-lg border border-border">
                             <div className="text-sm font-semibold text-foreground">{detail.label}</div>
                             <div className="text-base text-muted-foreground">{detail.value}</div>
                         </div>
@@ -125,7 +125,7 @@ export default function UhuruCoinPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
                 <div className="space-y-4">
-                  <h2 className="text-2xl font-bold font-headline">Live Chart</h2>
+                  <h2 className="text-2xl font-bold font-headline text-center">Live Chart</h2>
                   <div className="w-full h-[480px] rounded-lg overflow-hidden border">
                     <iframe 
                       src="https://dexscreener.com/polygon/0xe92e1db1c5435d1f4eaf52f67e9a55958c253a96?embed=1&theme=dark" 
@@ -135,17 +135,24 @@ export default function UhuruCoinPage() {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <h2 className="text-2xl font-bold font-headline">Explorers & Links</h2>
-                  <ul className="space-y-3">
+                  <h2 className="text-2xl font-bold font-headline text-center">Explorers & Links</h2>
+                  <ul className="space-y-3 text-center md:text-left">
                     {explorerLinks.map(link => (
                         <li key={link.name}>
-                            <Link href={link.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-primary hover:underline">
+                            <Link href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-primary hover:underline">
                                 <ExternalLink className="h-4 w-4" />
                                 {link.name}
                             </Link>
                         </li>
                     ))}
                   </ul>
+                  <div className="text-xs text-muted-foreground space-y-2 pt-4 text-center md:text-left">
+                      <div className="flex items-center gap-2 justify-center md:justify-start">
+                          <Info className="h-4 w-4 flex-shrink-0" />
+                          <h4 className="font-semibold text-foreground">Why Polygon Network?</h4>
+                      </div>
+                      <p>Uhuru Coin operates on the Polygon network, a leading Layer-2 scaling solution for Ethereum. This choice ensures that your transactions are fast, secure, and incredibly cost-effective, with significantly lower gas fees than the main Ethereum network. Polygon's reputation and robust technology provide a reliable and private foundation for our token, allowing for seamless and efficient trading.</p>
+                  </div>
                 </div>
               </div>
 
