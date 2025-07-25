@@ -151,7 +151,9 @@ export default function UhuruCoinPage() {
                           <Info className="h-4 w-4 flex-shrink-0" />
                           <h4 className="font-semibold text-foreground">Why Polygon Network?</h4>
                       </div>
-                      <p>Uhuru Coin is built on Polygon, a premier Layer-2 scaling solution for Ethereum. This reduces network congestion and transaction costs, making it ideal for everyday use. As an EVM-compatible chain, Polygon inherits Ethereum's robust security, ensuring your assets are protected by a globally trusted infrastructure. Its reputation as a reliable and scalable network provides the perfect foundation for our token, enabling fast and cost-effective trading.</p>
+                      <p>
+                          Uhuru Coin is built on Polygon, a premier Layer-2 scaling solution for Ethereum, deliberately chosen to provide you with a superior user experience. By processing transactions on a separate, high-speed chain, we drastically reduce network congestion and bring transaction costs down to mere cents, making it ideal for everyday use and micro-transactions. As an EVM-compatible chain, Polygon seamlessly integrates with the entire Ethereum ecosystem, including popular wallets like MetaMask, while inheriting its robust, battle-tested security. This means your assets are protected by a globally trusted infrastructure, giving you peace of mind. Furthermore, Polygon's Proof-of-Stake consensus mechanism is significantly more energy-efficient, aligning with our commitment to sustainable and responsible technology. Its reputation as a reliable and scalable network provides the perfect foundation for our token, enabling fast, eco-friendly, and cost-effective trading.
+                      </p>
                   </div>
                 </div>
               </div>
