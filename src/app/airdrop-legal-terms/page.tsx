@@ -9,7 +9,7 @@ export default function AirdropLegalTermsPage() {
     <div className="min-h-dvh bg-background text-foreground">
       <SubPageHeader backHref="/uhuru-airdrop" backText="Back to Airdrop" />
       <main className="container mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-16 lg:py-24">
-        <div className="prose prose-xs prose-invert max-w-none text-muted-foreground">
+        <div className="prose prose-xs prose-invert max-w-none text-muted-foreground space-y-4">
           <h1 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">Legal Terms for UHURU Token Airdrop</h1>
 
           <p className="text-sm italic">Last updated: {lastUpdated}</p>
