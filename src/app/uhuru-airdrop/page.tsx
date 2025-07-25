@@ -23,7 +23,7 @@ const airdropFormSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
   howHeard: z.string().optional(),
   hasCompletedSteps: z.boolean().refine(val => val === true, {
-    message: 'You must confirm that you have completed all steps.',
+    message: 'You must accept the legal terms to proceed.',
   }),
 });
 
@@ -153,7 +153,12 @@ export default function UhuruAirdropPage() {
                                                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
                                                     <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                                                     <div className="space-y-1 leading-none">
-                                                        <FormLabel>Have you completed all the steps above? *</FormLabel>
+                                                        <Label htmlFor="hasCompletedSteps">
+                                                          I have read and agree to the{' '}
+                                                          <Link href="/airdrop-legal-terms" className="underline hover:text-primary" target="_blank" rel="noopener noreferrer">
+                                                              Legal Terms for Token Airdrop
+                                                          </Link>.*
+                                                        </Label>
                                                         <FormMessage />
                                                     </div>
                                                 </FormItem>
