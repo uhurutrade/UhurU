@@ -92,7 +92,7 @@ export default function UhuruAirdropPage() {
                                         UHURU Coin Airdrop
                                     </CardTitle>
                                     <CardDescription className="text-muted-foreground pt-2">
-                                        Complete the steps below to receive free UHURU tokens on the Polygon Network for supporting our project.
+                                        Complete the steps below to receive free 100 UHURU tokens on the Polygon Network for supporting our project.
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-8">
@@ -159,7 +159,7 @@ export default function UhuruAirdropPage() {
                                                 </FormItem>
                                             )} />
                                             <Button type="submit" className="w-full" disabled={isSubmitting}>
-                                                {isSubmitting ? <Loader className="animate-spin" /> : "Get Free Uhuru Tokens"}
+                                                {isSubmitting ? <Loader className="animate-spin" /> : "Get Free 100 Uhuru Tokens"}
                                             </Button>
                                         </form>
                                     </Form>
