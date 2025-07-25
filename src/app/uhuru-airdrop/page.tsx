@@ -29,8 +29,8 @@ const airdropFormSchema = z.object({
 
 type AirdropFormValues = z.infer<typeof airdropFormSchema>;
 
-const AirdropResult = ({ status, message, onReset }: { status: 'success' | 'error', message: string, onReset: () => void }) => (
-    <div className="flex flex-col items-center justify-center text-center p-6 space-y-4">
+const AirdropResult = ({ status, message }: { status: 'success' | 'error', message: string }) => (
+    <div className="flex flex-col items-center justify-center text-center p-6 space-y-4 min-h-[500px]">
         {status === 'success' ? (
             <CheckCircle className="h-16 w-16 text-green-500" />
         ) : (
@@ -38,7 +38,6 @@ const AirdropResult = ({ status, message, onReset }: { status: 'success' | 'erro
         )}
         <h2 className="text-2xl font-bold font-headline">{status === 'success' ? 'Submission Successful!' : 'An Error Occurred'}</h2>
         <p className="text-muted-foreground">{message}</p>
-        <Button onClick={onReset}>Submit Another Response</Button>
     </div>
 );
 
@@ -78,12 +77,6 @@ export default function UhuruAirdropPage() {
         }
     };
 
-    const handleReset = () => {
-        form.reset();
-        setSubmissionStatus('idle');
-        setSubmissionMessage('');
-    }
-
     return (
         <div className="flex min-h-dvh flex-col bg-background text-foreground">
             <SubPageHeader backHref="/" backText="Back to Home" />
@@ -91,7 +84,7 @@ export default function UhuruAirdropPage() {
                 <div className="container mx-auto max-w-2xl px-4 md:px-10">
                     <Card className="bg-card shadow-lg">
                         {submissionStatus !== 'idle' ? (
-                            <AirdropResult status={submissionStatus} message={submissionMessage} onReset={handleReset} />
+                            <AirdropResult status={submissionStatus} message={submissionMessage} />
                         ) : (
                             <>
                                 <CardHeader className="text-center">
@@ -166,7 +159,7 @@ export default function UhuruAirdropPage() {
                                                 </FormItem>
                                             )} />
                                             <Button type="submit" className="w-full" disabled={isSubmitting}>
-                                                {isSubmitting ? <Loader className="animate-spin" /> : "Enviar"}
+                                                {isSubmitting ? <Loader className="animate-spin" /> : "Get Free Uhuru Tokens"}
                                             </Button>
                                         </form>
                                     </Form>
