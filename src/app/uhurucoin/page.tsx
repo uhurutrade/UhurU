@@ -122,7 +122,7 @@ export default function UhuruCoinPage() {
                         <ShoppingCart className="mr-2 h-5 w-5" /> Buy on QuickSwap
                       </Link>
                     </Button>
-                    <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+                    <Button asChild size="lg" className="w-full sm:w-auto">
                       <Link href="/uhuru-airdrop">
                         <Gift className="mr-2 h-5 w-5" /> Claim Your Free Airdrop
                       </Link>
