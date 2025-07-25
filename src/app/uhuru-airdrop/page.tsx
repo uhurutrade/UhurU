@@ -150,14 +150,15 @@ export default function UhuruAirdropPage() {
                                                 </FormItem>
                                             )} />
                                             <FormField control={form.control} name="hasCompletedSteps" render={({ field }) => (
-                                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                                                <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow">
                                                     <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                                                     <div className="space-y-1 leading-none">
-                                                        <Label htmlFor="hasCompletedSteps">
+                                                        <Label htmlFor="hasCompletedSteps" className="align-middle">
                                                           I have read and agree to the{' '}
                                                           <Link href="/airdrop-legal-terms" className="underline hover:text-primary" target="_blank" rel="noopener noreferrer">
-                                                              Legal Terms for Token Airdrop
-                                                          </Link>.*
+                                                              <span className="text-xs">Legal Terms for Token Airdrop</span>
+                                                          </Link>
+                                                          .*
                                                         </Label>
                                                         <FormMessage />
                                                     </div>
