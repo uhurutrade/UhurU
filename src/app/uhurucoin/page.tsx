@@ -74,7 +74,7 @@ export default function UhuruCoinPage() {
           <Card className="bg-card shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline text-foreground">
-                Uhuru Coin. Your Trust. Your Token.
+                Uhuru Coin.Your Trust.Your Token.
               </CardTitle>
               <CardDescription className="text-muted-foreground max-w-2xl mx-auto">
                 The official cryptocurrency of uhurutrade.com, designed to reward our community and share our success with you.
@@ -152,7 +152,7 @@ export default function UhuruCoinPage() {
                           <h4 className="font-semibold text-foreground">Why Polygon Network?</h4>
                       </div>
                       <p>
-                          Uhuru Coin is built on Polygon, a premier Layer-2 scaling solution for Ethereum, deliberately chosen to provide you with a superior user experience. By processing transactions on a separate, high-speed chain, we drastically reduce network congestion and bring transaction costs down to mere cents, making it ideal for everyday use and micro-transactions. As an EVM-compatible chain, Polygon seamlessly integrates with the entire Ethereum ecosystem, including popular wallets like MetaMask, while inheriting its robust, battle-tested security. This means your assets are protected by a globally trusted infrastructure, giving you peace of mind. Furthermore, Polygon's Proof-of-Stake consensus mechanism is significantly more energy-efficient, aligning with our commitment to sustainable and responsible technology. Its reputation as a reliable and scalable network provides the perfect foundation for our token, enabling fast, eco-friendly, and cost-effective trading.
+                          Uhuru Coin is built on Polygon, a premier Layer-2 solution for Ethereum, deliberately chosen to provide a superior user experience. By processing transactions on a separate, high-speed chain, we reduce network congestion and bring costs down to mere cents, making it ideal for everyday use and micro-transactions. As an EVM-compatible chain, Polygon integrates with the Ethereum ecosystem, including wallets like MetaMask, while inheriting its robust security. This means your assets are protected by a globally trusted infrastructure, giving you peace of mind. Furthermore, Polygon's Proof-of-Stake mechanism is significantly more energy-efficient, aligning with our commitment to sustainable technology. Its reputation as a reliable, scalable network provides the perfect foundation for our token, enabling fast, eco-friendly, cost-effective trading.
                       </p>
                   </div>
                 </div>
