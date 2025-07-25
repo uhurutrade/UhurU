@@ -39,13 +39,16 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
     )}>
         {isMobile && (
           <>
-            <Link href="/uhurucoin" className="text-sm font-medium text-foreground hover:text-primary">UhuruCoin</Link>
-            <Link href="/ai-chat" className="text-sm font-medium text-foreground hover:text-primary">AI Chat</Link>
+            <Link href="/uhurucoin" className="text-lg font-medium text-foreground hover:text-primary">UhuruCoin</Link>
+            <Link href="/ai-chat" className="text-lg font-medium text-foreground hover:text-primary">AI Chat</Link>
+            <Link href="/about-us" className="text-lg font-medium text-foreground hover:text-primary">About Us</Link>
+            <Link href="/contact" className="text-lg font-medium text-foreground hover:text-primary">Contact</Link>
+            <div className="pt-4" />
           </>
         )}
-        <Link href="mailto:hello@uhurutrade.com" className="text-base text-foreground hover:text-primary">
+        <a href="mailto:hello@uhurutrade.com" className="text-base text-foreground hover:text-primary">
           hello@uhurutrade.com
-        </Link>
+        </a>
         <div className={cn(
             "flex items-center gap-4",
             isMobile && "flex-wrap justify-start"
