@@ -3,7 +3,7 @@ import SubPageHeader from '@/components/uhuru/subpage-header';
 import Link from 'next/link';
 
 export default function AirdropLegalTermsPage() {
-  const lastUpdated = "July 18, 2024";
+  const lastUpdated = "July 25, 2025";
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
@@ -14,39 +14,81 @@ export default function AirdropLegalTermsPage() {
 
           <p className="text-sm italic">Last updated: {lastUpdated}</p>
 
-          <h2 className="mt-8 text-2xl font-semibold text-foreground">1. Introduction & Acceptance</h2>
+          <h2 className="mt-8 text-2xl font-semibold text-foreground">1. Introduction &amp; Acceptance</h2>
           <p>
-            These Legal Terms for Token Airdrop ("Terms") govern your participation in the UHURU Coin Airdrop ("Airdrop") offered by Uhuru Trade Ltd. ("we", "our", or "us"). By submitting the airdrop form, you acknowledge that you have read, understood, and agree to be bound by these Terms, as well as our general <Link href="/privacy-policy" className="underline hover:text-foreground">Privacy Policy</Link> and <Link href="/cookie-policy" className="underline hover:text-foreground">Cookie Policy</Link>. If you do not agree to these terms, do not participate in the Airdrop.
+            These Legal Terms ("Terms") govern your participation in the UHURU Token Airdrop ("Airdrop") operated by Uhuru Trade Ltd., a company registered in the United Kingdom (Company No. 15883242), with its registered office at Unit 13 Freeland Park, Wareham Road, Lytchett Matravers, BH16 6FA Poole, UK ("we", "our", or "us").
+          </p>
+          <p>
+            By participating in the Airdrop, you confirm that you have read, understood, and agree to be bound by these Terms, along with our <Link href="/privacy-policy" className="underline hover:text-foreground">Privacy Policy</Link> and <Link href="/cookie-policy" className="underline hover:text-foreground">Cookie Policy</Link>.
+          </p>
+          <p>
+            If you do not agree to these Terms, you must not participate in the Airdrop.
           </p>
 
-          <h2 className="mt-8 text-2xl font-semibold text-foreground">2. Eligibility</h2>
+          <h2 className="mt-8 text-2xl font-semibold text-foreground">2. Eligibility &amp; Verification</h2>
+          <p>To be eligible:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>You must follow the steps outlined on uhurutrade.com/uhuru-airdrop, which may include actions like joining our social media accounts.</li>
+            <li>You must provide a valid Polygon (MATIC) wallet address.</li>
+            <li>You must be at least 18 years old and not reside in a jurisdiction that prohibits participation in cryptocurrency airdrops.</li>
+          </ul>
+          <p>We reserve the right to:</p>
+           <ul className="list-disc pl-6 space-y-2">
+            <li>Verify submitted data (including IP addresses, wallet activity, and social media engagement) to prevent fraud or abuse.</li>
+            <li>Disqualify participants suspected of using multiple accounts, false identities, or automated tools.</li>
+            <li>Refuse distribution to any user at our sole discretion.</li>
+          </ul>
           <p>
-            To be eligible for the Airdrop, you must meet all the requirements stated on the Airdrop page, which may include following social media accounts and joining community channels. You must also provide a valid Polygon (MATIC) network wallet address. We reserve the right to disqualify any participant who does not meet the eligibility criteria or is found to be engaging in fraudulent activities, such as using multiple accounts. Participants are responsible for ensuring their participation does not violate any local laws or regulations.
+            Only one claim per individual is allowed. Attempts to receive multiple distributions using different identities/accounts will result in disqualification.
           </p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">3. Token Distribution</h2>
-          <p>
-            The distribution of UHURU tokens is at our sole discretion. Successful completion of the required steps does not guarantee receipt of tokens. The quantity of tokens distributed may vary. We will announce the distribution schedule through our official channels. You are responsible for the security of your wallet and private keys. We are not responsible for any loss of tokens.
-          </p>
+          <p>UHURU tokens will be distributed:</p>
+           <ul className="list-disc pl-6 space-y-2">
+            <li>Free of charge as part of the airdrop campaign to qualified users.</li>
+            <li>Automatically, as a 5% bonus of the total value of any paid service contracted through our platform, including deposits or prepayments.</li>
+          </ul>
+           <p>Once tokens are sent:</p>
+           <ul className="list-disc pl-6 space-y-2">
+            <li>They become the full property of the recipient.</li>
+            <li>In the case of service cancellation and refund, the equivalent market value (at refund time) of the distributed UHURU tokens will be deducted from the amount returned.</li>
+          </ul>
+
+          <h2 className="mt-8 text-2xl font-semibold text-foreground">4. Token Ownership &amp; Redemption</h2>
+          <p>Once received, UHURU tokens:</p>
+           <ul className="list-disc pl-6 space-y-2">
+              <li>Belong exclusively to the recipient.</li>
+              <li>May be exchanged at any time for USDT, through compatible DEXs and platforms such as PolygonScan, DexTools, GeckoTerminal, or DexScreener.</li>
+              <li>Do not represent shares, securities, or financial instruments, and are not an investment product.</li>
+           </ul>
           
-          <h2 className="mt-8 text-2xl font-semibold text-foreground">4. No Financial Value or Advice</h2>
+          <h2 className="mt-8 text-2xl font-semibold text-foreground">5. Limitations, Rights &amp; Cancellation</h2>
+           <p>Uhuru Trade Ltd. retains the right to:</p>
+           <ul className="list-disc pl-6 space-y-2">
+            <li>Modify, pause, or cancel the airdrop campaign at any time, with a minimum 7-day public notice posted on uhurutrade.com.</li>
+            <li>Withhold or reverse token distribution in case of fraudulent behavior, breach of these Terms, or legal requirements.</li>
+          </ul>
           <p>
-            The UHURU tokens distributed in this Airdrop are provided free of charge as a reward for community support. The tokens are not an investment, security, or financial instrument. Participation in this Airdrop does not constitute an offer of securities. The information provided does not constitute financial, investment, or legal advice. You should conduct your own research and consult with professional advisors before making any financial decisions.
+            Participation is at your own risk. We make no guarantees as to the current or future value, listing, or usability of the UHURU token. The Airdrop is offered on an “as is” basis.
           </p>
 
-          <h2 className="mt-8 text-2xl font-semibold text-foreground">5. Limitation of Liability & Disclaimer</h2>
+          <h2 className="mt-8 text-2xl font-semibold text-foreground">6. Data &amp; Compliance</h2>
           <p>
-            To the fullest extent permissible by law, Uhuru Trade Ltd. disclaims all liability for any direct, indirect, incidental, or consequential damages arising out of your participation in the Airdrop. The Airdrop is provided on an "as is" and "as available" basis without warranties of any kind. We do not guarantee the value, utility, or long-term viability of the UHURU token.
+            We collect and process your personal data in accordance with the UK GDPR and the Data Protection Act 2018. This includes:
           </p>
-
-          <h2 className="mt-8 text-2xl font-semibold text-foreground">6. Changes and Termination</h2>
-          <p>
-            We reserve the right to modify, suspend, or terminate the Airdrop and these Terms at any time without prior notice. It is your responsibility to review these Terms periodically for changes.
+           <ul className="list-disc pl-6 space-y-2">
+            <li>Data you submit via the Airdrop form.</li>
+            <li>Technical data such as IP address, browser information, and device metadata.</li>
+          </ul>
+           <p>
+            Your data will only be used to manage your participation and prevent abuse. Full details are available in our <Link href="/privacy-policy" className="underline hover:text-foreground">Privacy Policy</Link>.
           </p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">7. Contact</h2>
           <p>
-            If you have any questions about these Terms, please contact us at: <a href="mailto:hello@uhurutrade.com" className="underline hover:text-foreground">hello@uhurutrade.com</a>.
+            For any questions regarding the Airdrop or these Terms, please contact:
+            <br />
+            📧 <a href="mailto:hello@uhurutrade.com" className="underline hover:text-foreground">hello@uhurutrade.com</a>
           </p>
         </div>
       </main>
