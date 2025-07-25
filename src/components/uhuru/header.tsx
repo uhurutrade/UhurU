@@ -37,7 +37,12 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
       "flex items-center gap-4",
       isMobile ? "flex-col items-start" : "flex-row items-center"
     )}>
-        {isMobile && <Link href="/ai-chat" className="text-sm font-medium text-foreground hover:text-primary">AI Chat</Link>}
+        {isMobile && (
+          <>
+            <Link href="/uhurucoin" className="text-sm font-medium text-foreground hover:text-primary">UhuruCoin</Link>
+            <Link href="/ai-chat" className="text-sm font-medium text-foreground hover:text-primary">AI Chat</Link>
+          </>
+        )}
         <Link href="mailto:hello@uhurutrade.com" className="text-base text-foreground hover:text-primary">
           hello@uhurutrade.com
         </Link>
@@ -96,9 +101,12 @@ export default function Header() {
             </Link>
         </div>
 
-        <div className="hidden md:flex flex-1 justify-center">
-          <Link href="/ai-chat" className="text-[9px] font-medium text-foreground hover:text-primary transition-colors">
-            AI
+        <div className="hidden md:flex flex-1 justify-center items-center gap-4">
+          <Link href="/uhurucoin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            UhuruCoin
+          </Link>
+          <Link href="/ai-chat" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            AI Chat
           </Link>
         </div>
 
