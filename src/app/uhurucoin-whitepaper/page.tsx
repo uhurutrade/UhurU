@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import SubPageHeader from '@/components/uhuru/subpage-header';
@@ -62,31 +61,31 @@ export default function UhuruCoinWhitepaperPage() {
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell>Initial Airdrop</TableCell>
+                <TableCell className="font-semibold text-foreground">Initial Airdrop</TableCell>
                 <TableCell>15%</TableCell>
                 <TableCell>150,000,000</TableCell>
                 <TableCell>Free distribution, promotion, and adoption</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Service Bonuses</TableCell>
+                <TableCell className="font-semibold text-foreground">Service Bonuses</TableCell>
                 <TableCell>35%</TableCell>
                 <TableCell>350,000,000</TableCell>
                 <TableCell>Progressive release based on actual usage</TableCell>
               </TableRow>
                <TableRow>
-                <TableCell>Team and Advisors</TableCell>
+                <TableCell className="font-semibold text-foreground">Team and Advisors</TableCell>
                 <TableCell>15%</TableCell>
                 <TableCell>150,000,000</TableCell>
                 <TableCell>24-month vesting period</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Marketing and Development</TableCell>
+                <TableCell className="font-semibold text-foreground">Marketing and Development</TableCell>
                 <TableCell>20%</TableCell>
                 <TableCell>200,000,000</TableCell>
                 <TableCell>Promotion, partnerships, campaigns</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Liquidity Fund</TableCell>
+                <TableCell className="font-semibold text-foreground">Liquidity Fund</TableCell>
                 <TableCell>15%</TableCell>
                 <TableCell>150,000,000</TableCell>
                 <TableCell>Ensuring liquidity on DEXs</TableCell>
