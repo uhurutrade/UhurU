@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import SubPageHeader from '@/components/uhuru/subpage-header';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Link from 'next/link';
-import { Coins } from 'lucide-react';
+import { Blocks } from 'lucide-react';
 
 
 export default function UhuruCoinWhitepaperPage() {
@@ -17,7 +17,7 @@ export default function UhuruCoinWhitepaperPage() {
         <div className="prose prose-xs prose-invert max-w-none text-muted-foreground space-y-6">
           <div className="text-center mb-8">
             <div className="flex justify-center items-center gap-3 mb-4">
-              <Coins className="h-10 w-10 text-primary" />
+              <Blocks className="h-10 w-10 text-primary" />
             </div>
             <h1 className="text-2xl font-bold text-foreground md:text-3xl">UhuruCoin WhitePaper – A Decentralized Future for Digital Commerce and Services</h1>
           </div>
