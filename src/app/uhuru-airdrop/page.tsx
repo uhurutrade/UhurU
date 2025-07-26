@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import SubPageHeader from '@/components/uhuru/subpage-header';
-import { Loader, Send, Twitter, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Loader, Send, Twitter, CheckCircle, AlertTriangle, Info } from 'lucide-react';
 import Link from 'next/link';
 import { submitAirdrop } from '@/ai/actions/airdrop-action';
 
@@ -154,21 +154,35 @@ export default function UhuruAirdropPage() {
                                                     <FormMessage />
                                                 </FormItem>
                                             )} />
-                                            <FormField control={form.control} name="hasCompletedSteps" render={({ field }) => (
-                                                <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow">
-                                                    <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                                                    <div className="space-y-1 leading-none">
-                                                        <Label htmlFor="hasCompletedSteps" className="align-middle">
-                                                          I have read and agree to the{' '}
-                                                          <Link href="/airdrop-legal-terms" className="underline hover:text-primary" target="_blank" rel="noopener noreferrer">
-                                                              <span className="text-xs">Legal Terms for Token Airdrop</span>
-                                                          </Link>
-                                                          .*
-                                                        </Label>
-                                                        <FormMessage />
-                                                    </div>
-                                                </FormItem>
-                                            )} />
+                                            <div className="space-y-2">
+                                              <FormField control={form.control} name="hasCompletedSteps" render={({ field }) => (
+                                                  <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow">
+                                                      <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                                      <div className="space-y-1 leading-none">
+                                                          <Label htmlFor="hasCompletedSteps" className="align-middle">
+                                                            I have read and agree to the{' '}
+                                                            <Link href="/airdrop-legal-terms" className="underline hover:text-primary" target="_blank" rel="noopener noreferrer">
+                                                                Legal Terms for Token Airdrop
+                                                            </Link>
+                                                            .*
+                                                          </Label>
+                                                          <FormMessage />
+                                                      </div>
+                                                  </FormItem>
+                                              )} />
+                                              <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                                                  <Info className="h-4 w-4 mt-0.5 text-primary flex-shrink-0"/>
+                                                  <div className="space-y-1 leading-none">
+                                                      <Label className="align-middle text-muted-foreground">
+                                                        We recommend reading the{' '}
+                                                        <Link href="/uhurucoin-whitepaper" className="underline hover:text-primary" target="_blank" rel="noopener noreferrer">
+                                                            UhuruCoin WhitePaper
+                                                        </Link>
+                                                        {' '}to fully understand the project.
+                                                      </Label>
+                                                  </div>
+                                              </div>
+                                            </div>
                                             <Button type="submit" className="w-full" disabled={isSubmitting}>
                                                 {isSubmitting ? <Loader className="animate-spin" /> : "Get Free 100 Uhuru Tokens"}
                                             </Button>
