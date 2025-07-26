@@ -2,6 +2,7 @@
 import SubPageHeader from '@/components/uhuru/subpage-header';
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Cookie } from 'lucide-react';
 
 export default function CookiePolicyPage() {
   const lastUpdated = "July 13, 2024";
@@ -11,7 +12,12 @@ export default function CookiePolicyPage() {
       <SubPageHeader backHref="/" backText="Back to Home" />
       <main className="container mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-16 lg:py-24">
         <div className="prose prose-xs prose-invert max-w-none text-muted-foreground">
-          <h1 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">Cookie Policy</h1>
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <Cookie className="h-12 w-12 text-primary" />
+            </div>
+            <h1 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">Cookie Policy</h1>
+          </div>
 
           <p className="text-sm italic">Last updated: {lastUpdated}</p>
 
