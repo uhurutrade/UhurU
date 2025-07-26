@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import SubPageHeader from '@/components/uhuru/subpage-header';
@@ -13,7 +14,7 @@ export default function UhuruCoinWhitepaperPage() {
       <SubPageHeader backHref="/uhuru-airdrop" backText="Back to Airdrop" />
       <main className="container mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-16 lg:py-24">
         <div className="prose prose-xs prose-invert max-w-none text-muted-foreground space-y-6">
-          <h1 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">UHURU Whitepaper – A Decentralized Future for Digital Commerce and Services</h1>
+          <h1 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">UhuruCoin WhitePaper – A Decentralized Future for Digital Commerce and Services</h1>
           
           <p className="text-sm italic">Last updated: {lastUpdated}</p>
 
