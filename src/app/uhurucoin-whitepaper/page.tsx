@@ -19,7 +19,7 @@ export default function UhuruCoinWhitepaperPage() {
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">1. Executive Summary</h2>
           <p>
-            UHURU is a digital token created by UHURU TRADE LTD (Company No. 15883242, registered in the United Kingdom), designed to revolutionize access to commercial, financial, and technological services on a global scale. The purpose of UHURU is to democratize access to digital and financial services, making them fairer, more efficient, and transparent through blockchain technology on the Polygon (MATIC) network. UHURU will be the cornerstone offering bonuses, discounts, premium access, and community participation within the ecosystem, while also laying the groundwork for future decentralized governance.
+            UHURU is a digital token created by UHURU TRADE LTD (Company No. 15883242, registered in the United Kingdom), designed to revolutionize access to commercial, financial, and technological services on a global scale. The purpose of UHURU is to democratize access to digital and financial services, making them fairer, more efficient, and transparent through blockchain technology on the Polygon (MATIC) network. UHURU will be the cornerstone offering bonuses, discounts, premium access, and community participation within the ecosystem, while also laying the groundwork for future decentralized governance. Our vision is to build a self-sustaining digital economy where value is shared equitably among its participants.
           </p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">2. Introduction: Problem and Solution</h2>
@@ -98,8 +98,9 @@ export default function UhuruCoinWhitepaperPage() {
             <li>Service cancellations/refunds will deduct the value of UHURU delivered to the user at the current market rate.</li>
             <li>The smart contract allows for minting and burning, providing potential for future adoption control or programmable deflation.</li>
           </ul>
+          <p><strong>Token Burn Strategy:</strong> To potentially enhance token value and reward long-term holders, the smart contract includes a `burn` function. This feature could be used in the future, as governed by community proposals, to permanently remove a portion of tokens from circulation, for instance, by using a percentage of platform revenues. This creates a deflationary pressure that can benefit all token holders.</p>
 
-          <h2 className="mt-8 text-2xl font-semibold text-foreground">5. Technology and Token Architecture</h2>
+          <h2 className="mt-8 text-2xl font-semibold text-foreground">5. Technology and Architecture</h2>
           <ul className="list-disc pl-6 space-y-2">
             <li><strong>Network:</strong> Polygon (MATIC)</li>
             <li><strong>Technical Standard:</strong> ERC-20</li>
@@ -112,9 +113,10 @@ export default function UhuruCoinWhitepaperPage() {
             <li>Minting and burning are exclusively controlled by the "owner" (UHURU TRADE LTD); includes a pause function for transfers in emergencies.</li>
             <li>Token recovery feature to retrieve tokens sent by user error.</li>
             <li>Compatible with standard wallets and DEXs in the Polygon/Ethereum ecosystem.</li>
-            <li>Professionally backed: code based on OpenZeppelin + TokenRecover security extension.</li>
+            <li>Professionally backed: code based on OpenZeppelin + extension of security TokenRecover.</li>
             <li>Integrated with the platform to manage bonuses and utilities without manual intervention.</li>
           </ul>
+          <p><strong>Security and Audits:</strong> Security is paramount. Although the contract is based on battle-tested OpenZeppelin libraries, it will undergo a comprehensive security audit by a reputable third-party firm before any major ecosystem expansion. The results of this audit will be made public to ensure full transparency and build community trust.</p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">6. Roadmap</h2>
            <Card className="bg-card my-4">
@@ -125,6 +127,7 @@ export default function UhuruCoinWhitepaperPage() {
                   <li>Deployment and public verification of the smart contract.</li>
                   <li>Public launch of airdrop campaign and usage-based bonus program.</li>
                   <li>Listing on explorers and initial DEX platforms.</li>
+                  <li>Community building initiatives on social platforms.</li>
                 </ul>
               </CardContent>
             </Card>
@@ -137,6 +140,7 @@ export default function UhuruCoinWhitepaperPage() {
                   <li>Launch of loyalty program, referral rewards, and community incentives.</li>
                   <li>First strategic commercial and technological partnerships.</li>
                   <li>Global adoption and digital marketing campaigns.</li>
+                  <li>Integration of the UHURU token as a payment method for select services.</li>
                 </ul>
               </CardContent>
             </Card>
@@ -148,20 +152,20 @@ export default function UhuruCoinWhitepaperPage() {
                   <li>Multichain integration and new digital products/services.</li>
                   <li>Development of burn/repurchase mechanisms if required by the market.</li>
                   <li>Expansion into emerging markets and related verticals.</li>
+                  <li>Exploring cross-chain interoperability to expand the token's reach.</li>
                 </ul>
               </CardContent>
             </Card>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">7. Management Team and Advisors</h2>
           <p>
-            The team combines experience in technology, software, consulting, and international business management. 
-            (Further details to be announced).
+            The UHURU project is led by a team of seasoned professionals with proven track records in technology, software, consulting, and international business management. To ensure maximum transparency and foster trust with our community, the full details of our core team and advisors, including their verifiable LinkedIn profiles and professional backgrounds, will be made publicly available prior to the conclusion of our initial launch phase.
           </p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">8. Legal Framework and Regulatory Considerations</h2>
           <ul className="list-disc pl-6 space-y-2">
             <li><strong>Participation Terms:</strong> Airdrop and utility terms are effective from July 25, 2025. See the official <Link href="/airdrop-legal-terms" className="underline hover:text-foreground">terms here</Link>.</li>
-            <li><strong>Disclaimer:</strong> The UHURU token is not a share, security, financial instrument, or traditional investment. Its value depends solely on its utility and market dynamics.</li>
+            <li><strong>Disclaimer:</strong> The UHURU token is a utility token and is not a share, security, financial instrument, or traditional investment. Its value depends solely on its utility and market dynamics.</li>
             <li><strong>Inherent Risks:</strong> Participating, holding, or exchanging UHURU involves risks such as volatility, loss of value, or regulatory changes.</li>
             <li><strong>Right to Modify:</strong> UHURU TRADE LTD may modify, pause, or cancel the airdrop/utility campaign with a minimum of 7 days' public notice.</li>
             <li><strong>Data Protection:</strong> Strict compliance with UK GDPR and the Data Protection Act 2018.</li>
