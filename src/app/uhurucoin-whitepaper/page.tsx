@@ -20,7 +20,7 @@ export default function UhuruCoinWhitepaperPage() {
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">1. Executive Summary</h2>
           <p>
-            UHURU is a digital token created by Uhuru Trade Ltd. (Company No. 15883242, registered in the United Kingdom), designed to revolutionize access to commercial, financial, and technological services on a global scale. The purpose of UHURU is to democratize access to digital and financial services, making them fairer, more efficient, and transparent through blockchain technology on the Polygon (MATIC) network. UHURU will be the cornerstone offering bonuses, discounts, premium access, and community participation within the ecosystem, while also laying the groundwork for future decentralized governance. Our vision is to build a self-sustaining digital economy where value is shared equitably among its participants.
+            UhuruCoin is a digital token created by Uhuru Trade Ltd. (Company No. 15883242, registered in the United Kingdom), designed to revolutionize access to commercial, financial, and technological services on a global scale. The purpose of UhuruCoin is to democratize access to digital and financial services, making them fairer, more efficient, and transparent through blockchain technology on the Polygon (MATIC) network. UhuruCoin will be the cornerstone offering bonuses, discounts, premium access, and community participation within the ecosystem, while also laying the groundwork for future decentralized governance. Our vision is to build a self-sustaining digital economy where value is shared equitably among its participants.
           </p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">2. Introduction: Problem and Solution</h2>
@@ -31,32 +31,32 @@ export default function UhuruCoinWhitepaperPage() {
             <li>Lack of transparency and unequal access due to regulatory or geographical barriers</li>
           </ul>
           <p>
-            Uhuru Trade Ltd. responds with a blockchain-based platform that enables trading, digital consulting, and access to international financial opportunities securely, instantly, and without entry barriers. Through the UHURU token, loyalty is rewarded, costs are reduced, and an active community is incentivized to influence the platform's future development.
+            Uhuru Trade Ltd. responds with a blockchain-based platform that enables trading, digital consulting, and access to international financial opportunities securely, instantly, and without entry barriers. Through the UhuruCoin token, loyalty is rewarded, costs are reduced, and an active community is incentivized to influence the platform's future development.
           </p>
 
-          <h2 className="mt-8 text-2xl font-semibold text-foreground">3. The UHURU Token: Purpose and Utility</h2>
+          <h2 className="mt-8 text-2xl font-semibold text-foreground">3. The UhuruCoin Token: Purpose and Utility</h2>
           <p>
-            UHURU is an ERC-20 standard token deployed on the Polygon (MATIC) blockchain, chosen for its efficiency, low fees, and scalability.
+            UhuruCoin is an ERC-20 standard token deployed on the Polygon (MATIC) blockchain, chosen for its efficiency, low fees, and scalability.
           </p>
           <p><strong>Primary utilities of the token:</strong></p>
           <ul className="list-disc pl-6 space-y-2">
-            <li><strong>Automatic Bonus (5%):</strong> Users receive 5% of the total amount paid for platform services back in UHURU tokens.</li>
+            <li><strong>Automatic Bonus (5%):</strong> Users receive 5% of the total amount paid for platform services back in UhuruCoin tokens.</li>
             <li><strong>Exclusive Discounts:</strong> Access to preferential rates, special content, and premium features for holders.</li>
             <li><strong>Premium Feature Access:</strong> Advanced tools, priority support, and reserved events or webinars.</li>
             <li><strong>Loyalty Rewards:</strong> Additional incentives for activities, referrals, and active membership.</li>
-            <li><strong>On-Platform Payment Method:</strong> In the future, UHURU will allow for direct payment of services.</li>
+            <li><strong>On-Platform Payment Method:</strong> In the future, UhuruCoin will allow for direct payment of services.</li>
             <li><strong>Free Exchange and Liquidity:</strong> The token is exchangeable for USDT and other cryptocurrencies on DEXs compatible with Polygon (e.g., PolygonScan, DexTools, GeckoTerminal, DexScreener).</li>
           </ul>
-          <p><i>Note: UHURU does not represent shares, corporate rights, or regulated financial instruments.</i></p>
+          <p><i>Note: UhuruCoin does not represent shares, corporate rights, or regulated financial instruments.</i></p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">4. Tokenomics</h2>
-          <p>The total supply is 1,000,000,000 UHURU (one billion units, with 18 decimal places).</p>
+          <p>The total supply is 1,000,000,000 UHURU (one billion units of the UhuruCoin token, with 18 decimal places).</p>
            <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-foreground">Category</TableHead>
                 <TableHead className="text-foreground">Percentage</TableHead>
-                <TableHead className="text-foreground">UHURU Units</TableHead>
+                <TableHead className="text-foreground">Token Amount (UHURU)</TableHead>
                 <TableHead className="text-foreground">Vesting / Notes</TableHead>
               </TableRow>
             </TableHeader>
@@ -96,7 +96,7 @@ export default function UhuruCoinWhitepaperPage() {
           <p><strong>Additional Mechanisms:</strong></p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Tokens are distributed as appropriate based on participation, compliance, or contracted services.</li>
-            <li>Service cancellations/refunds will deduct the value of UHURU delivered to the user at the current market rate.</li>
+            <li>Service cancellations/refunds will deduct the value of UhuruCoin delivered to the user at the current market rate.</li>
             <li>The smart contract allows for minting and burning, providing potential for future adoption control or programmable deflation.</li>
           </ul>
           <p><strong>Token Burn Strategy:</strong> To potentially enhance token value and reward long-term holders, the smart contract includes a `burn` function. This feature could be used in the future, as governed by community proposals, to permanently remove a portion of tokens from circulation, for instance, by using a percentage of platform revenues. This creates a deflationary pressure that can benefit all token holders.</p>
@@ -148,11 +148,11 @@ export default function UhuruCoinWhitepaperPage() {
                         <TableCell>
                             <ul className="list-disc pl-4 space-y-1">
                                 <li>Full implementation of all digital/consulting service modules.</li>
-                                <li>Full enablement of discounts/benefits via UHURU.</li>
+                                <li>Full enablement of discounts/benefits via UhuruCoin.</li>
                                 <li>Launch of loyalty program, referral rewards, and community incentives.</li>
                                 <li>First strategic commercial and technological partnerships.</li>
                                 <li>Global adoption and digital marketing campaigns.</li>
-                                <li>Integration of the UHURU token as a payment method for select services.</li>
+                                <li>Integration of the UhuruCoin token as a payment method for select services.</li>
                             </ul>
                         </TableCell>
                     </TableRow>
@@ -174,14 +174,14 @@ export default function UhuruCoinWhitepaperPage() {
           
           <h2 className="mt-8 text-2xl font-semibold text-foreground">7. Management Team and Advisors</h2>
           <p>
-            The UHURU project is led by a team of seasoned professionals with proven track records in technology, software, consulting, and international business management. To ensure maximum transparency and foster trust with our community, the full details of our core team and advisors, including their verifiable LinkedIn profiles and professional backgrounds, will be made publicly available prior to the conclusion of our initial launch phase.
+            The UhuruCoin project is led by a team of seasoned professionals with proven track records in technology, software, consulting, and international business management. To ensure maximum transparency and foster trust with our community, the full details of our core team and advisors, including their verifiable LinkedIn profiles and professional backgrounds, will be made publicly available prior to the conclusion of our initial launch phase.
           </p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">8. Legal Framework and Regulatory Considerations</h2>
           <ul className="list-disc pl-6 space-y-2">
             <li><strong>Participation Terms:</strong> Airdrop and utility terms are effective from July 25, 2025. See the official <Link href="/airdrop-legal-terms" className="underline hover:text-foreground">terms here</Link>.</li>
-            <li><strong>Disclaimer:</strong> The UHURU token is a utility token and is not a share, security, financial instrument, or traditional investment. Its value depends solely on its utility and market dynamics.</li>
-            <li><strong>Inherent Risks:</strong> Participating, holding, or exchanging UHURU involves risks such as volatility, loss of value, or regulatory changes.</li>
+            <li><strong>Disclaimer:</strong> The UhuruCoin token is a utility token and is not a share, security, financial instrument, or traditional investment. Its value depends solely on its utility and market dynamics.</li>
+            <li><strong>Inherent Risks:</strong> Participating, holding, or exchanging UhuruCoin involves risks such as volatility, loss of value, or regulatory changes.</li>
             <li><strong>Right to Modify:</strong> Uhuru Trade Ltd. may modify, pause, or cancel the airdrop/utility campaign with a minimum of 7 days' public notice.</li>
             <li><strong>Data Protection:</strong> Strict compliance with UK GDPR and the Data Protection Act 2018.</li>
             <li><strong>Contact for inquiries:</strong> <a href="mailto:hello@uhurutrade.com" className="underline hover:text-foreground">hello@uhurutrade.com</a></li>
@@ -197,7 +197,7 @@ export default function UhuruCoinWhitepaperPage() {
                     <TableRow><TableCell className="font-semibold text-foreground">Nature of Business</TableCell><TableCell>Digital sales, software development, IT and business consulting</TableCell></TableRow>
                     <TableRow><TableCell className="font-semibold text-foreground">Status</TableCell><TableCell>Active</TableCell></TableRow>
                     <TableRow><TableCell className="font-semibold text-foreground">Incorporation Date</TableCell><TableCell>August 7, 2024</TableCell></TableRow>
-                    <TableRow><TableCell className="font-semibold text-foreground">UHURU Contract (Polygon)</TableCell><TableCell className="break-all">0x1bAE132558bEAB063B82300857E8593E3734D1B0</TableCell></TableRow>
+                    <TableRow><TableCell className="font-semibold text-foreground">UhuruCoin Contract (Polygon)</TableCell><TableCell className="break-all">0x1bAE132558bEAB063B82300857E8593E3734D1B0</TableCell></TableRow>
                     <TableRow><TableCell className="font-semibold text-foreground">Official Website</TableCell><TableCell><a href="https://uhurutrade.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">uhurutrade.com</a></TableCell></TableRow>
                 </TableBody>
             </Table>
