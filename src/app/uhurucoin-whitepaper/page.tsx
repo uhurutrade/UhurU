@@ -20,7 +20,7 @@ export default function UhuruCoinWhitepaperPage() {
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">1. Executive Summary</h2>
           <p>
-            UHURU is a digital token created by UHURU TRADE LTD (Company No. 15883242, registered in the United Kingdom), designed to revolutionize access to commercial, financial, and technological services on a global scale. The purpose of UHURU is to democratize access to digital and financial services, making them fairer, more efficient, and transparent through blockchain technology on the Polygon (MATIC) network. UHURU will be the cornerstone offering bonuses, discounts, premium access, and community participation within the ecosystem, while also laying the groundwork for future decentralized governance. Our vision is to build a self-sustaining digital economy where value is shared equitably among its participants.
+            UHURU is a digital token created by Uhuru Trade Ltd. (Company No. 15883242, registered in the United Kingdom), designed to revolutionize access to commercial, financial, and technological services on a global scale. The purpose of UHURU is to democratize access to digital and financial services, making them fairer, more efficient, and transparent through blockchain technology on the Polygon (MATIC) network. UHURU will be the cornerstone offering bonuses, discounts, premium access, and community participation within the ecosystem, while also laying the groundwork for future decentralized governance. Our vision is to build a self-sustaining digital economy where value is shared equitably among its participants.
           </p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">2. Introduction: Problem and Solution</h2>
@@ -31,7 +31,7 @@ export default function UhuruCoinWhitepaperPage() {
             <li>Lack of transparency and unequal access due to regulatory or geographical barriers</li>
           </ul>
           <p>
-            UHURU TRADE LTD responds with a blockchain-based platform that enables trading, digital consulting, and access to international financial opportunities securely, instantly, and without entry barriers. Through the UHURU token, loyalty is rewarded, costs are reduced, and an active community is incentivized to influence the platform's future development.
+            Uhuru Trade Ltd. responds with a blockchain-based platform that enables trading, digital consulting, and access to international financial opportunities securely, instantly, and without entry barriers. Through the UHURU token, loyalty is rewarded, costs are reduced, and an active community is incentivized to influence the platform's future development.
           </p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">3. The UHURU Token: Purpose and Utility</h2>
@@ -111,7 +111,7 @@ export default function UhuruCoinWhitepaperPage() {
           </ul>
            <p><strong>Technical Highlights:</strong></p>
            <ul className="list-disc pl-6 space-y-2">
-            <li>Minting and burning are exclusively controlled by the "owner" (UHURU TRADE LTD); includes a pause function for transfers in emergencies.</li>
+            <li>Minting and burning are exclusively controlled by the "owner" (Uhuru Trade Ltd.); includes a pause function for transfers in emergencies.</li>
             <li>Token recovery feature to retrieve tokens sent by user error.</li>
             <li>Compatible with standard wallets and DEXs in the Polygon/Ethereum ecosystem.</li>
             <li>Professionally backed: code based on OpenZeppelin + extension of security TokenRecover.</li>
@@ -120,44 +120,58 @@ export default function UhuruCoinWhitepaperPage() {
           <p><strong>Security and Audits:</strong> Security is paramount. Although the contract is based on battle-tested OpenZeppelin libraries, it will undergo a comprehensive security audit by a reputable third-party firm before any major ecosystem expansion. The results of this audit will be made public to ensure full transparency and build community trust.</p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">6. Roadmap</h2>
-           <Card className="bg-card my-4">
-              <CardContent className="p-6 space-y-4">
-                <h3 className="font-semibold text-foreground">Phase 1: Launch (Q3 2025)</h3>
-                <ul className="list-disc pl-6 space-y-1">
-                  <li>Official company registration and foundation.</li>
-                  <li>Deployment and public verification of the smart contract.</li>
-                  <li>Public launch of airdrop campaign and usage-based bonus program.</li>
-                  <li>Listing on explorers and initial DEX platforms.</li>
-                  <li>Community building initiatives on social platforms.</li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card className="bg-card my-4">
-              <CardContent className="p-6 space-y-4">
-                <h3 className="font-semibold text-foreground">Phase 2: Expansion and Utility (Q4 2025 – Q2 2026)</h3>
-                <ul className="list-disc pl-6 space-y-1">
-                  <li>Full implementation of all digital/consulting service modules.</li>
-                  <li>Full enablement of discounts/benefits via UHURU.</li>
-                  <li>Launch of loyalty program, referral rewards, and community incentives.</li>
-                  <li>First strategic commercial and technological partnerships.</li>
-                  <li>Global adoption and digital marketing campaigns.</li>
-                  <li>Integration of the UHURU token as a payment method for select services.</li>
-                </ul>
-              </CardContent>
-            </Card>
-             <Card className="bg-card my-4">
-              <CardContent className="p-6 space-y-4">
-                <h3 className="font-semibold text-foreground">Phase 3: Governance and Scaling (2026+)</h3>
-                <ul className="list-disc pl-6 space-y-1">
-                  <li>Proposal for governance (DAO) and community voting.</li>
-                  <li>Multichain integration and new digital products/services.</li>
-                  <li>Development of burn/repurchase mechanisms if required by the market.</li>
-                  <li>Expansion into emerging markets and related verticals.</li>
-                  <li>Exploring cross-chain interoperability to expand the token's reach.</li>
-                </ul>
-              </CardContent>
-            </Card>
-
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="text-foreground">Phase</TableHead>
+                        <TableHead className="text-foreground">Timeline</TableHead>
+                        <TableHead className="text-foreground">Key Milestones</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow>
+                        <TableCell className="font-semibold text-foreground">1. Launch</TableCell>
+                        <TableCell>Q3 2025</TableCell>
+                        <TableCell>
+                            <ul className="list-disc pl-4 space-y-1">
+                                <li>Official company registration and foundation.</li>
+                                <li>Deployment and public verification of the smart contract.</li>
+                                <li>Public launch of airdrop campaign and usage-based bonus program.</li>
+                                <li>Listing on explorers and initial DEX platforms.</li>
+                                <li>Community building initiatives on social platforms.</li>
+                            </ul>
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell className="font-semibold text-foreground">2. Expansion & Utility</TableCell>
+                        <TableCell>Q4 2025 – Q2 2026</TableCell>
+                        <TableCell>
+                            <ul className="list-disc pl-4 space-y-1">
+                                <li>Full implementation of all digital/consulting service modules.</li>
+                                <li>Full enablement of discounts/benefits via UHURU.</li>
+                                <li>Launch of loyalty program, referral rewards, and community incentives.</li>
+                                <li>First strategic commercial and technological partnerships.</li>
+                                <li>Global adoption and digital marketing campaigns.</li>
+                                <li>Integration of the UHURU token as a payment method for select services.</li>
+                            </ul>
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell className="font-semibold text-foreground">3. Governance & Scaling</TableCell>
+                        <TableCell>2026+</TableCell>
+                        <TableCell>
+                             <ul className="list-disc pl-4 space-y-1">
+                                <li>Proposal for governance (DAO) and community voting.</li>
+                                <li>Multichain integration and new digital products/services.</li>
+                                <li>Development of burn/repurchase mechanisms if required by the market.</li>
+                                <li>Expansion into emerging markets and related verticals.</li>
+                                <li>Exploring cross-chain interoperability to expand the token's reach.</li>
+                            </ul>
+                        </TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+          
           <h2 className="mt-8 text-2xl font-semibold text-foreground">7. Management Team and Advisors</h2>
           <p>
             The UHURU project is led by a team of seasoned professionals with proven track records in technology, software, consulting, and international business management. To ensure maximum transparency and foster trust with our community, the full details of our core team and advisors, including their verifiable LinkedIn profiles and professional backgrounds, will be made publicly available prior to the conclusion of our initial launch phase.
@@ -168,7 +182,7 @@ export default function UhuruCoinWhitepaperPage() {
             <li><strong>Participation Terms:</strong> Airdrop and utility terms are effective from July 25, 2025. See the official <Link href="/airdrop-legal-terms" className="underline hover:text-foreground">terms here</Link>.</li>
             <li><strong>Disclaimer:</strong> The UHURU token is a utility token and is not a share, security, financial instrument, or traditional investment. Its value depends solely on its utility and market dynamics.</li>
             <li><strong>Inherent Risks:</strong> Participating, holding, or exchanging UHURU involves risks such as volatility, loss of value, or regulatory changes.</li>
-            <li><strong>Right to Modify:</strong> UHURU TRADE LTD may modify, pause, or cancel the airdrop/utility campaign with a minimum of 7 days' public notice.</li>
+            <li><strong>Right to Modify:</strong> Uhuru Trade Ltd. may modify, pause, or cancel the airdrop/utility campaign with a minimum of 7 days' public notice.</li>
             <li><strong>Data Protection:</strong> Strict compliance with UK GDPR and the Data Protection Act 2018.</li>
             <li><strong>Contact for inquiries:</strong> <a href="mailto:hello@uhurutrade.com" className="underline hover:text-foreground">hello@uhurutrade.com</a></li>
           </ul>
@@ -176,7 +190,7 @@ export default function UhuruCoinWhitepaperPage() {
           <h2 className="mt-8 text-2xl font-semibold text-foreground">9. Corporate Information and Transparency</h2>
             <Table>
                 <TableBody>
-                    <TableRow><TableCell className="font-semibold text-foreground">Legal Name</TableCell><TableCell>UHURU TRADE LTD</TableCell></TableRow>
+                    <TableRow><TableCell className="font-semibold text-foreground">Legal Name</TableCell><TableCell>Uhuru Trade Ltd.</TableCell></TableRow>
                     <TableRow><TableCell className="font-semibold text-foreground">Company Register</TableCell><TableCell>Companies House UK</TableCell></TableRow>
                     <TableRow><TableCell className="font-semibold text-foreground">Company Number</TableCell><TableCell>15883242</TableCell></TableRow>
                     <TableRow><TableCell className="font-semibold text-foreground">Address</TableCell><TableCell>Unit 13 Freeland Park, Wareham Road, Poole, BH16 6FA, England</TableCell></TableRow>

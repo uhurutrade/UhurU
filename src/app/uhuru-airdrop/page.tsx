@@ -198,7 +198,7 @@ export default function UhuruAirdropPage() {
                             <Link href="/uhurucoin-whitepaper" className="underline hover:text-primary">UhuruCoin WhitePaper</Link>
                         </div>
                         <p className="text-center">
-                            UhurU Trade Ltd. is the owner of this form. See our <Link href="/privacy-policy" className="underline hover:text-primary">Privacy Policy</Link> and <Link href="/cookie-policy" className="underline hover:text-primary">Cookie Policy</Link>.
+                            Uhuru Trade Ltd. is the owner of this form. See our <Link href="/privacy-policy" className="underline hover:text-primary">Privacy Policy</Link> and <Link href="/cookie-policy" className="underline hover:text-primary">Cookie Policy</Link>.
                         </p>
                     </div>
                 </div>
