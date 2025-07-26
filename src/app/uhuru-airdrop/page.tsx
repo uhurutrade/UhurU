@@ -179,7 +179,7 @@ export default function UhuruAirdropPage() {
                         )}
                     </Card>
                     <div className="text-xs text-muted-foreground mt-4 space-y-2">
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-center items-center gap-4">
                             <Link href="/airdrop-legal-terms" className="underline hover:text-primary">Legal Terms for Token Airdrop</Link>
                             <Link href="/uhurucoin-whitepaper" className="underline hover:text-primary">UhuruCoin WhitePaper</Link>
                         </div>
