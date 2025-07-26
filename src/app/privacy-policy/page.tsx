@@ -1,4 +1,5 @@
 import SubPageHeader from '@/components/uhuru/subpage-header';
+import { Shield } from 'lucide-react';
 import Link from 'next/link';
 
 export default function PrivacyPolicyPage() {
@@ -9,7 +10,12 @@ export default function PrivacyPolicyPage() {
       <SubPageHeader backHref="/" backText="Back to Home" />
       <main className="container mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-16 lg:py-24">
         <div className="prose prose-xs prose-invert max-w-none text-muted-foreground">
-          <h1 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">Privacy Policy</h1>
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <Shield className="h-12 w-12 text-primary" />
+            </div>
+            <h1 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">Privacy Policy</h1>
+          </div>
 
           <p className="text-sm italic">Last updated: {lastUpdated}</p>
 
