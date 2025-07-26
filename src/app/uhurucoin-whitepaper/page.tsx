@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import SubPageHeader from '@/components/uhuru/subpage-header';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Link from 'next/link';
+import { Coins } from 'lucide-react';
 
 
 export default function UhuruCoinWhitepaperPage() {
@@ -14,7 +15,12 @@ export default function UhuruCoinWhitepaperPage() {
       <SubPageHeader backHref="/uhuru-airdrop" backText="Back to Airdrop" />
       <main className="container mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-16 lg:py-24">
         <div className="prose prose-xs prose-invert max-w-none text-muted-foreground space-y-6">
-          <h1 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">UhuruCoin WhitePaper – A Decentralized Future for Digital Commerce and Services</h1>
+          <div className="text-center mb-8">
+            <div className="flex justify-center items-center gap-3 mb-4">
+              <Coins className="h-10 w-10 text-primary" />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground md:text-3xl">UhuruCoin WhitePaper – A Decentralized Future for Digital Commerce and Services</h1>
+          </div>
           
           <p className="text-sm italic">Last updated: {lastUpdated}</p>
 
@@ -50,7 +56,7 @@ export default function UhuruCoinWhitepaperPage() {
           <p><i>Note: UhuruCoin does not represent shares, corporate rights, or regulated financial instruments.</i></p>
 
           <h2 className="mt-8 text-2xl font-semibold text-foreground">4. Tokenomics</h2>
-          <p>The total supply is 1,000,000,000 UHURU (one billion units of the UhuruCoin token, with 18 decimal places).</p>
+          <p>The total supply is 1,000,000,000 UHURU (one billion units of the UhuruCoin token, with 18 decimal places). The ticker symbol for the coin is UHURU.</p>
            <Table>
             <TableHeader>
               <TableRow>
