@@ -1,7 +1,7 @@
 
 import type { Metadata } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle2, Package, Zap, BarChart, Bitcoin, Building, Rocket } from 'lucide-react';
+import { CheckCircle2, Package, Zap, BarChart, Bitcoin, Building, Rocket, CircleDollarSign } from 'lucide-react';
 import SubPageHeader from '@/components/uhuru/subpage-header';
 
 export const metadata: Metadata = {
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const valuePropositionPoints = [
     {
         title: "Total Flexibility, Zero Commitment",
-        description: "In a dynamic market, agility is key. Our model frees you from long-term contracts, allowing you to adapt and scale services as your needs evolve. You only pay for what you use."
+        description: "In a dynamic market, agility is key. Our model frees you from long-term contracts, allowing you to adapt and scale services as your needs evolve. You only pay for what you use, when you use it."
     },
     {
         title: "Transparent Pay-As-You-Go (PAYG) Pricing",
@@ -20,36 +20,55 @@ const valuePropositionPoints = [
     },
     {
         title: "Future-Ready Payment Options",
-        description: "Embrace the future of finance. We offer the flexibility of payments in both traditional currencies and cryptocurrencies, facilitating instant, secure, and cost-effective transactions, especially for global partners."
+        description: "Embrace the future of finance. We offer unparalleled flexibility, accepting payments in both traditional currencies and a wide range of cryptocurrencies, including stablecoins and our own UhuruCoin."
     }
 ];
 
 const howItWorks = [
     {
         title: "Serverless Architecture for Ultimate Scalability",
-        description: "We leverage serverless computing to build solutions that scale automatically with demand. This means you get instant performance without managing or paying for idle infrastructure, while we handle all the technical complexities."
+        description: "We leverage serverless computing to build solutions that scale automatically with demand. This means you get instant performance without managing or paying for idle infrastructure, while we handle all the technical complexities behind the scenes."
     },
     {
         title: "Optimized Pricing and Cost Management",
-        description: "Our PAYG model is designed to prevent budget surprises. We provide real-time cost tracking dashboards, consumption alerts, and spending limits to give you full control over your invoices."
-    },
-    {
-        title: "Seamless Crypto Integration",
-        description: "We make B2B crypto payments simple. By promoting the use of stablecoins like USDC, we mitigate volatility and ensure predictable, secure transactions. We guide you through the entire process, from wallet setup to transaction."
+        description: "Our PAYG model is designed to prevent budget surprises. We provide real-time cost tracking dashboards, consumption alerts, and spending limits to give you full control over your invoices, ensuring predictability and peace of mind."
     }
 ];
 
 const targetAudience = [
     {
         icon: <Rocket className="h-8 w-8 text-accent" />,
-        title: "For Startups",
-        description: "Validate your ideas and build your MVP without the burden of large upfront investments. Our PAYG model is perfect for lean budgets and agile development cycles."
+        title: "For Startups & Innovators",
+        description: "Validate your ideas, build your MVP, and iterate quickly without the burden of large upfront investments. Our PAYG model is perfectly suited for lean budgets and agile development cycles, allowing you to focus your capital on growth."
     },
     {
         icon: <Building className="h-8 w-8 text-accent" />,
         title: "For Established Companies",
-        description: "Efficiently manage fluctuating workloads and optimize operational costs. Leverage our expertise in digital transformation, cloud migration, and process automation to gain a competitive edge."
+        description: "Efficiently manage fluctuating workloads, optimize operational costs for special projects, and drive digital transformation without overhauling your existing budget structures. Leverage our expertise to gain a competitive edge."
     }
+];
+
+const paymentFlexibilityPoints = [
+    {
+        icon: <Bitcoin className="h-6 w-6 text-accent" />,
+        title: "Pay with Leading Cryptocurrencies",
+        description: "We facilitate B2B payments using major cryptocurrencies like Bitcoin (BTC) and Ethereum (ETH). This is ideal for international partners, offering instant, low-cost, and secure transactions without the delays of traditional banking."
+    },
+    {
+        icon: <CircleDollarSign className="h-6 w-6 text-accent" />,
+        title: "Stablecoins for Predictability (USDC/USDT)",
+        description: "To mitigate price volatility, we strongly recommend and facilitate payments using stablecoins like USDC and USDT. This gives you the benefits of blockchain transactions—speed and low fees—with the stability of a fiat-pegged asset."
+    },
+    {
+        icon: <Package className="h-6 w-6 text-accent" />,
+        title: "Utilize Your UhuruCoin",
+        description: "As part of our ecosystem, you can use your UhuruCoin tokens to pay for services. This creates a circular economy where your loyalty and participation are directly rewarded, allowing you to reinvest your tokens into further growth."
+    },
+    {
+        icon: <Zap className="h-6 w-6 text-accent" />,
+        title: "Client-Centric Flexibility",
+        description: "Your convenience is our priority. If you prefer to use another digital asset or have a specific payment requirement, we are always open to discussion. Our goal is to make the payment process as seamless and accommodating as possible for you."
+    },
 ];
 
 
@@ -97,7 +116,7 @@ export default function AllInOnePackagePage() {
               <Card className="bg-secondary/50 p-8 text-center">
                   <h2 className="text-3xl font-bold font-headline">How It Works: Technology That Adapts to You</h2>
                   <p className="mt-4 max-w-4xl mx-auto text-muted-foreground">
-                    Our "All-in-One" package is more than a bundle of services; it's a strategic framework for delivering technology efficiently and cost-effectively.
+                    Our "All-in-One" package is more than a bundle of services; it's a strategic framework for delivering technology efficiently and cost-effectively. We handle the technical complexity so you can focus on your business.
                   </p>
               </Card>
             </section>
@@ -115,6 +134,34 @@ export default function AllInOnePackagePage() {
                     ))}
                 </div>
             </section>
+            
+            <section>
+                <div className="text-center">
+                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
+                       Unparalleled Payment Flexibility
+                    </h2>
+                    <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
+                      We understand that modern business requires modern payment solutions. That's why we've built a financial framework that offers true flexibility and puts you in control.
+                    </p>
+                </div>
+                <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {paymentFlexibilityPoints.map((point, index) => (
+                        <Card key={index} className="bg-card">
+                            <CardHeader className="flex flex-row items-center gap-4 space-y-0">
+                                {point.icon}
+                                <CardTitle className="font-headline text-lg">{point.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-muted-foreground">{point.description}</p>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+                 <p className="text-center text-sm text-muted-foreground mt-8 max-w-3xl mx-auto">
+                    We will guide you through the entire process, from selecting the right digital asset and network to setting up your wallet and executing the transaction securely. Our goal is to make B2B crypto payments simple and accessible.
+                </p>
+            </section>
+
 
             <section>
                  <div className="text-center mb-12">
@@ -122,7 +169,7 @@ export default function AllInOnePackagePage() {
                        Built for Every Stage of Growth
                     </h2>
                     <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                      Whether you're testing a new idea or scaling an established enterprise, our flexible model is designed to support your journey.
+                      Whether you're testing a new idea or scaling an established enterprise, our flexible model is designed to support your journey without friction.
                     </p>
                 </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
