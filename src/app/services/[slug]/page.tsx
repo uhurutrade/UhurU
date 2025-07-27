@@ -16,6 +16,7 @@ import BlockchainCryptoPage from '../blockchain-and-crypto/page';
 import BusinessLocalizationPage from '../business-localization-strategies/page';
 import NoCodeAppDesignPage from '../no-code-app-design/page';
 import CloudManagementPage from '../cloud-saas-paas-management/page';
+import AllInOnePackagePage from '../all-in-one-package/page';
 
 
 const iconComponents: { [key: string]: React.ReactNode } = {
@@ -38,13 +39,6 @@ const serviceContent: { [key: string]: { paragraphs: string[] } } = {
       "Beyond training, we offer real-time mentorship and continuous support. As a client, you will receive timely market updates, expert analysis, and personalized strategy adjustments from our team of seasoned traders. We are committed to helping you build a resilient, risk-managed portfolio that aligns with your financial goals."
     ]
   },
-  'all-in-one-package': {
-    paragraphs: [
-      "Experience ultimate flexibility with our All-in-One Package, a comprehensive solution designed for modern businesses that demand agility and transparent pricing. This package bundles our expertise across technology and finance, offering a suite of scalable services with zero long-term commitments. Whether you need development, consulting, or management services, our PAYG (Pay-As-You-Go) model ensures you only pay for what you use.",
-      "We understand the dynamic nature of today's market, which is why we proudly accept payments in both traditional currencies and cryptocurrencies, giving you greater financial flexibility. This package is built on a foundation of trust and adaptability, allowing you to scale services up or down as your business needs evolve without being locked into restrictive contracts.",
-      "Our All-in-One solution is perfect for startups testing new ideas, established companies managing fluctuating workloads, or any business seeking a reliable, on-demand technology partner. Access our full range of services—from AI automation to cloud management—and enjoy the freedom to innovate without barriers."
-    ]
-  }
 };
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -65,7 +59,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 
 export default function ServicePage({ params }: { params: { slug: string } }) {
-  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design', 'cloud-saas-paas-management'];
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design', 'cloud-saas-paas-management', 'all-in-one-package'];
   if (dedicatedPages.includes(params.slug)) {
     // This route should not handle dedicated pages.
     // Next.js will prioritize the specific page file.
@@ -112,6 +106,9 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
                   {content.paragraphs.map((paragraph, index) => (
                     <p key={index}>{paragraph}</p>
                   ))}
+                  {Object.keys(content.paragraphs).length === 0 && (
+                     <p>Detailed information for this service is coming soon. Please check back later or contact us for more details.</p>
+                  )}
                 </CardContent>
               </Card>
             </section>
@@ -123,7 +120,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
 }
 
 export async function generateStaticParams() {
-  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design', 'cloud-saas-paas-management'];
+  const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design', 'cloud-saas-paas-management', 'all-in-one-package'];
   // Generate params only for services that DON'T have a dedicated page.
   return features
     .filter(feature => !dedicatedPages.includes(feature.slug))
