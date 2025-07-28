@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster";
 import ChatWidget from '@/components/uhuru/ChatWidget';
 import CookieConsentBanner from '@/components/uhuru/CookieConsentBanner';
+import Script from 'next/script';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -51,6 +52,19 @@ export default function RootLayout({
           <CookieConsentBanner />
           <Toaster />
         </ThemeProvider>
+        {/* Google Analytics Scripts */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-STSEF2HYH1"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-STSEF2HYH1');
+          `}
+        </Script>
       </body>
     </html>
   );
