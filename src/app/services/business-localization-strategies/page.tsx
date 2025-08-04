@@ -63,7 +63,7 @@ export default function BusinessLocalizationPage() {
                 Offshore & Localization Strategies
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
-                Establish tax-optimized global business structures that safeguard your assets and minimize fiscal liabilities. At UhurU, we provide comprehensive international localization strategies designed to give you peace of mind and a competitive edge.
+                Establish tax-optimized global business structures that safeguard your assets and minimize fiscal liabilities. At UhurU, we provide comprehensive international localization strategies designed to give you peace of mind and a competitive edge
               </p>
             </section>
 
