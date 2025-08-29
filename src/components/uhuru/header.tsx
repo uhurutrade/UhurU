@@ -117,9 +117,6 @@ export default function Header() {
                 <Link href="/ai-chat" className="rounded-full px-4 py-1 text-xs font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
                     AI Chat
                 </Link>
-                <Link href="https://x.com/UhurUtradeUk" target="_blank" rel="noopener noreferrer" className="rounded-full px-4 py-1 text-xs font-medium text-foreground hover:bg-background/70 hover:text-primary transition-colors">
-                    x
-                </Link>
             </div>
         </div>
 
