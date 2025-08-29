@@ -114,8 +114,8 @@ export default function UhuruStatementPage() {
                     <TableRow><TableCell>Professional Services</TableCell><TableCell className="text-right">28.37</TableCell></TableRow>
                     <TableRow><TableCell>Hosting Services</TableCell><TableCell className="text-right">56.51</TableCell></TableRow>
                     <TableRow><TableCell>Postal Services</TableCell><TableCell className="text-right">120.44</TableCell></TableRow>
-                    <TableRow><TableCell>Bank Fees (Wise)</TableCell><TableCell className="text-right">8.47</TableCell></TableRow>
-                    <TableRow><TableCell>Bank Fees (Revolut)</TableCell><TableCell className="text-right">43.19</TableCell></TableRow>
+                    <TableRow><TableCell>Bank Fees (Wise Bank)</TableCell><TableCell className="text-right">8.47</TableCell></TableRow>
+                    <TableRow><TableCell>Bank Fees (Revolut Bank)</TableCell><TableCell className="text-right">43.19</TableCell></TableRow>
                     <TableRow><TableCell>IT & Software</TableCell><TableCell className="text-right">26.16</TableCell></TableRow>
                     <TableRow className="font-bold bg-muted/20"><TableCell>TOTAL OPERATING EXPENSES</TableCell><TableCell className="text-right">665.25</TableCell></TableRow>
                     <TableRow className="font-bold bg-primary/10"><TableCell>OPERATING PROFIT/(LOSS)</TableCell><TableCell className="text-right text-destructive">-1,126.12</TableCell></TableRow>
@@ -130,10 +130,10 @@ export default function UhuruStatementPage() {
                     <Table>
                       <TableHeader><TableRow><TableHead>Account / Item</TableHead><TableHead className="text-right">Amount (£)</TableHead></TableRow></TableHeader>
                       <TableBody>
-                        <TableRow><TableCell>Wise GBP Account</TableCell><TableCell className="text-right">0.15</TableCell></TableRow>
-                        <TableRow><TableCell>Wise EUR Account</TableCell><TableCell className="text-right">122.32</TableCell></TableRow>
-                        <TableRow><TableCell>Revolut GBP Account</TableCell><TableCell className="text-right">13.04</TableCell></TableRow>
-                        <TableRow><TableCell>Revolut EUR Account</TableCell><TableCell className="text-right">24.88</TableCell></TableRow>
+                        <TableRow><TableCell>Wise Bank GBP Account</TableCell><TableCell className="text-right">0.15</TableCell></TableRow>
+                        <TableRow><TableCell>Wise Bank EUR Account</TableCell><TableCell className="text-right">122.32</TableCell></TableRow>
+                        <TableRow><TableCell>Revolut Bank GBP Account</TableCell><TableCell className="text-right">13.04</TableCell></TableRow>
+                        <TableRow><TableCell>Revolut Bank EUR Account</TableCell><TableCell className="text-right">24.88</TableCell></TableRow>
                         <TableRow className="font-bold bg-muted/20"><TableCell>TOTAL ASSETS</TableCell><TableCell className="text-right">160.39</TableCell></TableRow>
                         <TableRow><TableCell>CURRENT LIABILITIES</TableCell><TableCell className="text-right">0.00</TableCell></TableRow>
                         <TableRow><TableCell>SHARE CAPITAL</TableCell><TableCell className="text-right">1,296.25</TableCell></TableRow>
