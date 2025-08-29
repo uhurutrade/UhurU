@@ -148,8 +148,8 @@ export default function UhuruStatementPage() {
                   <Table>
                     <TableHeader><TableRow><TableHead>Contributor</TableHead><TableHead>Amount (£)</TableHead><TableHead>Notes</TableHead></TableRow></TableHeader>
                     <TableBody>
-                      <TableRow><TableCell>Raul Ortega</TableCell><TableCell>907.19</TableCell><TableCell>Adjusted to reflect actual share capital</TableCell></TableRow>
-                      <TableRow><TableCell>EL MEHDI TILKAS FOULLANI</TableCell><TableCell>388.82</TableCell><TableCell>Adjusted to reflect actual share capital</TableCell></TableRow>
+                      <TableRow><TableCell>Director and Majority Shareholder</TableCell><TableCell>907.19</TableCell><TableCell>Adjusted to reflect actual share capital</TableCell></TableRow>
+                      <TableRow><TableCell>Third-party Contribution</TableCell><TableCell>388.82</TableCell><TableCell>Adjusted to reflect actual share capital</TableCell></TableRow>
                       <TableRow><TableCell>Uhuru Trade Ltd</TableCell><TableCell>0.01</TableCell><TableCell>Adjusted to reflect actual share capital</TableCell></TableRow>
                       <TableRow className="font-bold bg-primary/20"><TableCell>TOTAL SHARE CAPITAL</TableCell><TableCell>1,296.25</TableCell><TableCell></TableCell></TableRow>
                     </TableBody>
@@ -233,5 +233,4 @@ export default function UhuruStatementPage() {
     </div>
   );
 }
-
     
