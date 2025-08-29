@@ -16,7 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { FileText, Sigma, Scale, GanttChartSquare, Landmark } from 'lucide-react';
+import { FileText, Sigma, Scale, GanttChartSquare, Landmark, CalendarClock, KeyRound } from 'lucide-react';
 
 const KeyFigure = ({ title, value, isLoss = false }: { title: string, value: string, isLoss?: boolean }) => (
   <div className="flex flex-col items-center justify-center rounded-lg border bg-card p-4 text-center">
@@ -44,14 +44,41 @@ export default function UhuruStatementPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="font-headline text-2xl">Executive Summary</CardTitle>
+               <div className="flex items-center gap-3 justify-center text-center">
+                    <CardTitle className="font-headline text-2xl">Executive Summary</CardTitle>
+               </div>
             </CardHeader>
-            <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <KeyFigure title="Total Revenue" value="£137.24" />
-                    <KeyFigure title="Total Expenses" value="£1,263.99" isLoss />
-                    <KeyFigure title="Operating Loss" value="-£1,126.12" isLoss />
-                    <KeyFigure title="Net Loss" value="-£1,125.74" isLoss />
+            <CardContent className="space-y-6">
+                <div>
+                  <h3 className="font-semibold text-lg text-foreground mb-4 text-center flex items-center justify-center gap-2"><KeyRound className="h-5 w-5" /> Key Financial Figures</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                      <KeyFigure title="Total Revenue" value="£137.24" />
+                      <KeyFigure title="Total Expenses" value="£1,263.99" isLoss />
+                      <KeyFigure title="Operating Loss" value="-£1,126.12" isLoss />
+                      <KeyFigure title="Net Loss" value="-£1,125.74" isLoss />
+                      <KeyFigure title="Capital Gain" value="£0.38" />
+                      <KeyFigure title="Assets" value="£160.39" />
+                      <KeyFigure title="Share Capital" value="£1,296.25" />
+                      <KeyFigure title="Retained Earnings" value="-£1,135.90" isLoss />
+                  </div>
+                </div>
+
+                 <div>
+                  <h3 className="font-semibold text-lg text-foreground mb-4 text-center flex items-center justify-center gap-2"><CalendarClock className="h-5 w-5" /> Regulatory Deadlines</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div className="p-3 bg-muted/50 rounded-lg border">
+                      <p className="font-medium text-foreground">Companies House</p>
+                      <p className="text-sm text-muted-foreground">7 May 2026</p>
+                    </div>
+                    <div className="p-3 bg-muted/50 rounded-lg border">
+                      <p className="font-medium text-foreground">HMRC Period 1</p>
+                      <p className="text-sm text-muted-foreground">6 August 2026</p>
+                    </div>
+                    <div className="p-3 bg-muted/50 rounded-lg border">
+                      <p className="font-medium text-foreground">HMRC Period 2</p>
+                      <p className="text-sm text-muted-foreground">31 August 2026</p>
+                    </div>
+                  </div>
                 </div>
                  <Alert>
                     <Landmark className="h-4 w-4" />
@@ -71,7 +98,7 @@ export default function UhuruStatementPage() {
                 <GanttChartSquare className="h-6 w-6 text-primary" />
                 <CardTitle className="font-headline text-2xl">Companies House Documents</CardTitle>
               </div>
-              <CardDescription>Official filing for the period 7 Aug 2024 - 31 Aug 2025. Deadline: 7 May 2026</CardDescription>
+              <CardDescription>Official filing for the period 7 Aug 2024 - 31 Aug 2025</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
               <div>
@@ -119,12 +146,12 @@ export default function UhuruStatementPage() {
                 <div>
                   <h3 className="font-semibold mb-2 text-lg text-foreground">Capital Contributions Schedule</h3>
                   <Table>
-                    <TableHeader><TableRow><TableHead>Contributor</TableHead><TableHead className="text-right">Amount (£)</TableHead></TableRow></TableHeader>
+                    <TableHeader><TableRow><TableHead>Contributor</TableHead><TableHead>Amount (£)</TableHead><TableHead>Notes</TableHead></TableRow></TableHeader>
                     <TableBody>
-                      <TableRow><TableCell>Raul Ortega</TableCell><TableCell className="text-right">907.19</TableCell></TableRow>
-                      <TableRow><TableCell>EL MEHDI TILKAS FOULLANI</TableCell><TableCell className="text-right">388.82</TableCell></TableRow>
-                      <TableRow><TableCell>Uhuru Trade Ltd</TableCell><TableCell className="text-right">0.01</TableCell></TableRow>
-                      <TableRow className="font-bold bg-primary/20"><TableCell>TOTAL SHARE CAPITAL</TableCell><TableCell className="text-right">1,296.25</TableCell></TableRow>
+                      <TableRow><TableCell>Raul Ortega</TableCell><TableCell>907.19</TableCell><TableCell>Adjusted to reflect actual share capital</TableCell></TableRow>
+                      <TableRow><TableCell>EL MEHDI TILKAS FOULLANI</TableCell><TableCell>388.82</TableCell><TableCell>Adjusted to reflect actual share capital</TableCell></TableRow>
+                      <TableRow><TableCell>Uhuru Trade Ltd</TableCell><TableCell>0.01</TableCell><TableCell>Adjusted to reflect actual share capital</TableCell></TableRow>
+                      <TableRow className="font-bold bg-primary/20"><TableCell>TOTAL SHARE CAPITAL</TableCell><TableCell>1,296.25</TableCell><TableCell></TableCell></TableRow>
                     </TableBody>
                   </Table>
                 </div>
@@ -137,31 +164,32 @@ export default function UhuruStatementPage() {
               <CardHeader>
                 <div className="flex items-center gap-3">
                     <Scale className="h-6 w-6 text-primary" />
-                    <CardTitle className="font-headline text-2xl">HMRC Period 1</CardTitle>
+                    <CardTitle className="font-headline text-2xl">HMRC Period 1 Documents</CardTitle>
                 </div>
-                <CardDescription>7 Aug 2024 - 6 Aug 2025. Deadline: 6 Aug 2026</CardDescription>
+                <CardDescription>7 Aug 2024 - 6 Aug 2025</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                    <h3 className="font-semibold mb-2 text-lg text-foreground">CT600 Form Summary</h3>
+                    <h3 className="font-semibold mb-2 text-lg text-foreground">CT600 Form - Period 1</h3>
                     <Table>
                         <TableHeader><TableRow><TableHead>Box</TableHead><TableHead className="text-right">Amount (£)</TableHead></TableRow></TableHeader>
                         <TableBody>
-                            <TableRow><TableCell>Turnover</TableCell><TableCell className="text-right">136.86</TableCell></TableRow>
-                            <TableRow><TableCell>Cost of sales</TableCell><TableCell className="text-right">597.48</TableCell></TableRow>
-                            <TableRow><TableCell>Gross profit</TableCell><TableCell className="text-right text-destructive">-460.62</TableCell></TableRow>
-                            <TableRow><TableCell>Other operating expenses</TableCell><TableCell className="text-right">657.09</TableCell></TableRow>
-                            <TableRow><TableCell>Profit/(Loss) before tax</TableCell><TableCell className="text-right text-destructive">-1,117.33</TableCell></TableRow>
-                            <TableRow><TableCell>Other income</TableCell><TableCell className="text-right">0.38</TableCell></TableRow>
-                            <TableRow><TableCell>Total tax charge</TableCell><TableCell className="text-right">0.00</TableCell></TableRow>
-                            <TableRow><TableCell>Share capital</TableCell><TableCell className="text-right">1,296.25</TableCell></TableRow>
-                            <TableRow><TableCell>Losses carried forward</TableCell><TableCell className="text-right text-destructive">1,117.33</TableCell></TableRow>
+                            <TableRow><TableCell>Box 1: Turnover</TableCell><TableCell className="text-right">136.86</TableCell></TableRow>
+                            <TableRow><TableCell>Box 3: Cost of sales</TableCell><TableCell className="text-right">597.48</TableCell></TableRow>
+                            <TableRow><TableCell>Box 5: Gross profit</TableCell><TableCell className="text-right text-destructive">-460.62</TableCell></TableRow>
+                            <TableRow><TableCell>Box 7: Other operating expenses</TableCell><TableCell className="text-right">657.09</TableCell></TableRow>
+                            <TableRow><TableCell>Box 14: Profit/(Loss) before tax</TableCell><TableCell className="text-right text-destructive">-1,117.33</TableCell></TableRow>
+                            <TableRow><TableCell>Box 16: Other income</TableCell><TableCell className="text-right">0.38</TableCell></TableRow>
+                            <TableRow><TableCell>Box 25: Total tax charge</TableCell><TableCell className="text-right">0.00</TableCell></TableRow>
+                            <TableRow><TableCell>Box 30: Share capital</TableCell><TableCell className="text-right">1,296.25</TableCell></TableRow>
+                            <TableRow><TableCell>Box 392: Losses carried forward</TableCell><TableCell className="text-right text-destructive">1,117.33</TableCell></TableRow>
                         </TableBody>
                     </Table>
                 </div>
                  <div>
                     <h3 className="font-semibold mb-2 text-lg text-foreground">Capital Gains Report</h3>
-                    <p className="text-sm text-muted-foreground">Net capital gain of <span className="font-bold text-foreground">£0.38</span> from disposal of shares in Luxembourg fund (ISIN: LU0852473015).</p>
+                    <p className="text-sm text-muted-foreground">Net capital gain: <span className="font-bold text-foreground">£0.38</span></p>
+                    <p className="text-xs text-muted-foreground">Source: Disposal of shares in Luxembourg fund (ISIN: LU0852473015).</p>
                 </div>
               </CardContent>
             </Card>
@@ -170,19 +198,19 @@ export default function UhuruStatementPage() {
               <CardHeader>
                  <div className="flex items-center gap-3">
                     <Sigma className="h-6 w-6 text-primary" />
-                    <CardTitle className="font-headline text-2xl">HMRC Period 2</CardTitle>
+                    <CardTitle className="font-headline text-2xl">HMRC Period 2 Documents</CardTitle>
                  </div>
-                <CardDescription>7 Aug 2025 - 31 Aug 2025. Deadline: 31 Aug 2026</CardDescription>
+                <CardDescription>7 Aug 2025 - 31 Aug 2025</CardDescription>
               </CardHeader>
               <CardContent>
-                 <h3 className="font-semibold mb-2 text-lg text-foreground">CT600 Form Summary</h3>
+                 <h3 className="font-semibold mb-2 text-lg text-foreground">CT600 Form - Period 2</h3>
                  <Table>
                     <TableHeader><TableRow><TableHead>Box</TableHead><TableHead className="text-right">Amount (£)</TableHead></TableRow></TableHeader>
                     <TableBody>
-                        <TableRow><TableCell>Turnover</TableCell><TableCell className="text-right">0.38</TableCell></TableRow>
-                        <TableRow><TableCell>Other operating expenses</TableCell><TableCell className="text-right">1.28</TableCell></TableRow>
-                        <TableRow><TableCell>Profit/(Loss) before tax</TableCell><TableCell className="text-right text-destructive">-0.90</TableCell></TableRow>
-                        <TableRow><TableCell>Total tax charge</TableCell><TableCell className="text-right">0.00</TableCell></TableRow>
+                        <TableRow><TableCell>Box 1: Turnover</TableCell><TableCell className="text-right">0.38</TableCell></TableRow>
+                        <TableRow><TableCell>Box 7: Other operating expenses</TableCell><TableCell className="text-right">1.28</TableCell></TableRow>
+                        <TableRow><TableCell>Box 14: Profit/(Loss) before tax</TableCell><TableCell className="text-right text-destructive">-0.90</TableCell></TableRow>
+                        <TableRow><TableCell>Box 25: Total tax charge</TableCell><TableCell className="text-right">0.00</TableCell></TableRow>
                     </TableBody>
                  </Table>
               </CardContent>
@@ -194,9 +222,9 @@ export default function UhuruStatementPage() {
             <CardContent>
                 <ul className="list-disc list-inside space-y-2 text-muted-foreground">
                     <li>All figures are presented in British Pounds (GBP).</li>
-                    <li>An exchange rate of 0.85 EUR/GBP was used for conversions where applicable.</li>
-                    <li>Share capital was adjusted from a nominal £1,700.10 to £1,296.25 to reflect the actual capital position.</li>
-                    <li>All documents have been prepared using HMRC official exchange rates where available and applicable.</li>
+                    <li>Exchange rate used: 0.85 EUR/GBP where applicable.</li>
+                    <li>Share capital adjusted from £1,700.10 to £1,296.25 to reflect actual capital position.</li>
+                    <li>All documents prepared using HMRC official exchange rates where available and applicable.</li>
                 </ul>
             </CardContent>
           </Card>
@@ -205,3 +233,5 @@ export default function UhuruStatementPage() {
     </div>
   );
 }
+
+    
