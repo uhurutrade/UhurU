@@ -157,5 +157,3 @@ const fileProcessingFlow = ai.defineFlow(
 export async function processDocument(input: DocumentInput): Promise<DocumentOutput> {
   return fileProcessingFlow(input);
 }
-
-    
