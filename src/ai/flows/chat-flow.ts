@@ -66,7 +66,7 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
 async function detectLanguage(text: string): Promise<string> {
     try {
         const response = await ai.generate({
-            model: googleAI.model('gemini-1.5-flash-latest'),
+            model: googleAI.model('gemini-1.5-flash'),
             prompt: `Detect the primary language of the following text and respond only with its two-letter ISO 639-1 code (e.g., "en", "es", "fr"). Text: "${text}"`,
             config: { temperature: 0 },
         });
@@ -133,7 +133,7 @@ export async function chat(
         await logTrace(functionName, { status: 'calling_ai_generate' }, sessionId, languageCode);
         
         const response = await ai.generate({
-            model: googleAI.model('gemini-1.5-flash-latest'),
+            model: googleAI.model('gemini-1.5-flash'),
             history: chatHistory,
             prompt: newUserMessage,
             system: systemPrompt,
@@ -238,7 +238,7 @@ const sttFlow = ai.defineFlow(
     async ({ audioDataUri, sessionId }) => {
         await logTrace('speechToText_start', { input_audio_received: true }, sessionId);
         const response = await ai.generate({
-            model: googleAI.model('gemini-1.5-flash-latest'),
+            model: googleAI.model('gemini-1.5-flash'),
             prompt: [
                 { text: "Transcribe the following audio recording to text." },
                 { media: { url: audioDataUri } },

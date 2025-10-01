@@ -87,7 +87,7 @@ const documentProcessingPrompt = ai.definePrompt({
   name: 'documentProcessingPrompt',
   input: { schema: z.object({ documentText: z.string(), fileName: z.string() }) },
   output: { schema: DocumentOutputSchema },
-  model: googleAI.model('gemini-1.5-flash-latest'),
+  model: googleAI.model('gemini-1.5-flash'),
   prompt: `
     You are an AI assistant tasked with analyzing a document provided by a user for a project evaluation.
     The document name is "{{fileName}}".
@@ -114,7 +114,7 @@ const fileProcessingFlow = ai.defineFlow(
 
     // Step 1: Extract text from the document using Gemini's multimodal capabilities.
     const extractionResponse = await ai.generate({
-        model: googleAI.model('gemini-1.5-flash-latest'),
+        model: googleAI.model('gemini-1.5-flash'),
         prompt: [
             { text: "Extract all text content from the following document." },
             { media: { url: input.fileDataUri } },
