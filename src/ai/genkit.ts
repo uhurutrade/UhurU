@@ -1,4 +1,4 @@
-import { genkit } from 'genkit';
+import { genkit, listModels } from 'genkit';
 import { googleAI } from '@genkit-ai/google-genai';
 import fs from 'fs/promises';
 import path from 'path';
@@ -35,4 +35,16 @@ export const ai = genkit({
   }
 })();
 
-    
+// Self-invoking async function to check API connectivity by listing models.
+(async () => {
+  console.log('Attempting to check API connectivity by listing available models...');
+  try {
+    const models = await listModels();
+    console.log('Successfully connected to the API. Available models:');
+    models.forEach(model => {
+      console.log(`- ${model.name} (Supports: ${model.supportedGenerationMethods.join(', ')})`);
+    });
+  } catch (error) {
+    console.error('Failed to connect to the API or list models:', error);
+  }
+})();
