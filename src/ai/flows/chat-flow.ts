@@ -6,7 +6,7 @@ import { ai } from '@/ai/genkit';
 import fs from 'fs/promises';
 import path from 'path';
 import { headers } from 'next/headers';
-import { googleAI } from '@genkit-ai/googleai';
+import { googleAI } from '@genkit-ai/google-genai';
 import { z } from 'zod';
 import wav from 'wav';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
