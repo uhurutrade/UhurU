@@ -5,7 +5,7 @@ import path from 'path';
 
 export const ai = genkit({
   plugins: [
-    googleAI({ apiVersion: 'v1' }),
+    googleAI(),
   ],
   logLevel: 'debug',
   enableTracingAndMetrics: true,
@@ -34,3 +34,5 @@ export const ai = genkit({
     console.error('Failed to initialize chatbot logging system:', error);
   }
 })();
+
+    
