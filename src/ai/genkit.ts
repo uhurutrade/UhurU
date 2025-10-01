@@ -5,7 +5,7 @@ import path from 'path';
 
 export const ai = genkit({
   plugins: [
-    googleAI(),
+    googleAI({ apiVersion: 'v1' }),
   ],
   logLevel: 'debug',
   enableTracingAndMetrics: true,
