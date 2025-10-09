@@ -44,7 +44,7 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
   const model = new ChatGoogleGenerativeAI({
       model: "gemini-2.5-flash",
       maxOutputTokens: 2048,
-      temperature: 0.8,
+      temperature: 0.2,
   });
   
   // 4. Construct the full prompt template
