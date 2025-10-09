@@ -25,6 +25,10 @@ const KNOWLEDGE_FILES = [
   '6.1-Crypto-Defi.txt'
 ];
 
+// Relevance threshold for similarity search. Values are between 0 and 1.
+// A lower threshold is more lenient, a higher one is stricter.
+const RELEVANCE_THRESHOLD = 0.75;
+
 async function initializeVectorStore() {
   if (vectorStore) {
     return;
@@ -46,7 +50,6 @@ async function initializeVectorStore() {
 
     if (documents.length === 0) {
       console.warn("No knowledge documents were loaded. The chatbot may not have any information to provide.");
-      // Create a dummy vector store to avoid crashing
       vectorStore = new MemoryVectorStore(new GoogleGenerativeAIEmbeddings());
       return;
     }
@@ -61,12 +64,10 @@ async function initializeVectorStore() {
 
   } catch (error) {
     console.error("Failed to initialize vector store:", error);
-    // Create a dummy store on error to allow the app to run
     vectorStore = new MemoryVectorStore(new GoogleGenerativeAIEmbeddings());
   }
 }
 
-// Immediately start initialization
 initializeVectorStore();
 
 export async function retrieve(query: string): Promise<string> {
@@ -76,11 +77,25 @@ export async function retrieve(query: string): Promise<string> {
   }
 
   try {
-    const results = await vectorStore.similaritySearch(query, 4);
-    if (results.length === 0) {
+    // Use similaritySearchWithScore to get relevance scores.
+    const resultsWithScores = await vectorStore.similaritySearchWithScore(query, 4);
+
+    if (resultsWithScores.length === 0) {
       return "No relevant information found in the knowledge base.";
     }
-    return results.map(result => result.pageContent).join('\n---\n');
+
+    // Filter out results that are below the relevance threshold.
+    const relevantResults = resultsWithScores.filter(
+      ([, score]) => score >= RELEVANCE_THRESHOLD
+    );
+    
+    if (relevantResults.length === 0) {
+        // This happens for generic greetings like "hello", "hi", etc.
+        // Return an empty string so the model can handle it as a general conversation.
+        return "";
+    }
+
+    return relevantResults.map(([doc]) => doc.pageContent).join('\n---\n');
   } catch (error) {
     console.error("Error during knowledge retrieval:", error);
     return "There was an error retrieving information.";
