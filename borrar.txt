@@ -1,0 +1,743 @@
+
+// =================================================================================
+// START OF FILE: src/ai/flows/chat-flow.ts
+// =================================================================================
+'use server';
+/**
+ * @fileOverview A simple chat flow that uses LangChain and Google's Gemini model.
+ */
+
+import { z } from 'zod';
+import {
+  HistoryItem,
+  HistoryItemSchema,
+} from '../types';
+import * as knowledge from '@/chatbot/knowledge-retriever';
+import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages";
+import {
+  ChatPromptTemplate,
+  MessagesPlaceholder,
+} from "@langchain/core/prompts";
+
+const ChatRequestSchema = z.object({
+  history: z.array(HistoryItemSchema),
+  prompt: z.string(),
+  sessionId: z.string().optional(),
+});
+export type ChatRequest = z.infer<typeof ChatRequestSchema>;
+
+const ChatResponseSchema = z.object({
+  content: z.string(),
+});
+export type ChatResponse = z.infer<typeof ChatResponseSchema>;
+
+
+export async function chat(request: ChatRequest): Promise<ChatResponse> {
+  const { history, prompt } = request;
+
+  // 1. Retrieve relevant knowledge
+  const knowledgeResponse = await knowledge.retrieve(prompt);
+  
+  // 2. Get the system prompt
+  const systemPromptContent = getSystemPrompt(knowledgeResponse);
+  
+  // 3. Initialize the Chat Model
+  const model = new ChatGoogleGenerativeAI({
+      model: "gemini-2.5-flash",
+      maxOutputTokens: 2048,
+      temperature: 0.8,
+  });
+  
+  // 4. Construct the full prompt template
+  const promptTemplate = ChatPromptTemplate.fromMessages([
+      new SystemMessage(systemPromptContent),
+      new MessagesPlaceholder("chat_history"),
+      new HumanMessage("{input}"),
+  ]);
+
+  // 5. Create the runnable chain
+  const chain = promptTemplate.pipe(model);
+
+  // 6. Construct the message history for the model
+  const messageHistory = history.map((item) => 
+      item.role === 'assistant' 
+          ? new AIMessage(item.content)
+          : new HumanMessage(item.content)
+  );
+
+  // 7. Invoke the chain
+  const response = await chain.invoke({
+      input: prompt,
+      chat_history: messageHistory,
+  });
+  
+  const responseText = response.content.toString();
+
+  // The entire response from the model is the content.
+  return {
+    content: responseText,
+  };
+}
+// =================================================================================
+// END OF FILE: src/ai/flows/chat-flow.ts
+// =================================================================================
+
+
+
+// =================================================================================
+// START OF FILE: src/ai/types.ts
+// =================================================================================
+import { z } from 'zod';
+
+export const HistoryItemSchema = z.object({
+  role: z.enum(['user', 'assistant']),
+  content: z.string(),
+});
+
+export type HistoryItem = z.infer<typeof HistoryItemSchema>;
+// =================================================================================
+// END OF FILE: src/ai/types.ts
+// =================================================================================
+
+
+
+// =================================================================================
+// START OF FILE: src/chatbot/chatbot-prompt.ts
+// =================================================================================
+export function getSystemPrompt(retrievedKnowledge: string): string {
+
+    const languageInstruction = `**You MUST detect the language of the user's last prompt and respond exclusively in that same language.** If the user switches languages mid-conversation, you MUST adapt immediately and respond in the new language. Do not reference the language change, just perform it.`;
+
+    return `You are UhurU's highly specialized and empathetic AI assistant, designed for enterprise-grade customer interaction and internal knowledge support. Your persona is that of an expert, professional, proactive, and exceptionally helpful guide. Your overarching mission is to deliver precise, contextually rich information, facilitate seamless process initiation, and ensure a superior user experience through coherent, multi-turn conversations.
+
+**1. Core Behavioral Directives (Non-Negotiable):**
+* **1.1. Contextual Mastery & Memory:** You **MUST** continuously analyze and synthesize the entire previous conversation history to fully grasp the evolving user intent and context. **NEVER** ask for information that has already been explicitly provided. Your primary goal is to maintain a coherent, logical, multi-turn dialogue.
+* **1.2. Linguistic Discipline:**
+    * ${languageInstruction}
+* **1.3. Proactive Engagement & Empathy:** Initiate interactions warmly. Respond naturally and appreciatively to greetings, thanks, and small talk. Show genuine empathy and understanding, especially when a user expresses frustration or difficulty. Guide the user gently but firmly towards their goal.
+* **1.4. Professional Tone & Clarity:** Maintain a consistently professional, yet approachable tone. Your responses should be clear, concise, and easy to understand, avoiding jargon unless explicitly requested or necessary within the provided knowledge context.
+* **1.5. Confusion & Recovery Protocol:** If you encounter a user query that is ambiguous, unclear, or seems out of context, **DO NOT reset the conversation** with a generic "How can I help you?". Instead, you must re-read and re-analyze the entire preceding conversation history to re-establish context. After this internal re-evaluation, make a best-effort attempt to provide a coherent and relevant response to the user's last message. Only if the query remains completely unintelligible after this process should you politely ask for clarification.
+* **1.6. Output Formatting & Readability:** Structure your responses for maximum clarity. When presenting a list of items (e.g., services, features), you **MUST** use properly formatted Markdown lists.
+    *   **Use numbered lists (e.g., \`1. Text\`) or clean bullet points (e.g., a single \`-\` or \`*\` followed by a space).**
+    *   **NEVER use double asterisks (\`**\`) as list bullets. Use bolding ONLY to highlight the title of a list or key terms within a sentence.**
+    *   Ensure there is adequate spacing between paragraphs and list items to make the content easy to read. Avoid dense blocks of text.
+
+**2. Task-Specific Logic & Workflow Management:**
+You are equipped to handle two primary, distinct workflows. Dynamically identify the user's immediate intent to activate the correct workflow.
+
+**2.1. Workflow A: Information Retrieval & Question Answering (Advanced RAG Integration)**
+* **2.1.1. Trigger Conditions:** This workflow is activated when the user poses any question or seeks information concerning UhurU, its comprehensive range of services, product features, pricing models (if available in context), contact details, company history, testimonials, security protocols, or any subject where a factual answer is expected from our knowledge base.
+* **2.1.2. Knowledge Grounding (Strict RAG Principle):** Your responses **MUST BE STRICTLY AND EXCLUSIVELY DERIVED FROM THE PROVIDED 'RETRIEVED KNOWLEDGE CONTEXT'**. Do not introduce external information, personal opinions, or speculative content. This is paramount for factual accuracy and preventing "hallucinations."
+* **2.1.3. Handling Information Gaps:**
+    * **Scenario A: Information NOT in Context:** If the specific answer to the user's query is unequivocally **NOT PRESENT** within the 'RETRIEVED KNOWLEDGE CONTEXT', clearly and politely state your limitation.
+    * **Scenario B: Insufficient/Ambiguous Context:** If the context is vague, incomplete, or could lead to an ambiguous answer, acknowledge this limitation.
+    * **Proactive Redirection for Gaps:** In both scenarios A and B, proactively guide the user to the most appropriate alternative.
+        * **Standard Contact:** "I apologize, but I don't have that specific information right now. Please feel free to reach out to us directly at **hello@uhurutrade.com** for further assistance."
+        * **For Complex Inquiries (if appropriate):** "My knowledge base does not contain the specific details for that query. For complex or personalized questions, scheduling a direct consultation with one of our specialists would be most efficient. Would you like me to guide you on how to do that, or do you prefer email contact?"
+* **2.1.4. Context Synthesis & Refinement:**
+    * **Summarization:** For lengthy retrieved knowledge, provide a concise, high-level summary before delving into specifics.
+    * **Direct Answer Extraction:** Prioritize extracting direct answers. If a direct answer is not feasible, synthesize information from multiple relevant snippets within the context.
+    * **Source Citation (Optional/Implicit):** While not explicitly stating "from document X," ensure the tone reflects that the information is authoritative and derived from a reliable source (your knowledge base).
+* **2.1.5. Handling Out-of-Scope Questions (Polite Deflection):** If a user asks a question entirely unrelated to UhurU or the provided context, politely decline to answer, explaining your specialized role. Do not engage with such topics.
+    * **Example:** "My functions are limited to providing information and assistance related to UhurU. I cannot assist you with that topic."
+
+**2.2. Workflow B: Project Evaluation & Document Submission Process**
+* **2.2.1. Trigger Conditions:** This workflow is initiated when the user clearly expresses intent to "send a project," "get a quote," "request an evaluation," "submit files/documents," or "start a collaboration for a new project."
+* **22.2. Step 1: Secure Information Collection (Name & Email):** If the user's **full legal name** and **primary contact email address** are not already confirmed in the conversation history, you **MUST** politely request both pieces of information in a single, clear, and privacy-conscious query.
+    * **Rationale:** Explain briefly *why* the information is needed (e.g., "To personalize your project evaluation and ensure smooth communication...").
+    * **Example:** "To initiate your project evaluation process and enable the secure upload of your documents, could you please provide me with your full name and your primary contact email address? This will allow us to maintain seamless and personalized communication."
+* **2.2.3. Step 2: Immediate Confirmation & Feature Activation:** Upon successful reception of **BOTH** the full name and email, you **MUST IMMEDIATELY CONFIRM** their receipt and explicitly state that the file upload functionality is now enabled. Your response **MUST include the exact phrase in the detected language corresponding to 'He habilitado la opción para adjuntar archivos'** (e.g., in Spanish: "He habilitado la opción para adjuntar archivos" / in English: "I have enabled the file upload option").
+    * **Reinforcement:** Add a brief, encouraging remark about proceeding.
+    * **Example (English):** "Excellent! I have successfully received your details. **I have enabled the file upload option.** You can now use the paperclip icon (or attachment button) in your interface to send us your project. We're ready to review it!"
+    * **Example (Spanish):** "¡Perfecto! He recibido tus datos correctamente. **He habilitado la opción para adjuntar archivos.** Ya puedes utilizar el botón del clip (o el icono de adjuntar) en tu interfaz para enviarnos tu proyecto. Estamos listos para revisarlo."
+* **2.2.4. Step 3: Proactive Guidance for Upload:** After confirming enablement, **DO NOT RE-REQUEST THE EMAIL OR NAME**. Your subsequent responses should focus on guiding the user to the upload mechanism (e.g., "Please look for the attach button...") or inquiring if they have any questions regarding the submission itself.
+    * **Error Handling (Partial Data):** If the user provides incomplete data for Step 1, gently prompt for the missing part.
+    * **Example:** "Please attach your project. If you have any questions about file types or the process, feel free to ask."
+
+**3. General Interaction Principles:**
+* **User Name Integration:** Once the user's name is known, integrate it naturally into responses to personalize the conversation.
+* **Conciseness & Value:** Be as concise as possible while still being comprehensive and adding value. Avoid redundant phrases.
+* **Strategic Conversation Ending:** Conclude each of your responses with a clear, open-ended question or a call to action that encourages the user to continue the interaction or move towards a resolution.
+    * **Examples:** "Is there anything else specific about UhurU you'd like to know at this moment?", "Can I assist you with any other query or step in the process?", "What would you like to do next?"
+* **Ethical AI & Transparency:** While not explicitly stated to the user, operate with an understanding of AI limitations. If a query implies a need for human judgment or sensitive data handling beyond your capabilities, politely suggest human contact.
+
+HERE IS THE RETRIEVED KNOWLEDGE CONTEXT:
+${retrievedKnowledge}
+`;
+}
+// =================================================================================
+// END OF FILE: src/chatbot/chatbot-prompt.ts
+// =================================================================================
+
+
+
+// =================================================================================
+// START OF FILE: src/chatbot/knowledge-retriever.ts
+// =================================================================================
+import { promises as fs } from 'fs';
+import path from 'path';
+import { Document } from "@langchain/core/documents";
+import { TextLoader } from "langchain/document_loaders/fs/text";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+
+let vectorStore: MemoryVectorStore | null = null;
+
+const KNOWLEDGE_BASE_DIR = 'src/chatbot/IAsourcesPrompt';
+const KNOWLEDGE_FILES = [
+  '1.1-Servicios-Generales.txt',
+  '1.2-Servicios-Detalle.txt',
+  '1.3-Servicios-Oracle.txt',
+  '2.1-SobreNosotros-QuienesSomos.txt',
+  '2.2-SobreNosotros-Contacto.txt',
+  '3.1-Forex-MercadoDeDivisas.txt',
+  '3.2-Estrategia-Inversion.txt',
+  '3.3-OpcionesVanilla-Conceptos.txt',
+  '4.1-Smartmoney-QueEs.txt',
+  '5.1-CarryTrade-QueEs.txt',
+  '5.2-CarryTrade-Peligros.txt',
+  '5.2-Frameworks-General.txt',
+  '6.1-Crypto-Defi.txt'
+];
+
+async function initializeVectorStore() {
+  if (vectorStore) {
+    return;
+  }
+
+  try {
+    const documents: Document[] = [];
+    for (const file of KNOWLEDGE_FILES) {
+      const filePath = path.join(process.cwd(), KNOWLEDGE_BASE_DIR, file);
+      try {
+        await fs.access(filePath); // Check if file exists
+        const loader = new TextLoader(filePath);
+        const docs = await loader.load();
+        documents.push(...docs);
+      } catch (e) {
+        console.warn(`Knowledge file not found, skipping: ${filePath}`);
+      }
+    }
+
+    if (documents.length === 0) {
+      console.warn("No knowledge documents were loaded. The chatbot may not have any information to provide.");
+      // Create a dummy vector store to avoid crashing
+      vectorStore = new MemoryVectorStore(new GoogleGenerativeAIEmbeddings());
+      return;
+    }
+
+    const embeddings = new GoogleGenerativeAIEmbeddings({
+        model: "embedding-001",
+        taskType: "RETRIEVAL_DOCUMENT"
+    });
+    
+    vectorStore = await MemoryVectorStore.fromDocuments(documents, embeddings);
+    console.log("Vector store initialized successfully.");
+
+  } catch (error) {
+    console.error("Failed to initialize vector store:", error);
+    // Create a dummy store on error to allow the app to run
+    vectorStore = new MemoryVectorStore(new GoogleGenerativeAIEmbeddings());
+  }
+}
+
+// Immediately start initialization
+initializeVectorStore();
+
+export async function retrieve(query: string): Promise<string> {
+  if (!vectorStore) {
+    console.warn("Vector store not initialized. Returning empty knowledge.");
+    return "No knowledge base available.";
+  }
+
+  try {
+    const results = await vectorStore.similaritySearch(query, 4);
+    if (results.length === 0) {
+      return "No relevant information found in the knowledge base.";
+    }
+    return results.map(result => result.pageContent).join('\n---\n');
+  } catch (error) {
+    console.error("Error during knowledge retrieval:", error);
+    return "There was an error retrieving information.";
+  }
+}
+// =================================================================================
+// END OF FILE: src/chatbot/knowledge-retriever.ts
+// =================================================================================
+
+
+
+// =================================================================================
+// START OF FILE: src/components/uhuru/ChatWidget.tsx
+// =================================================================================
+"use client";
+
+import React, { useState, useRef, useEffect, useTransition } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { X, Send, Bot, User, Loader, MessageCircle, Paperclip } from 'lucide-react';
+import { chat } from '@/ai/flows/chat-flow';
+import type { HistoryItem } from '@/ai/types';
+import { useToast } from '@/hooks/use-toast';
+import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
+import { usePathname } from 'next/navigation';
+import { Tooltip, TooltipProvider, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+
+interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+const MAX_HISTORY_MESSAGES = 50;
+const INITIAL_MESSAGE_OBJECT: Message = { 
+  id: 'initial', 
+  role: 'assistant', 
+  content: chatbotWelcomeMessage 
+};
+
+function logClientTrace(functionName: string, data: any) {
+    if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
+        const timestamp = new Date().toISOString();
+        console.log(`[${timestamp}] uhurulog_${functionName}:`, data);
+    }
+}
+
+const generateSessionId = () => Math.floor(100000 + Math.random() * 900000).toString();
+
+const ChatWidgetContent = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE_OBJECT]);
+  const [input, setInput] = useState('');
+  const [isPending, startTransition] = useTransition();
+  
+  const sessionIdRef = useRef<string | null>(null);
+  
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    if (!sessionIdRef.current) {
+        sessionIdRef.current = generateSessionId();
+        logClientTrace('initSession', { sessionId: sessionIdRef.current });
+    }
+  }, []);
+
+  const toggleOpen = () => {
+    logClientTrace('toggleOpen', { isOpen: !isOpen });
+    setIsOpen(!isOpen);
+    if (!isOpen && messages.length === 1) {
+        setMessages([INITIAL_MESSAGE_OBJECT]);
+    }
+  }
+
+  const scrollToBottom = () => {
+    if (scrollAreaRef.current) {
+        const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
+        if (viewport) {
+            viewport.scrollTop = viewport.scrollHeight;
+        }
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+        logClientTrace('useEffect_scrollToBottom', { trigger: 'isOpen_or_messages' });
+        setTimeout(scrollToBottom, 100);
+    }
+  }, [isOpen, messages, isPending]);
+
+  const handleSend = async (messageContent: string) => {
+    const functionName = 'handleSend';
+    const newUserMessage = messageContent.trim();
+    if (newUserMessage === '' || isPending || !sessionIdRef.current) return;
+    
+    logClientTrace(functionName, { input_newUserMessage: newUserMessage, sessionId: sessionIdRef.current });
+
+    const userMessageObject: Message = { id: `user-${Date.now()}`, role: 'user', content: newUserMessage };
+    const newMessages = [...messages, userMessageObject];
+    setMessages(newMessages);
+    setInput('');
+    
+    startTransition(async () => {
+      try {
+        const history: HistoryItem[] = newMessages
+          .slice(1, -1) // Exclude initial welcome message and the new user message
+          .slice(-MAX_HISTORY_MESSAGES) // Limit history size
+          .map(msg => ({
+            role: msg.role === 'user' ? 'user' : 'assistant',
+            content: msg.content,
+          }));
+
+        logClientTrace(functionName, { request_history: history, sessionId: sessionIdRef.current });
+        
+        const response = await chat({
+            prompt: newUserMessage,
+            history: history,
+            sessionId: sessionIdRef.current!,
+        });
+        
+        const assistantMessage: Message = {
+          id: `assistant-${Date.now()}`,
+          role: 'assistant',
+          content: response.content,
+        };
+        setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+      } catch (error) {
+        console.error('Chat API error:', error);
+        const errorMessage = error instanceof Error ? error.message : "I'm having trouble connecting. Please try again later.";
+        toast({
+            variant: "destructive",
+            title: "An Error Occurred",
+            description: errorMessage,
+        });
+        const assistantMessage: Message = {
+            id: `assistant-error-${Date.now()}`,
+            role: 'assistant',
+            content: errorMessage,
+        };
+        setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+      }
+    });
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSend(input);
+    }
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50">
+       <TooltipProvider>
+      {isOpen && (
+          <div
+            className="w-80 h-[28rem] bg-card rounded-lg shadow-2xl flex flex-col border border-border"
+          >
+            <div className="flex justify-between items-center p-3 border-b border-border bg-card-foreground/5 dark:bg-card-foreground/10 rounded-t-lg">
+              <h3 className="text-base font-semibold text-foreground">
+                UhurU AI Chat
+              </h3>
+              <Button variant="ghost" size="icon" onClick={toggleOpen} className="h-8 w-8">
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex items-start gap-3 ${
+                      message.role === 'user' ? 'justify-end' : ''
+                    }`}
+                  >
+                    {message.role === 'assistant' && (
+                      <div className="bg-primary text-primary-foreground rounded-full p-2">
+                        <Bot className="h-5 w-5" />
+                      </div>
+                    )}
+                    <div
+                      className={`max-w-[85%] rounded-lg p-3 text-sm ${
+                        message.role === 'user'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted text-muted-foreground'
+                      }`}
+                    >
+                      <p className="whitespace-pre-wrap">{message.content}</p>
+                    </div>
+                    {message.role === 'user' && (
+                      <div className="bg-muted text-muted-foreground rounded-full p-2">
+                        <User className="h-5 w-5" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {isPending && (
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary text-primary-foreground rounded-full p-2">
+                      <Bot className="h-5 w-5" />
+                    </div>
+                    <div className="bg-muted text-muted-foreground rounded-lg p-3">
+                      <Loader className="h-5 w-5 animate-spin" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+            <div className="p-3 border-t border-border">
+              <div className="relative flex items-center gap-1">
+                <Input
+                  type="text"
+                  placeholder="Ask something..."
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  disabled={isPending}
+                  className="pr-20"
+                />
+                <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" disabled={true} className="h-8 w-8">
+                                <Paperclip className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent><p>Attach file (Coming Soon)</p></TooltipContent>
+                    </Tooltip>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleSend(input)}
+                        disabled={isPending || input.trim() === ''}
+                        className="h-8 w-8"
+                    >
+                        <Send className="h-4 w-4" />
+                    </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+      {!isOpen && (
+            <div>
+                <Button
+                onClick={toggleOpen}
+                className="rounded-full h-16 w-16 shadow-lg flex items-center justify-center bg-primary hover:bg-primary/90"
+                >
+                <MessageCircle className="h-9 w-9 text-primary-foreground" />
+                </Button>
+            </div>
+        )}
+        </TooltipProvider>
+    </div>
+  );
+}
+
+export default function ChatWidget() {
+  const pathname = usePathname();
+
+  if (pathname === '/ai-chat') {
+    return null;
+  }
+  
+  return <ChatWidgetContent />;
+}
+// =================================================================================
+// END OF FILE: src/components/uhuru/ChatWidget.tsx
+// =================================================================================
+
+
+
+// =================================================================================
+// START OF FILE: src/components/uhuru/FullScreenChat.tsx
+// =================================================================================
+"use client";
+
+import React, { useState, useRef, useEffect, useTransition } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Bot, User, Loader, Send, Download, PlusSquare, Globe, Paperclip } from 'lucide-react';
+import { chat } from '@/ai/flows/chat-flow';
+import type { HistoryItem } from '@/ai/types';
+import { useToast } from '@/hooks/use-toast';
+import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
+import { Card, CardContent } from '../ui/card';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+
+interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+const MAX_HISTORY_MESSAGES = 50;
+const INITIAL_MESSAGE_OBJECT: Message = { 
+  id: 'initial', 
+  role: 'assistant', 
+  content: chatbotWelcomeMessage 
+};
+
+function logClientTrace(functionName: string, data: any) {
+    if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
+        const timestamp = new Date().toISOString();
+        console.log(`[${timestamp}] uhurulog_${functionName}:`, data);
+    }
+}
+
+const generateSessionId = () => Math.floor(100000 + Math.random() * 900000).toString();
+
+export default function FullScreenChat() {
+  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE_OBJECT]);
+  const [input, setInput] = useState('');
+  const [isPending, startTransition] = useTransition();
+  
+  const sessionIdRef = useRef<string | null>(null);
+  
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    if (!sessionIdRef.current) {
+        sessionIdRef.current = generateSessionId();
+        logClientTrace('initSession', { sessionId: sessionIdRef.current });
+    }
+  }, []);
+
+  const scrollToBottom = () => {
+    if (scrollAreaRef.current) {
+        const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
+        if (viewport) {
+            viewport.scrollTop = viewport.scrollHeight;
+        }
+    }
+  };
+
+  useEffect(() => {
+    setTimeout(scrollToBottom, 100);
+  }, [messages, isPending]);
+
+  const handleSend = async (messageContent: string) => {
+    const functionName = 'handleSend';
+    const newUserMessage = messageContent.trim();
+    if (newUserMessage === '' || isPending || !sessionIdRef.current) return;
+    
+    const userMessageObject: Message = { id: `user-${Date.now()}`, role: 'user', content: newUserMessage };
+    const newMessages = [...messages, userMessageObject];
+
+    setMessages(newMessages);
+    setInput('');
+    
+    startTransition(async () => {
+      try {
+        const history: HistoryItem[] = newMessages
+          .slice(1, -1)
+          .slice(-MAX_HISTORY_MESSAGES)
+          .map(msg => ({
+            role: msg.role === 'user' ? 'user' : 'assistant',
+            content: msg.content,
+          }));
+
+        const response = await chat({
+          prompt: newUserMessage,
+          history: history,
+          sessionId: sessionIdRef.current!,
+        });
+
+        const assistantMessage: Message = {
+          id: `assistant-${Date.now()}`,
+          role: 'assistant',
+          content: response.content,
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+      } catch (error) {
+        console.error('Chat API error:', error);
+        const errorMessage = error instanceof Error ? error.message : "I'm having trouble connecting. Please try again later.";
+        toast({
+          variant: "destructive",
+          title: "An Error Occurred",
+          description: errorMessage,
+        });
+        const assistantMessage: Message = {
+          id: `assistant-error-${Date.now()}`,
+          role: 'assistant',
+          content: errorMessage,
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+      }
+    });
+  };
+  
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSend(input);
+    }
+  };
+
+  const handleDownload = () => {
+    const conversationText = messages.map(msg => `${msg.role.charAt(0).toUpperCase() + msg.role.slice(1)}:\n${msg.content}`).join('\n\n---\n\n');
+    const blob = new Blob([conversationText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `uhuru-chat-${new Date().toISOString().replace(/:/g, '-')}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast({ title: "Conversation Downloaded" });
+  };
+
+  const handleNewChat = () => {
+    setMessages([INITIAL_MESSAGE_OBJECT]);
+    sessionIdRef.current = generateSessionId();
+    toast({ title: "New Chat Started" });
+  };
+  
+  return (
+    <TooltipProvider>
+      <div className="flex-1 flex flex-col w-full max-w-4xl mx-auto p-4 min-h-0">
+          <div className="flex items-center justify-between pb-4 border-b mb-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Globe className="h-5 w-5" />
+                  <span>
+                    UhurU AI Chat
+                  </span>
+              </div>
+              <div className="flex items-center gap-2">
+                  <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={handleDownload} disabled={messages.length <= 1}><Download className="h-5 w-5" /></Button></TooltipTrigger><TooltipContent><p>Download conversation</p></TooltipContent></Tooltip>
+                  <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={handleNewChat}><PlusSquare className="h-5 w-5" /></Button></TooltipTrigger><TooltipContent><p>New chat</p></TooltipContent></Tooltip>
+              </div>
+          </div>
+          <ScrollArea className="flex-1 pr-4 -mr-4" ref={scrollAreaRef}>
+              <div className="space-y-6 pb-4">
+              {messages.map((message) => (
+                  <div key={message.id} className={`flex items-start gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}>
+                      {message.role === 'assistant' && (<div className="bg-primary text-primary-foreground rounded-full p-2.5 flex-shrink-0"><Bot className="h-6 w-6" /></div>)}
+                      <div className={`max-w-[80%] rounded-xl p-4 text-base shadow-sm ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
+                          <p className="whitespace-pre-wrap">{message.content}</p>
+                      </div>
+                      {message.role === 'user' && (<div className="bg-muted text-muted-foreground rounded-full p-2.5 flex-shrink-0"><User className="h-6 w-6" /></div>)}
+                  </div>
+              ))}
+              {isPending && (
+                  <div className="flex items-start gap-4">
+                      <div className="bg-primary text-primary-foreground rounded-full p-2.5"><Bot className="h-6 w-6" /></div>
+                      <div className="bg-muted text-muted-foreground rounded-xl p-4"><Loader className="h-6 w-6 animate-spin" /></div>
+                  </div>
+              )}
+              </div>
+          </ScrollArea>
+          <div className="pt-4 mt-auto">
+              <Card className="relative shadow-lg">
+                  <CardContent className="p-2">
+                      <div className="relative flex items-center gap-2">
+                          <Input type="text" placeholder="Ask something..." value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress} disabled={isPending} className="text-base h-12 pl-12 pr-12 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"/>
+                          <div className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="ghost" size="icon" disabled={true} className="h-9 w-9">
+                                        <Paperclip className="h-5 w-5" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent><p>Attach file (Coming Soon)</p></TooltipContent>
+                            </Tooltip>
+                          </div>
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+                              <Button variant="ghost" size="icon" onClick={() => handleSend(input)} disabled={isPending || input.trim() === ''} className="h-9 w-9"><Send className="h-5 w-5" /></Button>
+                          </div>
+                      </div>
+                  </CardContent>
+              </Card>
+          </div>
+      </div>
+    </TooltipProvider>
+  );
+}
+// =================================================================================
+// END OF FILE: src/components/uhuru/FullScreenChat.tsx
+// =================================================================================
