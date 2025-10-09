@@ -124,10 +124,9 @@ const ChatWidgetContent = () => {
             languageCode: sessionLanguageRef.current || undefined,
         });
 
-        const newLanguageCode = response.languageCode;
-        if (newLanguageCode && newLanguageCode !== sessionLanguageRef.current) {
-            sessionLanguageRef.current = newLanguageCode;
-            setCurrentLanguage(languageCodeMap[newLanguageCode] || newLanguageCode);
+        if (response.languageCode) {
+            sessionLanguageRef.current = response.languageCode;
+            setCurrentLanguage(languageCodeMap[response.languageCode] || response.languageCode);
         }
         
         const assistantMessage: Message = {

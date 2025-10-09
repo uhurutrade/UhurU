@@ -114,10 +114,9 @@ export default function FullScreenChat() {
           languageCode: sessionLanguageRef.current || undefined,
         });
 
-        const newLanguageCode = response.languageCode;
-        if (newLanguageCode && newLanguageCode !== sessionLanguageRef.current) {
-          sessionLanguageRef.current = newLanguageCode;
-          setSessionLanguageCode(newLanguageCode);
+        if (response.languageCode) {
+            sessionLanguageRef.current = response.languageCode;
+            setSessionLanguageCode(response.languageCode);
         }
 
         const assistantMessage: Message = {
