@@ -18,8 +18,6 @@ import {
   MessagesPlaceholder,
 } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
-import { StructuredOutputParser } from "langchain/output_parsers";
-
 
 const ChatRequestSchema = z.object({
   history: z.array(HistoryItemSchema),
@@ -35,12 +33,34 @@ const ChatResponseSchema = z.object({
 });
 export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 
-// Define the structured output Zod schema
-const structuredOutputSchema = z.object({
-    languageCode: z.string().length(2).describe("The BCP-47 language code of the user's prompt (e.g., 'en', 'es', 'it'). This MUST be detected from the user's input."),
+// Define a simpler Zod schema for the expected JSON output
+const ChatOutputSchema = z.object({
+    languageCode: z.string().describe("The BCP-47 language code of the user's prompt (e.g., 'en', 'es', 'it'). This MUST be detected from the user's input."),
     responseContent: z.string().describe("The full, final response to the user, written exclusively in the detected language."),
 });
-type StructuredOutputType = z.infer<typeof structuredOutputSchema>;
+type ChatOutputType = z.infer<typeof ChatOutputSchema>;
+
+// Helper to extract JSON from a string
+const extractJson = (text: string): ChatOutputType | null => {
+    const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/);
+    if (!jsonMatch || !jsonMatch[1]) {
+        console.warn("Could not find JSON block in model response", text);
+        return null;
+    }
+    try {
+        const parsed = JSON.parse(jsonMatch[1]);
+        const validated = ChatOutputSchema.safeParse(parsed);
+        if (validated.success) {
+            return validated.data;
+        } else {
+            console.warn("Parsed JSON does not match schema", validated.error);
+            return null;
+        }
+    } catch (e) {
+        console.error("Failed to parse JSON from model response", e);
+        return null;
+    }
+};
 
 
 export async function chat(request: ChatRequest): Promise<ChatResponse> {
@@ -51,53 +71,67 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
   // 1. Retrieve relevant knowledge
   const knowledgeResponse = await knowledge.retrieve(prompt);
   
-  // 2. Get the system prompt, passing the optional languageCode
-  const systemPrompt = getSystemPrompt(
+  // 2. Get the system prompt, passing the optional languageCode and instructions for JSON output
+  const systemPromptContent = getSystemPrompt(
     knowledgeResponse,
     languageCode, // This can be undefined
     isFirstMessage
-  );
-
+  ) + `
+    You MUST wrap your final response in a JSON code block like this:
+    \`\`\`json
+    {
+      "languageCode": "...",
+      "responseContent": "..."
+    }
+    \`\`\`
+    The 'languageCode' MUST be the BCP-47 code of the language you are responding in.
+    The 'responseContent' MUST be your complete, final answer to the user in that language.
+  `;
+  
   // 3. Initialize the Chat Model
   const model = new ChatGoogleGenerativeAI({
       model: "gemini-2.5-flash",
       maxOutputTokens: 2048,
       temperature: 0.8,
   });
-
-  // 4. Create a structured output parser
-  const parser = StructuredOutputParser.fromZodSchema(structuredOutputSchema);
   
-  // 5. Construct the full prompt template
+  // 4. Construct the full prompt template
   const promptTemplate = ChatPromptTemplate.fromMessages([
-      new SystemMessage(systemPrompt),
+      new SystemMessage(systemPromptContent),
       new MessagesPlaceholder("chat_history"),
-      new HumanMessage("{input}\n\n{format_instructions}"),
+      new HumanMessage("{input}"),
   ]);
 
-  // 6. Create the runnable chain
-  const chain = RunnableSequence.from([
-    promptTemplate,
-    model,
-    parser,
-  ]);
+  // 5. Create the runnable chain
+  const chain = promptTemplate.pipe(model);
 
-  // 7. Construct the message history for the model
+  // 6. Construct the message history for the model
   const messageHistory = history.map((item) => 
       item.role === 'assistant' 
           ? new AIMessage(item.content)
           : new HumanMessage(item.content)
   );
 
-  // 8. Invoke the chain
-  const response: StructuredOutputType = await chain.invoke({
+  // 7. Invoke the chain
+  const response = await chain.invoke({
       input: prompt,
       chat_history: messageHistory,
-      format_instructions: parser.getFormatInstructions(),
   });
+  
+  const responseText = response.content.toString();
+  const structuredOutput = extractJson(responseText);
 
+  if (structuredOutput) {
+    return {
+      content: structuredOutput.responseContent,
+      languageCode: structuredOutput.languageCode,
+    };
+  }
+  
+  console.warn("Fallback: Could not parse structured JSON. Returning raw text.");
+  // Fallback to raw text if JSON parsing fails
   return {
-    content: response.responseContent || 'No response',
-    languageCode: response.languageCode || 'en',
+    content: responseText.replace(/```json\n?/, '').replace(/```\n?/, '').trim(),
+    languageCode: languageCode || 'en', // Best guess
   };
 }
