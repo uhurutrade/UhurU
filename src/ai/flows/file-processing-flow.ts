@@ -86,7 +86,7 @@ export type DocumentOutput = z.infer<typeof DocumentOutputSchema>;
 const documentProcessingPrompt = ai.definePrompt({
   name: 'documentProcessingPrompt',
   input: { schema: z.object({ documentText: z.string(), fileName: z.string() }) },
-  output: { schema: DocumentOutputSchema },
+  output: { schema: z.object({ summary: z.string() }) },
   model: googleAI.model('gemini-1.5-flash'),
   prompt: `
     You are an AI assistant tasked with analyzing a document provided by a user for a project evaluation.
@@ -94,8 +94,7 @@ const documentProcessingPrompt = ai.definePrompt({
     The full text content of the document is provided below.
 
     Your tasks are:
-    1.  Extract the full text content of the document. This is implicitly done for you, but you must pass it to the output.
-    2.  Generate a comprehensive and detailed summary of the document. The summary should be several paragraphs long, highlighting key points, objectives, technologies involved, and any specific requests mentioned by the user.
+    1. Generate a comprehensive and detailed summary of the document. The summary should be several paragraphs long, highlighting key points, objectives, technologies involved, and any specific requests mentioned by the user.
 
     DOCUMENT CONTENT:
     {{{documentText}}}
@@ -134,20 +133,21 @@ const fileProcessingFlow = ai.defineFlow(
     }, input.sessionId);
 
     // Step 3: Generate a summary using the extracted text.
-    const { output: summaryOutput } = await documentProcessingPrompt({
+    const summaryResponse = await documentProcessingPrompt({
         documentText: extractedText,
         fileName: input.fileName,
     });
 
-    if (!summaryOutput) {
+    const summary = summaryResponse.output?.summary;
+    if (!summary) {
         throw new Error("Could not generate a summary for the document.");
     }
     
-    await logTrace(functionName, { status: 'finished', document_summary: summaryOutput.summary }, input.sessionId);
+    await logTrace(functionName, { status: 'finished', document_summary: summary }, input.sessionId);
 
     // Return the full output object including summary and extracted text.
     return {
-        summary: summaryOutput.summary,
+        summary: summary,
         extractedText: extractedText,
     };
   }
