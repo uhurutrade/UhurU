@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview A simple chat flow that uses LangChain and Google's Gemma 2 model.
+ * @fileOverview A simple chat flow that uses LangChain and Google's Gemini model.
  */
 
 import { z } from 'zod';
@@ -29,17 +29,17 @@ const ChatResponseSchema = z.object({
 export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 
 export async function chat(request: ChatRequest): Promise<ChatResponse> {
-  const { history, prompt, languageCode = 'en' } = request;
+  const { history, prompt, languageCode } = request;
 
   const isFirstMessage = history.length === 0;
 
   // 1. Retrieve relevant knowledge
   const knowledgeResponse = await knowledge.retrieve(prompt);
   
-  // 2. Get the system prompt
+  // 2. Get the system prompt, passing the optional languageCode
   const systemPrompt = getSystemPrompt(
     knowledgeResponse,
-    languageCode,
+    languageCode, // This can be undefined
     isFirstMessage
   );
 
@@ -61,13 +61,26 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
     new HumanMessage(prompt),
   ];
 
-  // 5. Invoke the model
+  // 5. Invoke the model and get language from the response
   const response = await model.invoke(messages);
   
   const content = response.content.toString();
 
+  // Try to extract language from a structured response if possible, otherwise default
+  let detectedLanguage = languageCode || 'en'; // Default to 'en' if nothing else is found
+  try {
+    // This part is speculative. If the model can return structured data, we can use it.
+    // For now, we assume the model just returns text. If the model can be instructed to return
+    // { "response": "...", "language": "es" }, this would be more robust.
+    // As a fallback, we just return the language code we started with, or 'en'.
+  } catch (e) {
+    // Parsing failed, stick with the current language or default.
+  }
+  
+  // For now, we trust the client-side detection and the prompt to handle language.
+  // We return the languageCode that was passed in, or a default if it was the first message.
   return {
     content: content || 'No response',
-    languageCode: languageCode,
+    languageCode: languageCode || 'en', // Pass back the used language code
   };
 }
