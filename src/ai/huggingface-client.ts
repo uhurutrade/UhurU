@@ -3,9 +3,9 @@
 
 // Common function to handle API requests to Hugging Face
 async function queryHuggingFaceAPI(data: any, model: string): Promise<any> {
-    const apiKey = process.env.HUGGING_FACE_API_KEY;
+    const apiKey = process.env.HF_TOKEN;
     if (!apiKey) {
-        throw new Error('Hugging Face API key is not configured in .env file.');
+        throw new Error('Hugging Face API key (HF_TOKEN) is not configured in .env file.');
     }
 
     const response = await fetch(
