@@ -138,11 +138,12 @@ export async function chat(
         
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, languageCode);
         
+        // Format history for the model prompt
         const historyForAI = history
-          .map(item => `${item.role}: ${item.content}`);
+          .map(item => `GPT4 Correct ${item.role.charAt(0).toUpperCase() + item.role.slice(1)}: ${item.content}<|end_of_turn|>`);
 
-        // Construct the full prompt for the model
-        const fullPrompt = `${systemPrompt}\n\n${historyForAI.join('\n')}\nuser: ${newUserMessage}\nassistant:`;
+        // Construct the full prompt for the model in the required format
+        const fullPrompt = `${systemPrompt}\n\n${historyForAI.join('')}GPT4 Correct User: ${newUserMessage}<|end_of_turn|>GPT4 Correct Assistant:`;
         
         await logTrace(functionName, { status: 'calling_huggingface_text_generation' }, sessionId, languageCode);
         

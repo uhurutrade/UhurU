@@ -35,7 +35,8 @@ async function queryHuggingFaceAPI(data: any, model: string): Promise<any> {
  * @returns The generated text.
  */
 export async function callHuggingFace(prompt: string): Promise<string> {
-  const model = 'mistralai/Mistral-7B-Instruct-v0.2';
+  // Switched to a reliable and powerful open model available on the free tier.
+  const model = 'openchat/openchat-3.5-0106';
   
   const response = await queryHuggingFaceAPI({
     inputs: prompt,
