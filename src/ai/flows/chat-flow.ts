@@ -45,7 +45,7 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
 
   // 3. Initialize the Chat Model
   const model = new ChatGoogleGenerativeAI({
-      model: "gemma-2-9b-it",
+      model: "gemini-2.5-flash",
       maxOutputTokens: 2048,
       temperature: 0.8,
   });
