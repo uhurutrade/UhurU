@@ -36,7 +36,7 @@ async function queryHuggingFaceAPI(data: any, model: string): Promise<any> {
  */
 export async function callHuggingFace(prompt: string): Promise<string> {
   // Switched to a reliable and powerful open model available on the free tier.
-  const model = 'openchat/openchat-3.5-0106';
+  const model = 'HuggingFaceH4/zephyr-7b-beta';
   
   const response = await queryHuggingFaceAPI({
     inputs: prompt,
@@ -50,6 +50,19 @@ export async function callHuggingFace(prompt: string): Promise<string> {
   const result = await response.json();
   return result[0]?.generated_text || '';
 }
+
+/**
+ * Calls a dedicated model for simple classification tasks like language detection.
+ * @param text The text to classify.
+ * @returns The classification result.
+ */
+export async function callHuggingFaceClassification(text: string): Promise<any> {
+    const model = 'distilbert-base-uncased-finetuned-sst-2-english';
+
+    const response = await queryHuggingFaceAPI({ inputs: text }, model);
+    return response.json();
+}
+
 
 /**
  * Calls a Speech-to-Text (ASR) model on Hugging Face.

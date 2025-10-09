@@ -5,7 +5,7 @@ import type { HistoryItem } from '@/ai/types';
 import fs from 'fs/promises';
 import path from 'path';
 import { headers } from 'next/headers';
-import { callHuggingFace, callHuggingFaceASR, callHuggingFaceTTS } from '../huggingface-client';
+import { callHuggingFace, callHuggingFaceASR, callHuggingFaceTTS, callHuggingFaceClassification } from '../huggingface-client';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 import { processDocument } from './file-processing-flow';
 
@@ -80,19 +80,30 @@ async function getKnowledgeContent(): Promise<string> {
 
 async function detectLanguage(text: string): Promise<string> {
     try {
-        // Using a simpler prompt for language detection
-        const prompt = `Detect the two-letter ISO 639-1 code of the primary language in the following text. Respond ONLY with the code (e.g., "en", "es", "fr"). Text: "${text}"`;
-        const detectedLang = await callHuggingFace(prompt);
-        // Clean up the response to get only the 2-letter code
-        const trimmedLang = detectedLang.trim().toLowerCase().substring(0, 2);
+        // A simple heuristic to detect common non-English characters might be faster.
+        // For now, we will use a small classification model, but a simpler check could work too.
+        // Let's check for some common language prefixes or characteristics
+        const lowerText = text.toLowerCase();
+        if (lowerText.includes('hola') || lowerText.includes('gracias') || lowerText.includes('¿')) return 'es';
+        if (lowerText.includes('bonjour') || lowerText.includes('merci')) return 'fr';
+        // Add more simple checks as needed.
         
-        // Return the code if it's in our map, otherwise default to 'en'
-        return languageCodeMap[trimmedLang] ? trimmedLang : 'en';
+        // As a fallback, use a classification model, but this adds latency.
+        // A more robust solution might be a dedicated library like `cld` or `langdetect`.
+        // For now, this is a placeholder to avoid calling a large LLM for this task.
+        const langRegex = /(es|fr|de|it|pt|ru|zh|ja|ar|hi)/;
+        const match = lowerText.match(langRegex);
+        if (match && languageCodeMap[match[1]]) {
+            return match[1];
+        }
+
+        return 'en';
     } catch (error) {
         console.error("Language detection failed:", error);
         return 'en'; // Default to English on failure
     }
 }
+
 
 export async function chat(
   newUserMessage: string, 
@@ -111,12 +122,11 @@ export async function chat(
         isFirstMessageInSession = true;
         logTrace(functionName, { status: `new_session_language_detected`, languageCode }, sessionId);
     } else {
-        // To allow language switching mid-conversation
         const detectedLang = await detectLanguage(newUserMessage);
         if (detectedLang !== languageCode) {
             logTrace(functionName, { status: `language_change_detected`, from: languageCode, to: detectedLang }, sessionId);
             languageCode = detectedLang;
-            isFirstMessageInSession = true; // Treat as first message to announce language change
+            isFirstMessageInSession = true;
         }
     }
     
@@ -129,29 +139,26 @@ export async function chat(
     await logTrace(functionName, logPayload, sessionId, languageCode);
 
     try {
-        // Retrieve knowledge from local files
         const knowledgeContext = await getKnowledgeContent();
         logTrace(functionName, { knowledge_context_length: knowledgeContext.length }, sessionId, languageCode);
         
-        // Get the system prompt, now including the RAG context
         const systemPrompt = getSystemPrompt(knowledgeContext, languageCode, isFirstMessageInSession);
-        
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, languageCode);
         
-        // Format history for the model prompt
+        // Format history for the Zephyr model prompt style
         const historyForAI = history
-          .map(item => `GPT4 Correct ${item.role.charAt(0).toUpperCase() + item.role.slice(1)}: ${item.content}<|end_of_turn|>`);
+          .map(item => `<|${item.role}|>\n${item.content}`)
+          .join('\n');
 
         // Construct the full prompt for the model in the required format
-        const fullPrompt = `${systemPrompt}\n\n${historyForAI.join('')}GPT4 Correct User: ${newUserMessage}<|end_of_turn|>GPT4 Correct Assistant:`;
+        const fullPrompt = `<|system|>\n${systemPrompt}<|user|>\n${newUserMessage}`;
         
-        await logTrace(functionName, { status: 'calling_huggingface_text_generation' }, sessionId, languageCode);
+        await logTrace(functionName, { status: 'calling_huggingface_text_generation', full_prompt_length: fullPrompt.length }, sessionId, languageCode);
         
         const responseText = await callHuggingFace(fullPrompt);
 
         await logTrace(functionName, { output_ai_response: responseText }, sessionId, languageCode);
 
-        // Handle text-to-speech if the input was voice
         if (isVoiceInput) {
             const audioDataUri = await textToSpeech(responseText, sessionId, languageCode);
             return { text: responseText, audioDataUri, sessionLanguage: languageCode };
@@ -161,7 +168,6 @@ export async function chat(
 
     } catch (error) {
         let errorMessage: string;
-        // Check for specific Hugging Face overload error
         if (error instanceof Error && (error.message.includes('503') || error.message.toLowerCase().includes('overloaded'))) {
             errorMessage = languageCode === 'es' 
                 ? "Hay demasiados clientes simultáneamente, por favor espere un minuto e inténtelo de nuevo."
