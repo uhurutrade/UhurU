@@ -221,7 +221,8 @@ const ttsFlow = ai.defineFlow(
 );
 
 export async function textToSpeech(text: string, sessionId?: string, languageCode?: string): Promise<{ media: string }> {
-    return ttsFlow({ text, sessionId, languageCode });
+    const result = await ttsFlow({ text, sessionId, languageCode });
+    return { media: result.media };
 }
 
 const sttFlow = ai.defineFlow(
@@ -251,7 +252,8 @@ const sttFlow = ai.defineFlow(
 );
 
 export async function speechToText(audioDataUri: string, sessionId: string): Promise<{ text: string }> {
-    return sttFlow({ audioDataUri, sessionId });
+    const result = await sttFlow({ audioDataUri, sessionId });
+    return { text: result.text };
 }
 
 async function toWav(
