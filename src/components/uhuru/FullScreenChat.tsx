@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Bot, User, Loader, Send, Download, PlusSquare, Globe } from 'lucide-react';
-// import { chat } from '@/ai/flows/chat-flow'; // No longer exists
+import { chat } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
@@ -92,23 +92,55 @@ export default function FullScreenChat() {
     if (newUserMessage === '' || isPending || !sessionIdRef.current) return;
     
     const userMessageObject: Message = { id: `user-${Date.now()}`, role: 'user', content: newUserMessage };
+    const newMessages = [...messages, userMessageObject];
 
-    setMessages((prev) => [...prev, userMessageObject]);
+    setMessages(newMessages);
     setInput('');
     
     startTransition(async () => {
-      const errorMessage = "The chat functionality is temporarily disabled. Please contact us via email for any inquiries.";
-      const assistantMessage: Message = {
+      try {
+        const history: HistoryItem[] = newMessages
+          .slice(1, -1)
+          .slice(-MAX_HISTORY_MESSAGES)
+          .map(msg => ({
+            role: msg.role === 'user' ? 'user' : 'assistant',
+            content: msg.content,
+          }));
+
+        const response = await chat({
+          prompt: newUserMessage,
+          history: history,
+          sessionId: sessionIdRef.current!,
+          languageCode: sessionLanguageRef.current || undefined,
+        });
+
+        const newLanguageCode = response.languageCode;
+        if (newLanguageCode && newLanguageCode !== sessionLanguageRef.current) {
+          sessionLanguageRef.current = newLanguageCode;
+          setSessionLanguageCode(newLanguageCode);
+        }
+
+        const assistantMessage: Message = {
           id: `assistant-${Date.now()}`,
           role: 'assistant',
+          content: response.content,
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+      } catch (error) {
+        console.error('Chat API error:', error);
+        const errorMessage = error instanceof Error ? error.message : "I'm having trouble connecting. Please try again later.";
+        toast({
+          variant: "destructive",
+          title: "An Error Occurred",
+          description: errorMessage,
+        });
+        const assistantMessage: Message = {
+          id: `assistant-error-${Date.now()}`,
+          role: 'assistant',
           content: errorMessage,
-      };
-      setMessages((prevMessages) => [...prevMessages, assistantMessage]);
-      toast({
-        variant: "destructive",
-        title: "Chat Unavailable",
-        description: "The chat functionality is temporarily disabled.",
-      });
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+      }
     });
   };
   
