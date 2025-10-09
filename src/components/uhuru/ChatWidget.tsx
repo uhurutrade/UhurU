@@ -26,17 +26,6 @@ const INITIAL_MESSAGE_OBJECT: Message = {
   content: chatbotWelcomeMessage 
 };
 
-const languageCodeMap: { [key: string]: string } = {
-    'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch', 'it': 'Italiano',
-    'pt': 'Português', 'ru': 'Русский', 'zh': '中文', 'ja': '日本語', 'ar': 'العربية',
-    'hi': 'हिन्दी', 'bn': 'বাংলা', 'pa': 'ਪੰਜਾਬੀ', 'ko': '한국어',
-    'vi': 'Tiếng Việt', 'tr': 'Türkçe', 'pl': 'Polski', 'nl': 'Nederlands',
-    'sv': 'Svenska', 'fi': 'Suomi', 'no': 'Norsk', 'da': 'Dansk',
-    'el': 'Ελληνικά', 'he': 'עברית', 'id': 'Bahasa Indonesia', 'th': 'ภาษาไทย', 'cs': 'Čeština',
-    'hu': 'Magyar', 'ro': 'Română', 'sk': 'Slovenčina', 'bg': 'Български'
-};
-
-
 function logClientTrace(functionName: string, data: any) {
     if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
         const timestamp = new Date().toISOString();
@@ -51,10 +40,8 @@ const ChatWidgetContent = () => {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE_OBJECT]);
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
-  const [currentLanguage, setCurrentLanguage] = useState<string | null>(null);
   
   const sessionIdRef = useRef<string | null>(null);
-  const sessionLanguageRef = useRef<string | null>(null);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -72,8 +59,6 @@ const ChatWidgetContent = () => {
     setIsOpen(!isOpen);
     if (!isOpen && messages.length === 1) {
         setMessages([INITIAL_MESSAGE_OBJECT]);
-        sessionLanguageRef.current = null;
-        setCurrentLanguage(null);
     }
   }
 
@@ -121,13 +106,7 @@ const ChatWidgetContent = () => {
             prompt: newUserMessage,
             history: history,
             sessionId: sessionIdRef.current!,
-            languageCode: sessionLanguageRef.current || undefined,
         });
-
-        if (response.languageCode) {
-            sessionLanguageRef.current = response.languageCode;
-            setCurrentLanguage(languageCodeMap[response.languageCode] || response.languageCode);
-        }
         
         const assistantMessage: Message = {
           id: `assistant-${Date.now()}`,
@@ -168,7 +147,7 @@ const ChatWidgetContent = () => {
           >
             <div className="flex justify-between items-center p-3 border-b border-border bg-card-foreground/5 dark:bg-card-foreground/10 rounded-t-lg">
               <h3 className="text-base font-semibold text-foreground">
-                UhurU AI Chat {currentLanguage && `(${currentLanguage})`}
+                UhurU AI Chat
               </h3>
               <Button variant="ghost" size="icon" onClick={toggleOpen} className="h-8 w-8">
                 <X className="h-4 w-4" />

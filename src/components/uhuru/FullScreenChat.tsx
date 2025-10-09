@@ -26,24 +26,6 @@ const INITIAL_MESSAGE_OBJECT: Message = {
   content: chatbotWelcomeMessage 
 };
 
-const languageCodeMap: { [key: string]: string } = {
-    'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch', 'it': 'Italiano',
-    'pt': 'Português', 'ru': 'Русский', 'zh': '中文', 'ja': '日本語', 'ar': 'العربية',
-    'hi': 'हिन्दी', 'bn': 'বাংলা', 'pa': 'ਪੰਜਾਬੀ', 'jv': 'Javanese', 'ko': '한국어',
-    'vi': 'Tiếng Việt', 'te': 'Telugu', 'mr': 'Marathi', 'tr': 'Türkçe', 'ta': 'Tamil',
-    'ur': 'Urdu', 'gu': 'Gujarati', 'pl': 'Polski', 'uk': 'Українська', 'nl': 'Nederlands',
-    'ms': 'Bahasa Melayu', 'sv': 'Svenska', 'fi': 'Suomi', 'no': 'Norsk', 'da': 'Dansk',
-    'el': 'Ελληνικά', 'he': 'עברית', 'id': 'Bahasa Indonesia', 'th': 'ภาษาไทย', 'cs': 'Čeština',
-    'hu': 'Magyar', 'ro': 'Română', 'sk': 'Slovenčina', 'bg': 'Български'
-};
-
-const respondingInMap: { [key: string]: string } = { 
-    'en': 'Responding in', 'es': 'Respondiendo en', 'fr': 'Répondre en', 'de': 'Antworten auf', 'it': 'Rispondendo in',
-    'pt': 'Respondendo em', 'ru': 'Отвечаю на', 'zh': '以...回复', 'ja': 'で応答', 'ar': 'الرد ب',
-    'pl': 'Odpowiadanie w', 'nl': 'Antwoorden in', 'sv': 'Svarar på', 'tr': 'Yanıt veriliyor'
-};
-
-
 function logClientTrace(functionName: string, data: any) {
     if (process.env.NEXT_PUBLIC_TRACE === 'ON') {
         const timestamp = new Date().toISOString();
@@ -57,10 +39,8 @@ export default function FullScreenChat() {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE_OBJECT]);
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
-  const [sessionLanguageCode, setSessionLanguageCode] = useState<string | null>(null);
   
   const sessionIdRef = useRef<string | null>(null);
-  const sessionLanguageRef = useRef<string | null>(null);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
@@ -111,13 +91,7 @@ export default function FullScreenChat() {
           prompt: newUserMessage,
           history: history,
           sessionId: sessionIdRef.current!,
-          languageCode: sessionLanguageRef.current || undefined,
         });
-
-        if (response.languageCode) {
-            sessionLanguageRef.current = response.languageCode;
-            setSessionLanguageCode(response.languageCode);
-        }
 
         const assistantMessage: Message = {
           id: `assistant-${Date.now()}`,
@@ -164,19 +138,8 @@ export default function FullScreenChat() {
   const handleNewChat = () => {
     setMessages([INITIAL_MESSAGE_OBJECT]);
     sessionIdRef.current = generateSessionId();
-    sessionLanguageRef.current = null;
-    setSessionLanguageCode(null);
     toast({ title: "New Chat Started" });
   };
-
-  const getDynamicTitle = () => {
-      if (sessionLanguageCode && languageCodeMap[sessionLanguageCode] && respondingInMap[sessionLanguageCode]) {
-          const respondingIn = respondingInMap[sessionLanguageCode];
-          const languageName = languageCodeMap[sessionLanguageCode];
-          return `${respondingIn} ${languageName}`;
-      }
-      return "All language - Polyglot";
-  }
   
   return (
     <TooltipProvider>
@@ -185,7 +148,7 @@ export default function FullScreenChat() {
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Globe className="h-5 w-5" />
                   <span>
-                    UhurU AI | {getDynamicTitle()}
+                    UhurU AI Chat
                   </span>
               </div>
               <div className="flex items-center gap-2">
