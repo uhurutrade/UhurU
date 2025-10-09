@@ -9,12 +9,11 @@
  * - DocumentOutput - The return type for the processDocument function.
  */
 
-import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { googleAI } from '@genkit-ai/google-genai';
 import fs from 'fs/promises';
 import path from 'path';
 import { headers } from 'next/headers';
+import { callHuggingFace } from '../huggingface-client';
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 
@@ -83,49 +82,19 @@ const DocumentOutputSchema = z.object({
 });
 export type DocumentOutput = z.infer<typeof DocumentOutputSchema>;
 
-const documentProcessingPrompt = ai.definePrompt({
-  name: 'documentProcessingPrompt',
-  input: { schema: z.object({ documentText: z.string(), fileName: z.string() }) },
-  output: { schema: z.object({ summary: z.string() }) },
-  model: googleAI.model('gemini-1.5-flash'),
-  prompt: `
-    You are an AI assistant tasked with analyzing a document provided by a user for a project evaluation.
-    The document name is "{{fileName}}".
-    The full text content of the document is provided below.
 
-    Your tasks are:
-    1. Generate a comprehensive and detailed summary of the document. The summary should be several paragraphs long, highlighting key points, objectives, technologies involved, and any specific requests mentioned by the user.
-
-    DOCUMENT CONTENT:
-    {{{documentText}}}
-  `,
-});
-
-const fileProcessingFlow = ai.defineFlow(
-  {
-    name: 'fileProcessingFlow',
-    inputSchema: DocumentInputSchema,
-    outputSchema: DocumentOutputSchema,
-  },
-  async (input) => {
+async function fileProcessingFlow(input: DocumentInput): Promise<DocumentOutput> {
     const functionName = 'fileProcessingFlow';
     await logTrace(functionName, { status: 'started', fileName: input.fileName }, input.sessionId);
 
-    // Step 1: Extract text from the document using Gemini's multimodal capabilities.
-    const extractionResponse = await ai.generate({
-        model: googleAI.model('gemini-1.5-flash'),
-        prompt: [
-            { text: "Extract all text content from the following document." },
-            { media: { url: input.fileDataUri } },
-        ],
-    });
-
-    const extractedText = extractionResponse.text;
-    if (!extractedText) {
-        throw new Error("Could not extract any text from the document.");
-    }
+    // This flow now only conceptualizes what would happen.
+    // The Gemini-specific multimodal text extraction is removed.
+    // A real implementation would require a dedicated document text extraction service (e.g., via a library like pdf-parse or a cloud service).
     
-    // Step 2: Log the full extracted content as requested.
+    // Step 1: Simulate text extraction
+    const extractedText = `(Simulated extracted text for ${input.fileName}. A real implementation would use a document parsing library.)`;
+    
+    // Step 2: Log the "extracted" content
     await logTrace(functionName, {
       fileName: input.fileName,
       status: 'logging_full_content',
@@ -133,25 +102,31 @@ const fileProcessingFlow = ai.defineFlow(
     }, input.sessionId);
 
     // Step 3: Generate a summary using the extracted text.
-    const summaryResponse = await documentProcessingPrompt({
-        documentText: extractedText,
-        fileName: input.fileName,
-    });
+    const summaryPrompt = `
+      You are an AI assistant tasked with analyzing a document provided by a user for a project evaluation.
+      The document name is "${input.fileName}".
+      The full text content of the document is provided below.
 
-    const summary = summaryResponse.output?.summary;
+      Your tasks are:
+      1. Generate a comprehensive and detailed summary of the document. The summary should be several paragraphs long, highlighting key points, objectives, technologies involved, and any specific requests mentioned by the user.
+
+      DOCUMENT CONTENT:
+      ${extractedText}
+    `;
+
+    const summary = await callHuggingFace(summaryPrompt);
+
     if (!summary) {
         throw new Error("Could not generate a summary for the document.");
     }
     
     await logTrace(functionName, { status: 'finished', document_summary: summary }, input.sessionId);
 
-    // Return the full output object including summary and extracted text.
     return {
         summary: summary,
         extractedText: extractedText,
     };
-  }
-);
+}
 
 
 export async function processDocument(input: DocumentInput): Promise<DocumentOutput> {

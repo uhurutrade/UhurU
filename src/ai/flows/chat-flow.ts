@@ -2,16 +2,14 @@
 'use server';
 
 import type { HistoryItem } from '@/ai/types';
-import { ai } from '@/ai/genkit';
 import fs from 'fs/promises';
 import path from 'path';
 import { headers } from 'next/headers';
-import { googleAI } from '@genkit-ai/google-genai';
-import { z } from 'zod';
-import wav from 'wav';
+import { callHuggingFace, callHuggingFaceASR, callHuggingFaceTTS } from '../huggingface-client';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 import { retrieveKnowledge } from '@/chatbot/knowledge-retriever';
 import { processDocument } from './file-processing-flow';
+import wav from 'wav';
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 
@@ -65,21 +63,16 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
 
 async function detectLanguage(text: string): Promise<string> {
     try {
-        const response = await ai.generate({
-            model: googleAI.model('gemini-1.5-flash'),
-            prompt: `Detect the primary language of the following text and respond only with its two-letter ISO 639-1 code (e.g., "en", "es", "fr"). Text: "${text}"`,
-            config: { temperature: 0 },
-        });
-        const detectedLang = response.text.trim().toLowerCase();
-        // Return detected language if it's in our map, otherwise default to English.
-        return languageCodeMap[detectedLang] ? detectedLang : 'en';
+        const prompt = `Detect the primary language of the following text and respond only with its two-letter ISO 639-1 code (e.g., "en", "es", "fr"). Text: "${text}"`;
+        const detectedLang = await callHuggingFace(prompt);
+        const trimmedLang = detectedLang.trim().toLowerCase().substring(0, 2);
+        
+        return languageCodeMap[trimmedLang] ? trimmedLang : 'en';
     } catch (error) {
         console.error("Language detection failed:", error);
-        // Default to English on error.
         return 'en';
     }
 }
-
 
 export async function chat(
   newUserMessage: string, 
@@ -93,18 +86,16 @@ export async function chat(
     let languageCode = sessionLanguage;
     let isFirstMessageInSession = false;
 
-    // Detect language if it's not set for the session yet.
     if (!languageCode) {
         languageCode = await detectLanguage(newUserMessage);
         isFirstMessageInSession = true;
         logTrace(functionName, { status: `new_session_language_detected`, languageCode }, sessionId);
     } else {
-        // For existing sessions, check if the user has switched languages.
         const detectedLang = await detectLanguage(newUserMessage);
         if (detectedLang !== languageCode) {
             logTrace(functionName, { status: `language_change_detected`, from: languageCode, to: detectedLang }, sessionId);
             languageCode = detectedLang;
-            isFirstMessageInSession = true; // Treat language change as a "first message" to announce the change.
+            isFirstMessageInSession = true; 
         }
     }
     
@@ -123,27 +114,20 @@ export async function chat(
         const systemPrompt = getSystemPrompt(knowledgeContext, languageCode, isFirstMessageInSession);
         
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, languageCode);
-
-        const chatHistory = history
-          .map(item => ({
-            role: item.role === 'assistant' ? 'model' : 'user',
-            content: [{ text: item.content }]
-        }));
-
-        await logTrace(functionName, { status: 'calling_ai_generate' }, sessionId, languageCode);
         
-        const response = await ai.generate({
-            model: googleAI.model('gemini-1.5-flash'),
-            history: chatHistory,
-            prompt: newUserMessage,
-            system: systemPrompt,
-        });
+        const historyForAI = history
+          .map(item => `${item.role}: ${item.content}`);
 
-        const responseText = response.text;
+        const fullPrompt = `${systemPrompt}\n\n${historyForAI.join('\n')}\nuser: ${newUserMessage}\nassistant:`;
+        
+        await logTrace(functionName, { status: 'calling_huggingface_text_generation' }, sessionId, languageCode);
+        
+        const responseText = await callHuggingFace(fullPrompt);
+
         await logTrace(functionName, { output_ai_response: responseText }, sessionId, languageCode);
 
         if (isVoiceInput) {
-            const { media: audioDataUri } = await textToSpeech(responseText, sessionId, languageCode);
+            const audioDataUri = await textToSpeech(responseText, sessionId, languageCode);
             return { text: responseText, audioDataUri, sessionLanguage: languageCode };
         }
 
@@ -183,92 +167,25 @@ export async function handleFileUpload(fileDataUri: string, fileName: string, se
 }
 
 
-const ttsFlow = ai.defineFlow(
-  {
-    name: 'textToSpeechFlow',
-    inputSchema: z.object({
-      text: z.string(),
-      sessionId: z.string().optional(),
-      languageCode: z.string().optional(),
-    }),
-    outputSchema: z.object({
-        media: z.string().describe("The base64 encoded WAV audio data URI."),
-    }),
-  },
-  async ({ text, sessionId, languageCode }) => {
-    if (!text) return { media: '' };
+export async function textToSpeech(text: string, sessionId?: string, languageCode?: string): Promise<string> {
+    if (!text) return '';
     await logTrace('textToSpeech', { input_text: text }, sessionId, languageCode);
     
-    const { media } = await ai.generate({
-      model: googleAI.model('gemini-2.5-flash-preview-tts'),
-      config: {
-        responseModalities: ['AUDIO'],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Charon' },
-          },
-        },
-      },
-      prompt: text,
-    });
+    const audioBlob = await callHuggingFaceTTS(text);
+    const audioBuffer = Buffer.from(await audioBlob.arrayBuffer());
 
-    if (!media) throw new Error('No audio media was returned from the TTS model.');
-
-    const audioBuffer = Buffer.from(media.url.substring(media.url.indexOf(',') + 1), 'base64');
-    const wavBase64 = await toWav(audioBuffer);
-    return { media: `data:audio/wav;base64,${wavBase64}` };
-  }
-);
-
-export async function textToSpeech(text: string, sessionId?: string, languageCode?: string): Promise<{ media: string }> {
-    const result = await ttsFlow({ text, sessionId, languageCode });
-    return { media: result.media };
+    return `data:audio/wav;base64,${audioBuffer.toString('base64')}`;
 }
-
-const sttFlow = ai.defineFlow(
-    {
-        name: 'speechToTextFlow',
-        inputSchema: z.object({
-            audioDataUri: z.string().describe("The base64 encoded audio data URI."),
-            sessionId: z.string().optional(),
-        }),
-        outputSchema: z.object({
-            text: z.string().describe("The transcribed text."),
-        }),
-    },
-    async ({ audioDataUri, sessionId }) => {
-        await logTrace('speechToText_start', { input_audio_received: true }, sessionId);
-        const response = await ai.generate({
-            model: googleAI.model('gemini-1.5-flash'),
-            prompt: [
-                { text: "Transcribe the following audio recording to text." },
-                { media: { url: audioDataUri } },
-            ],
-        });
-        const transcribedText = response.text;
-        await logTrace('speechToText_end', { output_transcribed_text: transcribedText }, sessionId);
-        return { text: transcribedText };
-    }
-);
 
 export async function speechToText(audioDataUri: string, sessionId: string): Promise<{ text: string }> {
-    const result = await sttFlow({ audioDataUri, sessionId });
-    return { text: result.text };
-}
+    await logTrace('speechToText_start', { input_audio_received: true }, sessionId);
+    
+    // Convert data URI to Blob
+    const fetchResponse = await fetch(audioDataUri);
+    const audioBlob = await fetchResponse.blob();
 
-async function toWav(
-  pcmData: Buffer,
-  channels = 1,
-  rate = 24000,
-  sampleWidth = 2
-): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const writer = new wav.Writer({ channels, sampleRate: rate, bitDepth: sampleWidth * 8 });
-    const bufs: any[] = [];
-    writer.on('error', reject);
-    writer.on('data', d => bufs.push(d));
-    writer.on('end', () => resolve(Buffer.concat(bufs).toString('base64')));
-    writer.write(pcmData);
-    writer.end();
-  });
+    const transcribedText = await callHuggingFaceASR(audioBlob);
+    
+    await logTrace('speechToText_end', { output_transcribed_text: transcribedText }, sessionId);
+    return { text: transcribedText };
 }

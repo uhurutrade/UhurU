@@ -1,11 +1,11 @@
-import { genkit, listModels } from 'genkit';
-import { googleAI } from '@genkit-ai/google-genai';
+import { genkit } from 'genkit';
 import fs from 'fs/promises';
 import path from 'path';
 
+// Note: The googleAI plugin has been removed as the project now uses a direct Hugging Face client.
+// Genkit setup is kept for potential future use with other plugins or its flow management capabilities.
 export const ai = genkit({
   plugins: [
-    googleAI({apiKey: process.env.GEMINI_API_KEY}),
   ],
   logLevel: 'debug',
   enableTracingAndMetrics: true,
@@ -32,23 +32,5 @@ export const ai = genkit({
     }
   } catch (error) {
     console.error('Failed to initialize chatbot logging system:', error);
-  }
-})();
-
-// Self-invoking async function to check API connectivity by listing models.
-(async () => {
-  if (!process.env.GEMINI_API_KEY) {
-    console.error('GEMINI_API_KEY is not set. Skipping API connectivity check.');
-    return;
-  }
-  console.log('Attempting to check API connectivity by listing available models...');
-  try {
-    const models = await ai.listModels();
-    console.log('Successfully connected to the API. Available models:');
-    models.forEach(model => {
-      console.log(`- ${model.name} (Supports: ${model.supportedGenerationMethods.join(', ')})`);
-    });
-  } catch (error) {
-    console.error('Failed to connect to the API or list models:', error);
   }
 })();
