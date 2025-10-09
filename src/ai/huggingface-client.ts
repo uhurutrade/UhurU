@@ -1,4 +1,3 @@
-
 'use server';
 
 // Common function to handle API requests to Hugging Face
