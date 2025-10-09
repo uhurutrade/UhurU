@@ -42,11 +42,12 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
 
             let country = 'N/A';
             try {
-                const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
-                if (geoResponse.ok) {
-                    const geoData = await geoResponse.json();
-                    country = geoData.countryCode || 'N/A';
-                }
+                // GeoIP lookup can be latency-intensive, consider disabling if not critical.
+                // const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
+                // if (geoResponse.ok) {
+                //     const geoData = await geoResponse.json();
+                //     country = geoData.countryCode || 'N/A';
+                // }
             } catch (geoError) {
                 console.error('IP Geolocation failed:', geoError);
             }

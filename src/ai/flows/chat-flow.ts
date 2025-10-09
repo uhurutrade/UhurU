@@ -7,9 +7,7 @@ import path from 'path';
 import { headers } from 'next/headers';
 import { callHuggingFace, callHuggingFaceASR, callHuggingFaceTTS } from '../huggingface-client';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
-import { retrieveKnowledge } from '@/chatbot/knowledge-retriever';
 import { processDocument } from './file-processing-flow';
-import wav from 'wav';
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 
@@ -108,9 +106,8 @@ export async function chat(
     await logTrace(functionName, logPayload, sessionId, languageCode);
 
     try {
-        const knowledgeContext = await retrieveKnowledge(newUserMessage);
-        logTrace(functionName, { retrieved_knowledge_length: knowledgeContext.length }, sessionId, languageCode);
-
+        const knowledgeContext = ""; // RAG is disabled.
+        
         const systemPrompt = getSystemPrompt(knowledgeContext, languageCode, isFirstMessageInSession);
         
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, languageCode);
