@@ -9,21 +9,6 @@ import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 let vectorStore: MemoryVectorStore | null = null;
 
 const KNOWLEDGE_BASE_DIR = 'src/chatbot/IAsourcesPrompt';
-const KNOWLEDGE_FILES = [
-  '1.1-Servicios-Generales.txt',
-  '1.2-Servicios-Detalle.txt',
-  '1.3-Servicios-Oracle.txt',
-  '2.1-SobreNosotros-QuienesSomos.txt',
-  '2.2-SobreNosotros-Contacto.txt',
-  '3.1-Forex-MercadoDeDivisas.txt',
-  '3.2-Estrategia-Inversion.txt',
-  '3.3-OpcionesVanilla-Conceptos.txt',
-  '4.1-Smartmoney-QueEs.txt',
-  '5.1-CarryTrade-QueEs.txt',
-  '5.2-CarryTrade-Peligros.txt',
-  '5.2-Frameworks-General.txt',
-  '6.1-Crypto-Defi.txt'
-];
 
 // Relevance threshold for similarity search. Values are between 0 and 1.
 // A lower threshold is more lenient, a higher one is stricter.
@@ -36,15 +21,21 @@ async function initializeVectorStore() {
 
   try {
     const documents: Document[] = [];
-    for (const file of KNOWLEDGE_FILES) {
+    
+    // Dynamically read all .txt files from the knowledge directory
+    const filesInDir = await fs.readdir(KNOWLEDGE_BASE_DIR);
+    const knowledgeFiles = filesInDir.filter(file => file.endsWith('.txt'));
+
+    for (const file of knowledgeFiles) {
       const filePath = path.join(process.cwd(), KNOWLEDGE_BASE_DIR, file);
       try {
         await fs.access(filePath); // Check if file exists
         const loader = new TextLoader(filePath);
         const docs = await loader.load();
         documents.push(...docs);
+        console.log(`Loaded knowledge file: ${file}`);
       } catch (e) {
-        console.warn(`Knowledge file not found, skipping: ${filePath}`);
+        console.warn(`Could not access or load file, skipping: ${filePath}`);
       }
     }
 
@@ -60,7 +51,7 @@ async function initializeVectorStore() {
     });
     
     vectorStore = await MemoryVectorStore.fromDocuments(documents, embeddings);
-    console.log("Vector store initialized successfully.");
+    console.log("Vector store initialized successfully with all .txt files in the directory.");
 
   } catch (error) {
     console.error("Failed to initialize vector store:", error);
