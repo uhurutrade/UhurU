@@ -5,7 +5,7 @@ import path from 'path';
 
 export const ai = genkit({
   plugins: [
-    googleAI(),
+    googleAI({apiKey: process.env.GEMINI_API_KEY}),
   ],
   logLevel: 'debug',
   enableTracingAndMetrics: true,
@@ -37,9 +37,13 @@ export const ai = genkit({
 
 // Self-invoking async function to check API connectivity by listing models.
 (async () => {
+  if (!process.env.GEMINI_API_KEY) {
+    console.error('GEMINI_API_KEY is not set. Skipping API connectivity check.');
+    return;
+  }
   console.log('Attempting to check API connectivity by listing available models...');
   try {
-    const models = await listModels();
+    const models = await ai.listModels();
     console.log('Successfully connected to the API. Available models:');
     models.forEach(model => {
       console.log(`- ${model.name} (Supports: ${model.supportedGenerationMethods.join(', ')})`);

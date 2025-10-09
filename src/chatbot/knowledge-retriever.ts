@@ -22,7 +22,7 @@ const getVectorStore = async (): Promise<MemoryVectorStore> => {
 
     // 1. Initialize the embedding model from Google, passing the API key explicitly.
     const embeddings = new GoogleGenerativeAIEmbeddings({
-        apiKey: process.env.GOOGLE_API_KEY, // Pass the API key from environment variables
+        apiKey: process.env.GEMINI_API_KEY, // Pass the API key from environment variables
         model: "text-embedding-004", // A powerful and efficient model
     });
 
