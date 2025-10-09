@@ -1,3 +1,4 @@
+
 'use server';
 
 // Common function to handle API requests to Hugging Face
@@ -90,3 +91,4 @@ export async function callHuggingFaceTTS(text: string): Promise<Blob> {
     // TTS models return the audio data directly as a blob
     return response.blob();
 }
+
