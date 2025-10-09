@@ -47,7 +47,6 @@ async function initializeVectorStore() {
 
     const embeddings = new GoogleGenerativeAIEmbeddings({
         model: "embedding-001",
-        taskType: "RETRIEVAL_DOCUMENT"
     });
     
     vectorStore = await MemoryVectorStore.fromDocuments(documents, embeddings);
