@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -15,7 +14,7 @@ export default function Hero() {
               When we talk tech, money listens
             </h1>
             <p className="max-w-[600px] text-muted-foreground md:text-xl">
-              AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments
+              AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments.
             </p>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row">
