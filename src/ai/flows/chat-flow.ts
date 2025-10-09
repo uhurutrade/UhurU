@@ -145,13 +145,13 @@ export async function chat(
         const systemPrompt = getSystemPrompt(knowledgeContext, languageCode, isFirstMessageInSession);
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, languageCode);
         
-        // Format history for the Zephyr model prompt style
-        const historyForAI = history
-          .map(item => `<|${item.role}|>\n${item.content}`)
+        // Format history for the model prompt style
+        const historyForPrompt = history
+          .map(item => `<|${item.role}|>\n${item.content}<|end|>`)
           .join('\n');
 
         // Construct the full prompt for the model in the required format
-        const fullPrompt = `<|system|>\n${systemPrompt}<|user|>\n${newUserMessage}`;
+        const fullPrompt = `<|system|>\n${systemPrompt}<|end|>\n${historyForPrompt}\n<|user|>\n${newUserMessage}<|end|>\n<|assistant|>`;
         
         await logTrace(functionName, { status: 'calling_huggingface_text_generation', full_prompt_length: fullPrompt.length }, sessionId, languageCode);
         

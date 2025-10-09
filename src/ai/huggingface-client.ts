@@ -36,7 +36,7 @@ async function queryHuggingFaceAPI(data: any, model: string): Promise<any> {
  */
 export async function callHuggingFace(prompt: string): Promise<string> {
   // Switched to a reliable and powerful open model available on the free tier.
-  const model = 'HuggingFaceH4/zephyr-7b-beta';
+  const model = 'microsoft/Phi-3-mini-4k-instruct';
   
   const response = await queryHuggingFaceAPI({
     inputs: prompt,
