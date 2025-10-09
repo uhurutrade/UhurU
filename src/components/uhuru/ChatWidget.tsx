@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { X, Send, Bot, User, Loader, MessageCircle } from 'lucide-react';
-import { chat } from '@/ai/flows/chat-flow';
+// import { chat } from '@/ai/flows/chat-flow'; // No longer exists
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
@@ -104,48 +104,18 @@ const ChatWidgetContent = () => {
     setInput('');
     
     startTransition(async () => {
-      logClientTrace(functionName, { status: 'transition_started' });
-      
-      const historyForAI: HistoryItem[] = messages
-        .filter(msg => msg.id !== 'initial')
-        .slice(-MAX_HISTORY_MESSAGES)
-        .map(msg => ({ role: msg.role, content: msg.content }));
-
-      try {
-        logClientTrace(functionName, { calling_chat_flow_with_history: historyForAI });
-        
-        const { text: aiResponseText, sessionLanguage } = await chat(newUserMessage, historyForAI, sessionIdRef.current!, sessionLanguageRef.current);
-        logClientTrace(functionName, { received_aiResponse: aiResponseText });
-        
-        if (sessionLanguage) {
-            sessionLanguageRef.current = sessionLanguage;
-            setCurrentLanguage(languageCodeMap[sessionLanguage.toLowerCase()] || sessionLanguage);
-            logClientTrace(functionName, { session_language_set: sessionLanguage });
-        }
-        
+        const errorMessage = "The chat functionality is temporarily disabled. Please contact us via email.";
+        toast({
+            variant: "destructive",
+            title: "Chat Unavailable",
+            description: errorMessage,
+        });
         const assistantMessage: Message = {
             id: `assistant-${Date.now()}`,
             role: 'assistant',
-            content: aiResponseText,
+            content: errorMessage,
         };
         setMessages((prevMessages) => [...prevMessages, assistantMessage]);
-
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
-        logClientTrace(functionName, { error_in_transition: errorMessage });
-        
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { id: `error-${Date.now()}`, role: 'assistant', content: `Error: ${errorMessage}` },
-        ]);
-
-        toast({
-          variant: "destructive",
-          title: "Chat Error",
-          description: "Sorry, I'm having trouble connecting. Please try again later.",
-        });
-      }
-      logClientTrace(functionName, { status: 'transition_finished' });
     });
   };
 
