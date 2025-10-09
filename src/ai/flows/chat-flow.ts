@@ -10,6 +10,7 @@ import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 import { processDocument } from './file-processing-flow';
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
+const knowledgeDirectory = path.join(process.cwd(), 'src', 'chatbot', 'IAsourcesPrompt');
 
 // Expanded language map
 const languageCodeMap: { [key: string]: string } = {
@@ -38,7 +39,7 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
                 const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
                 if (geoResponse.ok) {
                     const geoData = await geoResponse.json();
-                    country = geoData.countryCode || 'N/A';
+                    country = geoData.countryCode || 'NA';
                 }
             } catch (geoError) {
                 console.error('IP Geolocation failed:', geoError);
@@ -59,16 +60,37 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
     }
 }
 
+async function getKnowledgeContent(): Promise<string> {
+    try {
+        const files = await fs.readdir(knowledgeDirectory);
+        const txtFiles = files.filter(file => file.endsWith('.txt'));
+        
+        let allContent = '';
+        for (const file of txtFiles) {
+            const filePath = path.join(knowledgeDirectory, file);
+            const content = await fs.readFile(filePath, 'utf-8');
+            allContent += `\n\n--- Start of ${file} ---\n${content}\n--- End of ${file} ---\n`;
+        }
+        return allContent;
+    } catch (error) {
+        console.error('Error reading knowledge files:', error);
+        return ''; // Return empty string if there's an error
+    }
+}
+
 async function detectLanguage(text: string): Promise<string> {
     try {
-        const prompt = `Detect the primary language of the following text and respond only with its two-letter ISO 639-1 code (e.g., "en", "es", "fr"). Text: "${text}"`;
+        // Using a simpler prompt for language detection
+        const prompt = `Detect the two-letter ISO 639-1 code of the primary language in the following text. Respond ONLY with the code (e.g., "en", "es", "fr"). Text: "${text}"`;
         const detectedLang = await callHuggingFace(prompt);
+        // Clean up the response to get only the 2-letter code
         const trimmedLang = detectedLang.trim().toLowerCase().substring(0, 2);
         
+        // Return the code if it's in our map, otherwise default to 'en'
         return languageCodeMap[trimmedLang] ? trimmedLang : 'en';
     } catch (error) {
         console.error("Language detection failed:", error);
-        return 'en';
+        return 'en'; // Default to English on failure
     }
 }
 
@@ -89,11 +111,12 @@ export async function chat(
         isFirstMessageInSession = true;
         logTrace(functionName, { status: `new_session_language_detected`, languageCode }, sessionId);
     } else {
+        // To allow language switching mid-conversation
         const detectedLang = await detectLanguage(newUserMessage);
         if (detectedLang !== languageCode) {
             logTrace(functionName, { status: `language_change_detected`, from: languageCode, to: detectedLang }, sessionId);
             languageCode = detectedLang;
-            isFirstMessageInSession = true; 
+            isFirstMessageInSession = true; // Treat as first message to announce language change
         }
     }
     
@@ -106,8 +129,11 @@ export async function chat(
     await logTrace(functionName, logPayload, sessionId, languageCode);
 
     try {
-        const knowledgeContext = ""; // RAG is disabled.
+        // Retrieve knowledge from local files
+        const knowledgeContext = await getKnowledgeContent();
+        logTrace(functionName, { knowledge_context_length: knowledgeContext.length }, sessionId, languageCode);
         
+        // Get the system prompt, now including the RAG context
         const systemPrompt = getSystemPrompt(knowledgeContext, languageCode, isFirstMessageInSession);
         
         await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, languageCode);
@@ -115,6 +141,7 @@ export async function chat(
         const historyForAI = history
           .map(item => `${item.role}: ${item.content}`);
 
+        // Construct the full prompt for the model
         const fullPrompt = `${systemPrompt}\n\n${historyForAI.join('\n')}\nuser: ${newUserMessage}\nassistant:`;
         
         await logTrace(functionName, { status: 'calling_huggingface_text_generation' }, sessionId, languageCode);
@@ -123,6 +150,7 @@ export async function chat(
 
         await logTrace(functionName, { output_ai_response: responseText }, sessionId, languageCode);
 
+        // Handle text-to-speech if the input was voice
         if (isVoiceInput) {
             const audioDataUri = await textToSpeech(responseText, sessionId, languageCode);
             return { text: responseText, audioDataUri, sessionLanguage: languageCode };
@@ -132,6 +160,7 @@ export async function chat(
 
     } catch (error) {
         let errorMessage: string;
+        // Check for specific Hugging Face overload error
         if (error instanceof Error && (error.message.includes('503') || error.message.toLowerCase().includes('overloaded'))) {
             errorMessage = languageCode === 'es' 
                 ? "Hay demasiados clientes simultáneamente, por favor espere un minuto e inténtelo de nuevo."
@@ -168,16 +197,18 @@ export async function textToSpeech(text: string, sessionId?: string, languageCod
     if (!text) return '';
     await logTrace('textToSpeech', { input_text: text }, sessionId, languageCode);
     
+    // Call the Hugging Face TTS service
     const audioBlob = await callHuggingFaceTTS(text);
     const audioBuffer = Buffer.from(await audioBlob.arrayBuffer());
 
+    // Return as a base64 data URI
     return `data:audio/wav;base64,${audioBuffer.toString('base64')}`;
 }
 
 export async function speechToText(audioDataUri: string, sessionId: string): Promise<{ text: string }> {
     await logTrace('speechToText_start', { input_audio_received: true }, sessionId);
     
-    // Convert data URI to Blob
+    // Convert data URI to Blob for the ASR API
     const fetchResponse = await fetch(audioDataUri);
     const audioBlob = await fetchResponse.blob();
 
