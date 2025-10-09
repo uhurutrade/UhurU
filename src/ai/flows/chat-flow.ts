@@ -68,6 +68,6 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
 
   return {
     content: content || 'No response',
-    languageCode: 'en', // This will be improved in a future step.
+    languageCode: languageCode,
   };
 }
