@@ -13,7 +13,9 @@ import { z } from 'zod';
 import fs from 'fs/promises';
 import path from 'path';
 import { headers } from 'next/headers';
-import { callHuggingFace } from '../huggingface-client';
+import { ai } from '@/ai/genkit';
+import { generate } from 'genkit';
+
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
 
@@ -84,18 +86,37 @@ const DocumentOutputSchema = z.object({
 export type DocumentOutput = z.infer<typeof DocumentOutputSchema>;
 
 
-async function fileProcessingFlow(input: DocumentInput): Promise<DocumentOutput> {
+const fileProcessingFlow = ai.defineFlow(
+  {
+    name: 'fileProcessingFlow',
+    inputSchema: DocumentInputSchema,
+    outputSchema: DocumentOutputSchema,
+  },
+  async (input) => {
     const functionName = 'fileProcessingFlow';
     await logTrace(functionName, { status: 'started', fileName: input.fileName }, input.sessionId);
 
-    // This flow now only conceptualizes what would happen.
-    // The Gemini-specific multimodal text extraction is removed.
-    // A real implementation would require a dedicated document text extraction service (e.g., via a library like pdf-parse or a cloud service).
+    // Step 1: Use Gemini to extract text from the document
+    const model = ai.model('gemini-1.5-flash-latest');
+    const extractionPrompt = [
+        { text: `Extract all text from the following document named "${input.fileName}".` },
+        { media: { url: input.fileDataUri } }
+    ];
+
+    const extractionResponse = await generate({
+        model,
+        prompt: extractionPrompt,
+        config: { temperature: 0 },
+    });
+
+    const extractedText = extractionResponse.text;
     
-    // Step 1: Simulate text extraction
-    const extractedText = `(Simulated extracted text for ${input.fileName}. A real implementation would use a document parsing library.)`;
+    if (!extractedText) {
+        await logTrace(functionName, { status: 'error', message: 'Text extraction failed.' }, input.sessionId);
+        throw new Error("Could not extract text from the document.");
+    }
     
-    // Step 2: Log the "extracted" content
+    // Step 2: Log the extracted content
     await logTrace(functionName, {
       fileName: input.fileName,
       status: 'logging_full_content',
@@ -115,9 +136,16 @@ async function fileProcessingFlow(input: DocumentInput): Promise<DocumentOutput>
       ${extractedText}
     `;
 
-    const summary = await callHuggingFace(summaryPrompt);
+    const summaryResponse = await generate({
+        model,
+        prompt: summaryPrompt,
+        config: { temperature: 0.5 }
+    });
+
+    const summary = summaryResponse.text;
 
     if (!summary) {
+        await logTrace(functionName, { status: 'error', message: 'Summary generation failed.' }, input.sessionId);
         throw new Error("Could not generate a summary for the document.");
     }
     
@@ -127,7 +155,8 @@ async function fileProcessingFlow(input: DocumentInput): Promise<DocumentOutput>
         summary: summary,
         extractedText: extractedText,
     };
-}
+  }
+);
 
 
 export async function processDocument(input: DocumentInput): Promise<DocumentOutput> {

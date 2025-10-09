@@ -1,63 +1,47 @@
 
 'use server';
+/**
+ * @fileOverview A flow for handling user chat interactions using OpenAI.
+ *
+ * - chat - An exported function that invokes the main chat flow.
+ * - ChatInput - The Zod schema for the chat function's input.
+ * - ChatOutput - The Zod schema for the chat function's output.
+ */
 
 import type { HistoryItem } from '@/ai/types';
+import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
 import fs from 'fs/promises';
 import path from 'path';
-import { headers } from 'next/headers';
-import { callHuggingFace } from '../huggingface-client';
-import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
+import { z } from 'zod';
+import OpenAI from 'openai';
 
-const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-// Expanded language map
-const languageCodeMap: { [key: string]: string } = {
-    'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German', 'it': 'Italian',
-    'pt': 'Portuguese', 'ru': 'Russian', 'zh': 'Chinese', 'ja': 'Japanese', 'ar': 'Arabic',
-    'hi': 'Hindi', 'bn': 'Bengali', 'pa': 'Punjabi', 'jv': 'Javanese', 'ko': 'Korean',
-    'vi': 'Vietnamese', 'te': 'Telugu', 'mr': 'Marathi', 'tr': 'Turkish', 'ta': 'Tamil',
-    'ur': 'Urdu', 'gu': 'Gujarati', 'pl': 'Polish', 'uk': 'Ukrainian', 'nl': 'Dutch',
-    'ms': 'Malay', 'sv': 'Swedish', 'fi': 'Finnish', 'no': 'Norwegian', 'da': 'Danish',
-    'el': 'Greek', 'he': 'Hebrew', 'id': 'Indonesian', 'th': 'Thai', 'cs': 'Czech',
-    'hu': 'Hungarian', 'ro': 'Romanian', 'sk': 'Slovak', 'bg': 'Bulgarian'
-};
+// Zod schema for chat input
+const ChatInputSchema = z.object({
+  newUserMessage: z.string().describe('The latest message from the user.'),
+  history: z.array(z.object({
+    role: z.enum(['user', 'assistant']),
+    content: z.string(),
+  })).describe('The conversation history.'),
+});
+export type ChatInput = z.infer<typeof ChatInputSchema>;
 
-async function logTrace(functionName: string, data: any, sessionId?: string, languageCode?: string) {
-    if (process.env.TRACE === 'ON') {
-        try {
-            const now = new Date();
-            const pad = (num: number) => num.toString().padStart(2, '0');
-            const timestamp = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-            
-            const headerList = headers();
-            const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
-            
-            let country = 'N/A';
-            try {
-                const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
-                if (geoResponse.ok) {
-                    const geoData = await geoResponse.json();
-                    country = geoData.countryCode || 'NA';
-                }
-            } catch (geoError) {
-                console.error('IP Geolocation failed:', geoError);
-            }
+// Zod schema for chat output
+const ChatOutputSchema = z.object({
+  text: z.string().describe('The AI-generated response.'),
+  sessionLanguage: z.string().describe('The detected language code for the session.'),
+});
+export type ChatOutput = z.infer<typeof ChatOutputSchema>;
 
-            const idPart = sessionId ? `[id:${sessionId}]` : '';
-            const languageName = languageCode ? languageCodeMap[languageCode.toLowerCase()] || languageCode : '';
-            const langPart = languageName ? `[language:${languageName}]` : '';
-            const countryPart = `[country:${country}]`;
-            const ipPart = `[ip:${ip}]`;
 
-            const logMessage = `[${timestamp}]${idPart}${langPart}${countryPart}${ipPart} uhurulog_${functionName}: ${JSON.stringify(data)}\n`;
-
-            await fs.appendFile(logFilePath, logMessage);
-        } catch (error) {
-            console.error('Failed to write to chatbot.log', error);
-        }
-    }
-}
-
+/**
+ * Reads knowledge files from the filesystem to provide context to the AI.
+ * @returns A string containing the combined content of all knowledge files.
+ */
 async function getKnowledgeContent(): Promise<string> {
     const knowledgeDirectory = path.join(process.cwd(), 'src', 'chatbot', 'IAsourcesPrompt');
     try {
@@ -77,93 +61,71 @@ async function getKnowledgeContent(): Promise<string> {
     }
 }
 
+/**
+ * A simple language detector.
+ * @param text The text to analyze.
+ * @returns A two-letter language code (e.g., 'en', 'es').
+ */
 async function detectLanguage(text: string): Promise<string> {
-    try {
-        // A simple heuristic to detect common non-English characters might be faster.
-        const lowerText = text.toLowerCase();
-        if (lowerText.includes('hola') || lowerText.includes('gracias') || lowerText.includes('¿')) return 'es';
-        if (lowerText.includes('bonjour') || lowerText.includes('merci')) return 'fr';
-        // Add more simple checks as needed.
-        
-        const langRegex = /(es|fr|de|it|pt|ru|zh|ja|ar|hi)/;
-        const match = lowerText.match(langRegex);
-        if (match && languageCodeMap[match[1]]) {
-            return match[1];
-        }
-
-        return 'en';
-    } catch (error) {
-        console.error("Language detection failed:", error);
-        return 'en'; // Default to English on failure
-    }
+    const lowerText = text.toLowerCase();
+    if (/\b(hola|gracias|qué|cómo)\b/.test(lowerText)) return 'es';
+    if (/\b(bonjour|merci|quoi|comment)\b/.test(lowerText)) return 'fr';
+    // Add more simple rules as needed
+    return 'en'; // Default to English
 }
 
 
+/**
+ * An exported wrapper function that calls the OpenAI API.
+ * This provides a clean interface for the UI components.
+ */
 export async function chat(
   newUserMessage: string, 
   history: HistoryItem[],
-  sessionId: string,
+  sessionId: string, // Kept for API compatibility, not used by OpenAI directly
   sessionLanguage: string | null
-): Promise<{ text: string; sessionLanguage: string; }> {
-    const functionName = 'chat';
+): Promise<ChatOutput> {
     
-    let languageCode = sessionLanguage;
-    let isFirstMessageInSession = false;
-
-    if (!languageCode) {
-        languageCode = await detectLanguage(newUserMessage);
-        isFirstMessageInSession = true;
-        logTrace(functionName, { status: `new_session_language_detected`, languageCode }, sessionId);
-    } else {
-        const detectedLang = await detectLanguage(newUserMessage);
-        if (detectedLang !== languageCode) {
-            logTrace(functionName, { status: `language_change_detected`, from: languageCode, to: detectedLang }, sessionId);
-            languageCode = detectedLang;
-            isFirstMessageInSession = true;
-        }
-    }
-    
-    const logPayload: any = {
-      history: history.map(h => h.content),
-      input_newUserMessage: newUserMessage,
-    };
-    await logTrace(functionName, logPayload, sessionId, languageCode);
+    const languageCode = sessionLanguage || await detectLanguage(newUserMessage);
+    const isFirstMessage = history.length === 0;
 
     try {
         const knowledgeContext = await getKnowledgeContent();
-        logTrace(functionName, { knowledge_context_length: knowledgeContext.length }, sessionId, languageCode);
-        
-        const systemPrompt = getSystemPrompt(knowledgeContext, languageCode, isFirstMessageInSession);
-        await logTrace(functionName, { system_prompt_length: systemPrompt.length }, sessionId, languageCode);
-        
-        // Format history for the model prompt style
-        const historyForPrompt = history
-          .map(item => `<|${item.role}|>\n${item.content}<|end|>`)
-          .join('\n');
+        const systemPromptContent = getSystemPrompt(knowledgeContext, languageCode, isFirstMessage);
 
-        // Construct the full prompt for the model in the required format
-        const fullPrompt = `<|system|>\n${systemPrompt}<|end|>\n${historyForPrompt}\n<|user|>\n${newUserMessage}<|end|>\n<|assistant|>`;
-        
-        await logTrace(functionName, { status: 'calling_huggingface_text_generation', full_prompt_length: fullPrompt.length }, sessionId, languageCode);
-        
-        const responseText = await callHuggingFace(fullPrompt);
+        const messagesForAPI: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+            { role: "system", content: systemPromptContent },
+            ...history.map(h => ({
+                role: h.role,
+                content: h.content,
+            })),
+            { role: "user", content: newUserMessage },
+        ];
 
-        await logTrace(functionName, { output_ai_response: responseText }, sessionId, languageCode);
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o", // Using the latest efficient model
+            messages: messagesForAPI,
+            temperature: 0.7,
+        });
 
-        return { text: responseText, sessionLanguage: languageCode };
+        const aiResponseText = completion.choices[0]?.message?.content;
 
-    } catch (error) {
-        let errorMessage: string;
-        if (error instanceof Error && (error.message.includes('503') || error.message.toLowerCase().includes('overloaded'))) {
-            errorMessage = languageCode === 'es' 
-                ? "Hay demasiados clientes simultáneamente, por favor espere un minuto e inténtelo de nuevo."
-                : "There are too many simultaneous clients, please wait a minute and try again.";
-        } else {
-            errorMessage = error instanceof Error 
-                ? (languageCode === 'es' ? `Lo siento, ha habido un problema: ${error.message}`: `Sorry, there was a problem: ${error.message}`)
-                : (languageCode === 'es' ? "Lo siento, no he podido conectar con el asistente en este momento. Por favor, inténtelo de nuevo más tarde." : "Sorry, I couldn't connect to the assistant at this time. Please try again later.");
+        if (!aiResponseText) {
+             throw new Error('No text was generated by the model.');
         }
-        await logTrace(functionName, { output_error: errorMessage }, sessionId, languageCode);
-        return { text: errorMessage, sessionLanguage: languageCode };
+
+        return {
+            text: aiResponseText,
+            sessionLanguage: languageCode,
+        };
+    } catch (error) {
+       console.error('Error generating response from OpenAI:', error);
+       const errorMessage = languageCode === 'es' 
+                ? "Lo siento, no he podido conectar con el asistente en este momento. Por favor, inténtelo de nuevo más tarde." 
+                : "Sorry, I couldn't connect to the assistant at this time. Please try again later.";
+       return {
+            text: errorMessage,
+            sessionLanguage: languageCode,
+       }
     }
 }
