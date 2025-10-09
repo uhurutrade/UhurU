@@ -5,12 +5,10 @@ import type { HistoryItem } from '@/ai/types';
 import fs from 'fs/promises';
 import path from 'path';
 import { headers } from 'next/headers';
-import { callHuggingFace, callHuggingFaceASR, callHuggingFaceTTS, callHuggingFaceClassification } from '../huggingface-client';
+import { callHuggingFace } from '../huggingface-client';
 import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
-import { processDocument } from './file-processing-flow';
 
 const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
-const knowledgeDirectory = path.join(process.cwd(), 'src', 'chatbot', 'IAsourcesPrompt');
 
 // Expanded language map
 const languageCodeMap: { [key: string]: string } = {
@@ -61,6 +59,7 @@ async function logTrace(functionName: string, data: any, sessionId?: string, lan
 }
 
 async function getKnowledgeContent(): Promise<string> {
+    const knowledgeDirectory = path.join(process.cwd(), 'src', 'chatbot', 'IAsourcesPrompt');
     try {
         const files = await fs.readdir(knowledgeDirectory);
         const txtFiles = files.filter(file => file.endsWith('.txt'));
@@ -81,16 +80,11 @@ async function getKnowledgeContent(): Promise<string> {
 async function detectLanguage(text: string): Promise<string> {
     try {
         // A simple heuristic to detect common non-English characters might be faster.
-        // For now, we will use a small classification model, but a simpler check could work too.
-        // Let's check for some common language prefixes or characteristics
         const lowerText = text.toLowerCase();
         if (lowerText.includes('hola') || lowerText.includes('gracias') || lowerText.includes('¿')) return 'es';
         if (lowerText.includes('bonjour') || lowerText.includes('merci')) return 'fr';
         // Add more simple checks as needed.
         
-        // As a fallback, use a classification model, but this adds latency.
-        // A more robust solution might be a dedicated library like `cld` or `langdetect`.
-        // For now, this is a placeholder to avoid calling a large LLM for this task.
         const langRegex = /(es|fr|de|it|pt|ru|zh|ja|ar|hi)/;
         const match = lowerText.match(langRegex);
         if (match && languageCodeMap[match[1]]) {
@@ -108,10 +102,9 @@ async function detectLanguage(text: string): Promise<string> {
 export async function chat(
   newUserMessage: string, 
   history: HistoryItem[],
-  isVoiceInput: boolean,
   sessionId: string,
   sessionLanguage: string | null
-): Promise<{ text: string; audioDataUri?: string; sessionLanguage: string; }> {
+): Promise<{ text: string; sessionLanguage: string; }> {
     const functionName = 'chat';
     
     let languageCode = sessionLanguage;
@@ -132,10 +125,8 @@ export async function chat(
     
     const logPayload: any = {
       history: history.map(h => h.content),
-      isVoiceInput
+      input_newUserMessage: newUserMessage,
     };
-    if (isVoiceInput) logPayload.InputAudio = newUserMessage;
-    else logPayload.input_newUserMessage = newUserMessage;
     await logTrace(functionName, logPayload, sessionId, languageCode);
 
     try {
@@ -159,11 +150,6 @@ export async function chat(
 
         await logTrace(functionName, { output_ai_response: responseText }, sessionId, languageCode);
 
-        if (isVoiceInput) {
-            const audioDataUri = await textToSpeech(responseText, sessionId, languageCode);
-            return { text: responseText, audioDataUri, sessionLanguage: languageCode };
-        }
-
         return { text: responseText, sessionLanguage: languageCode };
 
     } catch (error) {
@@ -180,47 +166,4 @@ export async function chat(
         await logTrace(functionName, { output_error: errorMessage }, sessionId, languageCode);
         return { text: errorMessage, sessionLanguage: languageCode };
     }
-}
-
-export async function handleFileUpload(fileDataUri: string, fileName: string, sessionId: string): Promise<{ text: string }> {
-    const functionName = 'handleFileUpload';
-    await logTrace(functionName, { input_fileName: fileName }, sessionId);
-    try {
-        const processingResult = await processDocument({ fileDataUri, fileName, sessionId });
-        await logTrace(functionName, { document_summary: processingResult.summary }, sessionId);
-
-        const confirmationText = `Hemos recibido y procesado tu documento "${fileName}". Nuestro equipo lo revisará y se pondrá en contacto contigo a la brevedad. Gracias por tu interés.`;
-        return { text: confirmationText };
-
-    } catch (error) {
-        const errorMessage = error instanceof Error ? `Error procesando el archivo: ${error.message}` : "Lo siento, ha ocurrido un error inesperado al procesar el archivo.";
-        await logTrace(functionName, { output_error: errorMessage }, sessionId);
-        return { text: errorMessage };
-    }
-}
-
-
-export async function textToSpeech(text: string, sessionId?: string, languageCode?: string): Promise<string> {
-    if (!text) return '';
-    await logTrace('textToSpeech', { input_text: text }, sessionId, languageCode);
-    
-    // Call the Hugging Face TTS service
-    const audioBlob = await callHuggingFaceTTS(text);
-    const audioBuffer = Buffer.from(await audioBlob.arrayBuffer());
-
-    // Return as a base64 data URI
-    return `data:audio/wav;base64,${audioBuffer.toString('base64')}`;
-}
-
-export async function speechToText(audioDataUri: string, sessionId: string): Promise<{ text: string }> {
-    await logTrace('speechToText_start', { input_audio_received: true }, sessionId);
-    
-    // Convert data URI to Blob for the ASR API
-    const fetchResponse = await fetch(audioDataUri);
-    const audioBlob = await fetchResponse.blob();
-
-    const transcribedText = await callHuggingFaceASR(audioBlob);
-    
-    await logTrace('speechToText_end', { output_transcribed_text: transcribedText }, sessionId);
-    return { text: transcribedText };
 }
