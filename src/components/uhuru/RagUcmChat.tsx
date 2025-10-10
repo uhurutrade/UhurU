@@ -5,10 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Bot, User, Loader, Send, Plus, MessageSquare, Trash2, GraduationCap } from 'lucide-react';
-import { chat } from '@/ai/flows/chat-flow';
+import { ragUcmChat } from '@/ai/flows/rag-ucm-chat-flow'; // UPDATED IMPORT
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
-import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { Card } from '../ui/card';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import Logo from './logo';
@@ -82,7 +81,8 @@ export default function RagUcmChat() {
             content: msg.content,
           }));
 
-        const response = await chat({
+        // UPDATED FUNCTION CALL
+        const response = await ragUcmChat({
           prompt: newUserMessage,
           history: history,
           sessionId: currentChatId,
@@ -261,5 +261,3 @@ export default function RagUcmChat() {
     </TooltipProvider>
   );
 }
-
-    
