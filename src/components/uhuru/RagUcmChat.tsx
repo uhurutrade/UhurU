@@ -201,8 +201,8 @@ export default function RagUcmChat() {
                     <div className="inline-block p-4 bg-primary rounded-full mb-4">
                         <Bot className="h-10 w-10 text-primary-foreground" />
                     </div>
-                    <h2 className="text-3xl font-bold font-headline">How can I help you today?</h2>
-                    <p className="text-muted-foreground mt-2">Ask me anything about UhurU's services and knowledge base.</p>
+                    <h2 className="text-3xl font-bold font-headline">UCM - Bachelor's degree in law RAG</h2>
+                    <p className="text-muted-foreground mt-2">Ask me anything about the UCM Bachelor's degree in law.</p>
                 </div>
               )}
               {messages.map((message) => (
