@@ -12,6 +12,7 @@ import { Card } from '../ui/card';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import Logo from './logo';
 import { ThemeToggle } from '../theme-toggle';
+import Link from 'next/link';
 
 interface Message {
   id: string;
@@ -186,7 +187,9 @@ export default function RagUcmChat() {
           </ScrollArea>
           <div className="p-4 border-t flex flex-col gap-2">
              <div className="flex justify-between items-center">
-                <Logo />
+                <Link href="/">
+                  <Logo />
+                </Link>
                 <ThemeToggle />
              </div>
           </div>
