@@ -238,7 +238,7 @@ export default function RagUcmChat() {
           <div className="px-4 pb-4 pt-2 w-full max-w-3xl mx-auto">
             <div className="relative">
                 <textarea
-                    placeholder="Message UhurU AI..."
+                    placeholder="Message UCM AI"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={handleKeyPress}
