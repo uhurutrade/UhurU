@@ -248,7 +248,9 @@ const ChatWidgetContent = () => {
 export default function ChatWidget() {
   const pathname = usePathname();
 
-  if (pathname === '/ai-chat') {
+  const hiddenPaths = ['/ai-chat', '/rag_ucm'];
+
+  if (hiddenPaths.includes(pathname)) {
     return null;
   }
   
