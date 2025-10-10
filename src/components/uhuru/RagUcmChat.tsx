@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader, Send, Plus, MessageSquare, Trash2, Settings2 } from 'lucide-react';
+import { Bot, User, Loader, Send, Plus, MessageSquare, Trash2, GraduationCap } from 'lucide-react';
 import { chat } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
@@ -199,7 +199,7 @@ export default function RagUcmChat() {
               {messages.length === 0 && !isPending && (
                 <div className="text-center pt-20">
                     <div className="inline-block p-4 bg-primary rounded-full mb-4">
-                        <Bot className="h-10 w-10 text-primary-foreground" />
+                        <GraduationCap className="h-10 w-10 text-primary-foreground" />
                     </div>
                     <h2 className="text-3xl font-bold font-headline">UCM - Bachelor's degree in law RAG</h2>
                     <p className="text-muted-foreground mt-2">Ask me anything about the UCM Bachelor's degree in law.</p>
@@ -261,3 +261,5 @@ export default function RagUcmChat() {
     </TooltipProvider>
   );
 }
+
+    
