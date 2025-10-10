@@ -33,7 +33,7 @@ export async function ragUcmChat(request: RagUcmChatRequest): Promise<RagUcmChat
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        prompt,
+        message: prompt, // Changed 'prompt' to 'message'
         history,
         sessionId,
       }),
