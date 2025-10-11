@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview A simple chat flow that uses LangChain and Google's Gemini model.
+ * @fileOverview A unified chat flow that proxies requests to an n8n webhook.
  */
 
 import { z } from 'zod';
@@ -8,14 +8,6 @@ import {
   HistoryItem,
   HistoryItemSchema,
 } from '../types';
-import * as knowledge from '@/chatbot/knowledge-retriever';
-import { getSystemPrompt } from '@/chatbot/chatbot-prompt';
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages";
-import {
-  ChatPromptTemplate,
-  MessagesPlaceholder,
-} from "@langchain/core/prompts";
 
 const ChatRequestSchema = z.object({
   history: z.array(HistoryItemSchema),
@@ -31,48 +23,46 @@ export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 
 
 export async function chat(request: ChatRequest): Promise<ChatResponse> {
-  const { history, prompt } = request;
+  const { history, prompt, sessionId } = request;
+  const webhookUrl = 'https://n8n.uhurutrade.com/webhook/af8f1b3d-f2fb-47ee-8058-3bf09136bc16';
 
-  // 1. Retrieve relevant knowledge
-  const knowledgeResponse = await knowledge.retrieve(prompt);
-  
-  // 2. Get the system prompt
-  const systemPromptContent = getSystemPrompt(knowledgeResponse);
-  
-  // 3. Initialize the Chat Model
-  const model = new ChatGoogleGenerativeAI({
-      model: "gemini-1.5-flash",
-      maxOutputTokens: 2048,
-      temperature: 0.8,
-  });
-  
-  // 4. Construct the full prompt template
-  const promptTemplate = ChatPromptTemplate.fromMessages([
-      new SystemMessage(systemPromptContent),
-      new MessagesPlaceholder("chat_history"),
-      new HumanMessage("{input}"),
-  ]);
+  try {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: prompt,
+        history,
+        sessionId,
+      }),
+    });
 
-  // 5. Create the runnable chain
-  const chain = promptTemplate.pipe(model);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('n8n webhook error:', response.status, errorBody);
+      throw new Error(`The webhook responded with status: ${response.status}.`);
+    }
 
-  // 6. Construct the message history for the model
-  const messageHistory = history.map((item) => 
-      item.role === 'assistant' 
-          ? new AIMessage(item.content)
-          : new HumanMessage(item.content)
-  );
+    const responseData = await response.json();
+    
+    // Ensure the response from n8n has the 'content' field.
+    if (typeof responseData.content !== 'string') {
+        console.error('Invalid response structure from n8n webhook:', responseData);
+        throw new Error('The webhook response did not contain a valid "content" field.');
+    }
+    
+    return {
+      content: responseData.content,
+    };
 
-  // 7. Invoke the chain
-  const response = await chain.invoke({
-      input: prompt,
-      chat_history: messageHistory,
-  });
-  
-  const responseText = response.content.toString();
-
-  // The entire response from the model is the content.
-  return {
-    content: responseText,
-  };
+  } catch (error) {
+    console.error('Failed to call n8n webhook:', error);
+    if (error instanceof Error) {
+        // Return a user-friendly error message within the chat interface
+        return { content: `I'm sorry, I couldn't connect to the chat service. Error: ${error.message}` };
+    }
+    return { content: "I'm sorry, an unknown error occurred while trying to connect to the chat service." };
+  }
 }

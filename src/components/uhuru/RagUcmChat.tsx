@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Bot, User, Loader, Send, Plus, MessageSquare, Trash2, GraduationCap } from 'lucide-react';
-import { ragUcmChat } from '@/ai/flows/rag-ucm-chat-flow'; // UPDATED IMPORT
+import { chat } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '../ui/card';
@@ -82,8 +82,7 @@ export default function RagUcmChat() {
             content: msg.content,
           }));
 
-        // UPDATED FUNCTION CALL
-        const response = await ragUcmChat({
+        const response = await chat({
           prompt: newUserMessage,
           history: history,
           sessionId: currentChatId,
@@ -238,7 +237,7 @@ export default function RagUcmChat() {
             </div>
           </ScrollArea>
           
-          <div className="px-4 pb-4 pt-2 w-full max-w-5xl mx-auto">
+          <div className="px-4 pb-4 pt-2 w-full max-w-7xl mx-auto">
             <div className="relative">
                 <textarea
                     placeholder="Message UCM AI"
