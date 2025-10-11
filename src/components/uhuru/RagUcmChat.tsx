@@ -198,7 +198,7 @@ export default function RagUcmChat() {
         {/* Main Chat Area */}
         <div className="flex-1 flex flex-col min-h-0">
           <ScrollArea className="flex-1" ref={scrollAreaRef}>
-            <div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
+            <div className="max-w-5xl mx-auto px-4 py-10 space-y-8">
               {messages.length === 0 && !isPending && (
                 <div className="text-center pt-20">
                     <div className="inline-block p-4 bg-primary rounded-full mb-4">
