@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Bot, User, Loader, Send, Plus, MessageSquare, Trash2, GraduationCap } from 'lucide-react';
-import { chat } from '@/ai/flows/chat-flow';
+import { ragUcmChat } from '@/ai/flows/rag-ucm-chat-flow'; // Updated import
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '../ui/card';
@@ -82,7 +82,7 @@ export default function RagUcmChat() {
             content: msg.content,
           }));
 
-        const response = await chat({
+        const response = await ragUcmChat({ // Use the new flow function
           prompt: newUserMessage,
           history: history,
           sessionId: currentChatId,
