@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader, Send, Plus, MessageSquare, Trash2, GraduationCap } from 'lucide-react';
+import { Bot, User, Loader, Send, Plus, MessageSquare, Trash2, GraduationCap, Download } from 'lucide-react';
 import { ragUcmChat } from '@/ai/flows/rag-ucm-chat-flow'; // Updated import
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
@@ -145,6 +145,17 @@ export default function RagUcmChat() {
     toast({ title: "Chat Deleted" });
   };
 
+  const handleDownload = () => {
+    const conversationText = messages.map(msg => `${msg.role.charAt(0).toUpperCase() + msg.role.slice(1)}:\n${msg.content}`).join('\n\n---\n\n');
+    const blob = new Blob([conversationText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `uhuru-rag-ucm-chat-${new Date().toISOString().replace(/:/g, '-')}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast({ title: "Conversation Downloaded" });
+  };
 
   return (
     <TooltipProvider>
@@ -185,7 +196,10 @@ export default function RagUcmChat() {
             </div>
           </ScrollArea>
           <div className="p-4 border-t flex flex-col gap-2">
-             <div className="flex justify-between items-center">
+            <Button variant="default" className="w-full justify-start gap-2" onClick={handleDownload} disabled={messages.length === 0}>
+                <Download className="h-4 w-4" /> Download Chat
+            </Button>
+             <div className="flex justify-between items-center pt-2">
                 <Link href="/">
                   <Logo />
                 </Link>
