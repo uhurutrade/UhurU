@@ -24,7 +24,7 @@ export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 
 export async function chat(request: ChatRequest): Promise<ChatResponse> {
   const { history, prompt, sessionId } = request;
-  const webhookUrl = 'https://n8n.uhurutrade.com/webhook/af8f1b3d-f2fb-47ee-8058-3bf09136bc16';
+  const webhookUrl = 'https://n8n.uhurutrade.com/webhook/0a91d540-adb7-424a-9ff1-be55ba6667d6';
 
   try {
     const response = await fetch(webhookUrl, {
