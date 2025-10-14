@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader, Send, Download, PlusSquare, Globe, Paperclip } from 'lucide-react';
+import { Bot, User, Loader, Send, Download, PlusSquare, Globe } from 'lucide-react';
 import { chat } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
@@ -179,17 +179,7 @@ export default function FullScreenChat() {
               <Card className="relative shadow-lg">
                   <CardContent className="p-2">
                       <div className="relative flex items-center gap-2">
-                          <Input type="text" placeholder="Ask something..." value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress} disabled={isPending} className="text-base h-12 pl-12 pr-12 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"/>
-                          <div className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center">
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button variant="ghost" size="icon" disabled={true} className="h-9 w-9">
-                                        <Paperclip className="h-5 w-5" />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent><p>Attach file (Coming Soon)</p></TooltipContent>
-                            </Tooltip>
-                          </div>
+                          <Input type="text" placeholder="Ask something..." value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress} disabled={isPending} className="text-base h-12 pl-4 pr-12 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"/>
                           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
                               <Button variant="ghost" size="icon" onClick={() => handleSend(input)} disabled={isPending || input.trim() === ''} className="h-9 w-9"><Send className="h-5 w-5" /></Button>
                           </div>

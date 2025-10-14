@@ -5,13 +5,13 @@ import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, Send, Bot, User, Loader, MessageCircle, Paperclip } from 'lucide-react';
+import { X, Send, Bot, User, Loader, MessageCircle } from 'lucide-react';
 import { chat } from '@/ai/flows/chat-flow';
 import type { HistoryItem } from '@/ai/types';
 import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { usePathname } from 'next/navigation';
-import { Tooltip, TooltipProvider, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 interface Message {
   id: string;
@@ -196,7 +196,7 @@ const ChatWidgetContent = () => {
               </div>
             </ScrollArea>
             <div className="p-3 border-t border-border">
-              <div className="relative flex items-center gap-1">
+              <div className="relative flex items-center">
                 <Input
                   type="text"
                   placeholder="Ask something..."
@@ -204,17 +204,9 @@ const ChatWidgetContent = () => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   disabled={isPending}
-                  className="pr-20"
+                  className="pr-10"
                 />
                 <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" disabled={true} className="h-8 w-8">
-                                <Paperclip className="h-4 w-4" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent><p>Attach file (Coming Soon)</p></TooltipContent>
-                    </Tooltip>
                     <Button
                         variant="ghost"
                         size="icon"
