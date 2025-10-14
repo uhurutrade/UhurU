@@ -1,7 +1,0 @@
-¿Qué es el Carry Trade?
-
-El Carry Trade es una estrategia utilizada en los mercados financieros, especialmente en Forex, que consiste en pedir prestado en una divisa con baja tasa de interés para invertir en otra divisa con una tasa de interés más alta. El objetivo es beneficiarse de la diferencia de tasas (conocida como "carry") mientras se mantiene la posición abierta.
-
-Por ejemplo, si un trader toma prestado en yenes japoneses (JPY), que históricamente tiene tasas de interés cercanas a cero, y compra dólares australianos (AUD), que ofrecen tasas más altas, ganará la diferencia mientras la posición esté abierta y las condiciones se mantengan estables. Esta estrategia también puede aplicarse a bonos, acciones y otros instrumentos que pagan intereses o dividendos.
-
-El carry trade se basa en la estabilidad del tipo de cambio y de los diferenciales de tasas. Es muy popular en entornos económicos donde las tasas están bien diferenciadas entre países. Sin embargo, aunque puede ser rentable, no está exento de riesgos.
