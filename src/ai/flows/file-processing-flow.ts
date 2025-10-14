@@ -10,64 +10,9 @@
  */
 
 import { z } from 'zod';
-import fs from 'fs/promises';
-import path from 'path';
-import { headers } from 'next/headers';
 import { ai } from '@/ai/genkit';
 import { generate } from 'genkit';
-
-
-const logFilePath = path.join(process.cwd(), 'src', 'chatbot', 'chatbot.log');
-
-const languageCodeMap: { [key: string]: string } = {
-    'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German', 'it': 'Italian',
-    'pt': 'Portuguese', 'ru': 'Russian', 'zh': 'Chinese', 'ja': 'Japanese', 'ar': 'Arabic',
-    'hi': 'Hindi', 'bn': 'Bengali', 'pa': 'Punjabi', 'jv': 'Javanese', 'ko': 'Korean',
-    'vi': 'Vietnamese', 'te': 'Telugu', 'mr': 'Marathi', 'tr': 'Turkish', 'ta': 'Tamil',
-    'ur': 'Urdu', 'gu': 'Gujarati', 'pl': 'Polish', 'uk': 'Ukrainian', 'nl': 'Dutch',
-    'ms': 'Malay', 'sv': 'Swedish', 'fi': 'Finnish', 'no': 'Norwegian', 'da': 'Danish',
-    'el': 'Greek', 'he': 'Hebrew', 'id': 'Indonesian', 'th': 'Thai', 'cs': 'Czech',
-    'hu': 'Hungarian', 'ro': 'Romanian', 'sk': 'Slovak', 'bg': 'Bulgarian'
-};
-
-
-// Re-using the same logger function from chat-flow
-async function logTrace(functionName: string, data: any, sessionId?: string, languageCode?: string) {
-    if (process.env.TRACE === 'ON') {
-        try {
-            const now = new Date();
-            const pad = (num: number) => num.toString().padStart(2, '0');
-            const timestamp = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-            
-            const headerList = headers();
-            const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
-
-            let country = 'N/A';
-            try {
-                // GeoIP lookup can be latency-intensive, consider disabling if not critical.
-                // const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
-                // if (geoResponse.ok) {
-                //     const geoData = await geoResponse.json();
-                //     country = geoData.countryCode || 'N/A';
-                // }
-            } catch (geoError) {
-                console.error('IP Geolocation failed:', geoError);
-            }
-            
-            const idPart = sessionId ? `[id:${sessionId}]` : '';
-            const languageName = languageCode ? languageCodeMap[languageCode.toLowerCase()] || languageCode : '';
-            const langPart = languageName ? `[language:${languageName}]` : '';
-            const countryPart = `[country:${country}]`;
-            const ipPart = `[ip:${ip}]`;
-
-            const logMessage = `[${timestamp}]${idPart}${langPart}${countryPart}${ipPart} uhurulog_${functionName}: ${JSON.stringify(data)}\n`;
-
-            await fs.appendFile(logFilePath, logMessage);
-        } catch (error) {
-            console.error('Failed to write to chatbot.log', error);
-        }
-    }
-}
+import { logConversation } from '@/lib/chatbot-logger';
 
 
 const DocumentInputSchema = z.object({
@@ -93,14 +38,14 @@ const fileProcessingFlow = ai.defineFlow(
     outputSchema: DocumentOutputSchema,
   },
   async (input) => {
-    const functionName = 'fileProcessingFlow';
-    await logTrace(functionName, { status: 'started', fileName: input.fileName }, input.sessionId);
+    const { fileName, sessionId, fileDataUri } = input;
+    await logConversation('user', `Uploaded file: ${fileName}`, sessionId);
 
     // Step 1: Use Gemini to extract text from the document
     const model = ai.model('gemini-1.5-flash-latest');
     const extractionPrompt = [
-        { text: `Extract all text from the following document named "${input.fileName}".` },
-        { media: { url: input.fileDataUri } }
+        { text: `Extract all text from the following document named "${fileName}".` },
+        { media: { url: fileDataUri } }
     ];
 
     const extractionResponse = await generate({
@@ -112,21 +57,17 @@ const fileProcessingFlow = ai.defineFlow(
     const extractedText = extractionResponse.text;
     
     if (!extractedText) {
-        await logTrace(functionName, { status: 'error', message: 'Text extraction failed.' }, input.sessionId);
+        await logConversation('assistant-error', 'Text extraction failed.', sessionId);
         throw new Error("Could not extract text from the document.");
     }
     
-    // Step 2: Log the extracted content
-    await logTrace(functionName, {
-      fileName: input.fileName,
-      status: 'logging_full_content',
-      document_full_text: extractedText,
-    }, input.sessionId);
+    // Step 2: Log the extracted content (logging a snippet for brevity)
+    await logConversation('assistant', `Extracted text from ${fileName}: ${extractedText.substring(0, 100)}...`, sessionId);
 
     // Step 3: Generate a summary using the extracted text.
     const summaryPrompt = `
       You are an AI assistant tasked with analyzing a document provided by a user for a project evaluation.
-      The document name is "${input.fileName}".
+      The document name is "${fileName}".
       The full text content of the document is provided below.
 
       Your tasks are:
@@ -145,11 +86,11 @@ const fileProcessingFlow = ai.defineFlow(
     const summary = summaryResponse.text;
 
     if (!summary) {
-        await logTrace(functionName, { status: 'error', message: 'Summary generation failed.' }, input.sessionId);
+        await logConversation('assistant-error', 'Summary generation failed.', sessionId);
         throw new Error("Could not generate a summary for the document.");
     }
     
-    await logTrace(functionName, { status: 'finished', document_summary: summary }, input.sessionId);
+    await logConversation('assistant', `Generated summary for ${fileName}: ${summary.substring(0, 100)}...`, sessionId);
 
     return {
         summary: summary,
