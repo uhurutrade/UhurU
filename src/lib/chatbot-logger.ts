@@ -41,11 +41,11 @@ export async function logConversation(role: 'user' | 'assistant' | 'assistant-er
         let country = 'N/A';
         try {
             // GeoIP lookup can be latency-intensive, consider making it optional or handling timeouts.
-            // const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
-            // if (geoResponse.ok) {
-            //     const geoData = await geoResponse.json();
-            //     country = geoData.countryCode || 'N/A';
-            // }
+            const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
+            if (geoResponse.ok) {
+                const geoData = await geoResponse.json();
+                country = geoData.countryCode || 'N/A';
+            }
         } catch (geoError) {
             console.error('IP Geolocation failed:', geoError);
         }
