@@ -25,7 +25,7 @@ export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 export async function ragLmChat(request: ChatRequest): Promise<ChatResponse> {
   const { history, prompt, sessionId } = request;
   // TODO: Update this webhook URL to point to the correct n8n workflow for RAG LM
-  const webhookUrl = 'https://n8n.uhurutrade.com/webhook/af8f1b3d-f2fb-47ee-8058-3bf09136bc16';
+  const webhookUrl = 'https://n8n.uhurutrade.com/webhook/3d1cfe92-e4b3-4376-b880-026f21623912';
 
   try {
     const response = await fetch(webhookUrl, {
