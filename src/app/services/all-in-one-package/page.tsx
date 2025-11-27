@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2, Package, Zap, BarChart, Bitcoin, Building, Rocket, CircleDollarSign } from 'lucide-react';
 import SubPageHeader from '@/components/uhuru/subpage-header';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Flexible All-in-One Tech Package | UhurU',
@@ -52,22 +53,26 @@ const paymentFlexibilityPoints = [
     {
         icon: <Bitcoin className="h-6 w-6 text-accent" />,
         title: "Pay with Leading Cryptocurrencies",
-        description: "We facilitate B2B payments using major cryptocurrencies like Bitcoin (BTC) and Ethereum (ETH). This is ideal for international partners, offering instant, low-cost, and secure transactions without the delays of traditional banking."
+        description: "We facilitate B2B payments using major cryptocurrencies like Bitcoin (BTC) and Ethereum (ETH). This is ideal for international partners, offering instant, low-cost, and secure transactions without the delays of traditional banking.",
+        hasLink: true
     },
     {
         icon: <CircleDollarSign className="h-6 w-6 text-accent" />,
         title: "Stablecoins for Predictability (USDC/USDT)",
-        description: "To mitigate price volatility, we strongly recommend and facilitate payments using stablecoins like USDC and USDT. This gives you the benefits of blockchain transactions—speed and low fees—with the stability of a fiat-pegged asset."
+        description: "To mitigate price volatility, we strongly recommend and facilitate payments using stablecoins like USDC and USDT. This gives you the benefits of blockchain transactions—speed and low fees—with the stability of a fiat-pegged asset.",
+        hasLink: false
     },
     {
         icon: <Package className="h-6 w-6 text-accent" />,
         title: "Utilize Your UhuruCoin",
-        description: "As part of our ecosystem, you can use your UhuruCoin tokens to pay for services. This creates a circular economy where your loyalty and participation are directly rewarded, allowing you to reinvest your tokens into further growth."
+        description: "As part of our ecosystem, you can use your UhuruCoin tokens to pay for services. This creates a circular economy where your loyalty and participation are directly rewarded, allowing you to reinvest your tokens into further growth.",
+        hasLink: false
     },
     {
         icon: <Zap className="h-6 w-6 text-accent" />,
         title: "Client-Centric Flexibility",
-        description: "Your convenience is our priority. If you prefer to use another digital asset or have a specific payment requirement, we are always open to discussion. Our goal is to make the payment process as seamless and accommodating as possible for you."
+        description: "Your convenience is our priority. If you prefer to use another digital asset or have a specific payment requirement, we are always open to discussion. Our goal is to make the payment process as seamless and accommodating as possible for you.",
+        hasLink: false
     },
 ];
 
@@ -152,7 +157,12 @@ export default function AllInOnePackagePage() {
                                 <CardTitle className="font-headline text-lg">{point.title}</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-muted-foreground">{point.description}</p>
+                                <p className="text-muted-foreground">
+                                  {point.description}
+                                  {point.hasLink && (
+                                    <Link href="/cryptopayment" className="text-primary hover:underline ml-1">*</Link>
+                                  )}
+                                </p>
                             </CardContent>
                         </Card>
                     ))}
