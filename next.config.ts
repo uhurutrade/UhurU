@@ -1,3 +1,4 @@
+
 // next.config.ts
 import type { NextConfig } from 'next';
 
@@ -26,6 +27,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.qrserver.com',
         port: '',
         pathname: '/**',
       },
