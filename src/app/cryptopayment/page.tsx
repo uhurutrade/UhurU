@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import SubPageHeader from '@/components/uhuru/subpage-header';
@@ -19,9 +20,9 @@ const LIGHTNING_URL = "https://crypto.uhurutrade.com";
 
 
 export default function CryptoPaymentPage() {
-  const btcQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=bitcoin:${BTC_ADDRESS}`;
-  const polygonQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${POLYGON_ADDRESS}`;
-  const lightningQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${LIGHTNING_URL}`;
+  const btcQrUrl = "/images/qr-btc.png";
+  const polygonQrUrl = "/images/qr-polygon.png";
+  const lightningQrUrl = "/images/qr-lightning.png";
 
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
