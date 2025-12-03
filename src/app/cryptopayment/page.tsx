@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -322,15 +323,16 @@
             // Jumper widget theme configuration
             theme: {
                 palette: {
-                    primary: {
-                        main: '#3d6eff' // Your blue color (hsl(221, 83%, 53%))
-                    },
+                    primary: { main: '#3d6eff' },
+                    secondary: { main: '#3d6eff' },
+                    accent: { main: '#3d6eff' },
                     background: {
-                        default: '#1a1b26', // card-bg
-                        paper: '#0d0d12'    // bg-color
+                        default: '#0d0d12',
+                        paper: '#1a1b26'
                     },
                     text: {
-                        primary: '#e0e0e0'
+                        primary: '#ffffff',
+                        secondary: '#e0e0e0'
                     }
                 },
                 shape: {
@@ -361,4 +363,4 @@
 </body>
 </html>
 
-    
+  
