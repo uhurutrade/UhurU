@@ -1,10 +1,12 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import SubPageHeader from '@/components/uhuru/subpage-header';
 import Image from 'next/image';
 import CopyButton from '@/components/uhuru/CopyButton';
-import { Bitcoin, Zap, Info } from 'lucide-react';
-import JumperWidget from '@/components/uhuru/JumperWidget';
+import { Bitcoin, Zap, Info, ExternalLink } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const paymentOptions = [
     {
@@ -88,33 +90,33 @@ export default function CryptocurrencyPage() {
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-bold font-headline">Pay with Any Other Crypto</h2>
                             <p className="mt-2 text-muted-foreground max-w-3xl mx-auto">
-                                Use our secure cross-chain gateway, powered by LI.FI, to pay with hundreds of different tokens from any major blockchain. Your payment will be automatically converted to USDC on the Polygon network.
+                                To provide maximum flexibility, we have partnered with Jumper by LI.FI, a leader in multi-chain bridge and DEX aggregation. This allows you to pay from any major blockchain using hundreds of different tokens.
                             </p>
                         </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                            <div className="space-y-6">
-                                <Card>
-                                    <CardHeader><CardTitle>How it Works</CardTitle></CardHeader>
-                                    <CardContent className="space-y-4 text-muted-foreground">
-                                        <p>1. In the "From" section, select the token and network you wish to pay with.</p>
-                                        <p>2. Enter the amount you want to pay. The widget calculates the equivalent in USDC.</p>
-                                        <p>3. Connect your wallet (e.g., MetaMask, Phantom) and approve the transaction.</p>
-                                        <p>4. The gateway handles the token swap and transfer to our wallet seamlessly.</p>
-                                    </CardContent>
-                                </Card>
-                                 <Alert>
-                                    <Info className="h-4 w-4" />
-                                    <AlertTitle>Note on Fees</AlertTitle>
-                                    <AlertDescription>
-                                      Please ensure you have enough native currency (e.g., ETH, SOL, BNB) in your wallet to cover network gas fees for the transaction.
-                                    </AlertDescription>
-                                </Alert>
-                            </div>
-                            <div className="w-full max-w-md h-[700px] mx-auto bg-card rounded-2xl shadow-lg p-2 border">
-                               <JumperWidget />
-                            </div>
-                        </div>
+                        <Card className="max-w-4xl mx-auto">
+                            <CardHeader>
+                                <CardTitle>Secure Cross-Chain Payment Gateway</CardTitle>
+                                <CardDescription>
+                                    You will be redirected to our secure payment portal, powered by the most reliable bridge technology in the ecosystem.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <p className="text-muted-foreground">
+                                    This advanced system acts as a "bridge," allowing you to seamlessly convert your favorite token from its native network (like Solana, Arbitrum, or BNB Chain) into USDC on the Polygon network, which is then sent directly to our corporate wallet. Jumper automatically finds the safest, fastest, and most cost-effective route for your transaction.
+                                </p>
+                                <p className="text-muted-foreground">
+                                    This method is ideal for those who hold assets on different chains and want a simple, unified way to pay without first having to manually send funds to a centralized exchange. It's decentralized, secure, and gives you full control over your assets until the moment you approve the transaction.
+                                </p>
+                                <div className="pt-4 flex justify-center">
+                                    <Button asChild size="lg">
+                                        <Link href="https://crypto.uhurutrade.com/" target="_blank" rel="noopener noreferrer">
+                                            <ExternalLink className="mr-2 h-5 w-5" />
+                                            Launch Secure Payment Gateway
+                                        </Link>
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </section>
                 </div>
             </main>
