@@ -54,7 +54,7 @@ const paymentFlexibilityPoints = [
         icon: <Bitcoin className="h-6 w-6 text-accent" />,
         title: "Pay with Leading Cryptocurrencies",
         description: "We facilitate B2B payments using major cryptocurrencies like Bitcoin (BTC) and Ethereum (ETH). This is ideal for international partners, offering instant, low-cost, and secure transactions without the delays of traditional banking.",
-        hasLink: false
+        link: { href: "/cryptocurrency", text: "Pay here" }
     },
     {
         icon: <CircleDollarSign className="h-6 w-6 text-accent" />,
@@ -160,6 +160,11 @@ export default function AllInOnePackagePage() {
                                 <p className="text-muted-foreground">
                                   {point.description}
                                 </p>
+                                {point.link && (
+                                  <Link href={point.link.href} className="text-sm text-primary hover:underline mt-2 inline-block">
+                                    {point.link.text} &rarr;
+                                  </Link>
+                                )}
                             </CardContent>
                         </Card>
                     ))}
