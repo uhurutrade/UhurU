@@ -131,7 +131,7 @@
         }
 
         .widget-wrapper {
-            width: 100%; max-width: 460px; height: 680px;
+            width: 100%; max-width: 460px; height: 740px;
             background: var(--card-background); border-radius: 24px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             border: 1px solid var(--border-color);
