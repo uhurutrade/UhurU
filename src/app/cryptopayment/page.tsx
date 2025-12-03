@@ -1,99 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Payments | UhurU</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Inter:wght@400;600&display=swap');
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import SubPageHeader from '@/components/uhuru/subpage-header';
-import Image from 'next/image';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info } from 'lucide-react';
-import CopyButton from '@/components/uhuru/CopyButton';
-import Link from 'next/link';
-import type { Metadata } from 'next';
+        :root { 
+            --background: hsl(222, 47%, 6%); 
+            --foreground: hsl(0, 0%, 98%); 
+            --card-background: hsl(217, 33%, 17%);
+            --border-color: hsl(217, 33%, 27%);
+            --primary-color: hsl(221, 83%, 53%);
+            --muted-color: hsl(215, 20%, 65%);
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            padding-top: 40px;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+        }
+        .logo-container {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: var(--foreground);
+            margin-bottom: 15px;
+            user-select: none;
+        }
+        .logo-part { position: relative; }
+        .logo-part .line {
+            position: absolute; left: 0; right: 0; height: 3px;
+            background-color: var(--foreground);
+        }
+        .logo-part .line-top { top: -6px; }
+        .logo-part .line-bottom { bottom: -6px; }
 
-export const metadata: Metadata = {
-    title: "Crypto Payment Methods | UHURU",
-    description: "Pay for our services using cryptocurrency. We accept Bitcoin (BTC), Lightning Network, and stablecoins like USDC, USDT, and BUSD on the Polygon network.",
-};
+        .subtitle { color: var(--muted-color); font-size: 1rem; margin: 0; }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
 
-const BTC_ADDRESS = "bc1qu7t53d9k6eu5lm7t2pvywxneyn3zx8acqezgxc";
-const POLYGON_ADDRESS = "0x04a222b802736a9957fab102e5749b93dfed5034";
-const LIGHTNING_URL = "https://crypto.uhurutrade.com";
+        @media (min-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr 460px 1fr;
+                align-items: start;
+                gap: 30px;
+            }
+        }
 
+        .instructions {
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            background-color: var(--card-background);
+            height: 100%;
+        }
+        .instructions h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .instructions li {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .instructions .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: var(--foreground);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .instructions p {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--muted-color);
+        }
+        .instructions strong {
+            color: var(--foreground);
+            font-weight: 600;
+        }
 
-export default function CryptoPaymentPage() {
-  const btcQrUrl = "/images/qr-btc.png";
-  const polygonQrUrl = "/images/qr-polygon.png";
-  const lightningQrUrl = "/images/qr-lightning.png";
+        .widget-wrapper {
+            width: 100%; max-width: 460px; height: 680px;
+            background: var(--card-background); border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        iframe { width: 100%; height: 100%; border: none; }
 
-  return (
-    <div className="flex min-h-dvh flex-col bg-background text-foreground">
-      <SubPageHeader backHref="/" backText="Back to Home" />
-      <main className="flex-1 py-12 md:py-24">
-        <div className="container mx-auto max-w-4xl px-4 md:px-10">
-          <Card className="bg-card shadow-lg">
-            <CardHeader className="text-center">
-              <CardTitle className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline text-foreground">
-                Crypto Payment Methods
-              </CardTitle>
-              <CardDescription className="text-muted-foreground pt-2">
-                Use the following methods to pay for our services with cryptocurrency.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-10 pt-6">
+        .footer {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+        .footer-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            display: flex; align-items: center; gap: 0.2rem;
+            color: var(--foreground); user-select: none;
+        }
+        .footer-logo .line {
+            position: absolute; left: 0; right: 0; height: 2px;
+            background-color: var(--foreground);
+        }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials svg {
+            width: 20px; height: 20px;
+            color: var(--muted-color);
+            transition: color 0.2s;
+        }
+        .footer-socials a:hover svg { color: var(--primary-color); }
+        .footer-legal {
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--muted-color);
+        }
+        .footer-legal a {
+            color: var(--muted-color);
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .footer-legal a:hover { color: var(--primary-color); }
 
-              {/* BTC On-chain */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <div className="space-y-2">
-                  <h3 className="text-xl font-semibold font-headline">🔵 BTC (On-chain)</h3>
-                  <p className="text-sm text-muted-foreground break-all">{BTC_ADDRESS}</p>
-                  <CopyButton textToCopy={BTC_ADDRESS} buttonText="Copy Address" />
-                </div>
-                <div className="flex justify-center md:justify-end">
-                  <Image src={btcQrUrl} alt="BTC Address QR Code" width={200} height={200} className="rounded-lg border p-2" />
-                </div>
-              </div>
-
-              <div className="border-t"></div>
-
-              {/* Stablecoins */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <div className="space-y-2">
-                  <h3 className="text-xl font-semibold font-headline">🟣 USDC / USDT / BUSD</h3>
-                  <p className="text-sm font-semibold text-muted-foreground">Network: Polygon (ERC20)</p>
-                  <p className="text-sm text-muted-foreground break-all">{POLYGON_ADDRESS}</p>
-                   <CopyButton textToCopy={POLYGON_ADDRESS} buttonText="Copy Address" />
-                   <Alert className="mt-4">
-                     <Info className="h-4 w-4" />
-                     <AlertTitle>Network Information</AlertTitle>
-                     <AlertDescription>
-                       You can send any stablecoin. If it's not on the Polygon network, it will be automatically converted via a bridge.
-                     </AlertDescription>
-                   </Alert>
-                </div>
-                 <div className="flex justify-center md:justify-end">
-                  <Image src={polygonQrUrl} alt="Polygon Address QR Code" width={200} height={200} className="rounded-lg border p-2" />
-                </div>
-              </div>
-
-              <div className="border-t"></div>
-
-              {/* Lightning Network */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <div className="space-y-2">
-                  <h3 className="text-xl font-semibold font-headline">⚡ Lightning Network (LNDHub)</h3>
-                  <p className="text-sm text-muted-foreground">For instant, low-fee BTC payments.</p>
-                  <Button asChild variant="link" className="p-0 h-auto">
-                    <Link href={LIGHTNING_URL} target="_blank" rel="noopener noreferrer">{LIGHTNING_URL}</Link>
-                  </Button>
-                </div>
-                 <div className="flex justify-center md:justify-end">
-                   <Image src={lightningQrUrl} alt="Lightning URL QR Code" width={200} height={200} className="rounded-lg border p-2" />
-                </div>
-              </div>
-
-            </CardContent>
-          </Card>
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <div class="logo-container" aria-label="UhurU Logo">
+                <div class="logo-part"><span>UHU</span><div class="line line-bottom"></div></div>
+                <div class="logo-part"><span>RU</span><div class="line line-top"></div></div>
+            </div>
+            <p class="subtitle">Cross-Chain Payment Gateway to Polygon</p>
         </div>
-      </main>
+
+        <div class="content-grid">
+            <div class="instructions">
+                <h3>How to Pay</h3>
+                <ul>
+                    <li>
+                        <span class="step-number">1</span>
+                        <p>In the <strong>"You Pay"</strong> section, select the network and token you wish to send.</p>
+                    </li>
+                    <li>
+                        <span class="step-number">2</span>
+                        <p>Enter the <strong>amount</strong> you need to pay. The widget will calculate the equivalent in USDC on Polygon automatically.</p>
+                    </li>
+                    <li>
+                        <span class="step-number">3</span>
+                        <p>Click <strong>"Connect Wallet"</strong> and approve the connection in your browser wallet (e.g., MetaMask).</p>
+                    </li>
+                    <li>
+                        <span class="step-number">4</span>
+                        <p>Follow the prompts to <strong>review and confirm</strong> the transaction. This may involve one or two steps (Approve & Swap).</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="widget-wrapper">
+                <iframe id="lifi-widget" title="Crypto Payment Bridge"></iframe>
+            </div>
+
+            <div class="instructions">
+                <h3>Important Notes</h3>
+                <ul>
+                    <li>
+                        <span class="step-number">!</span>
+                        <p><strong>Destination is Fixed:</strong> You will be sending funds to our address on the Polygon network as <strong>USDC</strong>. This is locked and cannot be changed.</p>
+                    </li>
+                    <li>
+                        <span class="step-number">!</span>
+                        <p><strong>Gas Fees:</strong> Ensure you have enough native currency (e.g., BNB on BSC, ETH on Ethereum) in your wallet to cover the transaction fees.</p>
+                    </li>
+                    <li>
+                        <span class="step-number">!</span>
+                        <p><strong>Transaction Time:</strong> Cross-chain transactions can take a few minutes. Please be patient and do not close the window until it is complete.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-  );
-}
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="logo-part"><span>UHU</span><div class="line line-bottom"></div></div>
+                <div class="logo-part"><span>RU</span><div class="line line-top"></div></div>
+            </div>
+            <div class="footer-socials">
+                <a href="https://www.linkedin.com/company/uhurutrade" target="_blank" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+                <a href="https://www.instagram.com/uhurutrade/" target="_blank" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+                </a>
+                <a href="https://x.com/UhurUtradeUk" target="_blank" aria-label="X/Twitter">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                </a>
+                <a href="https://t.me/uhurutradeuk" target="_blank" aria-label="Telegram">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+                </a>
+            </div>
+        </div>
+        <div class="footer-legal">
+            © 2025 All rights reserved. Uhuru Trade Ltd. Company no. 15883242 - Unit 13 Freeland Park Wareham Road. Lytchett Matravers - BH16 6FA Poole - UK • <a href="/privacy-policy">Privacy Policy</a> • <a href="/cookie-policy">Cookie Policy</a>
+        </div>
+    </footer>
+
+
+    <script>
+        const config = {
+            receiver: "0x04a222b802736a9957fab102e5749b93dfed5034",
+            toChain: 137, // Polygon
+            toToken: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on Polygon
+            
+            // Jumper widget theme configuration
+            theme: {
+                palette: {
+                    primary: {
+                        main: '#3d6eff' // Your blue color (hsl(221, 83%, 53%))
+                    },
+                    background: {
+                        default: '#1a1b26', // card-bg
+                        paper: '#0d0d12'    // bg-color
+                    },
+                    text: {
+                        primary: '#e0e0e0'
+                    }
+                },
+                shape: {
+                    borderRadius: 16,
+                    borderRadiusSecondary: 8
+                },
+                typography: {
+                    fontFamily: "'Inter', sans-serif",
+                }
+            }
+        };
+        
+        const params = new URLSearchParams({
+            toChain: config.toChain,
+            toToken: config.toToken,
+            toAddress: config.receiver,
+            lockToChain: "true",
+            lockToToken: "true",
+            // Pass theme as a stringified JSON object
+            theme: JSON.stringify(config.theme),
+            // Suggested default values (source)
+            fromChain: 56, 
+            fromToken: "0x55d398326f99059fF775485246999027B3197955", // USDT on BSC
+        });
+
+        document.getElementById('lifi-widget').src = "https://jumper.exchange/?" + params.toString();
+    </script>
+</body>
+</html>
