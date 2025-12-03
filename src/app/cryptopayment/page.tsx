@@ -129,6 +129,19 @@
             color: var(--foreground);
             font-weight: 600;
         }
+        .instructions .wallet-connect-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: #3B99FC;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+        .instructions .wallet-connect-icon svg {
+            fill: white;
+            transform: scale(0.6);
+        }
 
         .widget-wrapper {
             width: 100%; max-width: 460px; height: 740px;
@@ -224,7 +237,7 @@
                     </li>
                      <li>
                         <span class="step-number">4</span>
-                        <p>Click the wallet icon in the top right to <strong>connect your wallet</strong> (e.g., Phantom, MetaMask) and approve the connection.</p>
+                        <p>Click the wallet icon in the top right to connect. For mobile wallets, the best option is <span class="wallet-connect-icon"><svg viewBox="0 0 24 24"><path d="M5.1,3.46c0.32-0.34,0.73-0.57,1.2-0.7C7.62,2.3,9.08,2.7,10,3.69c1.6,1.75,4.09,1.75,5.69-0.01c0.86-0.95,2.33-1.3,3.58-0.81c0.51,0.2,0.95,0.5,1.29,0.9c0.82,0.95,0.82,2.4,0,3.35c-1.12,1.29-1.12,3.31,0,4.6c0.82,0.95,0.82,2.4,0,3.35c-0.34,0.4-0.78,0.7-1.29,0.9c-1.25,0.49-2.73,0.14-3.58-0.81c-1.6-1.76-4.09-1.76-5.69,0c-0.86,0.95-2.33,1.3-3.58,0.81c-0.47-0.19-0.88-0.5-1.2-0.79c-0.93-1.07-0.93-2.68,0-3.75c1.28-1.48,1.28-3.87,0-5.35C4.25,6.14,4.25,4.53,5.1,3.46z"/></svg></span><strong>WalletConnect</strong>. This will show a QR code to securely authorize the connection from any wallet on your phone.</p>
                     </li>
                     <li>
                         <span class="step-number">5</span>
@@ -339,3 +352,5 @@
     </script>
 </body>
 </html>
+
+    
