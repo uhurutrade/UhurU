@@ -92,6 +92,7 @@
             color: var(--primary-color);
             margin-top: 0;
             margin-bottom: 20px;
+            text-align: center;
         }
         .instructions ul {
             list-style: none;
@@ -211,19 +212,23 @@
                 <ul>
                     <li>
                         <span class="step-number">1</span>
-                        <p>In the <strong>"You Pay"</strong> section, select the network and token you wish to send.</p>
+                        <p>In the <strong>From</strong> section, select the token and network you wish to pay with (e.g., USDT on Solana).</p>
                     </li>
                     <li>
                         <span class="step-number">2</span>
-                        <p>Enter the <strong>amount</strong> you need to pay. The widget will calculate the equivalent in USDC on Polygon automatically.</p>
+                        <p>The <strong>To</strong> section is locked to our corporate wallet. You will be sending <strong>USDC on the Polygon network</strong>.</p>
                     </li>
                     <li>
                         <span class="step-number">3</span>
-                        <p>Click <strong>"Connect Wallet"</strong> and approve the connection in your browser wallet (e.g., MetaMask).</p>
+                        <p>In the <strong>Send</strong> field, enter the amount you wish to pay. The widget will automatically calculate the amount we receive.</p>
+                    </li>
+                     <li>
+                        <span class="step-number">4</span>
+                        <p>Click the wallet icon in the top right to <strong>connect your wallet</strong> (e.g., Phantom, MetaMask) and approve the connection.</p>
                     </li>
                     <li>
-                        <span class="step-number">4</span>
-                        <p>Follow the prompts to <strong>review and confirm</strong> the transaction. This may involve one or two steps (Approve & Swap).</p>
+                        <span class="step-number">5</span>
+                        <p>Click <strong>Exchange</strong> to review the transaction details. You may need to approve the token first and then confirm the exchange.</p>
                     </li>
                 </ul>
             </div>
@@ -237,15 +242,23 @@
                 <ul>
                     <li>
                         <span class="step-number">!</span>
-                        <p><strong>Destination is Fixed:</strong> You will be sending funds to our address on the Polygon network as <strong>USDC</strong>. This is locked and cannot be changed.</p>
+                        <p><strong>Fixed Destination:</strong> All payments are automatically converted and sent as <strong>USDC</strong> to our wallet on the <strong>Polygon</strong> network. This is pre-configured and cannot be changed.</p>
                     </li>
                     <li>
                         <span class="step-number">!</span>
-                        <p><strong>Gas Fees:</strong> Ensure you have enough native currency (e.g., BNB on BSC, ETH on Ethereum) in your wallet to cover the transaction fees.</p>
+                        <p><strong>Gas Fees:</strong> Ensure you have enough native currency (e.g., SOL, ETH, BNB) in your wallet to cover the transaction gas fees. Fees can fluctuate.</p>
                     </li>
                     <li>
                         <span class="step-number">!</span>
-                        <p><strong>Transaction Time:</strong> Cross-chain transactions can take a few minutes. Please be patient and do not close the window until it is complete.</p>
+                        <p><strong>Slippage:</strong> The final amount received may vary slightly due to market price changes (slippage). The widget will show you the minimum expected amount.</p>
+                    </li>
+                     <li>
+                        <span class="step-number">!</span>
+                        <p><strong>Transaction Time:</strong> Cross-chain transactions can take a few minutes. Please be patient and do not close the window until you see a success confirmation.</p>
+                    </li>
+                    <li>
+                        <span class="step-number">!</span>
+                        <p><strong>Stuck Transactions:</strong> If a transaction takes too long, check the relevant block explorer. Do not send another payment until you confirm the status of the first one.</p>
                     </li>
                 </ul>
             </div>
@@ -318,8 +331,8 @@
             // Pass theme as a stringified JSON object
             theme: JSON.stringify(config.theme),
             // Suggested default values (source)
-            fromChain: 56, 
-            fromToken: "0x55d398326f99059fF775485246999027B3197955", // USDT on BSC
+            fromChain: 101, // Solana
+            fromToken: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", // USDT on Solana
         });
 
         document.getElementById('lifi-widget').src = "https://jumper.exchange/?" + params.toString();
