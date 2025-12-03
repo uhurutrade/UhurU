@@ -33,7 +33,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1100px;
             padding-top: 40px;
         }
         .header { 
@@ -66,17 +66,23 @@
         .content-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 30px;
             width: 100%;
             margin-bottom: 40px;
         }
 
         @media (min-width: 1024px) {
             .content-grid {
-                grid-template-columns: 1fr 460px 1fr;
+                grid-template-columns: 1fr 1fr;
                 align-items: start;
-                gap: 30px;
             }
+        }
+
+        .instructions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            height: 100%;
         }
 
         .instructions {
@@ -84,7 +90,6 @@
             border: 1px solid var(--border-color);
             border-radius: 16px;
             background-color: var(--card-background);
-            height: 100%;
         }
         .instructions h3 {
             font-family: 'Poppins', sans-serif;
@@ -144,7 +149,7 @@
         }
 
         .widget-wrapper {
-            width: 100%; max-width: 460px; height: 740px;
+            width: 100%; max-width: 500px; height: 800px;
             background: var(--card-background); border-radius: 24px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             border: 1px solid var(--border-color);
@@ -155,7 +160,7 @@
 
         .footer {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1100px;
             padding: 20px 0;
             border-top: 1px solid var(--border-color);
             margin-top: auto;
@@ -220,61 +225,64 @@
         </div>
 
         <div class="content-grid">
-            <div class="instructions">
-                <h3>How to Pay</h3>
-                <ul>
-                    <li>
-                        <span class="step-number">1</span>
-                        <p>In the <strong>From</strong> section, select the token and network you wish to pay with (e.g., USDT on Solana).</p>
-                    </li>
-                    <li>
-                        <span class="step-number">2</span>
-                        <p>The <strong>To</strong> section is locked to our corporate wallet. You will be sending <strong>USDC on the Polygon network</strong>.</p>
-                    </li>
-                    <li>
-                        <span class="step-number">3</span>
-                        <p>In the <strong>Send</strong> field, enter the amount you wish to pay. The widget will automatically calculate the amount we receive.</p>
-                    </li>
-                     <li>
-                        <span class="step-number">4</span>
-                        <p>Click the wallet icon in the top right to connect. For mobile wallets, the best option is <span class="wallet-connect-icon"><svg viewBox="0 0 24 24"><path d="M5.1,3.46c0.32-0.34,0.73-0.57,1.2-0.7C7.62,2.3,9.08,2.7,10,3.69c1.6,1.75,4.09,1.75,5.69-0.01c0.86-0.95,2.33-1.3,3.58-0.81c0.51,0.2,0.95,0.5,1.29,0.9c0.82,0.95,0.82,2.4,0,3.35c-1.12,1.29-1.12,3.31,0,4.6c0.82,0.95,0.82,2.4,0,3.35c-0.34,0.4-0.78,0.7-1.29,0.9c-1.25,0.49-2.73,0.14-3.58-0.81c-1.6-1.76-4.09-1.76-5.69,0c-0.86,0.95-2.33,1.3-3.58,0.81c-0.47-0.19-0.88-0.5-1.2-0.79c-0.93-1.07-0.93-2.68,0-3.75c1.28-1.48,1.28-3.87,0-5.35C4.25,6.14,4.25,4.53,5.1,3.46z"/></svg></span><strong>WalletConnect</strong>. This will show a QR code to securely authorize the connection from any wallet on your phone.</p>
-                    </li>
-                    <li>
-                        <span class="step-number">5</span>
-                        <p>Click <strong>Exchange</strong> to review the transaction details. You may need to approve the token first and then confirm the exchange.</p>
-                    </li>
-                </ul>
+            <div class="instructions-container">
+                <div class="instructions">
+                    <h3>How to Pay</h3>
+                    <ul>
+                        <li>
+                            <span class="step-number">1</span>
+                            <p>In the <strong>From</strong> section, select the token and network you wish to pay with (e.g., USDT on Solana).</p>
+                        </li>
+                        <li>
+                            <span class="step-number">2</span>
+                            <p>The <strong>To</strong> section is locked to our corporate wallet. You will be sending <strong>USDC on the Polygon network</strong>.</p>
+                        </li>
+                        <li>
+                            <span class="step-number">3</span>
+                            <p>In the <strong>Send</strong> field, enter the amount you wish to pay. The widget will automatically calculate the amount we receive.</p>
+                        </li>
+                         <li>
+                            <span class="step-number">4</span>
+                            <p>Click the wallet icon in the top right to connect. For mobile wallets, the best option is <span class="wallet-connect-icon"><svg viewBox="0 0 24 24"><path d="M5.1,3.46c0.32-0.34,0.73-0.57,1.2-0.7C7.62,2.3,9.08,2.7,10,3.69c1.6,1.75,4.09,1.75,5.69-0.01c0.86-0.95,2.33-1.3,3.58-0.81c0.51,0.2,0.95,0.5,1.29,0.9c0.82,0.95,0.82,2.4,0,3.35c-1.12,1.29-1.12,3.31,0,4.6c0.82,0.95,0.82,2.4,0,3.35c-0.34,0.4-0.78,0.7-1.29,0.9c-1.25,0.49-2.73,0.14-3.58-0.81c-1.6-1.76-4.09-1.76-5.69,0c-0.86,0.95-2.33,1.3-3.58,0.81c-0.47-0.19-0.88-0.5-1.2-0.79c-0.93-1.07-0.93-2.68,0-3.75c1.28-1.48,1.28-3.87,0-5.35C4.25,6.14,4.25,4.53,5.1,3.46z"/></svg></span><strong>WalletConnect</strong>. This will show a QR code to securely authorize the connection from any wallet on your phone.</p>
+                        </li>
+                        <li>
+                            <span class="step-number">5</span>
+                            <p>Click <strong>Exchange</strong> to review the transaction details. You may need to approve the token first and then confirm the exchange.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="instructions">
+                    <h3>Important Notes</h3>
+                    <ul>
+                        <li>
+                            <span class="step-number">!</span>
+                            <p><strong>Fixed Destination:</strong> All payments are automatically converted and sent as <strong>USDC</strong> to our wallet on the <strong>Polygon</strong> network. This is pre-configured and cannot be changed.</p>
+                        </li>
+                        <li>
+                            <span class="step-number">!</span>
+                            <p><strong>Gas Fees:</strong> Ensure you have enough native currency (e.g., SOL, ETH, BNB) in your wallet to cover the transaction gas fees. Fees can fluctuate.</p>
+                        </li>
+                        <li>
+                            <span class="step-number">!</span>
+                            <p><strong>Slippage:</strong> The final amount received may vary slightly due to market price changes (slippage). The widget will show you the minimum expected amount.</p>
+                        </li>
+                         <li>
+                            <span class="step-number">!</span>
+                            <p><strong>Transaction Time:</strong> Cross-chain transactions can take a few minutes. Please be patient and do not close the window until you see a success confirmation.</p>
+                        </li>
+                        <li>
+                            <span class="step-number">!</span>
+                            <p><strong>Stuck Transactions:</strong> If a transaction takes too long, check the relevant block explorer. Do not send another payment until you confirm the status of the first one.</p>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div class="widget-wrapper">
                 <iframe id="lifi-widget" title="Crypto Payment Bridge"></iframe>
             </div>
 
-            <div class="instructions">
-                <h3>Important Notes</h3>
-                <ul>
-                    <li>
-                        <span class="step-number">!</span>
-                        <p><strong>Fixed Destination:</strong> All payments are automatically converted and sent as <strong>USDC</strong> to our wallet on the <strong>Polygon</strong> network. This is pre-configured and cannot be changed.</p>
-                    </li>
-                    <li>
-                        <span class="step-number">!</span>
-                        <p><strong>Gas Fees:</strong> Ensure you have enough native currency (e.g., SOL, ETH, BNB) in your wallet to cover the transaction gas fees. Fees can fluctuate.</p>
-                    </li>
-                    <li>
-                        <span class="step-number">!</span>
-                        <p><strong>Slippage:</strong> The final amount received may vary slightly due to market price changes (slippage). The widget will show you the minimum expected amount.</p>
-                    </li>
-                     <li>
-                        <span class="step-number">!</span>
-                        <p><strong>Transaction Time:</strong> Cross-chain transactions can take a few minutes. Please be patient and do not close the window until you see a success confirmation.</p>
-                    </li>
-                    <li>
-                        <span class="step-number">!</span>
-                        <p><strong>Stuck Transactions:</strong> If a transaction takes too long, check the relevant block explorer. Do not send another payment until you confirm the status of the first one.</p>
-                    </li>
-                </ul>
-            </div>
         </div>
     </div>
 
