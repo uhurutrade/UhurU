@@ -274,7 +274,7 @@
             </div>
         </div>
         <div class="footer-legal">
-            © 2025 All rights reserved. Uhuru Trade Ltd. Company no. 15883242 - Unit 13 Freeland Park Wareham Road. Lytchett Matravers - BH16 6FA Poole - UK • <a href="/privacy-policy">Privacy Policy</a> • <a href="/cookie-policy">Cookie Policy</a>
+            © 2025 All rights reserved. Uhuru Trade Ltd. Company no. 15883242 - Unit 13 Freeland Park Wareham Road. Lytchett Matravers - BH16 6FA Poole - UK • <a href="https://uhurutrade.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a> • <a href="https://uhurutrade.com/cookie-policy" target="_blank" rel="noopener noreferrer">Cookie Policy</a>
         </div>
     </footer>
 
