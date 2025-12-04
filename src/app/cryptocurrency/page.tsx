@@ -68,6 +68,9 @@ export default function CryptocurrencyPage() {
                                         <div className="relative w-48 h-48 mb-4 rounded-lg overflow-hidden border-2 border-primary p-1 bg-white">
                                             <Image src={option.qrImage} alt={`QR Code for ${option.name}`} width={192} height={192} style={{ objectFit: 'contain' }} />
                                         </div>
+                                        <p className="text-sm text-muted-foreground mb-3 px-4">
+                                          Scan the QR code with your wallet or copy the address below.
+                                        </p>
                                         <div className="w-full text-center break-words px-4">
                                             <p className="text-xs text-muted-foreground mb-2">{option.address}</p>
                                             <CopyButton textToCopy={option.address} />
