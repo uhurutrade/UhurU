@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import SubPageHeader from '@/components/uhuru/subpage-header';
 import Image from 'next/image';
 import CopyButton from '@/components/uhuru/CopyButton';
-import { Bitcoin, Zap, Info, ExternalLink } from 'lucide-react';
+import { Bitcoin, Zap, Info, ExternalLink, Cog } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -52,7 +52,7 @@ export default function CryptocurrencyPage() {
                     <section className="mb-20">
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-bold font-headline">Direct Payment</h2>
-                            <p className="mt-2 text-muted-foreground">For Bitcoin, Lightning, and USDC on Polygon.</p>
+                            <p className="mt-2 text-muted-foreground">For Bitcoin, and USDC on Polygon.</p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {paymentOptions.map((option) => (
@@ -64,17 +64,27 @@ export default function CryptocurrencyPage() {
                                         <CardTitle className="text-2xl font-headline">{option.name}</CardTitle>
                                         <CardDescription>{option.network}</CardDescription>
                                     </CardHeader>
-                                    <CardContent className="flex flex-col items-center flex-grow">
-                                        <div className="relative w-48 h-48 mb-4 rounded-lg overflow-hidden border-2 border-primary p-1 bg-white">
-                                            <Image src={option.qrImage} alt={`QR Code for ${option.name}`} width={192} height={192} style={{ objectFit: 'contain' }} />
-                                        </div>
-                                        <p className="text-sm text-muted-foreground mb-3 px-4">
-                                          Scan the QR code with your wallet or copy the address below.
-                                        </p>
-                                        <div className="w-full text-center break-words px-4">
-                                            <p className="text-xs text-muted-foreground mb-2">{option.address}</p>
-                                            <CopyButton textToCopy={option.address} />
-                                        </div>
+                                    <CardContent className="flex flex-col items-center justify-center flex-grow">
+                                        {option.name === 'Lightning' ? (
+                                            <div className="flex flex-col items-center justify-center text-center h-full space-y-3 p-4">
+                                                <Cog className="h-10 w-10 animate-spin text-muted-foreground" />
+                                                <p className="text-muted-foreground font-semibold">Coming Soon</p>
+                                                <p className="text-xs text-muted-foreground">We are working to support Lightning payments in the near future.</p>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="relative w-48 h-48 mb-4 rounded-lg overflow-hidden border-2 border-primary p-1 bg-white">
+                                                    <Image src={option.qrImage} alt={`QR Code for ${option.name}`} width={192} height={192} style={{ objectFit: 'contain' }} />
+                                                </div>
+                                                <p className="text-sm text-muted-foreground mb-3 px-4">
+                                                  Scan the QR code with your wallet or copy the address below.
+                                                </p>
+                                                <div className="w-full text-center break-words px-4">
+                                                    <p className="text-xs text-muted-foreground mb-2">{option.address}</p>
+                                                    <CopyButton textToCopy={option.address} />
+                                                </div>
+                                            </>
+                                        )}
                                     </CardContent>
                                 </Card>
                             ))}
