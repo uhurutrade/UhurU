@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import SubPageHeader from '@/components/uhuru/subpage-header';
 import Image from 'next/image';
 import CopyButton from '@/components/uhuru/CopyButton';
-import { Bitcoin, Zap, Info, ExternalLink, Loader2 } from 'lucide-react';
+import { Bitcoin, Zap, Info, ExternalLink, Loader } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -67,7 +67,7 @@ export default function CryptocurrencyPage() {
                                     <CardContent className="flex flex-col items-center justify-center flex-grow">
                                         {option.name === 'Lightning' ? (
                                             <div className="flex flex-col items-center justify-center text-center h-full space-y-3 p-4">
-                                                <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
+                                                <Loader className="h-10 w-10 animate-spin text-muted-foreground" />
                                                 <p className="text-muted-foreground font-semibold">Coming Soon</p>
                                                 <p className="text-xs text-muted-foreground">We are working to support Lightning payments in the near future.</p>
                                             </div>
