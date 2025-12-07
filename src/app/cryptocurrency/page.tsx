@@ -17,18 +17,18 @@ const paymentOptions = [
         icon: <Bitcoin className="h-8 w-8" />,
     },
     {
-        name: 'Lightning',
-        network: 'Bitcoin Lightning',
-        address: 'uhurutrade@zbd.gg',
-        qrImage: '/images/qr-lightning.png',
-        icon: <Zap className="h-8 w-8" />,
-    },
-    {
         name: 'USDC',
         network: 'Polygon Network',
         address: '0x04a222b802736a9957fab102e5749b93dfed5034',
         qrImage: '/images/qr-polygon.png',
         icon: <span className="text-2xl font-bold">P</span>
+    },
+    {
+        name: 'Lightning',
+        network: 'Bitcoin Lightning',
+        address: 'uhurutrade@zbd.gg',
+        qrImage: '/images/qr-lightning.png',
+        icon: <Zap className="h-8 w-8" />,
     }
 ];
 
