@@ -12,7 +12,7 @@ const paymentOptions = [
     {
         name: 'Bitcoin (BTC)',
         network: 'Bitcoin Network',
-        address: 'bc1q0uhurutrade8g5400uvxl2ur3f3t2p45fawedsx4',
+        address: 'bc1qu7t53d9k6eu5lm7t2pvywxneyn3zx8acqezgxc',
         qrImage: '/images/qr-btc.png',
         icon: <Bitcoin className="h-8 w-8" />,
     },
