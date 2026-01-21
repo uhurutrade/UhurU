@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useRef, useEffect, useTransition } from 'react';
@@ -13,6 +14,7 @@ import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/comp
 import Logo from './logo';
 import { ThemeToggle } from '../theme-toggle';
 import Link from 'next/link';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface Message {
   id: string;
@@ -228,8 +230,14 @@ export default function RagLmChat() {
                       <Bot className="h-6 w-6" />
                     </div>
                   )}
-                  <Card className={`max-w-[85%] p-4 text-base shadow-sm ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                    <p className="whitespace-pre-wrap">{message.content}</p>
+                  <Card className={`max-w-[85%] text-base shadow-sm ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                    <div className="p-4">
+                      {message.role === 'assistant' ? (
+                        <MarkdownRenderer content={message.content} />
+                      ) : (
+                        <p className="whitespace-pre-wrap">{message.content}</p>
+                      )}
+                    </div>
                   </Card>
                   {message.role === 'user' && (
                     <div className="bg-muted text-muted-foreground rounded-full p-2.5 flex-shrink-0">

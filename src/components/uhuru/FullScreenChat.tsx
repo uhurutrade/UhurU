@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { Card, CardContent } from '../ui/card';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface Message {
   id: string;
@@ -162,7 +163,11 @@ export default function FullScreenChat() {
                   <div key={message.id} className={`flex items-start gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}>
                       {message.role === 'assistant' && (<div className="bg-primary text-primary-foreground rounded-full p-2.5 flex-shrink-0"><Bot className="h-6 w-6" /></div>)}
                       <div className={`max-w-[80%] rounded-xl p-4 text-base shadow-sm ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
-                          <p className="whitespace-pre-wrap">{message.content}</p>
+                          {message.role === 'assistant' ? (
+                            <MarkdownRenderer content={message.content} />
+                          ) : (
+                            <p className="whitespace-pre-wrap">{message.content}</p>
+                          )}
                       </div>
                       {message.role === 'user' && (<div className="bg-muted text-muted-foreground rounded-full p-2.5 flex-shrink-0"><User className="h-6 w-6" /></div>)}
                   </div>

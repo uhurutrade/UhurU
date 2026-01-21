@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { chatbotWelcomeMessage } from '@/chatbot/chatbot-welcome';
 import { usePathname } from 'next/navigation';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface Message {
   id: string;
@@ -174,7 +175,11 @@ const ChatWidgetContent = () => {
                           : 'bg-muted text-muted-foreground'
                       }`}
                     >
-                      <p className="whitespace-pre-wrap">{message.content}</p>
+                      {message.role === 'assistant' ? (
+                        <MarkdownRenderer content={message.content} />
+                      ) : (
+                        <p className="whitespace-pre-wrap">{message.content}</p>
+                      )}
                     </div>
                     {message.role === 'user' && (
                       <div className="bg-muted text-muted-foreground rounded-full p-2">
