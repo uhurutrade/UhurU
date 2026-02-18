@@ -25,7 +25,7 @@ export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 
 export async function chat(request: ChatRequest): Promise<ChatResponse> {
   const { history, prompt, sessionId } = request;
-  const webhookUrl = 'https://n8n.uhurutrade.com/webhook/0a91d540-adb7-424a-9ff1-be55ba6667d6';
+  const webhookUrl = 'https://n8n.uhurutrade.com/webhook/52ae13c4-3986-4bef-a680-1e231287cba4';
 
   // Log the user's prompt
   await logConversation('user', prompt, sessionId);
