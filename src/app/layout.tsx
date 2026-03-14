@@ -27,6 +27,9 @@ export const metadata: Metadata = {
     template: `%s | UhurU`,
   },
   description: 'AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

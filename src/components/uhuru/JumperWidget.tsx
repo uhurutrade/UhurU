@@ -53,7 +53,7 @@ const JumperWidget = () => {
         
         const iframe = document.getElementById('lifi-widget') as HTMLIFrameElement | null;
         if (iframe) {
-            // IMPORTANT: use jumper.exchange/embed to avoid connection refusal
+            // IMPORTANT: use jumper.exchange/embed to avoid connection refusal and CSP issues
             iframe.src = "https://jumper.exchange/embed?" + params.toString();
         }
     }, [mounted]);

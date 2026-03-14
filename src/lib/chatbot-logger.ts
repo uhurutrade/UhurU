@@ -25,7 +25,8 @@ const languageCodeMap: { [key: string]: string } = {
  * @param sessionId The user's session ID.
  */
 export async function logConversation(role: 'user' | 'assistant' | 'assistant-error', content: string, sessionId?: string) {
-    if (process.env.TRACE !== 'ON') {
+    // Check for trace explicitly, but only if environment variable is set
+    if (process.env.TRACE !== 'ON' && process.env.NEXT_PUBLIC_TRACE !== 'ON') {
         return;
     }
     
@@ -42,11 +43,11 @@ export async function logConversation(role: 'user' | 'assistant' | 'assistant-er
             ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
             languageCode = headerList.get('accept-language')?.split(',')[0].split('-')[0] || 'en';
         } catch (hError) {
-            // Silent catch for build time or environments where headers are not available
+            // Silently fail if headers are not accessible (e.g. during static build)
         }
 
         let country = 'N/A';
-        if (ip !== '127.0.0.1') {
+        if (ip && ip !== '127.0.0.1') {
             try {
                 const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`, { signal: AbortSignal.timeout(2000) });
                 if (geoResponse.ok) {
@@ -73,10 +74,14 @@ export async function logConversation(role: 'user' | 'assistant' | 'assistant-er
 
         // Ensure directory exists
         const dir = path.dirname(logFilePath);
-        await fs.mkdir(dir, { recursive: true });
-        
-        await fs.appendFile(logFilePath, logMessage);
+        try {
+            await fs.mkdir(dir, { recursive: true });
+            await fs.appendFile(logFilePath, logMessage);
+        } catch (fError) {
+            // Silently fail if file system is not writable
+        }
     } catch (error) {
-        console.error('Failed to write to chatbot.log', error);
+        // Final fallback to avoid crashing the server action
+        console.error('Failed to log conversation:', error);
     }
 }

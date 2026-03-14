@@ -45,19 +45,19 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
             <div className="pt-1" />
           </>
         )}
-        <a href="mailto:hello@uhurutrade.com" className={cn("text-foreground hover:text-primary font-medium", isMobile ? "text-xs" : "text-[9px] mr-1")}>
+        <a href="mailto:hello@uhurutrade.com" className={cn("text-foreground hover:text-primary font-medium whitespace-nowrap", isMobile ? "text-xs" : "text-[9px] mr-1")}>
           hello@uhurutrade.com
         </a>
         <div className={cn(
-            "flex items-center gap-1",
+            "flex items-center gap-1.5",
             isMobile && "flex-wrap justify-start"
         )}>
-            <Tooltip><TooltipTrigger asChild><a href="https://www.instagram.com/uhurutrade/" target="_blank" rel="noopener noreferrer"><Instagram className="h-2.5 w-2.5 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>Instagram</p></TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><a href="https://www.instagram.com/uhurutrade/" target="_blank" rel="noopener noreferrer"><Instagram className="h-3 w-3 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>Instagram</p></TooltipContent></Tooltip>
             <Tooltip><TooltipTrigger asChild><a href="https://wa.me/447517074605" target="_blank" rel="noopener noreferrer"><WhatsAppIcon /></a></TooltipTrigger><TooltipContent><p>WhatsApp</p></TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><a href="https://www.linkedin.com/company/uhurutrade" target="_blank" rel="noopener noreferrer"><Linkedin className="h-2.5 w-2.5 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>LinkedIn</p></TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><a href="https://www.linkedin.com/company/uhurutrade" target="_blank" rel="noopener noreferrer"><Linkedin className="h-3 w-3 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>LinkedIn</p></TooltipContent></Tooltip>
             <Tooltip><TooltipTrigger asChild><a href="https://x.com/UhurUtradeUk" target="_blank" rel="noopener noreferrer"><XIcon /></a></TooltipTrigger><TooltipContent><p>X / Twitter</p></TooltipContent></Tooltip>
             <Tooltip><TooltipTrigger asChild><a href="https://www.amazon.co.uk/dp/B0DN2PJR65" target="_blank" rel="noopener noreferrer"><AmazonIcon /></a></TooltipTrigger><TooltipContent><p>Amazon</p></TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><a href="https://t.me/uhurutradeuk" target="_blank" rel="noopener noreferrer"><Send className="h-2.5 w-2.5 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>Telegram</p></TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><a href="https://t.me/uhurutradeuk" target="_blank" rel="noopener noreferrer"><Send className="h-3 w-3 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>Telegram</p></TooltipContent></Tooltip>
         </div>
     </div>
   </TooltipProvider>
@@ -66,26 +66,26 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-zinc-100/90 dark:bg-background/95 backdrop-blur-md">
-      <div className="container mx-auto flex h-8 max-w-7xl items-center justify-between px-2 md:px-4">
-        <div className="flex-shrink-0 scale-[0.5] origin-left">
+      <div className="container mx-auto flex h-10 max-w-7xl items-center justify-between px-2 md:px-4">
+        <div className="flex-shrink-0 scale-[0.6] origin-left">
           <Link href="/"><Logo /></Link>
         </div>
 
-        <div className="hidden md:flex items-center gap-0.5 rounded-full border bg-muted/20 p-0.5 mx-1">
-            <Link href="/uhuru-airdrop" className="px-1.5 py-0.5 text-[8px] font-bold text-foreground hover:bg-background/70 hover:text-primary rounded-full transition-colors uppercase">Airdrop</Link>
-            <Link href="/uhurucoin" className="px-1.5 py-0.5 text-[8px] font-bold text-foreground hover:bg-background/70 hover:text-primary rounded-full transition-colors uppercase">UhuruCoin</Link>
-            <Link href="/ai-chat" className="px-1.5 py-0.5 text-[8px] font-bold text-foreground hover:bg-background/70 hover:text-primary rounded-full transition-colors uppercase">AI Chat</Link>
+        <div className="hidden md:flex items-center gap-1 rounded-full border bg-muted/20 p-0.5 mx-2">
+            <Link href="/uhuru-airdrop" className="px-2 py-0.5 text-[9px] font-bold text-foreground hover:bg-background/70 hover:text-primary rounded-full transition-colors uppercase whitespace-nowrap">Airdrop</Link>
+            <Link href="/uhurucoin" className="px-2 py-0.5 text-[9px] font-bold text-foreground hover:bg-background/70 hover:text-primary rounded-full transition-colors uppercase whitespace-nowrap">UhuruCoin</Link>
+            <Link href="/ai-chat" className="px-2 py-0.5 text-[9px] font-bold text-foreground hover:bg-background/70 hover:text-primary rounded-full transition-colors uppercase whitespace-nowrap">AI Chat</Link>
         </div>
 
-        <div className="hidden md:flex items-center gap-1.5 flex-shrink-0">
+        <div className="hidden md:flex items-center gap-2 flex-shrink-0">
           <SocialLinks />
-          <ThemeToggle className="h-6 w-6" iconClassName="h-3 w-3" />
+          <ThemeToggle className="h-7 w-7" iconClassName="h-3.5 w-3.5" />
         </div>
 
-        <div className="flex items-center gap-1.5 md:hidden">
-          <ThemeToggle className="h-6 w-6" iconClassName="h-3 w-3" />
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle className="h-7 w-7" iconClassName="h-3.5 w-3.5" />
           <Sheet>
-            <SheetTrigger asChild><Button variant="ghost" size="icon" className="h-6 w-6"><Menu className="h-3 w-3" /></Button></SheetTrigger>
+            <SheetTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7"><Menu className="h-4 w-4" /></Button></SheetTrigger>
             <SheetContent side="right">
               <div className="flex flex-col gap-4 py-4">
                 <Logo />
