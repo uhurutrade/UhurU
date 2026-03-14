@@ -17,15 +17,15 @@ export default function Hero() {
       )}>
         <div className={cn(
           "flex flex-col justify-center space-y-6",
-          !showVideo && "w-full max-w-5xl"
+          !showVideo ? "w-full max-w-full" : "w-full"
         )}>
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tighter font-headline leading-[1.1]">
               When we talk tech, money listens
             </h1>
             <p className={cn(
               "text-muted-foreground md:text-xl",
-              showVideo ? "max-w-[600px]" : "mx-auto max-w-[800px]"
+              showVideo ? "max-w-[600px]" : "mx-auto max-w-[900px]"
             )}>
               AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments.
             </p>
