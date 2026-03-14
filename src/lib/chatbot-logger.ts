@@ -34,19 +34,28 @@ export async function logConversation(role: 'user' | 'assistant' | 'assistant-er
         const pad = (num: number) => num.toString().padStart(2, '0');
         const timestamp = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
         
-        const headerList = await headers();
-        const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
-        const languageCode = headerList.get('accept-language')?.split(',')[0].split('-')[0];
+        let ip = '127.0.0.1';
+        let languageCode = 'en';
+
+        try {
+            const headerList = await headers();
+            ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
+            languageCode = headerList.get('accept-language')?.split(',')[0].split('-')[0] || 'en';
+        } catch (hError) {
+            // Headers might not be available in all contexts (like during build)
+        }
 
         let country = 'N/A';
-        try {
-            const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`, { signal: AbortSignal.timeout(2000) });
-            if (geoResponse.ok) {
-                const geoData = await geoResponse.json();
-                country = geoData.countryCode || 'N/A';
+        if (ip !== '127.0.0.1') {
+            try {
+                const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`, { signal: AbortSignal.timeout(2000) });
+                if (geoResponse.ok) {
+                    const geoData = await geoResponse.json();
+                    country = geoData.countryCode || 'N/A';
+                }
+            } catch (geoError) {
+                // Log silent fail for geoip
             }
-        } catch (geoError) {
-            // Log silent fail for geoip
         }
         
         const idPart = sessionId ? `[id:${sessionId}]` : '';

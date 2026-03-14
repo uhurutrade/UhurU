@@ -28,7 +28,9 @@ export const metadata: Metadata = {
   },
   description: 'AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments',
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
   }
 };
 
