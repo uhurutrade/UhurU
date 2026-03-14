@@ -45,7 +45,7 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
             <div className="pt-1" />
           </>
         )}
-        <a href="mailto:hello@uhurutrade.com" className={cn("text-foreground hover:text-primary font-medium whitespace-nowrap", isMobile ? "text-xs" : "text-[9px] mr-1")}>
+        <a href="mailto:hello@uhurutrade.com" className={cn("text-foreground hover:text-primary font-medium whitespace-nowrap", isMobile ? "text-xs" : "text-[10px] mr-1")}>
           hello@uhurutrade.com
         </a>
         <div className={cn(
