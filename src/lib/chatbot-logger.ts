@@ -42,7 +42,7 @@ export async function logConversation(role: 'user' | 'assistant' | 'assistant-er
             ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
             languageCode = headerList.get('accept-language')?.split(',')[0].split('-')[0] || 'en';
         } catch (hError) {
-            // Headers might not be available in all contexts (like during build)
+            // Silent catch for build time or environments where headers are not available
         }
 
         let country = 'N/A';
@@ -71,6 +71,10 @@ export async function logConversation(role: 'user' | 'assistant' | 'assistant-er
 
         const logMessage = `[${timestamp}]${idPart}${langPart}${countryPart}${ipPart} uhurulog_conversation: ${JSON.stringify(logData)}\n`;
 
+        // Ensure directory exists
+        const dir = path.dirname(logFilePath);
+        await fs.mkdir(dir, { recursive: true });
+        
         await fs.appendFile(logFilePath, logMessage);
     } catch (error) {
         console.error('Failed to write to chatbot.log', error);

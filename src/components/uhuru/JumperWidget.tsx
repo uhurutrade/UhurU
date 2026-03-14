@@ -53,7 +53,7 @@ const JumperWidget = () => {
         
         const iframe = document.getElementById('lifi-widget') as HTMLIFrameElement | null;
         if (iframe) {
-            // Use /embed to properly allow embedding and avoid CSP issues
+            // IMPORTANT: use jumper.exchange/embed to avoid CSP framing issues
             iframe.src = "https://jumper.exchange/embed?" + params.toString();
         }
     }, [mounted]);
@@ -66,7 +66,7 @@ const JumperWidget = () => {
                 id="lifi-widget" 
                 title="Crypto Payment Bridge" 
                 className="w-full h-full border-none rounded-2xl shadow-2xl"
-                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking; clipboard-read; clipboard-write; web-share; bluetooth; eth-ledger; eth-trezor;"
+                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking; clipboard-read; clipboard-write; web-share;"
                 loading="lazy"
             ></iframe>
         </div>

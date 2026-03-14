@@ -27,11 +27,6 @@ export const metadata: Metadata = {
     template: `%s | UhurU`,
   },
   description: 'AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments',
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' }
-    ],
-  }
 };
 
 export default function RootLayout({
