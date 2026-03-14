@@ -34,20 +34,19 @@ export async function logConversation(role: 'user' | 'assistant' | 'assistant-er
         const pad = (num: number) => num.toString().padStart(2, '0');
         const timestamp = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
         
-        const headerList = headers();
+        const headerList = await headers();
         const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
         const languageCode = headerList.get('accept-language')?.split(',')[0].split('-')[0];
 
         let country = 'N/A';
         try {
-            // GeoIP lookup can be latency-intensive, consider making it optional or handling timeouts.
-            const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
+            const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`, { signal: AbortSignal.timeout(2000) });
             if (geoResponse.ok) {
                 const geoData = await geoResponse.json();
                 country = geoData.countryCode || 'N/A';
             }
         } catch (geoError) {
-            console.error('IP Geolocation failed:', geoError);
+            // Log silent fail for geoip
         }
         
         const idPart = sessionId ? `[id:${sessionId}]` : '';
@@ -56,10 +55,9 @@ export async function logConversation(role: 'user' | 'assistant' | 'assistant-er
         const countryPart = `[country:${country}]`;
         const ipPart = `[ip:${ip}]`;
 
-        // Using a more structured log format
         const logData = {
             role,
-            content: content.replace(/\n/g, '\\n') // Escape newlines for single-line JSON
+            content: content.replace(/\n/g, '\\n')
         };
 
         const logMessage = `[${timestamp}]${idPart}${langPart}${countryPart}${ipPart} uhurulog_conversation: ${JSON.stringify(logData)}\n`;

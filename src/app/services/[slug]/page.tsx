@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { features } from '@/lib/features';
@@ -7,17 +6,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import SubPageHeader from '@/components/uhuru/subpage-header';
-
-// These pages have their own dedicated component.
-import AmazonFbaPage from '../amazon-fba/page';
-import ErpCrmPage from '../erp-and-crm/page';
-import AiAutomationPage from '../ai-automation-and-ai-agents/page';
-import BlockchainCryptoPage from '../blockchain-and-crypto/page';
-import BusinessLocalizationPage from '../business-localization-strategies/page';
-import NoCodeAppDesignPage from '../no-code-app-design/page';
-import CloudManagementPage from '../cloud-saas-paas-management/page';
-import AllInOnePackagePage from '../all-in-one-package/page';
-
 
 const iconComponents: { [key: string]: React.ReactNode } = {
   ShoppingCart: <ShoppingCart className="h-10 w-10" />,
@@ -41,8 +29,9 @@ const serviceContent: { [key: string]: { paragraphs: string[] } } = {
   },
 };
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const feature = features.find((f) => f.slug === params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const feature = features.find((f) => f.slug === slug);
 
   if (!feature) {
     return {
@@ -58,16 +47,15 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 
-export default function ServicePage({ params }: { params: { slug: string } }) {
+export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design', 'cloud-saas-paas-management', 'all-in-one-package'];
-  if (dedicatedPages.includes(params.slug)) {
-    // This route should not handle dedicated pages.
-    // Next.js will prioritize the specific page file.
-    // We can return notFound() to be safe.
+  
+  if (dedicatedPages.includes(slug)) {
     notFound();
   }
 
-  const feature = features.find((f) => f.slug === params.slug);
+  const feature = features.find((f) => f.slug === slug);
 
   if (!feature) {
     notFound();
@@ -75,11 +63,6 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
 
   const icon = iconComponents[feature.icon];
   const content = serviceContent[feature.slug] || { paragraphs: [] };
-
-  if (!icon) {
-    console.error(`Icon not found for feature: ${feature.title}`);
-    notFound();
-  }
 
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
@@ -121,7 +104,6 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
 
 export async function generateStaticParams() {
   const dedicatedPages = ['amazon-fba', 'erp-and-crm', 'ai-automation-and-ai-agents', 'blockchain-and-crypto', 'business-localization-strategies', 'no-code-app-design', 'cloud-saas-paas-management', 'all-in-one-package'];
-  // Generate params only for services that DON'T have a dedicated page.
   return features
     .filter(feature => !dedicatedPages.includes(feature.slug))
     .map((feature) => ({

@@ -1,4 +1,3 @@
-
 import type {Metadata} from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -28,6 +27,9 @@ export const metadata: Metadata = {
     template: `%s | UhurU`,
   },
   description: 'AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments',
+  icons: {
+    icon: '/favicon.ico',
+  }
 };
 
 export default function RootLayout({
@@ -37,9 +39,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-      </head>
       <body className={cn("font-body antialiased", inter.variable, poppins.variable)}>
         <ThemeProvider
           attribute="class"
