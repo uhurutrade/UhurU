@@ -60,24 +60,44 @@ export async function ragUcmChat(request: ChatRequest): Promise<ChatResponse> {
 
     let content = responseData.content;
 
-    // More robust source replacement logic
-    if (Array.isArray(responseData.sources)) {
-      responseData.sources.forEach((source: any) => {
-        // Try to find a name/filename in various common fields from n8n/vector stores
-        let name = source.name || 
-                   source.filename || 
-                   source.metadata?.name || 
-                   source.metadata?.filename || 
-                   source.metadata?.title || 
-                   source.metadata?.["file_name"];
+    // Even more robust source replacement logic
+    const processSource = (source: any, sourceId?: string) => {
+      // IDs can be in various fields depending on n8n version and database
+      const id = sourceId || source.id || source.document_id || (typeof source === 'string' ? source : null);
+      
+      // Try to find a name/filename in many possible locations
+      let name = source.name || 
+                 source.filename || 
+                 source.metadata?.name || 
+                 source.metadata?.filename || 
+                 source.metadata?.title || 
+                 source.metadata?.["file_name"] ||
+                 source.metadata?.source ||
+                 source.metadata?.metadata?.filename;
+      
+      if (id && name) {
+        const idStr = String(id);
+        const cleanName = String(name).replace(/\.[^/.]+$/, "");
         
-        if (source.id && name) {
-          // Strip extension if present (e.g., 'document.pdf' -> 'document')
-          const cleanName = name.replace(/\.[^/.]+$/, "");
-          // Replace all occurrences of the ID with the clean name in the content
-          content = content.split(source.id).join(cleanName);
+        if (idStr.length > 5) {
+           content = content.split(idStr).join(cleanName);
         }
-      });
+      }
+    };
+
+    if (Array.isArray(responseData.sources)) {
+      responseData.sources.forEach(s => processSource(s));
+    } else if (responseData.sources && typeof responseData.sources === 'object') {
+      // Handle case where sources is an object with IDs as keys
+      Object.entries(responseData.sources).forEach(([id, source]) => processSource(source, id));
+    }
+
+    // Secondary pass for metadata.sources
+    const metaSources = responseData.metadata?.sources;
+    if (Array.isArray(metaSources)) {
+      metaSources.forEach(s => processSource(s));
+    } else if (metaSources && typeof metaSources === 'object') {
+      Object.entries(metaSources).forEach(([id, source]) => processSource(source, id));
     }
     
     return { content };

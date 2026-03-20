@@ -62,11 +62,51 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
         throw new Error(errorMessage);
     }
     
+    let content = responseData.content;
+    
+    // Even more robust source replacement logic
+    const processSource = (source: any, sourceId?: string) => {
+      // IDs can be in various fields depending on n8n version and database
+      const id = sourceId || source.id || source.document_id || (typeof source === 'string' ? source : null);
+      
+      // Try to find a name/filename in many possible locations
+      let name = source.name || 
+                 source.filename || 
+                 source.metadata?.name || 
+                 source.metadata?.filename || 
+                 source.metadata?.title || 
+                 source.metadata?.["file_name"] ||
+                 source.metadata?.source ||
+                 source.metadata?.metadata?.filename;
+      
+      if (id && name) {
+        const idStr = String(id);
+        const cleanName = String(name).replace(/\.[^/.]+$/, "");
+        
+        if (idStr.length > 5) {
+           content = content.split(idStr).join(cleanName);
+        }
+      }
+    };
+
+    if (Array.isArray(responseData.sources)) {
+      responseData.sources.forEach(s => processSource(s));
+    } else if (responseData.sources && typeof responseData.sources === 'object') {
+      Object.entries(responseData.sources).forEach(([id, source]) => processSource(source, id));
+    }
+
+    const metaSources = responseData.metadata?.sources;
+    if (Array.isArray(metaSources)) {
+      metaSources.forEach(s => processSource(s));
+    } else if (metaSources && typeof metaSources === 'object') {
+      Object.entries(metaSources).forEach(([id, source]) => processSource(source, id));
+    }
+
     // Log the assistant's response
-    await logConversation('assistant', responseData.content, sessionId);
+    await logConversation('assistant', content, sessionId);
     
     return {
-      content: responseData.content,
+      content: content,
     };
 
   } catch (error) {
