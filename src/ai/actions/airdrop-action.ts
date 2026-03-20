@@ -91,7 +91,7 @@ export async function submitAirdrop(data: AirdropFormValues): Promise<{ success:
     await sheet.setHeaderRow(headerValues);
 
     // Add a new row with the form data
-    await sheet.addRow({
+    const newRow = await sheet.addRow({
       'Timestamp': new Date().toISOString(),
       'Wallet Address': walletAddress,
       'Twitter Handle': twitterHandle,
@@ -100,7 +100,7 @@ export async function submitAirdrop(data: AirdropFormValues): Promise<{ success:
       'How Heard': howHeard || 'N/A',
     });
 
-    console.log(`[SUCCESS] Added row for wallet ${walletAddress} to sheet "${sheet.title}" inside "${doc.title}"`);
+    console.log(`[SUCCESS] Added row at index ${newRow.rowNumber} for wallet ${walletAddress} to sheet "${sheet.title}" inside "${doc.title}"`);
 
     return { success: true };
 
