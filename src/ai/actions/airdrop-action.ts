@@ -40,15 +40,22 @@ export async function submitAirdrop(data: AirdropFormValues): Promise<{ success:
     }
 
     // Authenticate with Google Service Account
-    const rawKey = process.env.GOOGLE_PRIVATE_KEY || '';
-    const cleanKey = rawKey.split('\\n').join('\n').replace(/['"]/g, '').trim();
+    // Process the private key - handle all possible .env formats robustly
+    let cleanKey = (process.env.GOOGLE_PRIVATE_KEY || '')
+      .replace(/^["']|["']$/g, '')   // strip surrounding quotes if present
+      .replace(/\\n/g, '\n')          // convert literal \n to real newlines
+      .trim();
+
+    // Validate the key has proper PEM structure
+    if (!cleanKey.startsWith('-----BEGIN')) {
+      throw new Error('GOOGLE_PRIVATE_KEY does not appear to be a valid PEM key.');
+    }
 
     const serviceAccountAuth = new JWT({
       email: GOOGLE_CLIENT_EMAIL,
       key: cleanKey,
-      private_key: cleanKey, // Try both formats
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    } as any);
+    });
 
     // Initialize the Google Spreadsheet
     const doc = new GoogleSpreadsheet(GOOGLE_SHEET_ID, serviceAccountAuth);
