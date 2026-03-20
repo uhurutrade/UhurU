@@ -49,7 +49,8 @@ export async function logConversation(role: 'user' | 'assistant' | 'assistant-er
         let country = 'N/A';
         if (ip && ip !== '127.0.0.1') {
             try {
-                const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`, { signal: AbortSignal.timeout(2000) });
+                // Short timeout to avoid blocking
+                const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`, { signal: AbortSignal.timeout(1000) });
                 if (geoResponse.ok) {
                     const geoData = await geoResponse.json();
                     country = geoData.countryCode || 'N/A';

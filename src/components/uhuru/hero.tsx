@@ -27,7 +27,7 @@ export default function Hero() {
               "text-muted-foreground md:text-xl",
               showVideo ? "max-w-[600px]" : "mx-auto max-w-[900px]"
             )}>
-              AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments.
+              AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments
             </p>
           </div>
           <div className={cn(
