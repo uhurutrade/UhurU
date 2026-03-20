@@ -40,11 +40,25 @@ export async function submitAirdrop(data: AirdropFormValues): Promise<{ success:
     }
 
     // Authenticate with Google Service Account
+    const rawKey = process.env.GOOGLE_PRIVATE_KEY || '';
+    const header = '-----BEGIN PRIVATE KEY-----';
+    const footer = '-----END PRIVATE KEY-----';
+    
+    // Normalize PEM: remove header/footer/whitespace and wrap body to 64 chars
+    const body = rawKey
+      .replace(header, '')
+      .replace(footer, '')
+      .replace(/\\n/g, '')
+      .replace(/\s/g, '')
+      .replace(/['"]/g, '');
+    const wrappedBody = body.match(/.{1,64}/g)?.join('\n') || body;
+    const cleanKey = `${header}\n${wrappedBody}\n${footer}`;
+
     const serviceAccountAuth = new JWT({
       email: GOOGLE_CLIENT_EMAIL,
-      privateKey: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      key: cleanKey,
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    } as any);
+    });
 
     // Initialize the Google Spreadsheet
     const doc = new GoogleSpreadsheet(GOOGLE_SHEET_ID, serviceAccountAuth);
