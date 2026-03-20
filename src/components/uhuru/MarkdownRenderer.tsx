@@ -41,6 +41,11 @@ const MARKDOWN_COMPONENTS: React.ComponentProps<typeof ReactMarkdown>['component
         <a href={href} target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">
             {children}
         </a>
+    ),
+    source_label: ({ children }: any) => (
+        <span className="block text-[10px] text-muted-foreground mt-2 opacity-80">
+            {children}
+        </span>
     )
 };
 

@@ -102,19 +102,14 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
       Object.entries(metaSources).forEach(([id, source]) => processSource(source, id));
     }
 
-    // Replace long list of sources with a generic label based on content and language
+    // Replace long list of sources with a generic label based on content (always in English with specific styling)
     content = content.replace(/\[Source:([^\]]*)\]/gs, (match, p1) => {
-        const isSpanish = content.match(/[áéíóúñ¿¡]/i) || content.includes(' y ') || content.includes(' de ');
         const isInternal = p1.toLowerCase().includes('internal');
         
         if (isInternal) {
-            return isSpanish 
-                ? '[Fuente: Base de Conocimiento y Servicios de UhurU]'
-                : '[Source: UhurU Knowledge Base & Services]';
+            return '\n\n<source_label>* **UhurU Knowledge Base & Services**</source_label>';
         } else {
-            return isSpanish
-                ? '[Fuente: Conocimiento General de la IA / Internet]'
-                : '[Source: General AI / Internet Knowledge]';
+            return '\n\n<source_label>* **General AI / Internet Knowledge**</source_label>';
         }
     });
 
