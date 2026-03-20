@@ -48,16 +48,39 @@ export async function ragUcmChat(request: ChatRequest): Promise<ChatResponse> {
 
     const responseData = await response.json();
     
+    // Log response for debugging to see if filenames are available
+    console.log('RAG UCM Response:', JSON.stringify(responseData, null, 2));
+    
     // Ensure the response from n8n has the 'content' field.
     if (typeof responseData.content !== 'string') {
         const errorMessage = 'The webhook response did not contain a valid "content" field.';
         console.error('Invalid response structure from n8n webhook:', responseData);
         throw new Error(errorMessage);
     }
+
+    let content = responseData.content;
+
+    // More robust source replacement logic
+    if (Array.isArray(responseData.sources)) {
+      responseData.sources.forEach((source: any) => {
+        // Try to find a name/filename in various common fields from n8n/vector stores
+        let name = source.name || 
+                   source.filename || 
+                   source.metadata?.name || 
+                   source.metadata?.filename || 
+                   source.metadata?.title || 
+                   source.metadata?.["file_name"];
+        
+        if (source.id && name) {
+          // Strip extension if present (e.g., 'document.pdf' -> 'document')
+          const cleanName = name.replace(/\.[^/.]+$/, "");
+          // Replace all occurrences of the ID with the clean name in the content
+          content = content.split(source.id).join(cleanName);
+        }
+      });
+    }
     
-    return {
-      content: responseData.content,
-    };
+    return { content };
 
   } catch (error) {
     console.error('Failed to call n8n webhook:', error);
