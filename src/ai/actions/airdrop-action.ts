@@ -81,17 +81,37 @@ export async function submitAirdrop(data: AirdropFormValues): Promise<{ success:
     // Ensure headers exist
     await sheet.setHeaderRow(headerValues);
 
-    // Add a new row with the form data
-    await sheet.addRow({
+    // NEW LOGIC: Try to find an empty existing row to reuse (search first 100 rows)
+    const rows = await sheet.getRows({ offset: 0, limit: 100 });
+    let rowToUpdate = null;
+
+    for (const row of rows) {
+      // If we find a row where Wallet Address is empty or missing, we reuse it
+      if (!row.get('Wallet Address') || row.get('Wallet Address').toString().trim() === '') {
+        rowToUpdate = row;
+        break;
+      }
+    }
+
+    const rowData = {
       'Timestamp': new Date().toISOString(),
       'Wallet Address': walletAddress,
       'Twitter Handle': twitterHandle,
       'Telegram Username': telegramUsername,
       'Email': email,
       'How Heard': howHeard || 'N/A',
-    });
+    };
 
-    console.log(`Successfully added a new entry to the spreadsheet for wallet: ${walletAddress}`);
+    if (rowToUpdate) {
+      // Reuse the found empty row
+      rowToUpdate.assign(rowData);
+      await rowToUpdate.save();
+      console.log(`Successfully reused empty row at index ${rowToUpdate.rowNumber} for wallet: ${walletAddress}`);
+    } else {
+      // Append a new row if no empty ones were found
+      await sheet.addRow(rowData);
+      console.log(`Successfully added a new entry at the end for wallet: ${walletAddress}`);
+    }
 
     return { success: true };
 
