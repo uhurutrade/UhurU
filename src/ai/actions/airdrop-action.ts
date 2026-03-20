@@ -42,9 +42,9 @@ export async function submitAirdrop(data: AirdropFormValues): Promise<{ success:
     // Authenticate with Google Service Account
     const serviceAccountAuth = new JWT({
       email: GOOGLE_CLIENT_EMAIL,
-      key: GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'), // Important for Vercel/env variables
+      privateKey: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
+    } as any);
 
     // Initialize the Google Spreadsheet
     const doc = new GoogleSpreadsheet(GOOGLE_SHEET_ID, serviceAccountAuth);
