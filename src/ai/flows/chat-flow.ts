@@ -102,14 +102,14 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
       Object.entries(metaSources).forEach(([id, source]) => processSource(source, id));
     }
 
-    // Replace long list of sources with a generic label based on content (always in English with specific styling)
+    // Replace long list of sources with a generic label based on content (formatting for smaller text in browser)
     content = content.replace(/\[Source:([^\]]*)\]/gs, (match, p1) => {
         const isInternal = p1.toLowerCase().includes('internal');
         
         if (isInternal) {
-            return '\n\n<source_label>* **UhurU Knowledge Base & Services**</source_label>';
+            return '\n\n[* UhurU Knowledge Base & Services]';
         } else {
-            return '\n\n<source_label>* **General AI / Internet Knowledge**</source_label>';
+            return '\n\n[* General AI / Internet Knowledge]';
         }
     });
 
