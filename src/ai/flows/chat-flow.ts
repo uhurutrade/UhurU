@@ -102,6 +102,9 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
       Object.entries(metaSources).forEach(([id, source]) => processSource(source, id));
     }
 
+    // Replace long list of sources with a generic label
+    content = content.replace(/\[Source:[^\]]*\]/gs, '[Source: Internal Documents]');
+
     // Log the assistant's response
     await logConversation('assistant', content, sessionId);
     
