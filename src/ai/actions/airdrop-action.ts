@@ -56,8 +56,10 @@ export async function submitAirdrop(data: AirdropFormValues): Promise<{ success:
     // Load document properties and worksheets
     await doc.loadInfo(); 
     
-    // Get the first worksheet
-    const sheet = doc.sheetsByIndex[0];
+    // Get the specific worksheet by ID (GID from your URL: 1637099687)
+    // If not found by ID, default to the first worksheet
+    const targetGid = '1637099687';
+    const sheet = doc.sheetsById[targetGid] || doc.sheetsByIndex[0];
 
     // Define header values if the sheet is new/empty
     const headerValues = [
