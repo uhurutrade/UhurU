@@ -68,6 +68,15 @@ export async function submitAirdrop(data: AirdropFormValues): Promise<{ success:
     const targetGid = '1637099687';
     const sheet = doc.sheetsById[targetGid] || doc.sheetsByIndex[0];
 
+    // EXTRA LOGGING: Verifying targeting
+    console.log('[SHEET INFO]', {
+        docTitle: doc.title,
+        sheetTitle: sheet.title,
+        sheetId: sheet.sheetId,
+        isTargetGid: sheet.sheetId === targetGid,
+        walletToAdd: walletAddress
+    });
+
     // Define header values if the sheet is new/empty
     const headerValues = [
       'Timestamp',
@@ -91,7 +100,7 @@ export async function submitAirdrop(data: AirdropFormValues): Promise<{ success:
       'How Heard': howHeard || 'N/A',
     });
 
-    console.log('Successfully added a new row to the spreadsheet.');
+    console.log(`[SUCCESS] Added row for wallet ${walletAddress} to sheet "${sheet.title}" inside "${doc.title}"`);
 
     return { success: true };
 
