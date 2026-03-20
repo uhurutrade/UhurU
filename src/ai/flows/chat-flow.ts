@@ -105,9 +105,9 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
     // Replace long list of sources with a generic label based on content
     content = content.replace(/\[Source:([^\]]*)\]/gs, (match, p1) => {
         if (p1.toLowerCase().includes('internal')) {
-            return '[Source: Internal Documents]';
+            return '[Fuente: Base de Conocimiento y Servicios de UhurU]';
         } else {
-            return '[Source: General/External Knowledge]';
+            return '[Fuente: Conocimiento General de la IA / Internet]';
         }
     });
 
