@@ -71,7 +71,7 @@ export default function ContactPage() {
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Link href="https://www.linkedin.com/company/uhurutrade" aria-label="LinkedIn" prefetch={false} className="rounded-full bg-blue-600 p-2 flex items-center justify-center h-10 w-10 hover:opacity-80 transition-opacity"><Linkedin className="h-7 w-7 text-white"/></Link>
+                            <Link href="https://www.linkedin.com/company/uhurutrade" aria-label="LinkedIn" prefetch={false} className="rounded-full bg-red-600 p-2 flex items-center justify-center h-10 w-10 hover:opacity-80 transition-opacity"><Linkedin className="h-7 w-7 text-white"/></Link>
                           </TooltipTrigger>
                           <TooltipContent><p>LinkedIn</p></TooltipContent>
                         </Tooltip>
@@ -83,7 +83,7 @@ export default function ContactPage() {
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Link href="https://t.me/uhurutradeuk" aria-label="Telegram" prefetch={false} className="rounded-full bg-sky-500 p-2 flex items-center justify-center h-10 w-10 hover:opacity-80 transition-opacity"><Send className="h-7 w-7 text-white"/></Link>
+                            <Link href="https://t.me/uhurutradeuk" aria-label="Telegram" prefetch={false} className="rounded-full bg-red-500 p-2 flex items-center justify-center h-10 w-10 hover:opacity-80 transition-opacity"><Send className="h-7 w-7 text-white"/></Link>
                           </TooltipTrigger>
                           <TooltipContent><p>Telegram</p></TooltipContent>
                         </Tooltip>
