@@ -107,9 +107,9 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
         const isInternal = p1.toLowerCase().includes('internal');
         
         if (isInternal) {
-            return '\n\n[* UhurU Knowledge Base & Services]';
+            return '\n\n*[ UhurU Knowledge Base & Services ]';
         } else {
-            return '\n\n[* General AI / Internet Knowledge]';
+            return '\n\n*[ General AI / Internet Knowledge ]';
         }
     });
 

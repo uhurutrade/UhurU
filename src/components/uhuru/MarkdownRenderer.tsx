@@ -41,24 +41,16 @@ const MARKDOWN_COMPONENTS: React.ComponentProps<typeof ReactMarkdown>['component
         <a href={href} target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">
             {children}
         </a>
-    ),
-    source_label: ({ children }: any) => (
-        <span className="block text-[10px] text-muted-foreground mt-2 opacity-80 italic">
-            {children}
-        </span>
     )
 };
 
 export default function MarkdownRenderer({ content }: { content: string }) {
-    // Inject custom tag for the specific source pattern
-    const processedContent = content.replace(/\[(\* [^\]]*)\]/g, '<source_label>$1</source_label>');
-
     return (
         <ReactMarkdown
             components={MARKDOWN_COMPONENTS}
             remarkPlugins={[remarkGfm]}
         >
-            {processedContent}
+            {content}
         </ReactMarkdown>
     );
 }
