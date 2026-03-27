@@ -65,13 +65,13 @@ export default function OracleServicesPage() {
           <div className="space-y-16">
             
             <section className="text-center">
-              <h1 className="flex justify-center mb-8">
+              <h1 className="flex justify-center mb-4">
                 <Image 
                   src="/images/redwood-oracle-final.png" 
                   alt="Oracle Fusion Redwood & Cookbook" 
                   width={800} 
                   height={200}
-                  className="h-auto w-auto max-w-[600px] md:max-w-[700px] mix-blend-screen"
+                  className="h-auto w-auto max-w-[90vw] md:max-w-[600px] lg:max-w-[700px] dark:invert-0 invert transition-all duration-300"
                 />
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
