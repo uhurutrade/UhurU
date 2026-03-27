@@ -37,6 +37,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/oracle',
+        destination: '/services/oracle',
+      },
+    ]
+  },
 };
 
 export default nextConfig;
