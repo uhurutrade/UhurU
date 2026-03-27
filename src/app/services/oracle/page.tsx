@@ -41,7 +41,7 @@ const functionalExpertiseList = [
     "Functional Mastery in FIN & SCM (Supply Chain)",
     "Full-suite support for all Oracle Modules (HCM, CX, Projects)",
     "Bespoke, custom-tailored development & extensions",
-    "General Ledger (GL) & SLA Customization",
+    "Redbook- Customization across GL, AP, AR, Fixed Assets (FA), Cash Management (CE) & SLA",
     "P2P and O2C Redbook- Workflow Orchestration",
     "Pre-release testing of Oracle quarterly updates"
 ];
