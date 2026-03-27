@@ -43,6 +43,12 @@ export const features = [
     description: 'End-to-end ERP/CRM consulting and maintenance. We specialize in Oracle Financials for enterprise-grade business management.',
   },
   {
+    slug: 'oracle',
+    icon: 'AppWindow',
+    title: 'Oracle Fusion Redwood & Cookbook',
+    description: 'Expert implementation of Oracle Fusion Redwood UI/UX and Cookbook standards for a modern, scalable enterprise experience.',
+  },
+  {
     slug: 'cloud-saas-paas-management',
     icon: 'Cloud',
     title: 'Cloud (SaaS/PaaS) Management',
