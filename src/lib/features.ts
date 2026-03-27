@@ -1,10 +1,23 @@
 
 export const features = [
   {
-    slug: 'amazon-fba',
-    icon: 'ShoppingCart',
-    title: 'Amazon FBA Consulting',
-    description: 'Full-service Amazon FBA management: We handle product launch, SEO, PPC marketing, and scalable growth strategies for your e-commerce business.',
+    slug: 'oracle',
+    icon: 'Cloud',
+    titleImage: '/images/redwood-oracle-final.png',
+    title: 'Oracle Fusion Redwood & Cookbook',
+    description: 'Expert implementation of Oracle Fusion Redwood UI/UX and Cookbook standards for a modern, scalable enterprise experience.',
+  },
+  {
+    slug: 'erp-and-crm',
+    icon: 'Users',
+    title: 'ERP and CRM Implementation',
+    description: 'End-to-end ERP/CRM consulting and maintenance. We specialize in Oracle Financials for enterprise-grade business management.',
+  },
+  {
+    slug: 'no-code-app-design',
+    icon: 'AppWindow',
+    title: 'No-Code App Development',
+    description: 'Build and launch Docker-portable web and mobile apps with open-source no-code solutions for ultimate cross-platform flexibility and control.',
   },
   {
     slug: 'ai-automation-and-ai-agents',
@@ -31,24 +44,6 @@ export const features = [
     description: 'Receive professional training in CBOE/CME options and Forex markets to build secure, liquid, and risk-managed investment strategies.',
   },
   {
-    slug: 'no-code-app-design',
-    icon: 'AppWindow',
-    title: 'No-Code App Development',
-    description: 'Build and launch Docker-portable web and mobile apps with open-source no-code solutions for ultimate cross-platform flexibility and control.',
-  },
-  {
-    slug: 'erp-and-crm',
-    icon: 'Users',
-    title: 'ERP and CRM Implementation',
-    description: 'End-to-end ERP/CRM consulting and maintenance. We specialize in Oracle Financials for enterprise-grade business management.',
-  },
-  {
-    slug: 'oracle',
-    icon: 'AppWindow',
-    title: 'Oracle Fusion Redwood & Cookbook',
-    description: 'Expert implementation of Oracle Fusion Redwood UI/UX and Cookbook standards for a modern, scalable enterprise experience.',
-  },
-  {
     slug: 'cloud-saas-paas-management',
     icon: 'Cloud',
     title: 'Cloud (SaaS/PaaS) Management',
@@ -59,5 +54,11 @@ export const features = [
     icon: 'Package',
     title: 'Flexible All-in-One Tech Package',
     description: 'Get scalable tech solutions with flexible PAYG pricing and crypto payment options. No long-term commitments required.',
+  },
+  {
+    slug: 'amazon-fba',
+    icon: 'ShoppingCart',
+    title: 'Amazon FBA Consulting',
+    description: 'Full-service Amazon FBA management: We handle product launch, SEO, PPC marketing, and scalable growth strategies for your e-commerce business.',
   },
 ];

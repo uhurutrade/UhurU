@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ShoppingCart, Bot, Bitcoin, Globe, CandlestickChart, AppWindow, Users, Cloud, Package } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { features as featureData } from '@/lib/features';
 
 const iconComponents: { [key: string]: React.ReactNode } = {
@@ -15,15 +16,19 @@ const iconComponents: { [key: string]: React.ReactNode } = {
   Package: <Package className="h-10 w-10" />,
 };
 
+type Feature = {
+  slug: string;
+  title: string;
+  description: string;
+  icon?: string;
+  imageIcon?: string;
+};
+
 export default function Features() {
-  const features = featureData.map(feature => ({
-    ...feature,
-    icon: iconComponents[feature.icon]
-  }));
 
   return (
     <section id="features" className="w-full pt-6 md:pt-12 lg:pt-16 pb-6 md:pb-12 lg:pb-16">
-      <div className="container mx-auto max-w-7xl space-y-12 px-4 md:px-10">
+      <div className="container mx-auto max-w-[1400px] space-y-12 px-4 md:px-10">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl font-headline">Our Capabilities</h2>
@@ -32,16 +37,28 @@ export default function Features() {
             </p>
           </div>
         </div>
-        <div className="mx-auto grid items-start gap-8 sm:max-w-4xl sm:grid-cols-2 md:gap-12 lg:max-w-none lg:grid-cols-3">
-          {features.map((feature, index) => (
-            <Link key={index} href={`/services/${feature.slug}`} className="block">
+        <div className="mx-auto grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-5">
+          {featureData.map((feature: any, index: number) => (
+            <Link key={index} href={`/services/${feature.slug}`} className="block h-full">
               <Card className="bg-card h-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-primary/20 hover:border-primary">
                 <CardHeader className="flex flex-col items-center text-center pb-4 text-primary">
-                  {feature.icon}
-                  <CardTitle className="mt-4 text-2xl text-foreground">{feature.title}</CardTitle>
+                  {iconComponents[feature.icon as string]}
+                  <CardTitle className="mt-4 text-xl text-foreground font-headline break-words flex justify-center">
+                    {feature.titleImage ? (
+                       <Image 
+                          src={feature.titleImage} 
+                          alt={feature.title} 
+                          width={250} 
+                          height={60}
+                          className="h-auto w-auto max-w-[200px] dark:invert-0 invert"
+                        />
+                    ) : (
+                      feature.title
+                    )}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <CardDescription className="text-foreground">
+                  <CardDescription className="text-foreground text-sm line-clamp-4">
                     {feature.description}
                   </CardDescription>
                 </CardContent>
