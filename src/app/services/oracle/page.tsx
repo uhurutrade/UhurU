@@ -154,7 +154,7 @@ export default function OracleServicesPage() {
             <section>
               <Card className="bg-card shadow-lg border-accent/20 border-2">
                 <CardHeader className="bg-secondary/10 p-8 md:p-12 border-b border-accent/10">
-                  <CardTitle className="text-3xl md:text-4xl font-bold font-headline text-accent">Redbook- The New Oracle Standard</CardTitle>
+                  <CardTitle className="text-3xl md:text-4xl font-bold font-headline text-accent">Redbook-The New Oracle Standard</CardTitle>
                   <CardDescription className="text-lg mt-4 text-foreground/80 leading-relaxed font-medium">
                     Redbook- is not just a UI update; it represents the <strong className="text-foreground">most significant paradigm shift</strong> in Oracle's 40-year history. It replaces the aging Java/ADF architecture with a <strong className="text-foreground">Consumer-Grade experience</strong> powered by native Oracle JET.
                   </CardDescription>
@@ -197,7 +197,7 @@ export default function OracleServicesPage() {
              <section>
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-3xl font-bold font-headline">Why Partner With UhurU for Redbook-?</CardTitle>
+                  <CardTitle className="text-3xl font-bold font-headline">Why Partner With UhurU for Redbook?</CardTitle>
                   <CardDescription>
                     We deliver more than just technology. We deliver clarity, efficiency, and a strategic foundation for growth.
                   </CardDescription>
