@@ -71,6 +71,8 @@ export default function OracleServicesPage() {
                   width={800} 
                   height={200}
                   priority
+                  unoptimized
+                  fetchPriority="high"
                   className="h-auto w-auto max-w-[85vw] md:max-w-[600px] lg:max-w-[700px] dark:invert-0 invert transition-all duration-300"
                 />
               </h1>
