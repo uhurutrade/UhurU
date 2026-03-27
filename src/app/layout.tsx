@@ -22,12 +22,37 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://uhurutrade.com'),
   title: {
     default: 'UhurU - Tech & Finance Solutions',
-    template: `%s | UhurU`,
+    template: '%s | UhurU',
   },
   description: 'AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments',
+  keywords: ['AI Agency', 'Oracle Fusion Consulting', 'Redbook', 'IT Consulting', 'Amazon FBA', 'Smart Investments', 'FIN & SCM'],
+  openGraph: {
+    title: 'UhurU - Tech & Finance Solutions',
+    description: 'Empowering your business through AI, Oracle Fusion expertise, and cutting-edge IT consulting.',
+    url: 'https://uhurutrade.com',
+    siteName: 'UhurU',
+    images: [
+      {
+        url: '/logo.png', // Fallback global open graph image
+        width: 1200,
+        height: 630,
+        alt: 'UhurU Tech & Finance Solutions Logo',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'UhurU - Tech & Finance Solutions',
+    description: 'Empowering your business through AI, Oracle Fusion expertise, and cutting-edge IT consulting.',
+    images: ['/logo.png'],
+  },
 };
+
 
 export default function RootLayout({
   children,

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const oracleServices = [
     {
-        title: "Finance & SCM Transformation",
+        title: "FIN & SCM Transformation",
         description: "Specialized functional orchestration of General Ledger, Procurement, and Supply Chain modules using native Redbook- patterns for maximum business value."
     },
     {
@@ -38,7 +38,7 @@ const oracleServices = [
 ];
 
 const functionalExpertiseList = [
-    "Functional Mastery in Financials & SCM (Supply Chain)",
+    "Functional Mastery in FIN & SCM (Supply Chain)",
     "Full-suite support for all Oracle Modules (HCM, CX, Projects)",
     "Bespoke, custom-tailored development & extensions",
     "General Ledger (GL) & SLA Customization",
@@ -70,11 +70,12 @@ export default function OracleServicesPage() {
                   alt="Oracle Fusion Redbook- & Cookbook" 
                   width={800} 
                   height={200}
+                  priority
                   className="h-auto w-auto max-w-[85vw] md:max-w-[600px] lg:max-w-[700px] dark:invert-0 invert transition-all duration-300"
                 />
               </h1>
               <p className="mx-auto mt-4 max-w-4xl text-lg text-muted-foreground">
-                Mastering the full Oracle Fusion stack with functional excellence in <strong className="text-foreground">Finance and SCM</strong>. We provide end-to-end support for all modules while delivering bespoke, custom-tailored developments built to the highest technical standards.
+                Mastering the full Oracle Fusion stack with functional excellence in <strong className="text-foreground">FIN & SCM</strong>. We provide end-to-end support for all modules while delivering bespoke, custom-tailored developments built to the highest technical standards.
               </p>
             </section>
 
@@ -121,7 +122,7 @@ export default function OracleServicesPage() {
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold font-headline">Functional Mastery & All-Module Support</CardTitle>
                   <CardDescription>
-                    Deep functional expertise in Finance and SCM, with total support for the entire Oracle Fusion ecosystem and bespoke development.
+                    Deep functional expertise in FIN & SCM, with total support for the entire Oracle Fusion ecosystem and bespoke development.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
