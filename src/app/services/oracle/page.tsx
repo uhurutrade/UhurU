@@ -101,7 +101,7 @@ export default function OracleServicesPage() {
 
             <section>
               <Card className="bg-secondary/50 p-8 text-center border-accent/20 border">
-                  <h2 className="text-3xl font-bold font-headline text-accent">Proprietary Testing Infrastructure</h2>
+                  <h2 className="text-3xl font-bold font-headline text-accent">UhurU Oracle Fusion Testing Infrastructure</h2>
                   <p className="mt-4 max-w-4xl mx-auto text-muted-foreground">
                     At UhurU, we operate our own private Oracle Fusion sandboxes and testing environments. This allows our team to prototype complex Redbook- components and OIC integrations in a secure, isolated environment. We validate every technical solution and pre-test Oracle quarterly updates before they ever touch your production environment, ensuring zero disruption to your business cycles.
                   </p>
@@ -206,7 +206,7 @@ export default function OracleServicesPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-muted-foreground">Choosing the right partner for your Redbook- transition is critical. Our specialized experience in the Oracle ecosystem, combined with a background in senior financial management and our unique proprietary testing infrastructure, ensures we deliver solutions that provide real business value. We understand the challenges of complex, multi-national implementations and ensure a seamless, upgrade-safe transition.</p>
+                  <p className="text-muted-foreground">Choosing the right partner for your Redbook- transition is critical. Our specialized experience in the Oracle ecosystem, combined with a background in senior financial management and our unique UhurU Oracle Fusion Testing Infrastructure, ensures we deliver solutions that provide real business value. We understand the challenges of complex, multi-national implementations and ensure a seamless, upgrade-safe transition.</p>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
                     <p className="text-muted-foreground"><span className="font-semibold text-foreground">Zero-Risk Prototyping</span> Test complex solutions in our private infrastructure before production deployment.</p>
@@ -217,7 +217,7 @@ export default function OracleServicesPage() {
                   </div>
                    <div className="pt-4">
                     <p className="text-foreground">
-                      <strong>Ready to modernize your operations?</strong> Contact us today to discover how our deep Oracle Redbook- expertise and unique testing infrastructure can provide the robust financial backbone needed to scale with confidence.
+                      <strong>Ready to modernize your operations?</strong> Contact us today to discover how our deep Oracle Redbook- expertise and UhurU Oracle Fusion Testing Infrastructure can provide the robust financial backbone needed to scale with confidence.
                     </p>
                   </div>
                 </CardContent>
