@@ -5,10 +5,7 @@ import { Inter, Poppins } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster";
 import Script from 'next/script';
-import dynamic from 'next/dynamic';
-
-const ChatWidget = dynamic(() => import('@/components/uhuru/ChatWidget'), { ssr: false });
-const CookieConsentBanner = dynamic(() => import('@/components/uhuru/CookieConsentBanner'), { ssr: false });
+import ClientWidgets from '@/components/uhuru/ClientWidgets';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -71,8 +68,7 @@ export default function RootLayout({
           disableTransitionOnChange={false}
         >
           {children}
-          <ChatWidget />
-          <CookieConsentBanner />
+          <ClientWidgets />
           <Toaster />
         </ThemeProvider>
         {/* Google Analytics Scripts */}
