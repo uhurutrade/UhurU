@@ -51,6 +51,7 @@ export default function Features() {
                           width={250} 
                           height={60}
                           className="h-auto w-auto max-w-[200px] dark:invert-0 invert"
+                          priority={index < 2}
                         />
                     ) : (
                       feature.title

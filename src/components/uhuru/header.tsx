@@ -52,12 +52,12 @@ const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
             "flex items-center gap-2.5",
             isMobile && "flex-wrap justify-start"
         )}>
-            <Tooltip><TooltipTrigger asChild><a href="https://www.instagram.com/uhurutrade/" target="_blank" rel="noopener noreferrer"><Instagram className="h-4 w-4 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>Instagram</p></TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><a href="https://wa.me/447517074605" target="_blank" rel="noopener noreferrer"><WhatsAppIcon /></a></TooltipTrigger><TooltipContent><p>WhatsApp</p></TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><a href="https://www.linkedin.com/company/uhurutrade" target="_blank" rel="noopener noreferrer"><Linkedin className="h-4 w-4 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>LinkedIn</p></TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><a href="https://x.com/UhurUtradeUk" target="_blank" rel="noopener noreferrer"><XIcon /></a></TooltipTrigger><TooltipContent><p>X / Twitter</p></TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><a href="https://www.amazon.co.uk/dp/B0DN2PJR65" target="_blank" rel="noopener noreferrer"><AmazonIcon /></a></TooltipTrigger><TooltipContent><p>Amazon</p></TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><a href="https://t.me/uhurutradeuk" target="_blank" rel="noopener noreferrer"><Send className="h-4 w-4 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>Telegram</p></TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><a href="https://www.instagram.com/uhurutrade/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram className="h-4 w-4 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>Instagram</p></TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><a href="https://wa.me/447517074605" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><WhatsAppIcon /></a></TooltipTrigger><TooltipContent><p>WhatsApp</p></TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><a href="https://www.linkedin.com/company/uhurutrade" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin className="h-4 w-4 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>LinkedIn</p></TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><a href="https://x.com/UhurUtradeUk" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><XIcon /></a></TooltipTrigger><TooltipContent><p>X / Twitter</p></TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><a href="https://www.amazon.co.uk/dp/B0DN2PJR65" target="_blank" rel="noopener noreferrer" aria-label="Amazon"><AmazonIcon /></a></TooltipTrigger><TooltipContent><p>Amazon</p></TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><a href="https://t.me/uhurutradeuk" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><Send className="h-4 w-4 text-foreground hover:text-primary" /></a></TooltipTrigger><TooltipContent><p>Telegram</p></TooltipContent></Tooltip>
         </div>
     </div>
   </TooltipProvider>
@@ -85,7 +85,7 @@ export default function Header() {
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle className="h-9 w-9" iconClassName="h-4 w-4" />
           <Sheet>
-            <SheetTrigger asChild><Button variant="ghost" size="icon" className="h-9 w-9"><Menu className="h-5 w-5" /></Button></SheetTrigger>
+            <SheetTrigger asChild><Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Toggle Menu"><Menu className="h-5 w-5" /></Button></SheetTrigger>
             <SheetContent side="right">
               <div className="flex flex-col gap-6 py-6">
                 <Logo />

@@ -4,9 +4,11 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Inter, Poppins } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster";
-import ChatWidget from '@/components/uhuru/ChatWidget';
-import CookieConsentBanner from '@/components/uhuru/CookieConsentBanner';
 import Script from 'next/script';
+import dynamic from 'next/dynamic';
+
+const ChatWidget = dynamic(() => import('@/components/uhuru/ChatWidget'), { ssr: false });
+const CookieConsentBanner = dynamic(() => import('@/components/uhuru/CookieConsentBanner'), { ssr: false });
 
 const inter = Inter({
   subsets: ['latin'],
