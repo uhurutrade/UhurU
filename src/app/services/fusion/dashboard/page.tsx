@@ -63,7 +63,7 @@ export default function DashboardPage() {
 
   if (!user) return null;
 
-  const isVigente = user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date();
+  const isVigente = user.isAdmin || (user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date());
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 relative overflow-hidden font-sans">
@@ -104,11 +104,16 @@ export default function DashboardPage() {
                 <div>
                   <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">Subscription Vigor</h4>
                   <p className={`text-lg font-black uppercase tracking-tighter ${isVigente ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {isVigente ? 'System Active' : 'Access Suspended'}
+                    {user.isAdmin ? 'ADMIN ACCESS ACTIVE' : (isVigente ? 'System Active' : 'Access Suspended')}
                   </p>
-                  {user.subscriptionEnd && (
+                  {user.subscriptionEnd && !user.isAdmin && (
                     <p className="text-[9px] text-slate-500 mt-1 uppercase font-bold tracking-widest">
                       Valid Until: {new Date(user.subscriptionEnd).toLocaleDateString()}
+                    </p>
+                  )}
+                  {user.isAdmin && (
+                    <p className="text-[9px] text-emerald-500/40 mt-1 uppercase font-bold tracking-widest">
+                      Root Privileges Enabled
                     </p>
                   )}
                 </div>
