@@ -74,6 +74,7 @@ export default function DashboardPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-black text-white tracking-tight">System Console</h1>
+                {user.customerNumber && <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 uppercase font-black">ID: {user.customerNumber}</span>}
                 {user.isAdmin && <span className="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 uppercase font-black">Admin Mode</span>}
               </div>
               <p className="text-xs text-slate-400">Owner: <span className="text-slate-200 font-mono">{user.email}</span></p>
@@ -237,7 +238,11 @@ function AdminPanel({ currentUserId }: { currentUserId: string }) {
                       {activeTab === u.id ? <ChevronUp className="w-4 h-4 text-blue-500" /> : <ChevronDown className="w-4 h-4" />}
                     </div>
                     <div>
-                      <h4 className="font-bold text-slate-100 text-sm">{u.firstName} {u.lastName} {u.id === currentUserId && <span className="text-[8px] text-blue-400 font-black tracking-widest">(Me)</span>}</h4>
+                      <h4 className="font-bold text-slate-100 text-sm">
+                        {u.firstName} {u.lastName} 
+                        {u.customerNumber && <span className="text-[10px] text-blue-500 font-mono ml-2">#{u.customerNumber}</span>}
+                        {u.id === currentUserId && <span className="text-[8px] text-blue-400 font-black tracking-widest ml-2">(Me)</span>}
+                      </h4>
                       <p className="text-[10px] text-slate-500 font-mono">{u.email}</p>
                     </div>
                   </div>
