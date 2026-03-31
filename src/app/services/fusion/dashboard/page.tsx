@@ -409,6 +409,11 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                       <div className="space-y-6 bg-slate-950/40 p-8 rounded-3xl border border-white/5">
                         <h5 className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-4 px-1">Account Parameters</h5>
                         
+                        <div className="grid grid-cols-2 gap-6 mb-4">
+                           <Field label="System User ID" name="userId_readonly" defaultValue={u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : 'Pending'} icon={<Hash />} compact readOnly />
+                           <Field label="Assigned License" name="license_readonly" defaultValue={u.licenses?.[0]?.subscription || 'None Assigned'} icon={<Key />} compact readOnly />
+                        </div>
+
                         <div className="grid grid-cols-2 gap-6">
                            <Field label="First Name" name="firstName" defaultValue={u.firstName} icon={<User />} compact readOnly />
                            <Field label="Last Name" name="lastName" defaultValue={u.lastName} icon={<User />} compact readOnly />
@@ -471,10 +476,9 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                         </div>
 
                         <div className="pt-4 border-t border-white/5">
-                            <div className="grid grid-cols-3 gap-4 opacity-70">
-                                <ReadOnlyItem label="Customer ID" value={u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : 'Pending'} />
-                                <ReadOnlyItem label="Licence Number" value={u.licenses?.[0]?.subscription || 'None Assigned'} />
-                                <ReadOnlyItem label="Expiration Date" value={u.subscriptionEnd ? new Date(u.subscriptionEnd).toLocaleDateString() : 'None Assigned'} />
+                            <div className="flex items-center gap-2 opacity-30 mt-2">
+                                <ShieldCheck className="w-3.5 h-3.5" />
+                                <span className="text-[9px] font-black uppercase tracking-widest">System Parameters Protected</span>
                             </div>
                         </div>
                       </div>
@@ -553,68 +557,63 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
         {licenses.map((l) => (
           <div key={l.id} className="bg-slate-950/40 border border-white/5 rounded-3xl p-6 hover:border-blue-500/20 transition-all group overflow-hidden relative">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-                    <div className="grid grid-cols-2 md:grid-cols-12 gap-8 items-center">
-                      <div className="md:col-span-2">
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Licence ID</span>
-                        <p className="text-sm font-black text-white">{l.subscription}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <div className={`w-2 h-2 rounded-full ${l.isAvailable && !l.isAvailableUhuru ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500'}`} />
-                          <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none">
-                            {l.isAvailable && !l.isAvailableUhuru ? 'Available' : 'Reserved'}
-                          </span>
-                        </div>
-                      </div>
+              <div className="grid grid-cols-2 md:grid-cols-12 gap-8 items-center flex-1">
+                <div className="md:col-span-1 text-center md:text-left">
+                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Licence</span>
+                  <p className="text-xs font-black text-white">{l.subscription}</p>
+                  <div className="flex items-center gap-2 mt-0.5 justify-center md:justify-start">
+                    <div className={`w-1.5 h-1.5 rounded-full ${l.isAvailable && !l.isAvailableUhuru ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500'}`} />
+                    <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest leading-none">
+                      {l.isAvailable && !l.isAvailableUhuru ? 'Free' : 'Used'}
+                    </span>
+                  </div>
+                </div>
 
-                      <div className="md:col-span-2">
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">URL Hub Link</span>
-                        <div className="flex items-center gap-2">
-                          <p className="text-[10px] font-mono text-slate-400 truncate max-w-[100px]">{l.urlLink}</p>
-                          <CopyButton text={l.urlLink} />
-                        </div>
-                      </div>
+                <div className="md:col-span-2">
+                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">URL Hub Link</span>
+                  <div className="flex items-center gap-2">
+                    <p className="text-[10px] font-mono text-slate-400 truncate max-w-[90px]">{l.urlLink}</p>
+                    <CopyButton text={l.urlLink} />
+                  </div>
+                </div>
 
-                      <div className="md:col-span-2">
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">SCM Username</span>
-                        <div className="flex items-center gap-2">
-                          <p className="text-[10px] font-mono text-slate-300 truncate max-w-[100px]">{l.username}</p>
-                          <CopyButton text={l.username} />
-                        </div>
-                      </div>
+                <div className="md:col-span-2">
+                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">SCM Username</span>
+                  <div className="flex items-center gap-2">
+                    <p className="text-[10px] font-mono text-slate-300 truncate max-w-[90px]">{l.username}</p>
+                    <CopyButton text={l.username} />
+                  </div>
+                </div>
 
-                      <div className="md:col-span-1">
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">SCM Pass</span>
-                        <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-300">
-                          <p className="text-[10px] font-mono tracking-tight truncate max-w-[80px]">{l.password}</p>
-                          <CopyButton text={l.password} />
-                        </div>
-                      </div>
+                <div className="md:col-span-1">
+                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">SCM Pass</span>
+                  <div className="flex items-center gap-2">
+                    <p className="text-[10px] font-mono text-slate-400 truncate max-w-[70px]">{l.password}</p>
+                    <CopyButton text={l.password} />
+                  </div>
+                </div>
 
-                      <div className="md:col-span-3">
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Assigned Student</span>
-                        {l.assignedTo ? (
-                          <div className="flex items-center gap-3">
-                              <div>
-                                <p className="text-[11px] font-black text-blue-400 uppercase tracking-tight truncate max-w-[110px]">
-                                  {l.assignedTo.firstName} {l.assignedTo.lastName}
-                                </p>
-                                <p className="text-[8px] text-slate-600 font-mono italic truncate max-w-[100px]">{l.assignedTo.email}</p>
-                              </div>
-                              <span className="text-[8px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-1.5 py-1 rounded font-black whitespace-nowrap">
-                                ID: {l.assignedTo.customerNumber?.toString().padStart(4, '0')}
-                              </span>
-                          </div>
-                        ) : (
-                          <span className="text-[10px] text-slate-750 tracking-widest uppercase font-black">None Assigned</span>
-                        )}
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Expiration</span>
-                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">
-                          {l.expiryDate ? new Date(l.expiryDate).toLocaleDateString() : 'Evergreen'}
-                        </span>
-                      </div>
+                <div className="md:col-span-4">
+                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Assigned Student</span>
+                  {l.assignedTo ? (
+                    <div className="flex items-center gap-2 overflow-hidden">
+                       <span className="text-xs font-bold text-slate-200 whitespace-nowrap">{l.assignedTo.firstName} {l.assignedTo.lastName}</span>
+                       <span className="text-[9px] text-slate-600 font-mono italic truncate opacity-60">({l.assignedTo.email})</span>
+                       <span className="text-[10px] font-black text-blue-500/50 font-mono ml-auto">#{l.assignedTo.customerNumber?.toString().padStart(4, '0')}</span>
                     </div>
+                  ) : (
+                    <span className="text-[9px] text-slate-800 tracking-widest uppercase font-black px-1 leading-none">---</span>
+                  )}
+                </div>
+
+                <div className="md:col-span-2">
+                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Expiration</span>
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">
+                    {l.expiryDate ? new Date(l.expiryDate).toLocaleDateString() : 'Evergreen'}
+                  </span>
+                </div>
+              </div>
+
               <div className="flex items-center gap-2">
                 <button onClick={() => setShowEditor(l)} className="p-2.5 bg-white/5 hover:bg-blue-500/10 text-slate-400 hover:text-blue-400 rounded-xl transition-all border border-white/5"><Table className="w-4 h-4" /></button>
                 <button onClick={() => handleDelete(l.id)} className="p-2.5 bg-white/5 hover:bg-red-500/10 text-slate-400 hover:text-red-400 rounded-xl transition-all border border-white/5"><Trash2 className="w-4 h-4" /></button>
