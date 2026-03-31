@@ -63,6 +63,12 @@ export async function getCurrentUser() {
 
     // AUTO-CLEANUP if expired
     if (user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) < new Date()) {
+      // RELEASE LICENSE if any
+      await prisma.license.updateMany({
+        where: { userId: user.id },
+        data: { userId: null, isAvailableUhuru: false }
+      });
+
       await prisma.user.update({
         where: { id: user.id },
         data: {
@@ -293,21 +299,37 @@ export async function getAllUsers() {
   if (!user?.isAdmin) throw new Error('Not authorized');
 
   const now = new Date();
+  
   // Auto-cleanup expired subscriptions before listing
-  await prisma.user.updateMany({
+  const expiredUsers = await prisma.user.findMany({
     where: {
       isPaid: true,
       subscriptionEnd: { lt: now }
     },
-    data: {
-      isPaid: false,
-      chosenPlan: null,
-      subscriptionStart: null,
-      subscriptionEnd: null
-    }
+    select: { id: true }
   });
 
+  if (expiredUsers.length > 0) {
+    const expiredIds = expiredUsers.map(u => u.id);
+    // Release licenses
+    await prisma.license.updateMany({
+      where: { userId: { in: expiredIds } },
+      data: { userId: null, isAvailableUhuru: false }
+    });
+    // Reset users
+    await prisma.user.updateMany({
+      where: { id: { in: expiredIds } },
+      data: {
+        isPaid: false,
+        chosenPlan: null,
+        subscriptionStart: null,
+        subscriptionEnd: null
+      }
+    });
+  }
+
   return await prisma.user.findMany({
+    include: { licenses: { select: { subscription: true } } },
     orderBy: { createdAt: 'desc' },
   });
 }
@@ -348,6 +370,33 @@ export async function updateUserDetails(userId: string, data: {
     }
   }
 
+  // LICENSE MANAGEMENT
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { isPaid: true }
+  });
+
+  if (!currentUser?.isPaid && data.isPaid) {
+    // ASIGN LICENSE
+    const availableLicense = await prisma.license.findFirst({
+      where: { isAvailable: true, isAvailableUhuru: false },
+      orderBy: { subscription: 'asc' }
+    });
+
+    if (!availableLicense) throw new Error('NO_LICENSES_AVAILABLE');
+
+    await prisma.license.update({
+      where: { id: availableLicense.id },
+      data: { userId: userId, isAvailableUhuru: true }
+    });
+  } else if (currentUser?.isPaid && !data.isPaid) {
+    // RELEASE LICENSE
+    await prisma.license.updateMany({
+      where: { userId: userId },
+      data: { userId: null, isAvailableUhuru: false }
+    });
+  }
+
   await prisma.user.update({
     where: { id: userId },
     data: {
@@ -377,8 +426,8 @@ export async function getAllLicenses() {
   if (!admin?.isAdmin) throw new Error('Not authorized');
 
   return await prisma.license.findMany({
-    include: { assignedTo: { select: { email: true, firstName: true, lastName: true } } },
-    orderBy: { createdAt: 'desc' }
+    include: { assignedTo: { select: { email: true, firstName: true, lastName: true, customerNumber: true, id: true } } },
+    orderBy: { subscription: 'asc' }
   });
 }
 

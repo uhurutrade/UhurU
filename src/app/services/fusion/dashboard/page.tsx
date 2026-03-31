@@ -77,11 +77,20 @@ export default function DashboardPage() {
   }
 
   const handlePayPlan = () => {
-    if (renewalPlan === "30") {
-      window.open('https://google.es', '_blank');
-    } else if (renewalPlan === "90") {
-      window.open('https://amazon.es', '_blank');
-    }
+    const url = renewalPlan === "30" ? 'https://google.es' : 'https://amazon.es';
+    const w = 800;
+    const h = 700;
+    const left = (window.screen.width / 2) - (w / 2);
+    const top = (window.screen.height / 2) - (h / 2);
+    
+    window.open(
+      url, 
+      'PaymentGate', 
+      `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no, width=${w}, height=${h}, top=${top}, left=${left}`
+    );
+
+    // Reset selection after clicking
+    setRenewalPlan("");
   };
 
   if (loading) {
@@ -131,7 +140,7 @@ export default function DashboardPage() {
             <div className="lg:col-span-12 space-y-6 max-w-4xl mx-auto">
               {/* Status Card */}
               <div className={`p-8 rounded-[2.5rem] border transition-all duration-700 ${isVigente ? 'bg-emerald-500/5 border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.05)]' : 'bg-red-500/5 border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.05)]'}`}>
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
                   <div>
                     <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1.5 px-1">Subscription Vigor</h4>
                     <p className={`text-2xl font-black tracking-tight ${isVigente ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -172,6 +181,11 @@ export default function DashboardPage() {
                          )}
                       </div>
                     )}
+                  </div>
+
+                  <div className="text-right pt-1 pr-1 opacity-40">
+                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Authenticated Account</span>
+                    <span className="text-lg font-black text-white tracking-[0.2em]">User ID: {user.customerNumber?.toString().padStart(4, '0')}</span>
                   </div>
                 </div>
                 {isVigente && user.chosenPlan && (
@@ -336,11 +350,13 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
          loadUsers();
       }, 500);
     } catch (e: any) { 
+      let msg = 'System update encountererd an error.';
       if (e.message === 'PLAN_AND_DATE_REQUIRED') {
-        setFormStatus({ id: userId, success: false, message: 'Plan and Activation Date are required for verified payments' });
-      } else {
-        setFormStatus({ id: userId, success: false, message: 'System update encountererd an error.' });
+        msg = 'Plan and Activation Date are required for verified payments';
+      } else if (e.message === 'NO_LICENSES_AVAILABLE') {
+        msg = 'CRITICAL: No available licenses found to assign!';
       }
+      setFormStatus({ id: userId, success: false, message: msg });
     }
     finally { setUpdatingId(null); }
   }
@@ -432,10 +448,12 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                           </div>
                         )}
 
-                        <button type="submit" disabled={updatingId === u.id} className="w-full bg-blue-600 hover:bg-blue-500 text-white text-[10px] uppercase font-black tracking-widest py-4 rounded-xl transition-all shadow-xl shadow-blue-900/20 flex items-center justify-center gap-2">
-                           {updatingId === u.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                           Update Student & Account Details
-                        </button>
+                        <div className="pt-8">
+                          <button type="submit" disabled={updatingId === u.id} className="w-full bg-blue-600 hover:bg-blue-500 text-white text-[10px] uppercase font-black tracking-widest py-4 rounded-xl transition-all shadow-xl shadow-blue-900/20 flex items-center justify-center gap-2">
+                             {updatingId === u.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                             Update Student & Account Details
+                          </button>
+                        </div>
                       </div>
 
                       <div className="bg-slate-950/20 p-8 rounded-3xl border border-dashed border-white/5 space-y-6">
@@ -457,8 +475,9 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                         </div>
 
                         <div className="pt-4 border-t border-white/5">
-                            <div className="flex items-center justify-between opacity-50">
-                                <ReadOnlyItem label="Internal Customer ID" value={u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : 'Pending'} />
+                            <div className="grid grid-cols-3 gap-4 opacity-70">
+                                <ReadOnlyItem label="Customer ID" value={u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : 'Pending'} />
+                                <ReadOnlyItem label="Licence Number" value={u.licenses?.[0]?.subscription || 'None Assigned'} />
                                 <ReadOnlyItem label="Expiration Date" value={u.subscriptionEnd ? new Date(u.subscriptionEnd).toLocaleDateString() : 'None Assigned'} />
                             </div>
                         </div>
@@ -532,38 +551,54 @@ function LicenseInventory() {
         {licenses.map((l) => (
           <div key={l.id} className="bg-slate-950/40 border border-white/5 rounded-3xl p-6 hover:border-blue-500/20 transition-all group overflow-hidden relative">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div>
-                  <label className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Subscription Type</label>
-                  <span className="text-sm font-black text-white">{l.subscription}</span>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className={`w-2 h-2 rounded-full ${l.isAvailable ? 'bg-emerald-500 shadow-emerald-500/50 shadow-lg' : 'bg-slate-700'}`} />
-                    <span className="text-[9px] font-bold text-slate-500 uppercase">{l.isAvailable ? 'Available' : 'Allocated'}</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Assigned Student</label>
-                  {l.assignedTo ? (
-                    <div>
-                      <span className="text-[11px] font-bold text-blue-400 block">{l.assignedTo.firstName} {l.assignedTo.lastName}</span>
-                      <span className="text-[9px] text-slate-500 font-mono">{l.assignedTo.email}</span>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+                      <div>
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Subscription Type</span>
+                        <p className="text-sm font-black text-white">{l.subscription}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className={`w-2 h-2 rounded-full ${l.isAvailable && !l.isAvailableUhuru ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500'}`} />
+                          <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                            {l.isAvailable && !l.isAvailableUhuru ? 'Available' : 'Reserved / Occupied'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Assigned Student</span>
+                        <div className="flex items-center gap-2">
+                          {l.assignedTo ? (
+                            <>
+                              <div>
+                                <p className="text-[11px] font-black text-blue-400 uppercase tracking-tight truncate">
+                                  {l.assignedTo.firstName} {l.assignedTo.lastName}
+                                </p>
+                                <p className="text-[8px] text-slate-500 font-mono mt-0.5">{l.assignedTo.email}</p>
+                              </div>
+                              <span className="text-[8px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-1.5 py-1 rounded font-black ml-auto">
+                                ID: {l.assignedTo.customerNumber?.toString().padStart(4, '0') || 'N/A'}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-[10px] text-slate-600 tracking-widest uppercase font-black">None Assigned</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="opacity-60 group-hover:opacity-100 transition-opacity">
+                        <span className="text-[8px] font-black text-slate-700 uppercase tracking-widest block mb-1">Login Identity</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-slate-400 font-mono truncate max-w-[120px]">{l.username}</span>
+                          <Lock className="w-3 h-3 text-slate-800" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Expiration</span>
+                        <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest leading-none">
+                          {l.expiryDate ? new Date(l.expiryDate).toLocaleDateString() : 'Active Flow'}
+                        </span>
+                      </div>
                     </div>
-                  ) : <span className="text-[10px] text-slate-600 tracking-widest uppercase font-black">None Assigned</span>}
-                </div>
-                <div>
-                  <label className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Login Port</label>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-slate-300 font-mono truncate max-w-[120px]">{l.username}</span>
-                    <Lock className="w-3 h-3 text-slate-700" />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Expires On</label>
-                  <span className="text-[11px] font-bold text-slate-400">
-                    {l.expiryDate ? new Date(l.expiryDate).toLocaleDateString() : 'Evergreen'}
-                  </span>
-                </div>
-              </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => setShowEditor(l)} className="p-2.5 bg-white/5 hover:bg-blue-500/10 text-slate-400 hover:text-blue-400 rounded-xl transition-all border border-white/5"><Table className="w-4 h-4" /></button>
                 <button onClick={() => handleDelete(l.id)} className="p-2.5 bg-white/5 hover:bg-red-500/10 text-slate-400 hover:text-red-400 rounded-xl transition-all border border-white/5"><Trash2 className="w-4 h-4" /></button>
@@ -643,9 +678,9 @@ function ToggleInput({ label, name, defaultChecked, highlight }: any) {
       <button 
         type="button"
         onClick={() => setChecked(!checked)}
-        className={`relative w-12 h-6 rounded-full transition-all duration-300 ${checked ? (highlight ? 'bg-blue-500 ring-2 ring-blue-500/20' : 'bg-emerald-500 ring-2 ring-emerald-500/20') : 'bg-slate-800'}`}
+        className={`group relative w-11 h-6 rounded-full transition-all duration-300 flex items-center ${checked ? (highlight ? 'bg-blue-500 ring-2 ring-blue-500/20' : 'bg-emerald-500 ring-2 ring-emerald-500/20') : 'bg-slate-800'}`}
       >
-        <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 shadow-md ${checked ? 'left-7' : 'left-1'}`} />
+        <div className={`ml-1 w-4 h-4 rounded-full bg-white transition-all duration-300 shadow-md transform ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
         <input type="hidden" name={name} value={checked ? 'on' : 'off'} />
       </button>
     </div>
