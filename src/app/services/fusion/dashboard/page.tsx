@@ -9,15 +9,15 @@ import {
   User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
   CheckCircle2, AlertCircle, LogOut, Save, UserCircle, Loader2,
   ShieldCheck, Calendar, Users, ArrowRight, Table, ChevronDown, ChevronUp, 
-  Power, RefreshCw, Hash, Key, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck
+  Power, RefreshCw, Hash, Key, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck, AlertTriangle
 } from 'lucide-react';
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [status, setStatus] = useState<{ success: boolean; message: string } | null>(null);
   const [renewalPlan, setRenewalPlan] = useState("");
+  const [globalNotification, setGlobalNotification] = useState<{ success: boolean; message: string } | null>(null);
 
   useEffect(() => {
     async function loadUser() {
@@ -33,11 +33,11 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    if (status) {
-      const timer = setTimeout(() => setStatus(null), 3500);
+    if (globalNotification) {
+      const timer = setTimeout(() => setGlobalNotification(null), 5000);
       return () => clearTimeout(timer);
     }
-  }, [status]);
+  }, [globalNotification]);
 
   async function handleUpdate(formData: FormData) {
     setStatus(null);
@@ -258,6 +258,23 @@ export default function DashboardPage() {
               <AdminCenter currentUserId={user.id} />
             </div>
           )}
+          {/* Global Notification Toast */}
+          {globalNotification && (
+            <div className={`fixed top-8 left-1/2 -translate-x-1/2 z-[200] max-w-md w-full px-4 animate-in slide-in-from-top-4 duration-500`}>
+              <div className={`p-5 rounded-[2rem] border backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex items-center gap-4 ${globalNotification.success ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-100'}`}>
+                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${globalNotification.success ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
+                  {globalNotification.success ? <CheckCircle2 className="w-5 h-5" /> : <AlertTriangle className="w-5 h-5 text-red-400" />}
+                </div>
+                <div className="flex-1">
+                  <p className="text-[10px] font-black uppercase tracking-widest opacity-50 mb-0.5">{globalNotification.success ? 'System Success' : 'System Error'}</p>
+                  <p className="text-xs font-bold leading-relaxed">{globalNotification.message}</p>
+                </div>
+                <button onClick={() => setGlobalNotification(null)} className="p-2 hover:bg-white/5 rounded-xl transition-colors">
+                  <LogOut className="w-4 h-4 rotate-90" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -344,19 +361,19 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
         streetAddress: formData.get('streetAddress') as string,
         postcode: formData.get('postcode') as string,
       });
-      setFormStatus({ id: userId, success: true, message: 'Registry updated successfully' });
-      setTimeout(() => {
-         setActiveTab(null);
-         loadUsers();
-      }, 500);
+      setGlobalNotification({ success: true, message: 'Registry update successful' });
+      await loadUsers();
+      setTimeout(() => setActiveTab(null), 1000);
     } catch (e: any) { 
       let msg = 'System update encountererd an error.';
-      if (e.message === 'PLAN_AND_DATE_REQUIRED') {
-        msg = 'Plan and Activation Date are required for verified payments';
-      } else if (e.message === 'NO_LICENSES_AVAILABLE') {
-        msg = 'CRITICAL: No available licenses found to assign!';
+      if (e.message.includes('PLAN_AND_DATE_REQUIRED')) {
+        msg = 'Missing Data: Both Subscription Plan and Activation Date are mandatory for payment verification.';
+      } else if (e.message.includes('NO_LICENSES_AVAILABLE')) {
+        msg = 'Critical Shortage: No internal licenses currently available for assignment. Please add licenses to inventory first.';
+      } else {
+        msg = e.message || msg;
       }
-      setFormStatus({ id: userId, success: false, message: msg });
+      setGlobalNotification({ success: false, message: msg });
     }
     finally { setUpdatingId(null); }
   }
@@ -407,8 +424,8 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                         <h5 className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-4 px-1">Account Parameters</h5>
                         
                         <div className="grid grid-cols-2 gap-6">
-                           <Field label="First Name" name="firstName" defaultValue={u.firstName} icon={<User />} compact disabled />
-                           <Field label="Last Name" name="lastName" defaultValue={u.lastName} icon={<User />} compact disabled />
+                           <Field label="First Name" name="firstName" defaultValue={u.firstName} icon={<User />} compact readOnly />
+                           <Field label="Last Name" name="lastName" defaultValue={u.lastName} icon={<User />} compact readOnly />
                         </div>
 
                         {u.email !== 'uhurutradeuk@gmail.com' ? (
@@ -463,15 +480,15 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                           <Field label="Company" name="companyName" defaultValue={u.companyName} icon={<Building />} compact disabled />
-                           <Field label="Phone" name="phone" defaultValue={u.phone} icon={<Phone />} compact disabled />
-                           <Field label="Country" name="country" defaultValue={u.country} icon={<Globe />} compact disabled />
-                           <Field label="City" name="city" defaultValue={u.city} icon={<Building2 />} compact disabled />
+                           <Field label="Company" name="companyName" defaultValue={u.companyName} icon={<Building />} compact readOnly />
+                           <Field label="Phone" name="phone" defaultValue={u.phone} icon={<Phone />} compact readOnly />
+                           <Field label="Country" name="country" defaultValue={u.country} icon={<Globe />} compact readOnly />
+                           <Field label="City" name="city" defaultValue={u.city} icon={<Building2 />} compact readOnly />
                         </div>
                         
                         <div className="grid grid-cols-1 gap-4">
-                           <Field label="Street Address" name="streetAddress" defaultValue={u.streetAddress} icon={<Home />} compact disabled />
-                           <Field label="Postcode" name="postcode" defaultValue={u.postcode} icon={<MapPin />} compact disabled />
+                           <Field label="Street Address" name="streetAddress" defaultValue={u.streetAddress} icon={<Home />} compact readOnly />
+                           <Field label="Postcode" name="postcode" defaultValue={u.postcode} icon={<MapPin />} compact readOnly />
                         </div>
 
                         <div className="pt-4 border-t border-white/5">
@@ -581,8 +598,8 @@ function LicenseInventory() {
 
                       <div className="md:col-span-1">
                         <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">SCM Pass</span>
-                        <div className="flex items-center gap-2">
-                          <p className="text-[10px] font-mono text-slate-500 tracking-widest">••••••</p>
+                        <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-300">
+                          <p className="text-[10px] font-mono tracking-tight truncate max-w-[80px]">{l.password}</p>
                           <CopyButton text={l.password} />
                         </div>
                       </div>
@@ -730,19 +747,20 @@ function Section({ title, children, noBorder }: any) {
   );
 }
 
-function Field({ label, name, defaultValue, icon, disabled = false, compact = false }: any) {
+function Field({ label, name, defaultValue, icon, disabled = false, readOnly = false, compact = false }: any) {
   return (
     <div className="space-y-1.5 group">
-      <label className={`text-[9px] font-black tracking-widest uppercase ml-1 block transition-colors ${disabled ? 'text-slate-750' : 'text-slate-500 group-focus-within:text-blue-500'}`}>{label}</label>
+      <label className={`text-[9px] font-black tracking-widest uppercase ml-1 block transition-colors ${(disabled || readOnly) ? 'text-slate-750' : 'text-slate-500 group-focus-within:text-blue-500'}`}>{label}</label>
       <div className="relative">
-        <div className={`absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors ${disabled ? 'text-slate-850' : 'text-slate-600 group-focus-within:text-blue-500'}`}>
+        <div className={`absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors ${(disabled || readOnly) ? 'text-slate-850' : 'text-slate-600 group-focus-within:text-blue-500'}`}>
           <span className={`${compact ? '[&>svg]:w-3.5 [&>svg]:h-3.5' : '[&>svg]:w-4.5 [&>svg]:h-4.5'}`}>{icon}</span>
         </div>
         <input
           name={name}
           defaultValue={defaultValue}
           disabled={disabled}
-          className={`w-full ${compact ? 'pl-9 pr-4 py-2.5 text-xs' : 'pl-11 pr-5 py-3.5 text-sm'} bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-bold ${disabled ? 'opacity-30 cursor-not-allowed bg-transparent border-dashed' : 'hover:border-white/20'}`}
+          readOnly={readOnly}
+          className={`w-full ${compact ? 'pl-9 pr-4 py-2.5 text-xs' : 'pl-11 pr-5 py-3.5 text-sm'} bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-bold ${(disabled || readOnly) ? 'opacity-30 cursor-not-allowed bg-transparent border-dashed' : 'hover:border-white/20'}`}
         />
       </div>
     </div>
