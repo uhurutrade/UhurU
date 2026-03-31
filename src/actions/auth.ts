@@ -51,11 +51,17 @@ export async function getCurrentUser() {
         postcode: true,
         phone: true,
         customerNumber: true,
-        subscriptionStart: true,
         subscriptionEnd: true,
         isActive: true,
         chosenPlan: true,
-        isPaid: true
+        isPaid: true,
+        licenses: {
+          select: {
+            urlLink: true,
+            username: true,
+            password: true
+          }
+        }
       },
     });
 
@@ -66,7 +72,7 @@ export async function getCurrentUser() {
       // RELEASE LICENSE if any
       await prisma.license.updateMany({
         where: { userId: user.id },
-        data: { userId: null, isAvailableUhuru: false }
+        data: { userId: null, isAvailableUhuru: false, lastUserId: user.id }
       });
 
       await prisma.user.update({
@@ -377,23 +383,29 @@ export async function updateUserDetails(userId: string, data: {
   });
 
   if (!currentUser?.isPaid && data.isPaid) {
-    // ASIGN LICENSE
-    const availableLicense = await prisma.license.findFirst({
-      where: { isAvailable: true, isAvailableUhuru: false },
-      orderBy: { subscription: 'asc' }
+    // ASIGN LICENSE - Randomized with prioritization
+    const candidates = await prisma.license.findMany({
+      where: { isAvailable: true, isAvailableUhuru: false }
     });
 
-    if (!availableLicense) throw new Error('NO_LICENSES_AVAILABLE');
+    if (candidates.length === 0) throw new Error('NO_LICENSES_AVAILABLE');
+
+    // Filter to prioritize licenses that HAVEN'T been used by this user lately
+    const preferred = candidates.filter(l => l.lastUserId !== userId);
+    const source = preferred.length > 0 ? preferred : candidates;
+    
+    // Pick ANY from the source randomly
+    const chosen = source[Math.floor(Math.random() * source.length)];
 
     await prisma.license.update({
-      where: { id: availableLicense.id },
+      where: { id: chosen.id },
       data: { userId: userId, isAvailableUhuru: true }
     });
   } else if (currentUser?.isPaid && !data.isPaid) {
     // RELEASE LICENSE
     await prisma.license.updateMany({
       where: { userId: userId },
-      data: { userId: null, isAvailableUhuru: false }
+      data: { userId: null, isAvailableUhuru: false, lastUserId: userId }
     });
   }
 

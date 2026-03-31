@@ -9,7 +9,7 @@ import {
   User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
   CheckCircle2, AlertCircle, LogOut, Save, UserCircle, Loader2,
   ShieldCheck, Calendar, Users, ArrowRight, Table, ChevronDown, ChevronUp, 
-  Power, RefreshCw, Hash, Key, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck, AlertTriangle
+  Power, RefreshCw, Hash, Key, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck, AlertTriangle, ShieldAlert
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -195,6 +195,24 @@ export default function DashboardPage() {
                   </div>
                 )}
               </div>
+
+              {isVigente && (
+                <div className="bg-slate-900/60 backdrop-blur-3xl border border-blue-500/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700">
+                  <div className="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
+                     <h3 className="text-[10px] font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
+                        <ShieldAlert className="w-4 h-4" /> Oracle Fusion Access Credentials
+                     </h3>
+                     <span className="text-[8px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded font-black uppercase tracking-tighter">Secure Asset</span>
+                  </div>
+                  <div className="space-y-4">
+                     <CredentialField label="Oracle Fusion Portal URL" value={user.licenses?.[0]?.urlLink} icon={<ExternalLink />} />
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <CredentialField label="Oracle Fusion Username" value={user.licenses?.[0]?.username} icon={<User />} />
+                        <CredentialField label="Oracle Fusion Password" value={user.licenses?.[0]?.password} icon={<Lock />} />
+                     </div>
+                  </div>
+                </div>
+              )}
 
               <div className="bg-slate-900/40 backdrop-blur-3xl border border-white/[0.05] rounded-[2rem] shadow-2xl p-6">
                 <div className="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
@@ -754,7 +772,26 @@ function Field({ label, name, defaultValue, icon, disabled = false, readOnly = f
     </div>
   );
 }
-
+function CredentialField({ label, value, icon }: any) {
+  return (
+    <div className="space-y-1.5 group">
+      <label className="text-[9px] font-black tracking-widest uppercase ml-1 block text-slate-500">{label}</label>
+      <div className="relative flex items-center gap-2">
+        <div className="relative flex-1">
+          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600">
+            <span className="[&>svg]:w-3.5 [&>svg]:h-3.5">{icon}</span>
+          </div>
+          <input
+            readOnly
+            value={value || 'Provisioning Asset...'}
+            className="w-full pl-9 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl font-bold text-slate-200 cursor-default focus:outline-none text-[11px]"
+          />
+        </div>
+        <CopyButton text={value || ''} />
+      </div>
+    </div>
+  );
+}
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {

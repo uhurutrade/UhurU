@@ -45,6 +45,7 @@ model License {
   isAvailable      Boolean  @default(true)
   isAvailableUhuru Boolean  @default(true)
   userId           String?
+  lastUserId       String?
   assignedTo       User?    @relation(fields: [userId], references: [id])
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
