@@ -13,7 +13,7 @@ export const getConfirmationTemplate = (name: string) => `
             background-color: #020617;
             margin: 0;
             padding: 0;
-        }
+        } 
         .container {
             max-width: 600px;
             margin: 20px auto;
