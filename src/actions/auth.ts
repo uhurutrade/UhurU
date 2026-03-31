@@ -121,7 +121,7 @@ export async function registerUser(formData: FormData) {
       select: { customerNumber: true }
     });
     
-    const nextNumber = lastUser?.customerNumber ? lastUser.customerNumber + 1 : 3601;
+    const nextNumber = lastUser?.customerNumber ? lastUser.customerNumber + 1 : 36;
 
     const user = await prisma.user.create({
       data: {
@@ -284,6 +284,7 @@ export async function updateUserDetails(userId: string, data: { isActive: boolea
       isPaid: data.isPaid,
       subscriptionStart: startDate,
       subscriptionEnd: endDate,
+      // customerNumber is intentionally NOT included — it is immutable once assigned
     }
   });
   

@@ -80,7 +80,7 @@ export default function DashboardPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-black text-white tracking-tight uppercase tracking-widest">Oracle Hub</h1>
-                {user.customerNumber && <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 uppercase font-black">ID: {user.customerNumber}</span>}
+                {user.customerNumber && <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 uppercase font-black">ID: {user.customerNumber.toString().padStart(4,'0')}</span>}
                 {user.isAdmin && <span className="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 uppercase font-black">ADMIN</span>}
               </div>
               <p className="text-xs text-slate-400">{user.email}</p>
@@ -275,12 +275,19 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                   <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center text-slate-500 border border-white/5 shadow-inner">
                     {activeTab === u.id ? <ChevronUp className="w-5 h-5 text-blue-500" /> : <ChevronDown className="w-5 h-5" />}
                   </div>
-                  <div>
-                    <h4 className="font-bold text-slate-100 flex items-center gap-3">
-                       {u.firstName} {u.lastName}
-                       {isVigente ? <span className="text-[10px] text-emerald-400 font-mono font-black border border-emerald-500/20 px-2 rounded-md bg-emerald-500/5 uppercase tracking-widest">Active</span> : <span className="text-[10px] text-slate-600 border border-white/5 px-2 rounded-md uppercase tracking-widest font-black">Suspended</span>}
-                    </h4>
-                    <p className="text-[10px] text-slate-500 font-mono mt-0.5">{u.email} • {u.customerNumber ? `#${u.customerNumber}` : 'Pending'}</p>
+                  <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center">
+                      <span className="text-blue-400 font-black text-[11px] font-mono leading-none">
+                        {u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : '—'}
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-100 flex items-center gap-3">
+                        {u.firstName} {u.lastName}
+                        {isVigente ? <span className="text-[10px] text-emerald-400 font-mono font-black border border-emerald-500/20 px-2 rounded-md bg-emerald-500/5 uppercase tracking-widest">Active</span> : <span className="text-[10px] text-slate-600 border border-white/5 px-2 rounded-md uppercase tracking-widest font-black">Suspended</span>}
+                      </h4>
+                      <p className="text-[10px] text-slate-500 font-mono mt-0.5">{u.email}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -324,7 +331,7 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                           <ReadOnlyItem label="Contact Link" value={u.phone} />
                           <ReadOnlyItem label="Country" value={u.country} />
                           <ReadOnlyItem label="City Location" value={u.city} />
-                          <ReadOnlyItem label="Internal ID" value={u.customerNumber} />
+                          <ReadOnlyItem label="Internal ID" value={u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : 'Pending'} />
                           <ReadOnlyItem label="Exp. Date" value={u.subscriptionEnd ? new Date(u.subscriptionEnd).toLocaleDateString() : 'Pending'} />
                           <div className="col-span-2">
                              <ReadOnlyItem label="Legal Address" value={u.streetAddress} />
