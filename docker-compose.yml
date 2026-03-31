@@ -6,4 +6,6 @@ services:
     ports:
       - "3000:3000"
     env_file: ./.env
+    volumes:
+      - ./prisma:/app/prisma
     restart: unless-stopped
