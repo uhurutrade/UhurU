@@ -9,7 +9,7 @@ import {
   User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
   CheckCircle2, AlertCircle, LogOut, Save, UserCircle, Loader2,
   ShieldCheck, Calendar, Users, ArrowRight, Table, ChevronDown, ChevronUp, 
-  Power, RefreshCw, Hash, Key, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity
+  Power, RefreshCw, Hash, Key, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -407,8 +407,8 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                         <h5 className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-4 px-1">Account Parameters</h5>
                         
                         <div className="grid grid-cols-2 gap-6">
-                           <Field label="First Name" name="firstName" defaultValue={u.firstName} icon={<User />} compact />
-                           <Field label="Last Name" name="lastName" defaultValue={u.lastName} icon={<User />} compact />
+                           <Field label="First Name" name="firstName" defaultValue={u.firstName} icon={<User />} compact disabled />
+                           <Field label="Last Name" name="lastName" defaultValue={u.lastName} icon={<User />} compact disabled />
                         </div>
 
                         {u.email !== 'uhurutradeuk@gmail.com' ? (
@@ -463,15 +463,15 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                           <Field label="Company" name="companyName" defaultValue={u.companyName} icon={<Building />} compact />
-                           <Field label="Phone" name="phone" defaultValue={u.phone} icon={<Phone />} compact />
-                           <Field label="Country" name="country" defaultValue={u.country} icon={<Globe />} compact />
-                           <Field label="City" name="city" defaultValue={u.city} icon={<Building2 />} compact />
+                           <Field label="Company" name="companyName" defaultValue={u.companyName} icon={<Building />} compact disabled />
+                           <Field label="Phone" name="phone" defaultValue={u.phone} icon={<Phone />} compact disabled />
+                           <Field label="Country" name="country" defaultValue={u.country} icon={<Globe />} compact disabled />
+                           <Field label="City" name="city" defaultValue={u.city} icon={<Building2 />} compact disabled />
                         </div>
                         
                         <div className="grid grid-cols-1 gap-4">
-                           <Field label="Street Address" name="streetAddress" defaultValue={u.streetAddress} icon={<Home />} compact />
-                           <Field label="Postcode" name="postcode" defaultValue={u.postcode} icon={<MapPin />} compact />
+                           <Field label="Street Address" name="streetAddress" defaultValue={u.streetAddress} icon={<Home />} compact disabled />
+                           <Field label="Postcode" name="postcode" defaultValue={u.postcode} icon={<MapPin />} compact disabled />
                         </div>
 
                         <div className="pt-4 border-t border-white/5">
@@ -551,51 +551,65 @@ function LicenseInventory() {
         {licenses.map((l) => (
           <div key={l.id} className="bg-slate-950/40 border border-white/5 rounded-3xl p-6 hover:border-blue-500/20 transition-all group overflow-hidden relative">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
-                      <div>
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Subscription Type</span>
+                    <div className="grid grid-cols-2 md:grid-cols-12 gap-8 items-center">
+                      <div className="md:col-span-2">
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Licence ID</span>
                         <p className="text-sm font-black text-white">{l.subscription}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <div className={`w-2 h-2 rounded-full ${l.isAvailable && !l.isAvailableUhuru ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500'}`} />
-                          <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
-                            {l.isAvailable && !l.isAvailableUhuru ? 'Available' : 'Reserved / Occupied'}
+                          <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none">
+                            {l.isAvailable && !l.isAvailableUhuru ? 'Available' : 'Reserved'}
                           </span>
                         </div>
                       </div>
 
-                      <div>
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Assigned Student</span>
+                      <div className="md:col-span-2">
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">URL Hub Link</span>
                         <div className="flex items-center gap-2">
-                          {l.assignedTo ? (
-                            <>
+                          <p className="text-[10px] font-mono text-slate-400 truncate max-w-[100px]">{l.urlLink}</p>
+                          <CopyButton text={l.urlLink} />
+                        </div>
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">SCM Username</span>
+                        <div className="flex items-center gap-2">
+                          <p className="text-[10px] font-mono text-slate-300 truncate max-w-[100px]">{l.username}</p>
+                          <CopyButton text={l.username} />
+                        </div>
+                      </div>
+
+                      <div className="md:col-span-1">
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">SCM Pass</span>
+                        <div className="flex items-center gap-2">
+                          <p className="text-[10px] font-mono text-slate-500 tracking-widest">••••••</p>
+                          <CopyButton text={l.password} />
+                        </div>
+                      </div>
+
+                      <div className="md:col-span-3">
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Assigned Student</span>
+                        {l.assignedTo ? (
+                          <div className="flex items-center gap-3">
                               <div>
-                                <p className="text-[11px] font-black text-blue-400 uppercase tracking-tight truncate">
+                                <p className="text-[11px] font-black text-blue-400 uppercase tracking-tight truncate max-w-[110px]">
                                   {l.assignedTo.firstName} {l.assignedTo.lastName}
                                 </p>
-                                <p className="text-[8px] text-slate-500 font-mono mt-0.5">{l.assignedTo.email}</p>
+                                <p className="text-[8px] text-slate-600 font-mono italic truncate max-w-[100px]">{l.assignedTo.email}</p>
                               </div>
-                              <span className="text-[8px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-1.5 py-1 rounded font-black ml-auto">
-                                ID: {l.assignedTo.customerNumber?.toString().padStart(4, '0') || 'N/A'}
+                              <span className="text-[8px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-1.5 py-1 rounded font-black whitespace-nowrap">
+                                ID: {l.assignedTo.customerNumber?.toString().padStart(4, '0')}
                               </span>
-                            </>
-                          ) : (
-                            <span className="text-[10px] text-slate-600 tracking-widest uppercase font-black">None Assigned</span>
-                          )}
-                        </div>
+                          </div>
+                        ) : (
+                          <span className="text-[10px] text-slate-750 tracking-widest uppercase font-black">None Assigned</span>
+                        )}
                       </div>
 
-                      <div className="opacity-60 group-hover:opacity-100 transition-opacity">
-                        <span className="text-[8px] font-black text-slate-700 uppercase tracking-widest block mb-1">Login Identity</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] text-slate-400 font-mono truncate max-w-[120px]">{l.username}</span>
-                          <Lock className="w-3 h-3 text-slate-800" />
-                        </div>
-                      </div>
-
-                      <div>
+                      <div className="md:col-span-2">
                         <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Expiration</span>
-                        <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest leading-none">
-                          {l.expiryDate ? new Date(l.expiryDate).toLocaleDateString() : 'Active Flow'}
+                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">
+                          {l.expiryDate ? new Date(l.expiryDate).toLocaleDateString() : 'Evergreen'}
                         </span>
                       </div>
                     </div>
@@ -732,5 +746,25 @@ function Field({ label, name, defaultValue, icon, disabled = false, compact = fa
         />
       </div>
     </div>
+  );
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button 
+      type="button"
+      onClick={handleCopy} 
+      className="p-1.5 bg-white/5 hover:bg-blue-500/10 rounded-lg transition-all text-slate-600 hover:text-blue-400 border border-transparent hover:border-blue-500/20"
+      title="Click to copy"
+    >
+      {copied ? <ClipboardCheck className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+    </button>
   );
 }
