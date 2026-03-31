@@ -58,8 +58,41 @@ export async function getCurrentUser() {
         isPaid: true
       },
     });
+
+    if (!user) return null;
+
+    // AUTO-CLEANUP if expired
+    if (user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) < new Date()) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          isPaid: false,
+          chosenPlan: null,
+          subscriptionStart: null,
+          subscriptionEnd: null
+        }
+      });
+      // Refresh local user object
+      user.isPaid = false;
+      user.chosenPlan = null;
+      user.subscriptionStart = null;
+      user.subscriptionEnd = null;
+    }
     
-    if (!user || !user.isActive) return null;
+    if (!user.isActive) return null;
+
+    // Refresh session for 30m inactivity logic
+    const token = await new SignJWT({ userId: user.id, email: user.email })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime('30m')
+      .sign(secret);
+
+    cookieStore.set('session', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 30, 
+      path: '/',
+    });
     
     return {
       ...user,
@@ -134,14 +167,14 @@ export async function registerUser(formData: FormData) {
     // AUTO-LOGIN AFTER REGISTER
     const token = await new SignJWT({ userId: user.id, email: user.email })
       .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime('2h')
+      .setExpirationTime('30m')
       .sign(secret);
 
     const cookieStore = await cookies();
     cookieStore.set('session', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 2, // 2 hours
+      maxAge: 60 * 30, // 30 minutes
       path: '/',
     });
 
@@ -172,14 +205,14 @@ export async function loginUser(formData: FormData) {
 
   const token = await new SignJWT({ userId: user.id, email: user.email })
     .setProtectedHeader({ alg: 'HS256' })
-    .setExpirationTime('2h')
+    .setExpirationTime('30m')
     .sign(secret);
 
   const cookieStore = await cookies();
   cookieStore.set('session', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 60 * 60 * 2, // 2 hours
+    maxAge: 60 * 30, // 30 minutes
     path: '/',
   });
 
@@ -259,6 +292,21 @@ export async function getAllUsers() {
   const user = await getCurrentUser();
   if (!user?.isAdmin) throw new Error('Not authorized');
 
+  const now = new Date();
+  // Auto-cleanup expired subscriptions before listing
+  await prisma.user.updateMany({
+    where: {
+      isPaid: true,
+      subscriptionEnd: { lt: now }
+    },
+    data: {
+      isPaid: false,
+      chosenPlan: null,
+      subscriptionStart: null,
+      subscriptionEnd: null
+    }
+  });
+
   return await prisma.user.findMany({
     orderBy: { createdAt: 'desc' },
   });
@@ -280,6 +328,13 @@ export async function updateUserDetails(userId: string, data: {
 }) {
   const admin = await getCurrentUser();
   if (!admin?.isAdmin) throw new Error('Not authorized');
+
+  // VALIDATION: If verified payment is checked, plan and date are mandatory
+  if (data.isPaid) {
+    if (!data.chosenPlan || !data.start) {
+      throw new Error('PLAN_AND_DATE_REQUIRED');
+    }
+  }
 
   const startDate = data.start ? new Date(data.start) : null;
   let endDate = null;
