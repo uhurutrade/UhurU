@@ -17,6 +17,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [status, setStatus] = useState<{ success: boolean; message: string } | null>(null);
+  const [renewalPlan, setRenewalPlan] = useState("");
 
   useEffect(() => {
     async function loadUser() {
@@ -74,6 +75,14 @@ export default function DashboardPage() {
     await logoutUser();
     window.location.href = '/services/fusion';
   }
+
+  const handlePayPlan = () => {
+    if (renewalPlan === "30") {
+      window.open('https://google.es', '_blank');
+    } else if (renewalPlan === "90") {
+      window.open('https://amazon.es', '_blank');
+    }
+  };
 
   if (loading) {
     return (
@@ -143,19 +152,32 @@ export default function DashboardPage() {
                     {!isVigente && (
                       <div className="mt-6 animate-in slide-in-from-top-2">
                          <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest block mb-3 px-1">Purchase License Renewal</label>
-                         <select className="w-full bg-slate-900/50 border border-red-500/20 rounded-2xl px-5 py-4 text-xs font-black text-slate-200 focus:ring-1 focus:ring-red-500/50 outline-none appearance-none cursor-pointer hover:bg-slate-900 border-dashed transition-all uppercase tracking-widest">
+                         <select 
+                           value={renewalPlan}
+                           onChange={(e) => setRenewalPlan(e.target.value)}
+                           className="w-full bg-slate-900/50 border border-white/20 rounded-2xl px-5 py-4 text-xs font-black text-slate-200 focus:ring-1 focus:ring-blue-500/50 outline-none appearance-none cursor-pointer hover:bg-slate-900 transition-all uppercase tracking-widest shadow-xl shadow-black/20">
                             <option value="">Select a renewal plan...</option>
                             <option value="30">Oracle Fusion 30 days (£59)</option>
                             <option value="90">Oracle Fusion 90 days (£140)</option>
                          </select>
+
+                         {renewalPlan && (
+                           <button 
+                             onClick={handlePayPlan}
+                             className="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black uppercase tracking-widest py-5 rounded-2xl animate-in slide-in-from-top-4 duration-500 shadow-2xl shadow-emerald-950/40 flex items-center justify-center gap-3 group border border-white/40"
+                            >
+                              <CreditCard className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                              Pay Plan
+                           </button>
+                         )}
                       </div>
                     )}
                   </div>
                 </div>
-                {user.chosenPlan && (
+                {isVigente && user.chosenPlan && (
                   <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
-                    <Activity className="w-3.5 h-3.5 text-blue-400" />
-                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{user.chosenPlan}</span>
+                    <Activity className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-[10px] font-black uppercase text-emerald-500/60 tracking-widest">{user.chosenPlan}</span>
                   </div>
                 )}
               </div>
@@ -271,8 +293,16 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [formStatus, setFormStatus] = useState<{ id: string; success: boolean; message: string } | null>(null);
 
   useEffect(() => { loadUsers(); }, []);
+
+  useEffect(() => {
+    if (formStatus) {
+      const timer = setTimeout(() => setFormStatus(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [formStatus]);
 
   async function loadUsers() {
     setLoading(true);
@@ -300,13 +330,16 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
         streetAddress: formData.get('streetAddress') as string,
         postcode: formData.get('postcode') as string,
       });
-      setActiveTab(null);
-      loadUsers();
+      setFormStatus({ id: userId, success: true, message: 'Registry updated successfully' });
+      setTimeout(() => {
+         setActiveTab(null);
+         loadUsers();
+      }, 500);
     } catch (e: any) { 
       if (e.message === 'PLAN_AND_DATE_REQUIRED') {
-        alert('Error: Plan and Activation Date are mandatory when "Payment Verified" is checked.');
+        setFormStatus({ id: userId, success: false, message: 'Plan and Activation Date are required for verified payments' });
       } else {
-        alert('Error updating account parameters.'); 
+        setFormStatus({ id: userId, success: false, message: 'System update encountererd an error.' });
       }
     }
     finally { setUpdatingId(null); }
@@ -389,6 +422,13 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                               <ShieldCheck className="w-5 h-5 text-blue-500" />
                               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">Admin Account: Full Access Privileges</span>
                               <input type="hidden" name="isActive" value="on" />
+                          </div>
+                        )}
+
+                        {formStatus && formStatus.id === u.id && (
+                          <div className={`p-4 rounded-xl flex items-center gap-3 border text-[10px] font-black uppercase tracking-widest animate-in zoom-in-95 duration-300 ${formStatus.success ? 'bg-emerald-500/5 text-emerald-400 border-emerald-500/10' : 'bg-red-500/5 text-red-500 border-red-500/10'}`}>
+                            {formStatus.success ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+                            <span>{formStatus.message}</span>
                           </div>
                         )}
 
