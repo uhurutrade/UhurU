@@ -1,6 +1,9 @@
 # Etapa 1: Builder
 FROM node:20-alpine AS builder
 
+# Soporte para Prisma y OpenSSL en Alpine
+RUN apk add --no-cache libc6-compat openssl openssl-dev
+
 WORKDIR /app
 
 # Copia los archivos de configuración de dependencias.
@@ -23,6 +26,9 @@ RUN npm run build
 
 # Etapa 2: Runner
 FROM node:20-alpine AS runner
+
+# Instala OpenSSL necesario para Prisma en runtime en Alpine
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 
