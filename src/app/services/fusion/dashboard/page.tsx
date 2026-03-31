@@ -96,92 +96,107 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Profile Column */}
-          <div className={`${user.isAdmin ? 'lg:col-span-4' : 'lg:col-span-12'} space-y-6`}>
-            {/* Status Card */}
-            <div className={`p-6 rounded-[2rem] border transition-all duration-700 ${isVigente ? 'bg-emerald-500/5 border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.05)]' : 'bg-red-500/5 border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.05)]'}`}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">Subscription Vigor</h4>
-                  <p className={`text-lg font-black uppercase tracking-tighter ${isVigente ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {user.isAdmin ? 'ADMIN ACCESS ACTIVE' : (isVigente ? 'System Active' : 'Access Suspended')}
-                  </p>
-                  {user.subscriptionEnd && !user.isAdmin && (
-                    <p className="text-[9px] text-slate-500 mt-1 uppercase font-bold tracking-widest">
-                      Valid Until: {new Date(user.subscriptionEnd).toLocaleDateString()}
+          {!user.isAdmin && (
+            <div className="lg:col-span-12 space-y-6 max-w-2xl mx-auto">
+              {/* Status Card */}
+              <div className={`p-6 rounded-[2rem] border transition-all duration-700 ${isVigente ? 'bg-emerald-500/5 border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.05)]' : 'bg-red-500/5 border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.05)]'}`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">Subscription Vigor</h4>
+                    <p className={`text-lg font-black tracking-tighter ${isVigente ? 'text-emerald-400' : 'text-red-400'} ${!isVigente ? 'lowercase' : 'uppercase'}`}>
+                      {isVigente ? 'Subscription active' : 'subscription expired'}
                     </p>
-                  )}
-                  {user.isAdmin && (
-                    <p className="text-[9px] text-emerald-500/40 mt-1 uppercase font-bold tracking-widest">
-                      Root Privileges Enabled
-                    </p>
-                  )}
+                    
+                    {isVigente && (
+                      <div className="mt-2 space-y-0.5">
+                        <p className="text-[9px] text-emerald-500/60 uppercase font-bold tracking-widest flex items-center gap-1">
+                          <Calendar className="w-3 h-3" /> From: {user.subscriptionStart ? new Date(user.subscriptionStart).toLocaleDateString() : 'N/A'}
+                        </p>
+                        <p className="text-[9px] text-slate-500 uppercase font-bold tracking-widest flex items-center gap-1">
+                          <ArrowRight className="w-2 h-2" /> To: {user.subscriptionEnd ? new Date(user.subscriptionEnd).toLocaleDateString() : 'N/A'}
+                        </p>
+                      </div>
+                    )}
+
+                    {!isVigente && (
+                      <div className="mt-4 animate-in slide-in-from-top-2">
+                         <label className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-2">Purchase License</label>
+                         <select className="w-full bg-slate-900/50 border border-red-500/20 rounded-xl px-3 py-2 text-[10px] font-bold text-slate-300 focus:ring-1 focus:ring-red-500/50 outline-none appearance-none cursor-pointer hover:bg-slate-900 border-dashed">
+                            <option value="">Select a plan...</option>
+                            <option value="30">Oracle Fusion 30 days (£59)</option>
+                            <option value="90">Oracle Fusion 90 days (£140)</option>
+                         </select>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className={`w-14 h-7 rounded-full relative transition-all duration-500 border border-white/10 ${isVigente ? 'bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'bg-slate-800 shadow-inner'}`}>
-                  <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all duration-500 ${isVigente ? 'left-8' : 'left-1 opacity-20'}`} />
-                </div>
+                {user.chosenPlan && (
+                  <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
+                    <Activity className="w-3.5 h-3.5 text-blue-400" />
+                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{user.chosenPlan}</span>
+                  </div>
+                )}
               </div>
-              {user.chosenPlan && (
-                <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
-                  <Activity className="w-3.5 h-3.5 text-blue-400" />
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{user.chosenPlan}</span>
-                </div>
-              )}
-            </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-3xl border border-white/[0.05] rounded-[2rem] shadow-2xl p-6">
-              <div className="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
-                <h3 className="text-xs font-black text-white/40 uppercase tracking-widest">Profile Identity</h3>
-                <ShieldCheck className="w-4 h-4 text-blue-500 opacity-20" />
+              <div className="bg-slate-900/40 backdrop-blur-3xl border border-white/[0.05] rounded-[2rem] shadow-2xl p-6">
+                <div className="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
+                  <h3 className="text-xs font-black text-white/40 uppercase tracking-widest">Profile Identity</h3>
+                  <ShieldCheck className="w-4 h-4 text-blue-500 opacity-20" />
+                </div>
+
+                <form action={handleUpdate} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <Field label="User ID" name="customerNumber" defaultValue={user.customerNumber ? user.customerNumber.toString().padStart(4, '0') : '0000'} icon={<Hash />} disabled compact />
+                    <Field label="Contact Email" name="email" defaultValue={user.email} icon={<Mail />} disabled compact />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 pt-2">
+                    <Field label="First Name" name="firstName" defaultValue={user.firstName} icon={<User />} compact />
+                    <Field label="Last Name" name="lastName" defaultValue={user.lastName} icon={<User />} compact />
+                  </div>
+                  
+                  <div className="pt-2">
+                    <Section title="Corporate Info" noBorder>
+                      <Field label="Company" name="companyName" defaultValue={user.companyName} icon={<Building />} compact />
+                      <Field label="Contact Phone" name="phone" defaultValue={user.phone} icon={<Phone />} compact />
+                    </Section>
+                  </div>
+
+                  <div className="pt-2">
+                    <Section title="Location Tracking">
+                      <div className="grid grid-cols-2 gap-4">
+                        <Field label="Country" name="country" defaultValue={user.country} icon={<Globe />} compact />
+                        <Field label="City" name="city" defaultValue={user.city} icon={<Building2 />} compact />
+                      </div>
+                      <Field label="Street Address" name="streetAddress" defaultValue={user.streetAddress} icon={<Home />} compact />
+                      <Field label="Zip / Postcode" name="postcode" defaultValue={user.postcode} icon={<MapPin />} compact />
+                    </Section>
+                  </div>
+
+                  <div className="pt-6">
+                    {status && (
+                      <div className={`p-4 mb-4 rounded-xl flex items-center gap-3 border text-xs font-bold animate-in zoom-in-95 ${status.success ? 'bg-emerald-500/5 text-emerald-400 border-emerald-500/10' : 'bg-red-500/5 text-red-500 border-red-500/10'}`}>
+                        {status.success ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+                        <span>{status.message}</span>
+                      </div>
+                    )}
+                    <button
+                      disabled={updating}
+                      type="submit"
+                      className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-black text-[10px] uppercase tracking-[0.2em] py-4 rounded-xl transition-all shadow-xl shadow-blue-900/40 flex items-center justify-center gap-2"
+                    >
+                      {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                      Synchronize Details
+                    </button>
+                  </div>
+                </form>
               </div>
-
-              <form action={handleUpdate} className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <Field label="First Name" name="firstName" defaultValue={user.firstName} icon={<User />} compact />
-                  <Field label="Last Name" name="lastName" defaultValue={user.lastName} icon={<User />} compact />
-                </div>
-                
-                <div className="pt-2">
-                  <Section title="Corporate Info" noBorder>
-                    <Field label="Company" name="companyName" defaultValue={user.companyName} icon={<Building />} compact />
-                    <Field label="Contact Phone" name="phone" defaultValue={user.phone} icon={<Phone />} compact />
-                  </Section>
-                </div>
-
-                <div className="pt-2">
-                  <Section title="Location Tracking">
-                    <div className="grid grid-cols-2 gap-4">
-                      <Field label="Country" name="country" defaultValue={user.country} icon={<Globe />} compact />
-                      <Field label="City" name="city" defaultValue={user.city} icon={<Building2 />} compact />
-                    </div>
-                    <Field label="Street Address" name="streetAddress" defaultValue={user.streetAddress} icon={<Home />} compact />
-                    <Field label="Zip / Postcode" name="postcode" defaultValue={user.postcode} icon={<MapPin />} compact />
-                  </Section>
-                </div>
-
-                <div className="pt-6">
-                   {status && (
-                    <div className={`p-4 mb-4 rounded-xl flex items-center gap-3 border text-xs font-bold animate-in zoom-in-95 ${status.success ? 'bg-emerald-500/5 text-emerald-400 border-emerald-500/10' : 'bg-red-500/5 text-red-500 border-red-500/10'}`}>
-                      {status.success ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-                      <span>{status.message}</span>
-                    </div>
-                  )}
-                  <button
-                    disabled={updating}
-                    type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-black text-[10px] uppercase tracking-[0.2em] py-4 rounded-xl transition-all shadow-xl shadow-blue-900/40 flex items-center justify-center gap-2"
-                  >
-                    {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    Synchronize Details
-                  </button>
-                </div>
-              </form>
             </div>
-          </div>
+          )}
 
           {/* Management Center (Admin) */}
           {user.isAdmin && (
-            <div className="lg:col-span-8 h-[calc(100vh-160px)]">
+            <div className="lg:col-span-12 h-[calc(100vh-160px)]">
               <AdminCenter currentUserId={user.id} />
             </div>
           )}
@@ -253,7 +268,15 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
         isActive: formData.get('isActive') === 'on',
         isPaid: formData.get('isPaid') === 'on',
         chosenPlan: formData.get('plan') as string,
-        start: formData.get('start') as string, 
+        start: formData.get('start') as string,
+        firstName: formData.get('firstName') as string,
+        lastName: formData.get('lastName') as string,
+        companyName: formData.get('companyName') as string,
+        phone: formData.get('phone') as string,
+        country: formData.get('country') as string,
+        city: formData.get('city') as string,
+        streetAddress: formData.get('streetAddress') as string,
+        postcode: formData.get('postcode') as string,
       });
       setActiveTab(null);
       loadUsers();
@@ -284,7 +307,15 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                     <div>
                       <h4 className="font-bold text-slate-100 flex items-center gap-3">
                         {u.firstName} {u.lastName}
-                        {isVigente ? <span className="text-[10px] text-emerald-400 font-mono font-black border border-emerald-500/20 px-2 rounded-md bg-emerald-500/5 uppercase tracking-widest">Active</span> : <span className="text-[10px] text-slate-600 border border-white/5 px-2 rounded-md uppercase tracking-widest font-black">Suspended</span>}
+                        {u.email === 'uhurutradeuk@gmail.com' ? 
+                           <span className="text-[10px] text-blue-400 font-mono font-black border border-blue-500/20 px-4 rounded-md bg-blue-500/5 uppercase tracking-[0.2em]">ADMIN</span> :
+                           isVigente ? 
+                            <div className="flex flex-col">
+                              <span className="text-[10px] text-emerald-400 font-mono font-black border border-emerald-500/20 px-2 rounded-md bg-emerald-500/5 uppercase tracking-widest text-center mb-1">Subscription active</span>
+                              <span className="text-[8px] text-emerald-500/50 font-mono text-center">F: {u.subscriptionStart ? new Date(u.subscriptionStart).toLocaleDateString() : 'N/A'} - T: {u.subscriptionEnd ? new Date(u.subscriptionEnd).toLocaleDateString() : 'N/A'}</span>
+                            </div> : 
+                            <span className="text-[10px] text-red-500 border border-red-500/20 px-2 rounded-md lowercase tracking-widest font-black bg-red-500/5">subscription expired</span>
+                        }
                       </h4>
                       <p className="text-[10px] text-slate-500 font-mono mt-0.5">{u.email}</p>
                     </div>
@@ -293,52 +324,69 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
               </div>
               {activeTab === u.id && (
                 <div className="mt-8 pt-8 border-t border-white/5 animate-in slide-in-from-top-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <form action={(fd) => handleUpdateAccount(u.id, fd)} className="space-y-8 bg-slate-950/40 p-8 rounded-3xl border border-white/5">
-                      <div className="grid grid-cols-2 gap-6">
-                        <div className="space-y-3">
-                          <label className="text-[9px] font-black text-blue-400 uppercase tracking-widest">Subscription Plan</label>
-                          <select name="plan" defaultValue={u.chosenPlan || ''} className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-xs text-white appearance-none focus:ring-2 focus:ring-blue-500/50">
-                            <option value="">No Plan Selected</option>
-                            <option value="Fusion One Month">Fusion One Month</option>
-                            <option value="Fusion Three Months">Fusion Three Months</option>
-                          </select>
+                  <form action={(fd) => handleUpdateAccount(u.id, fd)}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="space-y-6 bg-slate-950/40 p-8 rounded-3xl border border-white/5">
+                        <h5 className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-4 px-1">Account Parameters</h5>
+                        
+                        <div className="grid grid-cols-2 gap-6">
+                           <Field label="First Name" name="firstName" defaultValue={u.firstName} icon={<User />} compact />
+                           <Field label="Last Name" name="lastName" defaultValue={u.lastName} icon={<User />} compact />
                         </div>
-                        <div className="space-y-3">
-                          <label className="text-[9px] font-black text-blue-400 uppercase tracking-widest">Activation Date</label>
-                          <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-xs text-white" />
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-6">
-                        <ToggleInput label="Account Active" name="isActive" defaultChecked={u.isActive} />
-                        <ToggleInput label="Payment Verified" name="isPaid" defaultChecked={u.isPaid} highlight />
-                      </div>
 
-                      <button type="submit" disabled={updatingId === u.id} className="w-full bg-blue-600 hover:bg-blue-500 text-white text-[10px] uppercase font-black tracking-widest py-4 rounded-xl transition-all shadow-xl shadow-blue-900/20 flex items-center justify-center gap-2">
-                         {updatingId === u.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                         Authorize Account Parameters
-                      </button>
-                    </form>
-
-                    <div className="bg-slate-950/20 p-8 rounded-3xl border border-dashed border-white/5">
-                        <div className="flex items-center gap-3 mb-6">
-                          <Activity className="w-5 h-5 text-slate-500" />
-                          <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-500">System Information Table</h5>
-                        </div>
-                        <div className="grid grid-cols-2 gap-y-6 gap-x-4">
-                          <ReadOnlyItem label="Corporate Org" value={u.companyName} />
-                          <ReadOnlyItem label="Contact Link" value={u.phone} />
-                          <ReadOnlyItem label="Country" value={u.country} />
-                          <ReadOnlyItem label="City Location" value={u.city} />
-                          <ReadOnlyItem label="Internal ID" value={u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : 'Pending'} />
-                          <ReadOnlyItem label="Exp. Date" value={u.subscriptionEnd ? new Date(u.subscriptionEnd).toLocaleDateString() : 'Pending'} />
-                          <div className="col-span-2">
-                             <ReadOnlyItem label="Legal Address" value={u.streetAddress} />
+                        <div className="grid grid-cols-2 gap-6">
+                          <div className="space-y-3">
+                            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Subscription Plan</label>
+                            <select name="plan" defaultValue={u.chosenPlan || ''} className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-xs text-white appearance-none focus:ring-2 focus:ring-blue-500/50">
+                              <option value="">No Plan Selected</option>
+                              <option value="Oracle Fusion 30 days">Oracle Fusion 30 days (£59)</option>
+                              <option value="Oracle Fusion 90 days">Oracle Fusion 90 days (£140)</option>
+                            </select>
+                          </div>
+                          <div className="space-y-3">
+                            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Activation Date</label>
+                            <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-xs text-white" />
                           </div>
                         </div>
+                        
+                        <div className="grid grid-cols-2 gap-6">
+                          <ToggleInput label="Account Active" name="isActive" defaultChecked={u.isActive} />
+                          <ToggleInput label="Payment Verified" name="isPaid" defaultChecked={u.isPaid} highlight />
+                        </div>
+
+                        <button type="submit" disabled={updatingId === u.id} className="w-full bg-blue-600 hover:bg-blue-500 text-white text-[10px] uppercase font-black tracking-widest py-4 rounded-xl transition-all shadow-xl shadow-blue-900/20 flex items-center justify-center gap-2">
+                           {updatingId === u.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                           Update Student & Account Details
+                        </button>
+                      </div>
+
+                      <div className="bg-slate-950/20 p-8 rounded-3xl border border-dashed border-white/5 space-y-6">
+                        <div className="flex items-center gap-3 mb-2">
+                          <Activity className="w-5 h-5 text-slate-500" />
+                          <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Corporate & Location Information</h5>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                           <Field label="Company" name="companyName" defaultValue={u.companyName} icon={<Building />} compact />
+                           <Field label="Phone" name="phone" defaultValue={u.phone} icon={<Phone />} compact />
+                           <Field label="Country" name="country" defaultValue={u.country} icon={<Globe />} compact />
+                           <Field label="City" name="city" defaultValue={u.city} icon={<Building2 />} compact />
+                        </div>
+                        
+                        <div className="grid grid-cols-1 gap-4">
+                           <Field label="Street Address" name="streetAddress" defaultValue={u.streetAddress} icon={<Home />} compact />
+                           <Field label="Postcode" name="postcode" defaultValue={u.postcode} icon={<MapPin />} compact />
+                        </div>
+
+                        <div className="pt-4 border-t border-white/5">
+                            <div className="flex items-center justify-between opacity-50">
+                                <ReadOnlyItem label="Internal Customer ID" value={u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : 'Pending'} />
+                                <ReadOnlyItem label="Expiration Date" value={u.subscriptionEnd ? new Date(u.subscriptionEnd).toLocaleDateString() : 'None Assigned'} />
+                            </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </form>
                 </div>
               )}
             </div>

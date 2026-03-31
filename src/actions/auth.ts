@@ -59,7 +59,7 @@ export async function getCurrentUser() {
       },
     });
     
-    if (!user) return null;
+    if (!user || !user.isActive) return null;
     
     return {
       ...user,
@@ -199,6 +199,10 @@ export async function requestPasswordReset(formData: FormData) {
     return { success: false, message: 'User not found.' };
   }
 
+  if (!user.isActive) {
+    return { success: false, message: 'Account is suspended. Please contact support.' };
+  }
+
   const token = randomUUID();
   const expiry = new Date(Date.now() + 3600000); // 1 hour
 
@@ -260,7 +264,20 @@ export async function getAllUsers() {
   });
 }
 
-export async function updateUserDetails(userId: string, data: { isActive: boolean; start: string; chosenPlan?: string; isPaid?: boolean }) {
+export async function updateUserDetails(userId: string, data: { 
+  isActive: boolean; 
+  start: string; 
+  chosenPlan?: string; 
+  isPaid?: boolean;
+  firstName?: string;
+  lastName?: string;
+  companyName?: string;
+  phone?: string;
+  country?: string;
+  city?: string;
+  streetAddress?: string;
+  postcode?: string;
+}) {
   const admin = await getCurrentUser();
   if (!admin?.isAdmin) throw new Error('Not authorized');
 
@@ -269,9 +286,9 @@ export async function updateUserDetails(userId: string, data: { isActive: boolea
 
   if (startDate && data.chosenPlan) {
     endDate = new Date(startDate);
-    if (data.chosenPlan === 'Fusion One Month') {
+    if (data.chosenPlan === 'Oracle Fusion 30 days') {
       endDate.setDate(endDate.getDate() + 30);
-    } else if (data.chosenPlan === 'Fusion Three Months') {
+    } else if (data.chosenPlan === 'Oracle Fusion 90 days') {
       endDate.setDate(endDate.getDate() + 90);
     }
   }
@@ -284,6 +301,14 @@ export async function updateUserDetails(userId: string, data: { isActive: boolea
       isPaid: data.isPaid,
       subscriptionStart: startDate,
       subscriptionEnd: endDate,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      companyName: data.companyName,
+      phone: data.phone,
+      country: data.country,
+      city: data.city,
+      streetAddress: data.streetAddress,
+      postcode: data.postcode,
       // customerNumber is intentionally NOT included — it is immutable once assigned
     }
   });
