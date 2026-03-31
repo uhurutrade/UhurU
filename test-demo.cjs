@@ -15,7 +15,7 @@ async function sendDemo() {
   console.log('--- Iniciando prueba DEMO ---');
   console.log('Desde:', process.env.EMAIL_USER);
   console.log('Hacia: raul.irus@gmail.com');
-  
+
   try {
     const info = await transporter.sendMail({
       from: process.env.EMAIL_USER,
