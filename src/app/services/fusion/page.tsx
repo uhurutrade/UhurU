@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { registerUser, loginUser, requestPasswordReset } from '@/actions/auth';
 import { 
-  User, Mail, Lock, Building, MapPin, Building2, Phone, Globe, Hash, Home, 
+  User, Mail, Lock, Building, MapPin, Building2, Phone, Globe, Home, 
   ShieldCheck, LogIn, UserPlus, ArrowRight, CheckCircle2, AlertCircle, RefreshCw
 } from 'lucide-react';
 
@@ -80,7 +80,6 @@ export default function FusionPage() {
                 <>
                   <Input name="firstName" label="First Name" icon={<User />} placeholder="Raúl" required />
                   <Input name="lastName" label="Last Name" icon={<User />} placeholder="Ortega" required />
-                  <Input name="displayName" label="Username" icon={<Hash />} placeholder="raul.fusion" required />
                 </>
               )}
 

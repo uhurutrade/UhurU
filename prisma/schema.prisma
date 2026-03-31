@@ -12,7 +12,6 @@ model User {
   id             String   @id @default(cuid())
   firstName      String
   lastName       String
-  displayName    String   @unique
   email          String   @unique
   password       String
   companyName    String?
@@ -23,6 +22,8 @@ model User {
   county         String?
   postcode       String
   phone          String
+  subscriptionStart DateTime?
+  subscriptionEnd   DateTime?
   resetToken     String?  @unique
   resetTokenExpiry DateTime?
   createdAt      DateTime @default(now())

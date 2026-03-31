@@ -10,11 +10,11 @@ import { sendEmail } from '@/lib/mail';
 import { getResetTemplate } from '@/lib/templates/reset';
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'super-secret-key');
+const ADMIN_EMAIL = 'uhurutradeuk@gmail.com';
 
 const registerSchema = z.object({
   firstName: z.string().min(2),
   lastName: z.string().min(2),
-  displayName: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(8),
   companyName: z.string().optional(),
@@ -41,7 +41,6 @@ export async function getCurrentUser() {
         id: true,
         firstName: true,
         lastName: true,
-        displayName: true,
         email: true,
         companyName: true,
         country: true,
@@ -51,9 +50,17 @@ export async function getCurrentUser() {
         county: true,
         postcode: true,
         phone: true,
+        subscriptionStart: true,
+        subscriptionEnd: true,
       },
     });
-    return user;
+    
+    if (!user) return null;
+    
+    return {
+      ...user,
+      isAdmin: user.email === ADMIN_EMAIL
+    };
   } catch (error) {
     return null;
   }
@@ -114,7 +121,7 @@ export async function registerUser(formData: FormData) {
     return { success: true, message: 'Registration successful' };
   } catch (error: any) {
     if (error.code === 'P2002') {
-      return { success: false, message: 'Email or Username already exists' };
+      return { success: false, message: 'Email already exists' };
     }
     return { success: false, message: 'Error registering user' };
   }
@@ -205,4 +212,39 @@ export async function resetPassword(formData: FormData) {
   });
 
   return { success: true, message: 'Password updated successfully' };
+}
+
+// ADMIN ACTIONS
+export async function getAllUsers() {
+  const user = await getCurrentUser();
+  if (!user?.isAdmin) throw new Error('Not authorized');
+
+  return await prisma.user.findMany({
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      companyName: true,
+      subscriptionStart: true,
+      subscriptionEnd: true,
+      createdAt: true,
+    }
+  });
+}
+
+export async function updateSubscription(userId: string, start: string, end: string) {
+  const admin = await getCurrentUser();
+  if (!admin?.isAdmin) throw new Error('Not authorized');
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      subscriptionStart: start ? new Date(start) : null,
+      subscriptionEnd: end ? new Date(end) : null,
+    }
+  });
+  
+  return { success: true, message: 'Subscription updated successfully' };
 }
