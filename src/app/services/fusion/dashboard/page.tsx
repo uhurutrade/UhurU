@@ -203,31 +203,35 @@ export default function DashboardPage() {
                 </div>
 
                 <form action={handleUpdate} className="space-y-6">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Field label="User ID" name="customerNumber" defaultValue={user.customerNumber ? user.customerNumber.toString().padStart(4, '0') : '0000'} icon={<Hash />} disabled compact />
                     <Field label="Contact Email" name="email" defaultValue={user.email} icon={<Mail />} disabled compact />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                     <Field label="First Name" name="firstName" defaultValue={user.firstName} icon={<User />} compact />
                     <Field label="Last Name" name="lastName" defaultValue={user.lastName} icon={<User />} compact />
                   </div>
                   
                   <div className="pt-2">
                     <Section title="Corporate Info" noBorder>
-                      <Field label="Company" name="companyName" defaultValue={user.companyName} icon={<Building />} compact />
-                      <Field label="Contact Phone" name="phone" defaultValue={user.phone} icon={<Phone />} compact />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Field label="Company" name="companyName" defaultValue={user.companyName} icon={<Building />} compact />
+                        <Field label="Contact Phone" name="phone" defaultValue={user.phone} icon={<Phone />} compact />
+                      </div>
                     </Section>
                   </div>
 
                   <div className="pt-2">
                     <Section title="Location Tracking">
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Field label="Country" name="country" defaultValue={user.country} icon={<Globe />} compact />
                         <Field label="City" name="city" defaultValue={user.city} icon={<Building2 />} compact />
                       </div>
-                      <Field label="Street Address" name="streetAddress" defaultValue={user.streetAddress} icon={<Home />} compact />
-                      <Field label="Zip / Postcode" name="postcode" defaultValue={user.postcode} icon={<MapPin />} compact />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Field label="Street Address" name="streetAddress" defaultValue={user.streetAddress} icon={<Home />} compact />
+                        <Field label="Zip / Postcode" name="postcode" defaultValue={user.postcode} icon={<MapPin />} compact />
+                      </div>
                     </Section>
                   </div>
 
@@ -248,7 +252,7 @@ export default function DashboardPage() {
 
           {/* Management Center (Admin) */}
           {user.isAdmin && (
-            <div className="lg:col-span-12 h-[calc(100vh-160px)]">
+            <div className="lg:col-span-12 min-h-[600px] lg:h-[calc(100vh-160px)]">
               <AdminCenter currentUserId={user.id} setGlobalNotification={setGlobalNotification} />
             </div>
           )}
@@ -280,7 +284,7 @@ function AdminCenter({ currentUserId, setGlobalNotification }: { currentUserId: 
 
   return (
     <div className="bg-slate-900/60 backdrop-blur-3xl border border-white/[0.05] rounded-[2.5rem] shadow-2xl h-full flex flex-col overflow-hidden">
-      <div className="flex border-b border-white/5 bg-slate-950/20">
+      <div className="flex overflow-x-auto border-b border-white/5 bg-slate-950/20 no-scrollbar">
         <TabButton 
           active={activeView === 'students'} 
           onClick={() => setActiveView('students')} 
@@ -409,19 +413,19 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                       <div className="space-y-6 bg-slate-950/40 p-8 rounded-3xl border border-white/5">
                         <h5 className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-4 px-1">Account Parameters</h5>
                         
-                        <div className="grid grid-cols-2 gap-6 mb-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-6 mb-4">
                            <Field label="System User ID" name="userId_readonly" defaultValue={u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : 'Pending'} icon={<Hash />} compact readOnly />
                            <Field label="Assigned License" name="license_readonly" defaultValue={u.licenses?.[0]?.subscription || 'None Assigned'} icon={<Key />} compact readOnly />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-6">
                            <Field label="First Name" name="firstName" defaultValue={u.firstName} icon={<User />} compact readOnly />
                            <Field label="Last Name" name="lastName" defaultValue={u.lastName} icon={<User />} compact readOnly />
                         </div>
 
                         {u.email !== 'uhurutradeuk@gmail.com' ? (
                           <>
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div className="space-y-3">
                                 <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Subscription Plan</label>
                                 <select name="plan" defaultValue={u.chosenPlan || ''} className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-xs text-white appearance-none focus:ring-2 focus:ring-blue-500/50">
@@ -436,7 +440,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                               </div>
                             </div>
                             
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <ToggleInput label="Account Active" name="isActive" defaultChecked={u.isActive} />
                               <ToggleInput label="Payment Verified" name="isPaid" defaultChecked={u.isPaid} highlight />
                             </div>
@@ -558,7 +562,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
           <div key={l.id} className="bg-slate-950/40 border border-white/5 rounded-3xl p-6 hover:border-blue-500/20 transition-all group overflow-hidden relative">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
               <div className="grid grid-cols-2 md:grid-cols-12 gap-8 items-center flex-1">
-                <div className="md:col-span-1 text-center md:text-left">
+                <div className="col-span-1 md:col-span-1 text-center md:text-left">
                   <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Licence</span>
                   <p className="text-xs font-black text-white">{l.subscription}</p>
                   <div className="flex items-center gap-2 mt-0.5 justify-center md:justify-start">
@@ -569,34 +573,34 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                   </div>
                 </div>
 
-                <div className="md:col-span-2">
-                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">URL Hub Link</span>
-                  <div className="flex items-center gap-2">
+                <div className="col-span-1 md:col-span-2">
+                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 text-center md:text-left md:ml-1">URL Hub Link</span>
+                  <div className="flex items-center gap-2 justify-center md:justify-start">
                     <p className="text-[10px] font-mono text-slate-400 truncate max-w-[90px]">{l.urlLink}</p>
                     <CopyButton text={l.urlLink} />
                   </div>
                 </div>
 
-                <div className="md:col-span-2">
-                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">SCM Username</span>
-                  <div className="flex items-center gap-2">
+                <div className="col-span-1 md:col-span-2">
+                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 text-center md:text-left md:ml-1">SCM Username</span>
+                  <div className="flex items-center gap-2 justify-center md:justify-start">
                     <p className="text-[10px] font-mono text-slate-300 truncate max-w-[90px]">{l.username}</p>
                     <CopyButton text={l.username} />
                   </div>
                 </div>
 
-                <div className="md:col-span-1">
-                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">SCM Pass</span>
-                  <div className="flex items-center gap-2">
+                <div className="col-span-1 md:col-span-1">
+                  <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 text-center md:text-left md:ml-1">SCM Pass</span>
+                  <div className="flex items-center gap-2 justify-center md:justify-start">
                     <p className="text-[10px] font-mono text-slate-400 truncate max-w-[70px]">{l.password}</p>
                     <CopyButton text={l.password} />
                   </div>
                 </div>
 
-                <div className="md:col-span-4">
+                <div className="col-span-2 md:col-span-4 border-t md:border-t-0 border-white/5 pt-4 md:pt-0">
                   <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Assigned Student</span>
                   {l.assignedTo ? (
-                    <div className="flex items-center gap-2 overflow-hidden">
+                    <div className="flex items-center gap-2 overflow-hidden bg-white/5 md:bg-transparent p-2 md:p-0 rounded-xl">
                        <span className="text-xs font-bold text-slate-200 whitespace-nowrap">{l.assignedTo.firstName} {l.assignedTo.lastName}</span>
                        <span className="text-[9px] text-slate-600 font-mono italic truncate opacity-60">({l.assignedTo.email})</span>
                        <span className="text-[10px] font-black text-blue-500/50 font-mono ml-auto">#{l.assignedTo.customerNumber?.toString().padStart(4, '0')}</span>
@@ -606,7 +610,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                   )}
                 </div>
 
-                <div className="md:col-span-2">
+                <div className="col-span-2 md:col-span-2 text-center md:text-left border-t md:border-t-0 border-white/5 pt-4 md:pt-0">
                   <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">Expiration</span>
                   <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">
                     {l.expiryDate ? new Date(l.expiryDate).toLocaleDateString() : 'Evergreen'}
