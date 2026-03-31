@@ -67,7 +67,7 @@ export async function logoutUser() {
 
 export async function updateProfile(formData: FormData) {
   const user = await getCurrentUser();
-  if (!user) return { success: false, message: 'No autorizado' };
+  if (!user) return { success: false, message: 'Unauthorized' };
 
   const rawData = Object.fromEntries(formData.entries());
   
@@ -87,9 +87,9 @@ export async function updateProfile(formData: FormData) {
         phone: rawData.phone as string,
       }
     });
-    return { success: true, message: 'Perfil actualizado con éxito' };
+    return { success: true, message: 'Profile updated successfully' };
   } catch (error) {
-    return { success: false, message: 'Error al actualizar el perfil' };
+    return { success: false, message: 'Error updating profile' };
   }
 }
 
@@ -111,12 +111,12 @@ export async function registerUser(formData: FormData) {
       },
     });
 
-    return { success: true, message: 'Usuario registrado con éxito' };
+    return { success: true, message: 'Registration successful' };
   } catch (error: any) {
     if (error.code === 'P2002') {
-      return { success: false, message: 'El email o nombre de usuario ya existe' };
+      return { success: false, message: 'Email or Username already exists' };
     }
-    return { success: false, message: 'Error al registrar el usuario' };
+    return { success: false, message: 'Error registering user' };
   }
 }
 
@@ -129,7 +129,7 @@ export async function loginUser(formData: FormData) {
   });
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return { success: false, message: 'Credenciales inválidas' };
+    return { success: false, message: 'Invalid credentials' };
   }
 
   const token = await new SignJWT({ userId: user.id, email: user.email })
@@ -145,7 +145,7 @@ export async function loginUser(formData: FormData) {
     path: '/',
   });
 
-  return { success: true, message: 'Sesión iniciada con éxito' };
+  return { success: true, message: 'Login successful' };
 }
 
 export async function requestPasswordReset(formData: FormData) {
@@ -153,7 +153,7 @@ export async function requestPasswordReset(formData: FormData) {
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
-    return { success: true, message: 'Si el correo existe, recibirás un enlace de recuperación.' };
+    return { success: true, message: 'If the email exists, you will receive a reset link shortly.' };
   }
 
   const token = randomUUID();
@@ -171,11 +171,11 @@ export async function requestPasswordReset(formData: FormData) {
 
   await sendEmail({
     to: email,
-    subject: 'Restablecer Contraseña - Uhuru Trade',
+    subject: 'Reset Password - Uhuru Trade',
     html: getResetTemplate(resetLink),
   });
 
-  return { success: true, message: 'Si el correo existe, recibirás un enlace de recuperación.' };
+  return { success: true, message: 'If the email exists, you will receive a reset link shortly.' };
 }
 
 export async function resetPassword(formData: FormData) {
@@ -190,7 +190,7 @@ export async function resetPassword(formData: FormData) {
   });
 
   if (!user) {
-    return { success: false, message: 'Enlace inválido o caducado.' };
+    return { success: false, message: 'Invalid or expired link.' };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -204,5 +204,5 @@ export async function resetPassword(formData: FormData) {
     },
   });
 
-  return { success: true, message: 'Contraseña actualizada con éxito.' };
+  return { success: true, message: 'Password updated successfully' };
 }

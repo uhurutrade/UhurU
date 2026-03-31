@@ -15,7 +15,7 @@ function ResetPasswordForm() {
     return (
       <div className="text-center p-8 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400">
         <AlertCircle className="w-10 h-10 mx-auto mb-4 opacity-50" />
-        Token de recuperación no válido o ausente.
+        Invalid or missing reset token.
       </div>
     );
   }
@@ -30,7 +30,7 @@ function ResetPasswordForm() {
         setTimeout(() => window.location.href = '/services/fusion', 3000);
       }
     } catch (error) {
-      setStatus({ success: false, message: 'Error al procesar la solicitud.' });
+      setStatus({ success: false, message: 'Error processing the request.' });
     } finally {
       setLoading(false);
     }
@@ -42,15 +42,15 @@ function ResetPasswordForm() {
         <div className="w-20 h-20 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 shadow-xl">
           <ShieldCheck className="w-10 h-10 text-emerald-400" />
         </div>
-        <h1 className="text-2xl font-bold text-white">Nueva Contraseña</h1>
-        <p className="text-slate-400 text-sm mt-2">Introduce tu nueva contraseña segura abajo.</p>
+        <h1 className="text-2xl font-bold text-white">New Password</h1>
+        <p className="text-slate-400 text-sm mt-2">Enter your new secure password below.</p>
       </div>
 
       <form action={handleAction} className="space-y-6">
         <input type="hidden" name="token" value={token} />
         
         <div className="space-y-2 group">
-          <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Nueva Contraseña</label>
+          <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">New Password</label>
           <div className="relative">
             <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-blue-400" />
             <input
@@ -79,7 +79,7 @@ function ResetPasswordForm() {
             <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
           ) : (
             <>
-              {status?.success ? 'Contraseña cambiada' : 'Actualizar Contraseña'}
+              {status?.success ? 'Password Changed' : 'Update Password'}
               {!status?.success && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             </>
           )}

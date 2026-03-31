@@ -27,7 +27,7 @@ export default function FusionPage() {
       }
     } catch (error) {
       console.error('Auth error:', error);
-      setStatus({ success: false, message: 'Ocurrió un error inesperado.' });
+      setStatus({ success: false, message: 'An unexpected error occurred.' });
     } finally {
       setLoading(false);
     }
@@ -48,13 +48,13 @@ export default function FusionPage() {
                 onClick={() => { setView('login'); setStatus(null); }}
                 className={`flex-1 py-6 font-semibold flex items-center justify-center gap-2 transition-all ${view === 'login' ? 'bg-blue-600 text-white shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'}`}
               >
-                <LogIn className="w-5 h-5" /> Iniciar Sesión
+                <LogIn className="w-5 h-5" /> Sign In
               </button>
               <button 
                 onClick={() => { setView('register'); setStatus(null); }}
                 className={`flex-1 py-6 font-semibold flex items-center justify-center gap-2 transition-all ${view === 'register' ? 'bg-blue-600 text-white shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'}`}
               >
-                <UserPlus className="w-5 h-5" /> Registrarse
+                <UserPlus className="w-5 h-5" /> Sign Up
               </button>
             </div>
           )}
@@ -64,12 +64,12 @@ export default function FusionPage() {
               {view === 'forgot' ? <RefreshCw className="w-10 h-10 text-blue-400" /> : <ShieldCheck className="w-10 h-10 text-blue-400" />}
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
-              {view === 'forgot' ? 'Recuperar Contraseña' : 'Oracle Fusion Services'}
+              {view === 'forgot' ? 'Forgot Password' : 'Oracle Fusion Services'}
             </h1>
             <p className="text-slate-400">
-              {view === 'forgot' ? 'Te enviaremos un enlace a tu email' : 
-               view === 'login' ? 'Accede a tus cursos y plataformas' : 
-               'Crea tu cuenta de consultor Oracle Fusion'}
+              {view === 'forgot' ? "We'll send you a secure reset link" : 
+               view === 'login' ? 'Access your courses and platforms' : 
+               'Create your Oracle Fusion consultant account'}
             </p>
           </div>
 
@@ -78,24 +78,24 @@ export default function FusionPage() {
               
               {view === 'register' && (
                 <>
-                  <Input name="firstName" label="Primer Nombre" icon={<User />} placeholder="Raúl" required />
-                  <Input name="lastName" label="Apellido" icon={<User />} placeholder="Ortega" required />
-                  <Input name="displayName" label="Nombre de Usuario" icon={<Hash />} placeholder="raul.fusion" required />
+                  <Input name="firstName" label="First Name" icon={<User />} placeholder="Raúl" required />
+                  <Input name="lastName" label="Last Name" icon={<User />} placeholder="Ortega" required />
+                  <Input name="displayName" label="Username" icon={<Hash />} placeholder="raul.fusion" required />
                 </>
               )}
 
-              <Input name="email" label="Correo Electrónico" type="email" icon={<Mail />} placeholder="tu@email.com" required />
+              <Input name="email" label="Email Address" type="email" icon={<Mail />} placeholder="you@email.com" required />
               
               {view !== 'forgot' && (
                 <div className="relative">
-                  <Input name="password" label="Contraseña" type="password" icon={<Lock />} placeholder="••••••••" required />
+                  <Input name="password" label="Password" type="password" icon={<Lock />} placeholder="••••••••" required />
                   {view === 'login' && (
                     <button 
                       type="button"
                       onClick={() => { setView('forgot'); setStatus(null); }}
                       className="absolute right-0 -top-1 text-xs text-blue-400 hover:underline"
                     >
-                      ¿Olvidaste tu contraseña?
+                      Forgot password?
                     </button>
                   )}
                 </div>
@@ -103,12 +103,12 @@ export default function FusionPage() {
 
               {view === 'register' && (
                 <>
-                  <Input name="companyName" label="Empresa (Opcional)" icon={<Building />} placeholder="Uhuru Trade Ltd." />
-                  <Input name="phone" label="Teléfono" icon={<Phone />} placeholder="+34 600 000 000" required />
-                  <Input name="country" label="País / Región" icon={<Globe />} placeholder="España" required />
-                  <Input name="city" label="Ciudad" icon={<Building2 />} placeholder="Madrid" required />
-                  <Input name="streetAddress" label="Dirección" icon={<Home />} placeholder="Calle Falsa 123" required />
-                  <Input name="postcode" label="Código Postal" icon={<MapPin />} placeholder="28001" required />
+                  <Input name="companyName" label="Company (Optional)" icon={<Building />} placeholder="Uhuru Trade Ltd." />
+                  <Input name="phone" label="Phone" icon={<Phone />} placeholder="+34 600 000 000" required />
+                  <Input name="country" label="Country" icon={<Globe />} placeholder="Spain" required />
+                  <Input name="city" label="City" icon={<Building2 />} placeholder="Madrid" required />
+                  <Input name="streetAddress" label="Street Address" icon={<Home />} placeholder="Street Name 123" required />
+                  <Input name="postcode" label="Zip Code" icon={<MapPin />} placeholder="28001" required />
                 </>
               )}
             </div>
@@ -136,7 +136,7 @@ export default function FusionPage() {
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               ) : (
                 <>
-                  {view === 'login' ? 'Entrar a Fusion' : view === 'register' ? 'Crear mi Cuenta' : 'Enviar Enlace'}
+                  {view === 'login' ? 'Enter Fusion' : view === 'register' ? 'Create Account' : 'Send Reset Link'}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </>
               )}
@@ -145,12 +145,12 @@ export default function FusionPage() {
 
           <p className="p-8 pt-0 text-center text-sm text-slate-500">
             {view === 'forgot' ? (
-              <button onClick={() => setView('login')} className="text-blue-400 hover:underline font-medium">Volver al inicio de sesión</button>
+              <button onClick={() => setView('login')} className="text-blue-400 hover:underline font-medium">Back to Login</button>
             ) : (
               <>
-                {view === 'login' ? '¿No tienes cuenta?' : '¿Ya eres miembro?'} 
+                {view === 'login' ? "Don't have an account?" : 'Already a member?'} 
                 <button onClick={() => setView(view === 'login' ? 'register' : 'login')} className="text-blue-400 hover:underline ml-1 font-medium transition-colors">
-                  {view === 'login' ? 'Regístrate aquí' : 'Inicia sesión ahora'}
+                  {view === 'login' ? 'Sign up here' : 'Sign in now'}
                 </button>
               </>
             )}

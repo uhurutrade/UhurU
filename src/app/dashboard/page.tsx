@@ -37,7 +37,7 @@ export default function DashboardPage() {
         setUser(freshUser);
       }
     } catch (error) {
-      setStatus({ success: false, message: 'Error al actualizar.' });
+      setStatus({ success: false, message: 'Update error occurred.' });
     } finally {
       setUpdating(false);
     }
@@ -71,35 +71,35 @@ export default function DashboardPage() {
               <UserCircle className="w-10 h-10 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Mi Perfil</h1>
-              <p className="text-slate-400">Gestiona tus datos de Fusion y facturación</p>
+              <h1 className="text-3xl font-bold text-white">My Profile</h1>
+              <p className="text-slate-400">Manage your Fusion account and billing data</p>
             </div>
           </div>
           <button 
             onClick={handleLogout}
             className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl transition-all border border-red-500/20 font-medium"
           >
-            <LogOut className="w-5 h-5" /> Cerrar sesión
+            <LogOut className="w-5 h-5" /> Logout
           </button>
         </div>
 
         <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8">
           <form action={handleUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <Section title="Información Personal">
-              <Field label="Nombre" name="firstName" defaultValue={user.firstName} icon={<User />} />
-              <Field label="Apellidos" name="lastName" defaultValue={user.lastName} icon={<User />} />
-              <Field label="Usuario (No editable)" name="displayName" defaultValue={user.displayName} icon={<UserCircle />} disabled />
-              <Field label="Email (No editable)" name="email" defaultValue={user.email} icon={<Mail />} disabled />
+            <Section title="Personal Information">
+              <Field label="First Name" name="firstName" defaultValue={user.firstName} icon={<User />} />
+              <Field label="Last Name" name="lastName" defaultValue={user.lastName} icon={<User />} />
+              <Field label="Username (Read-only)" name="displayName" defaultValue={user.displayName} icon={<UserCircle />} disabled />
+              <Field label="Email Address (Read-only)" name="email" defaultValue={user.email} icon={<Mail />} disabled />
             </Section>
 
-            <Section title="Datos de Facturación">
-              <Field label="Empresa" name="companyName" defaultValue={user.companyName} icon={<Building />} />
-              <Field label="Teléfono" name="phone" defaultValue={user.phone} icon={<Phone />} />
-              <Field label="País" name="country" defaultValue={user.country} icon={<Globe />} />
-              <Field label="Ciudad" name="city" defaultValue={user.city} icon={<Building2 />} />
-              <Field label="Calle" name="streetAddress" defaultValue={user.streetAddress} icon={<Home />} />
-              <Field label="C.P." name="postcode" defaultValue={user.postcode} icon={<MapPin />} />
+            <Section title="Billing Details">
+              <Field label="Company Name" name="companyName" defaultValue={user.companyName} icon={<Building />} />
+              <Field label="Phone Number" name="phone" defaultValue={user.phone} icon={<Phone />} />
+              <Field label="Country" name="country" defaultValue={user.country} icon={<Globe />} />
+              <Field label="City" name="city" defaultValue={user.city} icon={<Building2 />} />
+              <Field label="Street" name="streetAddress" defaultValue={user.streetAddress} icon={<Home />} />
+              <Field label="Zip Code" name="postcode" defaultValue={user.postcode} icon={<MapPin />} />
             </Section>
 
             <div className="md:col-span-2 flex flex-col gap-4 items-center border-t border-slate-800 pt-8 mt-4">
@@ -116,7 +116,7 @@ export default function DashboardPage() {
                 className="w-full max-w-sm bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:opacity-50 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-blue-900/20 flex items-center justify-center gap-3 group"
               >
                 {updating ? <Loader2 className="w-6 h-6 animate-spin" /> : <Save className="w-6 h-6" />}
-                Guardar cambios
+                Save Changes
               </button>
             </div>
           </form>
