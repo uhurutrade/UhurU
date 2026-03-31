@@ -135,7 +135,7 @@ export default function DashboardPage() {
                   <div>
                     <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1.5 px-1">Subscription Vigor</h4>
                     <p className={`text-2xl font-black tracking-tight ${isVigente ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {isVigente ? 'Subscription Active' : 'Subscription Expired'}
+                      {isVigente ? 'Subscription Active' : 'Subscription not active'}
                     </p>
                     
                     {isVigente && (
@@ -375,7 +375,7 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                               <span className="text-[10px] text-emerald-400 font-mono font-black border border-emerald-500/20 px-2 rounded-md bg-emerald-500/5 uppercase tracking-widest text-center mb-1">Subscription Active</span>
                               <span className="text-[9px] text-emerald-500/50 font-mono text-center">F: {u.subscriptionStart ? new Date(u.subscriptionStart).toLocaleDateString() : 'N/A'} - T: {u.subscriptionEnd ? new Date(u.subscriptionEnd).toLocaleDateString() : 'N/A'}</span>
                             </div> : 
-                            <span className="text-[10px] text-red-500 border border-red-500/20 px-2 rounded-md uppercase tracking-widest font-black bg-red-500/5 py-1">Subscription Expired</span>
+                            <span className="text-[10px] text-red-500 border border-red-500/20 px-2 rounded-md uppercase tracking-widest font-black bg-red-500/5 py-1">Subscription not active</span>
                         }
                       </h4>
                       <p className="text-[10px] text-slate-500 font-mono mt-0.5">{u.email}</p>
