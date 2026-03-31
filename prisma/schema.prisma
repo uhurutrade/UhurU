@@ -22,6 +22,7 @@ model User {
   county         String?
   postcode       String
   phone          String
+  customerNumber Int      @unique
   subscriptionStart DateTime?
   subscriptionEnd   DateTime?
   isActive       Boolean  @default(true)
