@@ -1,60 +1,77 @@
-# 1. Install dependencies only when needed
-FROM node:20-alpine AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-
-# Install dependencies based on the preferred package manager
-COPY package.json package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f pnpm-lock.yaml ]; then npm i -g pnpm && pnpm i; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  else npm i; \
-  fi
-
-
-# 2. Rebuild the source code only when needed
+# Etapa 1: Builder
 FROM node:20-alpine AS builder
+
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+
+# Copia los archivos de configuración de dependencias.
+COPY package*.json ./
+
+# Instala las dependencias del proyecto.
+RUN npm ci
+
+# Copia el resto del código fuente de la aplicación.
 COPY . .
 
-# Next.js collects files from a global cache, so we need to share it between builds.
-# https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
+# Generar el cliente de Prisma para que esté disponible en runtime
+RUN npx prisma generate
+
+# Crea la carpeta 'public' si no existe
+RUN mkdir -p public
+
+# Construye la aplicación Next.js en modo normal.
 RUN npm run build
 
-# 3. Production image, copy all the files and run next
+# Etapa 2: Runner
 FROM node:20-alpine AS runner
+
 WORKDIR /app
 
-ENV NODE_ENV=production
+# Copia el directorio .next completo para el modo normal
+COPY --from=builder /app/.next ./.next
 
-# You can set this environment variable in your docker-compose.yml file.
-# ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
+# Copia las dependencias de producción
+COPY --from=builder /app/node_modules ./node_modules
+# Copia la carpeta 'public'
 COPY --from=builder /app/public ./public
+# Copia package.json
+COPY --from=builder /app/package.json ./package.json
 
-# Set the correct permission for the public folder
-RUN chown -R nextjs:nodejs /app/public
+# Copia el directorio 'src/chatbot' completo.
+COPY --from=builder /app/src/chatbot ./src/chatbot
+# Copia la carpeta de prisma para la base de datos
+COPY --from=builder /app/prisma ./prisma
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Crea grupo y usuario nextjs con UID y GID libres para mayor seguridad.
+RUN set -eux; \
+    gid=1000; \
+    while getent group "$gid" > /dev/null 2>&1; do \
+      gid=$((gid + 1)); \
+    done; \
+    if ! getent group nextjs > /dev/null 2>&1; then \
+      addgroup -g "$gid" -S nextjs; \
+    else \
+      gid=$(getent group nextjs | cut -d: -f3); \
+    fi; \
+    uid=1000; \
+    while cut -d: -f3 /etc/passwd | grep -qw "$uid" || [ "$uid" -eq 0 ]; do \
+      uid=$((uid + 1)); \
+    done; \
+    if ! id -u nextjs > /dev/null 2>&1; then \
+      adduser -u "$uid" -S -G nextjs -s /bin/sh nextjs; \
+    fi; \
+    # Arreglo de permisos para chatbot, public y la caché de Next.js
+    mkdir -p /app/.next/cache/images && \
+    chown -R nextjs:nextjs /app/src/chatbot /app/public /app/.next /app/prisma
 
-# Ensure the chatbot log directory exists
-RUN mkdir -p /app/src/chatbot && \
-    chown -R nextjs:nodejs /app/src
-
+# Cambia al usuario seguro 'nextjs' para ejecutar la aplicación.
 USER nextjs
 
+# Define las variables de entorno para la producción.
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Expone el puerto en el que la aplicación escuchará las conexiones.
 EXPOSE 3000
 
-ENV PORT=3000
-# set hostname to localhost
-ENV HOSTNAME=0.0.0.0
-
-CMD ["node", "server.js"]
+# Comando para iniciar la aplicación Next.js en modo normal.
+CMD ["npm", "start"]
