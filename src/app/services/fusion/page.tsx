@@ -22,8 +22,16 @@ export default function FusionPage() {
       else result = await requestPasswordReset(formData);
 
       setStatus(result as any);
-      if (result.success && view === 'login') {
-        window.location.href = '/dashboard';
+      if (result.success) {
+        if (view === 'login' || view === 'register') {
+          window.location.href = '/services/fusion/dashboard';
+        } else if (view === 'forgot') {
+          // Wait 3 seconds and go back to login
+          setTimeout(() => {
+            setView('login');
+            setStatus(null);
+          }, 3000);
+        }
       }
     } catch (error) {
       console.error('Auth error:', error);

@@ -112,11 +112,25 @@ export async function registerUser(formData: FormData) {
   try {
     const hashedPassword = await bcrypt.hash(result.data.password, 6);
     
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         ...result.data,
         password: hashedPassword,
       },
+    });
+
+    // AUTO-LOGIN AFTER REGISTER
+    const token = await new SignJWT({ userId: user.id, email: user.email })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime('2h')
+      .sign(secret);
+
+    const cookieStore = await cookies();
+    cookieStore.set('session', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 2, // 2 hours
+      path: '/',
     });
 
     return { success: true, message: 'Registration successful' };
