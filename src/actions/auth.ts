@@ -50,6 +50,7 @@ export async function getCurrentUser() {
         county: true,
         postcode: true,
         phone: true,
+        customerNumber: true,
         subscriptionStart: true,
         subscriptionEnd: true,
         isActive: true,
@@ -112,10 +113,19 @@ export async function registerUser(formData: FormData) {
   try {
     const hashedPassword = await bcrypt.hash(result.data.password, 6);
     
+    // GENERATE CUSTOMER NUMBER (36xx)
+    const lastUser = await prisma.user.findFirst({
+      orderBy: { customerNumber: 'desc' },
+      select: { customerNumber: true }
+    });
+    
+    const nextNumber = lastUser?.customerNumber ? lastUser.customerNumber + 1 : 3601;
+
     const user = await prisma.user.create({
       data: {
         ...result.data,
         password: hashedPassword,
+        customerNumber: nextNumber,
       },
     });
 
