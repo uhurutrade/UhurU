@@ -22,7 +22,10 @@ model User {
   county         String?
   postcode       String
   phone          String
-  customerNumber Int      @unique
+  customerNumber Int?     @unique
+  chosenPlan     String?
+  isPaid         Boolean  @default(false)
+  licenses       License[]
   subscriptionStart DateTime?
   subscriptionEnd   DateTime?
   isActive       Boolean  @default(true)
@@ -30,4 +33,19 @@ model User {
   resetTokenExpiry DateTime?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model License {
+  id               String   @id @default(cuid())
+  subscription     String
+  expiryDate       DateTime?
+  urlLink          String
+  username         String
+  password         String
+  isAvailable      Boolean  @default(true)
+  isAvailableUhuru Boolean  @default(true)
+  userId           String?
+  assignedTo       User?    @relation(fields: [userId], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }

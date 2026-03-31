@@ -54,6 +54,8 @@ export async function getCurrentUser() {
         subscriptionStart: true,
         subscriptionEnd: true,
         isActive: true,
+        chosenPlan: true,
+        isPaid: true
       },
     });
     
@@ -258,18 +260,76 @@ export async function getAllUsers() {
   });
 }
 
-export async function updateUserDetails(userId: string, data: { isActive: boolean; start: string; end: string }) {
+export async function updateUserDetails(userId: string, data: { isActive: boolean; start: string; chosenPlan?: string; isPaid?: boolean }) {
   const admin = await getCurrentUser();
   if (!admin?.isAdmin) throw new Error('Not authorized');
+
+  const startDate = data.start ? new Date(data.start) : null;
+  let endDate = null;
+
+  if (startDate && data.chosenPlan) {
+    endDate = new Date(startDate);
+    if (data.chosenPlan === 'Fusion One Month') {
+      endDate.setDate(endDate.getDate() + 30);
+    } else if (data.chosenPlan === 'Fusion Three Months') {
+      endDate.setDate(endDate.getDate() + 90);
+    }
+  }
 
   await prisma.user.update({
     where: { id: userId },
     data: {
       isActive: data.isActive,
-      subscriptionStart: data.start ? new Date(data.start) : null,
-      subscriptionEnd: data.end ? new Date(data.end) : null,
+      chosenPlan: data.chosenPlan,
+      isPaid: data.isPaid,
+      subscriptionStart: startDate,
+      subscriptionEnd: endDate,
     }
   });
   
   return { success: true, message: 'User updated successfully' };
+}
+
+// LICENSE ACTIONS
+export async function getAllLicenses() {
+  const admin = await getCurrentUser();
+  if (!admin?.isAdmin) throw new Error('Not authorized');
+
+  return await prisma.license.findMany({
+    include: { assignedTo: { select: { email: true, firstName: true, lastName: true } } },
+    orderBy: { createdAt: 'desc' }
+  });
+}
+
+export async function upsertLicense(formData: FormData) {
+  const admin = await getCurrentUser();
+  if (!admin?.isAdmin) throw new Error('Not authorized');
+
+  const id = formData.get('id') as string;
+  const data = {
+    subscription: formData.get('subscription') as string,
+    expiryDate: formData.get('expiryDate') ? new Date(formData.get('expiryDate') as string) : null,
+    urlLink: formData.get('urlLink') as string,
+    username: formData.get('username') as string,
+    password: formData.get('password') as string,
+    isAvailable: formData.get('isAvailable') === 'on',
+    isAvailableUhuru: formData.get('isAvailableUhuru') === 'on',
+    userId: formData.get('userId') as string || null,
+  };
+
+  if (id) {
+    await prisma.license.update({ where: { id }, data });
+  } else {
+    await prisma.license.create({ data });
+  }
+
+  return { success: true };
+}
+
+export async function deleteLicense(id: string) {
+  const admin = await getCurrentUser();
+  if (!admin?.isAdmin) throw new Error('Not authorized');
+
+  await prisma.license.delete({ where: { id } });
+  return { success: true };
 }
