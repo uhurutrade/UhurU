@@ -52,6 +52,7 @@ export async function getCurrentUser() {
         phone: true,
         subscriptionStart: true,
         subscriptionEnd: true,
+        isActive: true,
       },
     });
     
@@ -109,7 +110,7 @@ export async function registerUser(formData: FormData) {
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(result.data.password, 10);
+    const hashedPassword = await bcrypt.hash(result.data.password, 6);
     
     await prisma.user.create({
       data: {
@@ -139,6 +140,10 @@ export async function loginUser(formData: FormData) {
     return { success: false, message: 'Invalid credentials' };
   }
 
+  if (!user.isActive) {
+    return { success: false, message: 'Account is inactive. Please contact support.' };
+  }
+
   const token = await new SignJWT({ userId: user.id, email: user.email })
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('2h')
@@ -157,10 +162,15 @@ export async function loginUser(formData: FormData) {
 
 export async function requestPasswordReset(formData: FormData) {
   const email = formData.get('email') as string;
+  
+  if (!email || !email.includes('@')) {
+    return { success: false, message: 'Please enter a valid email address.' };
+  }
+
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
-    return { success: true, message: 'If the email exists, you will receive a reset link shortly.' };
+    return { success: false, message: 'User not found.' };
   }
 
   const token = randomUUID();
@@ -200,7 +210,7 @@ export async function resetPassword(formData: FormData) {
     return { success: false, message: 'Invalid or expired link.' };
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 6);
 
   await prisma.user.update({
     where: { id: user.id },
@@ -221,30 +231,21 @@ export async function getAllUsers() {
 
   return await prisma.user.findMany({
     orderBy: { createdAt: 'desc' },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-      companyName: true,
-      subscriptionStart: true,
-      subscriptionEnd: true,
-      createdAt: true,
-    }
   });
 }
 
-export async function updateSubscription(userId: string, start: string, end: string) {
+export async function updateUserDetails(userId: string, data: { isActive: boolean; start: string; end: string }) {
   const admin = await getCurrentUser();
   if (!admin?.isAdmin) throw new Error('Not authorized');
 
   await prisma.user.update({
     where: { id: userId },
     data: {
-      subscriptionStart: start ? new Date(start) : null,
-      subscriptionEnd: end ? new Date(end) : null,
+      isActive: data.isActive,
+      subscriptionStart: data.start ? new Date(data.start) : null,
+      subscriptionEnd: data.end ? new Date(data.end) : null,
     }
   });
   
-  return { success: true, message: 'Subscription updated successfully' };
+  return { success: true, message: 'User updated successfully' };
 }

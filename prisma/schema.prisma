@@ -24,6 +24,7 @@ model User {
   phone          String
   subscriptionStart DateTime?
   subscriptionEnd   DateTime?
+  isActive       Boolean  @default(true)
   resetToken     String?  @unique
   resetTokenExpiry DateTime?
   createdAt      DateTime @default(now())
