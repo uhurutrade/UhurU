@@ -40,7 +40,7 @@ export default function DashboardPage() {
   }, [globalNotification]);
 
   async function handleUpdate(formData: FormData) {
-    setStatus(null);
+    setGlobalNotification(null);
 
     // CHANGE DETECTION
     const rawData = Object.fromEntries(formData.entries());
@@ -52,20 +52,20 @@ export default function DashboardPage() {
     });
 
     if (!hasChanges) {
-      setStatus({ success: true, message: 'No changes detected.' });
+      setGlobalNotification({ success: true, message: 'No changes detected.' });
       return;
     }
 
     setUpdating(true);
     try {
       const result = await updateProfile(formData);
-      setStatus(result);
+      setGlobalNotification(result);
       if (result.success) {
         const freshUser = await getCurrentUser();
         setUser(freshUser);
       }
     } catch (error) {
-      setStatus({ success: false, message: 'Update error occurred.' });
+      setGlobalNotification({ success: false, message: 'Update error occurred.' });
     } finally {
       setUpdating(false);
     }
@@ -232,12 +232,6 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="pt-6">
-                    {status && (
-                      <div className={`p-4 mb-4 rounded-xl flex items-center gap-3 border text-xs font-bold animate-in zoom-in-95 ${status.success ? 'bg-emerald-500/5 text-emerald-400 border-emerald-500/10' : 'bg-red-500/5 text-red-500 border-red-500/10'}`}>
-                        {status.success ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-                        <span>{status.message}</span>
-                      </div>
-                    )}
                     <button
                       disabled={updating}
                       type="submit"
@@ -255,7 +249,7 @@ export default function DashboardPage() {
           {/* Management Center (Admin) */}
           {user.isAdmin && (
             <div className="lg:col-span-12 h-[calc(100vh-160px)]">
-              <AdminCenter currentUserId={user.id} />
+              <AdminCenter currentUserId={user.id} setGlobalNotification={setGlobalNotification} />
             </div>
           )}
           {/* Global Notification Toast */}
@@ -281,7 +275,7 @@ export default function DashboardPage() {
   );
 }
 
-function AdminCenter({ currentUserId }: { currentUserId: string }) {
+function AdminCenter({ currentUserId, setGlobalNotification }: { currentUserId: string, setGlobalNotification: any }) {
   const [activeView, setActiveView] = useState<'students' | 'licenses'>('students');
 
   return (
@@ -302,7 +296,7 @@ function AdminCenter({ currentUserId }: { currentUserId: string }) {
       </div>
 
       <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
-        {activeView === 'students' ? <StudentRegistry currentUserId={currentUserId} /> : <LicenseInventory />}
+        {activeView === 'students' ? <StudentRegistry currentUserId={currentUserId} setGlobalNotification={setGlobalNotification} /> : <LicenseInventory setGlobalNotification={setGlobalNotification} />}
       </div>
     </div>
   );
@@ -319,21 +313,13 @@ function TabButton({ active, onClick, icon, label }: any) {
   );
 }
 
-function StudentRegistry({ currentUserId }: { currentUserId: string }) {
+function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUserId: string; setGlobalNotification: any }) {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [formStatus, setFormStatus] = useState<{ id: string; success: boolean; message: string } | null>(null);
 
   useEffect(() => { loadUsers(); }, []);
-
-  useEffect(() => {
-    if (formStatus) {
-      const timer = setTimeout(() => setFormStatus(null), 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [formStatus]);
 
   async function loadUsers() {
     setLoading(true);
@@ -458,13 +444,6 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
                           </div>
                         )}
 
-                        {formStatus && formStatus.id === u.id && (
-                          <div className={`p-4 rounded-xl flex items-center gap-3 border text-[10px] font-black uppercase tracking-widest animate-in zoom-in-95 duration-300 ${formStatus.success ? 'bg-emerald-500/5 text-emerald-400 border-emerald-500/10' : 'bg-red-500/5 text-red-500 border-red-500/10'}`}>
-                            {formStatus.success ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-                            <span>{formStatus.message}</span>
-                          </div>
-                        )}
-
                         <div className="pt-8">
                           <button type="submit" disabled={updatingId === u.id} className="w-full bg-blue-600 hover:bg-blue-500 text-white text-[10px] uppercase font-black tracking-widest py-4 rounded-xl transition-all shadow-xl shadow-blue-900/20 flex items-center justify-center gap-2">
                              {updatingId === u.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
@@ -511,7 +490,7 @@ function StudentRegistry({ currentUserId }: { currentUserId: string }) {
   );
 }
 
-function LicenseInventory() {
+function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: any }) {
   const [licenses, setLicenses] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -536,9 +515,12 @@ function LicenseInventory() {
     const fd = new FormData(e.currentTarget);
     try {
       await upsertLicense(fd);
+      setGlobalNotification({ success: true, message: 'License asset saved correctly' });
       setShowEditor(null);
       loadData();
-    } catch (e) { alert('Error'); }
+    } catch (e) { 
+       setGlobalNotification({ success: false, message: 'Registry update error in asset inventory' });
+    }
     finally { setSaving(false); }
   }
 
@@ -546,8 +528,11 @@ function LicenseInventory() {
     if (!confirm('Delete this license permanentely?')) return;
     try {
       await deleteLicense(id);
+      setGlobalNotification({ success: true, message: 'Asset permanently removed' });
       loadData();
-    } catch (e) { alert('Error'); }
+    } catch (e) { 
+      setGlobalNotification({ success: false, message: 'Unauthorized or deletion error' });
+    }
   }
 
   if (loading) return <LoaderSpinner label="Processing Asset Inventory" />;
