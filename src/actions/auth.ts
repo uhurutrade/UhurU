@@ -352,77 +352,84 @@ export async function updateUserDetails(userId: string, formData: FormData) {
   const isActive = formData.get('isActive') === 'on';
 
   // VALIDATION: If verified payment is checked, plan and date are mandatory
+  const plan = formData.get('chosenPlan') as string;
+  const startStr = formData.get('start') as string;
+  
   if (isPaid) {
-    if (!data.chosenPlan || !data.start) {
-      throw new Error('PLAN_AND_DATE_REQUIRED');
+    if (!plan || !startStr) {
+      return { success: false, message: 'PLAN_AND_DATE_REQUIRED: Please select a plan and start date to verify payment' };
     }
   }
 
-  const startDate = data.start ? new Date(data.start) : null;
+  const startDate = startStr ? new Date(startStr) : null;
   let endDate = null;
 
-  if (startDate && data.chosenPlan) {
+  if (startDate && plan) {
     endDate = new Date(startDate);
-    if (data.chosenPlan.startsWith('Oracle Fusion 30 days')) {
+    if (plan.startsWith('Oracle Fusion 30 days')) {
       endDate.setDate(endDate.getDate() + 30);
-    } else if (data.chosenPlan.startsWith('Oracle Fusion 90 days')) {
+    } else if (plan.startsWith('Oracle Fusion 90 days')) {
       endDate.setDate(endDate.getDate() + 90);
     }
   }
 
   // LICENSE MANAGEMENT
-  const currentUser = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { isPaid: true }
-  });
-
-  if (!currentUser?.isPaid && isPaid) {
-    // ASIGN LICENSE - Randomized with prioritization
-    const candidates = await prisma.license.findMany({
-      where: { isAvailable: true, isAvailableUhuru: false }
+  try {
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { isPaid: true }
     });
 
-    if (candidates.length === 0) throw new Error('NO_LICENSES_AVAILABLE');
+    if (!currentUser?.isPaid && isPaid) {
+      // ASIGN LICENSE - Randomized with prioritization
+      const candidates = await prisma.license.findMany({
+        where: { isAvailable: true, isAvailableUhuru: false }
+      });
 
-    // Filter to prioritize licenses that HAVEN'T been used by this user lately
-    const preferred = candidates.filter(l => l.lastUserId !== userId);
-    const source = preferred.length > 0 ? preferred : candidates;
-    
-    // Pick ANY from the source randomly
-    const chosen = source[Math.floor(Math.random() * source.length)];
+      if (candidates.length === 0) return { success: false, message: 'NO_LICENSES_AVAILABLE' };
 
-    await prisma.license.update({
-      where: { id: chosen.id },
-      data: { userId: userId, isAvailableUhuru: true }
-    });
-  } else if (currentUser?.isPaid && !isPaid) {
-    // RELEASE LICENSE
-    await prisma.license.updateMany({
-      where: { userId: userId },
-      data: { userId: null, isAvailableUhuru: false, lastUserId: userId }
-    });
-  }
+      // Filter to prioritize licenses that HAVEN'T been used by this user lately
+      const preferred = candidates.filter(l => l.lastUserId !== userId);
+      const source = preferred.length > 0 ? preferred : candidates;
+      
+      // Pick ANY from the source randomly
+      const chosen = source[Math.floor(Math.random() * source.length)];
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      isActive: isActive,
-      chosenPlan: data.chosenPlan,
-      isPaid: isPaid,
-      subscriptionStart: startDate,
-      subscriptionEnd: endDate,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      companyName: data.companyName,
-      phone: data.phone,
-      country: data.country,
-      city: data.city,
-      streetAddress: data.streetAddress,
-      postcode: data.postcode,
+      await prisma.license.update({
+        where: { id: chosen.id },
+        data: { userId: userId, isAvailableUhuru: true }
+      });
+    } else if (currentUser?.isPaid && !isPaid) {
+      // RELEASE LICENSE
+      await prisma.license.updateMany({
+        where: { userId: userId },
+        data: { userId: null, isAvailableUhuru: false, lastUserId: userId }
+      });
     }
-  });
-  
-  return { success: true, message: 'User updated successfully' };
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        isActive: isActive,
+        chosenPlan: plan,
+        isPaid: isPaid,
+        subscriptionStart: startDate,
+        subscriptionEnd: endDate,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        companyName: data.companyName,
+        phone: data.phone,
+        country: data.country,
+        city: data.city,
+        streetAddress: data.streetAddress,
+        postcode: data.postcode,
+      }
+    });
+    
+    return { success: true, message: 'User updated successfully' };
+  } catch (error) {
+    return { success: false, message: 'Error updating student details' };
+  }
 }
 
 // LICENSE ACTIONS
