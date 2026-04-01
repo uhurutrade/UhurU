@@ -187,7 +187,7 @@ export default function DashboardPage() {
                   <div>
                     <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1.5 px-1">Subscription Vigor</h4>
                     <p className={`text-2xl font-black tracking-tight ${isVigente ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {isVigente ? 'Subscription Active' : 'Subscription not active'}
+                      {isVigente ? 'Subscription Active' : 'Subscription Inactive'}
                     </p>
                     
                     {isVigente && (
