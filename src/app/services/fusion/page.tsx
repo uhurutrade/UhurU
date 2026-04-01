@@ -93,20 +93,32 @@ export default function FusionPage() {
 
               <Input name="email" label="Email Address" type="email" icon={<Mail />} placeholder="you@email.com" required />
               
-              {view !== 'forgot' && (
-                <div className="relative">
-                  <Input name="password" label="Password" type="password" icon={<Lock />} placeholder="••••••••" required />
-                  {view === 'login' && (
-                    <button 
-                      type="button"
-                      onClick={() => { setView('forgot'); setStatus(null); }}
-                      className="absolute right-0 -top-1 text-xs text-blue-400 hover:underline"
-                    >
-                      Forgot password?
-                    </button>
-                  )}
-                </div>
-              )}
+                  <div className="relative">
+                    <div className="flex items-center justify-between mb-1.5 px-1">
+                      <label className="text-sm font-semibold text-slate-500 tracking-wider uppercase">Password <span className="text-red-500">*</span></label>
+                      {view === 'login' && (
+                        <button 
+                          type="button"
+                          onClick={() => { setView('forgot'); setStatus(null); }}
+                          className="text-[10px] font-black text-blue-400 uppercase tracking-widest hover:text-blue-300 transition-colors"
+                        >
+                          Forgot password?
+                        </button>
+                      )}
+                    </div>
+                    <div className="relative group">
+                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors">
+                        <Lock className="w-4 h-4" />
+                      </div>
+                      <input
+                        name="password"
+                        type="password"
+                        required
+                        placeholder="••••••••"
+                        className="w-full pl-10 pr-4 py-3 bg-slate-950/50 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-700 text-sm"
+                      />
+                    </div>
+                  </div>
 
               {view === 'register' && (
                 <>
@@ -150,16 +162,16 @@ export default function FusionPage() {
             </button>
           </form>
 
-          <p className="p-8 pt-0 text-center text-sm text-slate-500">
+          <p className="p-8 pb-8 pt-0 text-center text-sm text-slate-500">
             {view === 'forgot' ? (
-              <button onClick={() => setView('login')} className="text-blue-400 hover:underline font-medium">Back to Login</button>
+              <button onClick={() => setView('login')} className="text-blue-400 hover:underline font-bold uppercase text-[10px] tracking-widest bg-blue-500/5 px-4 py-2 rounded-lg border border-blue-500/10 transition-all hover:bg-blue-500/10">Back to Login</button>
             ) : (
-              <>
+              <span className="bg-slate-950/50 px-4 py-2 rounded-full border border-white/5 inline-block">
                 {view === 'login' ? "Don't have an account?" : 'Already a member?'} 
-                <button onClick={() => setView(view === 'login' ? 'register' : 'login')} className="text-blue-400 hover:underline ml-1 font-medium transition-colors">
-                  {view === 'login' ? 'Sign up here' : 'Sign in now'}
+                <button onClick={() => setView(view === 'login' ? 'register' : 'login')} className="text-blue-400 hover:underline ml-2 font-black uppercase text-[10px] tracking-widest transition-colors">
+                  {view === 'login' ? 'Sign up' : 'Sign in'}
                 </button>
-              </>
+              </span>
             )}
           </p>
         </div>

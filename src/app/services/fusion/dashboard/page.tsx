@@ -39,6 +39,35 @@ export default function DashboardPage() {
     }
   }, [globalNotification]);
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
+    function resetTimer() {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(async () => {
+        // Immediate, silent logout on 30m inactivity
+        await logoutUser();
+        window.location.href = '/services/fusion';
+      }, 30 * 60 * 1000); // 30 minutes
+    }
+
+    // Attach activity listeners
+    window.addEventListener('mousemove', resetTimer);
+    window.addEventListener('keydown', resetTimer);
+    window.addEventListener('click', resetTimer);
+    window.addEventListener('scroll', resetTimer);
+
+    resetTimer(); // Init timer
+
+    return () => {
+      window.removeEventListener('mousemove', resetTimer);
+      window.removeEventListener('keydown', resetTimer);
+      window.removeEventListener('click', resetTimer);
+      window.removeEventListener('scroll', resetTimer);
+      if (timer) clearTimeout(timer);
+    }
+  }, []);
+
   async function handleUpdate(formData: FormData) {
     setGlobalNotification(null);
 
@@ -140,7 +169,7 @@ export default function DashboardPage() {
             <div className="lg:col-span-12 space-y-6 max-w-4xl mx-auto">
               {/* Status Card */}
               <div className={`p-8 rounded-[2.5rem] border transition-all duration-700 ${isVigente ? 'bg-emerald-500/5 border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.05)]' : 'bg-red-500/5 border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.05)]'}`}>
-                <div className="flex items-start justify-between">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                   <div>
                     <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1.5 px-1">Subscription Vigor</h4>
                     <p className={`text-2xl font-black tracking-tight ${isVigente ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -183,7 +212,7 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  <div className="text-right pt-1 pr-1 opacity-40">
+                  <div className="md:text-right pt-4 md:pt-1 md:pr-1 opacity-40 border-t md:border-t-0 border-white/5 mt-4 md:mt-0">
                     <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Authenticated Account</span>
                     <span className="text-lg font-black text-white tracking-[0.2em]">User ID: {user.customerNumber?.toString().padStart(4, '0')}</span>
                   </div>
@@ -198,11 +227,11 @@ export default function DashboardPage() {
 
               {isVigente && (
                 <div className="bg-slate-900/60 backdrop-blur-3xl border border-blue-500/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700">
-                  <div className="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-white/5 pb-4">
                      <h3 className="text-[10px] font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
                         <ShieldAlert className="w-4 h-4" /> Oracle Fusion Access Credentials
                      </h3>
-                     <span className="text-[8px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded font-black uppercase tracking-tighter">Secure Asset</span>
+                     <span className="text-[8px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-1 rounded font-black uppercase tracking-widest text-center w-fit">Secure Asset</span>
                   </div>
                   <div className="space-y-4">
                      <CredentialField label="Oracle Fusion Portal URL" value={user.licenses?.[0]?.urlLink} icon={<ExternalLink />} />
@@ -395,33 +424,43 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
         return (
           <div key={u.id} className={`p-1 rounded-[2rem] transition-all duration-300 ${activeTab === u.id ? 'bg-blue-600/10 ring-1 ring-blue-500/20 shadow-2xl' : 'hover:bg-white/5 ring-1 ring-transparent'}`}>
             <div className="p-4">
-              <div className="flex items-center justify-between gap-6">
-                <div className="flex-1 cursor-pointer flex items-center gap-4" onClick={() => setActiveTab(activeTab === u.id ? null : u.id)}>
-                  <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center text-slate-500 border border-white/5 shadow-inner">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex-1 cursor-pointer flex items-center gap-3 md:gap-4" onClick={() => setActiveTab(activeTab === u.id ? null : u.id)}>
+                  <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center text-slate-500 border border-white/5 shadow-inner shrink-0">
                     {activeTab === u.id ? <ChevronUp className="w-5 h-5 text-blue-500" /> : <ChevronDown className="w-5 h-5" />}
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center">
-                      <span className="text-blue-400 font-black text-[11px] font-mono leading-none">
-                        {u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : '—'}
-                      </span>
+                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 overflow-hidden">
+                    <div className="flex items-center gap-2">
+                       <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center shrink-0">
+                         <span className="text-blue-400 font-black text-[10px] md:text-[11px] font-mono leading-none">
+                           {u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : '—'}
+                         </span>
+                       </div>
+                       <div className="md:hidden overflow-hidden">
+                          <h4 className="font-bold text-slate-100 text-sm truncate">{u.firstName} {u.lastName}</h4>
+                          <p className="text-[9px] text-slate-500 font-mono truncate">{u.email}</p>
+                       </div>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-slate-100 flex items-center gap-3">
+                    <div className="hidden md:block overflow-hidden">
+                      <h4 className="font-bold text-slate-100 flex items-center gap-3 truncate">
                         {u.firstName} {u.lastName}
                         {u.email === 'uhurutradeuk@gmail.com' ? 
                            <span className="text-[10px] text-blue-400 font-mono font-black border border-blue-500/20 px-4 rounded-md bg-blue-500/5 uppercase tracking-[0.2em]">ADMIN</span> :
-                           isVigente ? 
-                            <div className="flex flex-col">
-                              <span className="text-[10px] text-emerald-400 font-mono font-black border border-emerald-500/20 px-2 rounded-md bg-emerald-500/5 uppercase tracking-widest text-center mb-1">Subscription Active</span>
-                              <span className="text-[9px] text-emerald-500/50 font-mono text-center">F: {u.subscriptionStart ? new Date(u.subscriptionStart).toLocaleDateString() : 'N/A'} - T: {u.subscriptionEnd ? new Date(u.subscriptionEnd).toLocaleDateString() : 'N/A'}</span>
-                            </div> : 
-                            <span className="text-[10px] text-red-500 border border-red-500/20 px-2 rounded-md uppercase tracking-widest font-black bg-red-500/5 py-1">Subscription not active</span>
+                           isVigente && <span className="text-[10px] text-emerald-400 font-mono font-black border border-emerald-500/20 px-2 rounded-md bg-emerald-500/5 uppercase tracking-widest">Active</span>
                         }
                       </h4>
-                      <p className="text-[10px] text-slate-500 font-mono mt-0.5">{u.email}</p>
+                      <p className="text-[10px] text-slate-500 font-mono mt-0.5 truncate">{u.email}</p>
                     </div>
                   </div>
+                </div>
+                
+                <div className="flex md:flex-col items-center md:items-end gap-2 md:gap-1 pl-12 md:pl-0">
+                  <span className={`text-[9px] px-2 py-1 rounded-md font-black uppercase tracking-widest border ${isVigente ? 'text-emerald-400 bg-emerald-500/5 border-emerald-500/20' : 'text-red-500 bg-red-500/5 border-red-500/20'}`}>
+                    {isVigente ? 'Active' : 'Expired'}
+                  </span>
+                  {isVigente && u.subscriptionEnd && (
+                    <span className="text-[8px] text-slate-500 font-mono hidden md:block opacity-60">Ends: {new Date(u.subscriptionEnd).toLocaleDateString()}</span>
+                  )}
                 </div>
               </div>
               {activeTab === u.id && (
@@ -565,11 +604,11 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Global Asset Inventory: {licenses.length}</h3>
         <button 
           onClick={() => setShowEditor({})}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg transition-all shadow-lg shadow-blue-900/20"
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg transition-all shadow-lg shadow-blue-900/20 w-full md:w-auto"
         >
           <Plus className="w-4 h-4" /> Deploy License
         </button>
@@ -636,9 +675,15 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <button onClick={() => setShowEditor(l)} className="p-2.5 bg-white/5 hover:bg-blue-500/10 text-slate-400 hover:text-blue-400 rounded-xl transition-all border border-white/5"><Table className="w-4 h-4" /></button>
-                <button onClick={() => handleDelete(l.id)} className="p-2.5 bg-white/5 hover:bg-red-500/10 text-slate-400 hover:text-red-400 rounded-xl transition-all border border-white/5"><Trash2 className="w-4 h-4" /></button>
+              <div className="flex flex-col gap-4 w-full md:w-auto">
+                <button onClick={() => setShowEditor(l)} className="p-3 bg-white/5 hover:bg-blue-500/10 text-slate-400 hover:text-blue-400 rounded-xl transition-all border border-white/5 flex items-center justify-center gap-2 md:block">
+                  <Table className="w-4 h-4" />
+                  <span className="md:hidden text-[9px] font-black uppercase tracking-widest">Edit Details</span>
+                </button>
+                <button onClick={() => handleDelete(l.id)} className="p-3 bg-white/5 hover:bg-red-500/10 text-slate-400 hover:text-red-400 rounded-xl transition-all border border-white/5 flex items-center justify-center gap-2 md:block">
+                  <Trash2 className="w-4 h-4" />
+                  <span className="md:hidden text-[9px] font-black uppercase tracking-widest">Remove Asset</span>
+                </button>
               </div>
             </div>
           </div>
