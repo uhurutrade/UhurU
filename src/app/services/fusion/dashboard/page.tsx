@@ -8,6 +8,9 @@ import {
 import { 
   User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
   CheckCircle2, AlertCircle, LogOut, Save, UserCircle, Loader2,
+  ShieldCheck, Calendar, Users, ArrowRight, Table, ChevronDown, ChevronUp, 
+  Power, RefreshCw, Hash, Key, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck, AlertTriangle, ShieldAlert
+} from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function DashboardPage() {
@@ -104,7 +107,9 @@ export default function DashboardPage() {
   }
 
   const handlePayPlan = () => {
-    const url = renewalPlan === "30" ? 'https://google.es' : 'https://amazon.es';
+    const url = renewalPlan === "30" 
+      ? 'https://checkout.revolut.com/pay/9ddb9c6a-6764-4a60-93b7-d2b742ca02a8' 
+      : 'https://amazon.es';
     const w = 800;
     const h = 700;
     const left = (window.screen.width / 2) - (w / 2);

@@ -1,3 +1,9 @@
+'use client';
+
+import { useState } from 'react';
+import { registerUser, loginUser, requestPasswordReset } from '@/actions/auth';
+import { 
+  User, Mail, Lock, Building, MapPin, Building2, Phone, Globe, Home, 
   ShieldCheck, LogIn, UserPlus, ArrowRight, CheckCircle2, AlertCircle, RefreshCw
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
