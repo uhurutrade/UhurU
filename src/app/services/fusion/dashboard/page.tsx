@@ -539,16 +539,16 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
 
                     <div className="md:col-span-8">
                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <InputAdmin name="firstName" label="First Name" defaultValue={u.firstName} />
-                          <InputAdmin name="lastName" label="Last Name" defaultValue={u.lastName} />
+                          <InputAdmin name="firstName" label="First Name" defaultValue={u.firstName} readOnly={u.id !== currentUserId} />
+                          <InputAdmin name="lastName" label="Last Name" defaultValue={u.lastName} readOnly={u.id !== currentUserId} />
                           <InputAdmin name="email" label="Email" defaultValue={u.email} readOnly />
-                          <InputAdmin name="phone" label="Phone" defaultValue={u.phone} />
-                          <InputAdmin name="companyName" label="Company" defaultValue={u.companyName} />
-                          <InputAdmin name="country" label="Country" defaultValue={u.country} />
-                          <InputAdmin name="city" label="City" defaultValue={u.city} />
-                          <InputAdmin name="postcode" label="Zip Code" defaultValue={u.postcode} />
+                          <InputAdmin name="phone" label="Phone" defaultValue={u.phone} readOnly={u.id !== currentUserId} />
+                          <InputAdmin name="companyName" label="Company" defaultValue={u.companyName} readOnly={u.id !== currentUserId} />
+                          <InputAdmin name="country" label="Country" defaultValue={u.country} readOnly={u.id !== currentUserId} />
+                          <InputAdmin name="city" label="City" defaultValue={u.city} readOnly={u.id !== currentUserId} />
+                          <InputAdmin name="postcode" label="Zip Code" defaultValue={u.postcode} readOnly={u.id !== currentUserId} />
                           <div className="sm:col-span-2">
-                             <InputAdmin name="streetAddress" label="Address" defaultValue={u.streetAddress} />
+                             <InputAdmin name="streetAddress" label="Address" defaultValue={u.streetAddress} readOnly={u.id !== currentUserId} />
                           </div>
                        </div>
                        
@@ -642,7 +642,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
               <div className="space-y-4">
                 <div className="flex justify-between items-start">
                    <div>
-                      <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-1">{l.subscription}</p>
+                      <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-1">PO: {l.purchaseOrder || 'XXXX-X'}</p>
                       <p className="text-sm font-bold text-slate-100 truncate max-w-[200px]">{l.urlLink}</p>
                    </div>
                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -653,14 +653,17 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
 
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
                    <div>
-                      <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest block mb-1">User</label>
+                      <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest block mb-1">Fusion Username</label>
                       <p className="text-[11px] font-bold text-slate-300 font-mono truncate">{l.username}</p>
                    </div>
                    <div>
                       <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest block mb-1">Status</label>
-                      <span className={`text-[10px] font-black uppercase ${l.isAvailable ? 'text-emerald-500' : 'text-red-500/50'}`}>
-                        {l.isAvailable ? 'Free' : 'Occupied'}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-black uppercase ${l.isAvailable ? 'text-emerald-500' : 'text-red-500/50'}`}>
+                          {l.isAvailable ? 'Free' : 'Occupied'}
+                        </span>
+                        {l.isAvailableUhuru && <span className="text-[8px] bg-blue-500/10 text-blue-400 px-1.5 py-0.5 rounded border border-blue-500/20 font-black uppercase tracking-tighter">Assigned</span>}
+                      </div>
                    </div>
                 </div>
                 
@@ -685,14 +688,26 @@ function LicenseForm({ license, onSave, onCancel }: any) {
       <input type="hidden" name="id" value={license?.id || ''} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
          <div>
-            <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1 block">Plan Class</label>
-            <select name="subscription" defaultValue={license?.subscription || "Oracle Fusion 30 days (£59)"} className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-xs text-white">
-               <option value="Oracle Fusion 30 days (£59)">30 Days</option>
-               <option value="Oracle Fusion 90 days (£140)">90 Days</option>
-            </select>
+            <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1 block">Purchase Order</label>
+            <input 
+              name="purchaseOrder" 
+              defaultValue={license?.purchaseOrder || ""} 
+              placeholder="0000-0"
+              maxLength={6}
+              onChange={(e) => {
+                let value = e.target.value.replace(/[^0-9]/g, '');
+                if (value.length > 4) {
+                  value = value.slice(0, 4) + '-' + value.slice(4, 5);
+                }
+                e.target.value = value;
+              }}
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-xs text-white" 
+              required 
+            />
+            <p className="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-tighter">Fixed Format: 0000-0</p>
          </div>
          <div>
-            <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1 block">Portal URL</label>
+            <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1 block">Fusion Url</label>
             <input name="urlLink" defaultValue={license?.urlLink || ""} className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-xs text-white" required />
          </div>
          <div>
@@ -700,23 +715,32 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-xs text-white" />
          </div>
          <div>
-            <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1 block">Username</label>
+            <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1 block">Fusion Username</label>
             <input name="username" defaultValue={license?.username || ""} className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-xs text-white" required />
          </div>
          <div>
-            <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1 block">Password</label>
+            <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1 block">Fusion Pass</label>
             <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-xs text-white" required />
          </div>
          <div className="flex items-center gap-6 pt-4">
             <label className="flex items-center gap-2 cursor-pointer group">
-               <input type="checkbox" name="isAvailable" defaultChecked={license ? license.isAvailable : true} className="w-5 h-5 rounded border-white/20 bg-slate-900 accent-blue-500" />
+               <input type="checkbox" name="isAvailable" defaultChecked={license ? license.isAvailable : true} className="w-5 h-5 rounded border-white/20 bg-slate-950 accent-blue-500" />
                <span className="text-[10px] font-black text-slate-500 group-hover:text-white uppercase tracking-widest transition-colors">Free</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer group">
-               <input type="checkbox" name="isAvailableUhuru" defaultChecked={license ? license.isAvailableUhuru : true} className="w-5 h-5 rounded border-white/20 bg-slate-900 accent-emerald-500" />
-               <span className="text-[10px] font-black text-slate-500 group-hover:text-white uppercase tracking-widest transition-colors">Uhuru Free</span>
-            </label>
+            <div className="flex flex-col gap-1">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                 <input type="checkbox" name="isAvailableUhuru" defaultChecked={license ? license.isAvailableUhuru : false} className="w-5 h-5 rounded border-white/20 bg-slate-950 accent-emerald-500" />
+                 <span className="text-[10px] font-black text-slate-500 group-hover:text-white uppercase tracking-widest transition-colors">Assigned</span>
+              </label>
+              {license?.assignedTo && (
+                <span className="text-[9px] text-emerald-400 font-mono font-black ml-7 uppercase tracking-tighter">
+                  Student ID: {license.assignedTo.customerNumber?.toString().padStart(4, '0')}
+                </span>
+              )}
+            </div>
          </div>
+         {/* Hidden since user said "me sobra" but logic needs it for now */}
+         <input type="hidden" name="subscription" value={license?.subscription || "Oracle Fusion 30 days (£59)"} />
       </div>
       <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
          <button type="button" onClick={onCancel} className="px-6 py-3 text-[10px] font-black uppercase text-slate-500 hover:text-white transition-colors">Cancel</button>

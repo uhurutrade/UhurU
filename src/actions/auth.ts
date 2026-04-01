@@ -451,6 +451,7 @@ export async function upsertLicense(formData: FormData) {
   const id = formData.get('id') as string;
   const data = {
     subscription: formData.get('subscription') as string,
+    purchaseOrder: formData.get('purchaseOrder') as string,
     expiryDate: formData.get('expiryDate') ? new Date(formData.get('expiryDate') as string) : null,
     urlLink: formData.get('urlLink') as string,
     username: formData.get('username') as string,
