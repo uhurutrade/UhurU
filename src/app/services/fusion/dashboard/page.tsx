@@ -147,10 +147,10 @@ export default function DashboardPage() {
   const isVigente = user.isAdmin || (user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date());
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-background text-foreground p-4 md:p-8 relative overflow-hidden font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-slate-200/30 dark:bg-background text-foreground p-4 md:p-8 relative overflow-hidden font-sans transition-colors duration-300">
       {/* Background Orbs */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-slate-900 dark:bg-blue-600/5 rounded-full blur-[140px] pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-600/5 rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] hidden dark:block dark:bg-blue-600/5 rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] hidden dark:block bg-purple-600/5 rounded-full blur-[140px] pointer-events-none"></div>
 
       <div className="max-w-[1700px] mx-auto z-10 relative">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
@@ -259,7 +259,7 @@ export default function DashboardPage() {
               </div>
 
               {isVigente && (
-                <div className="bg-slate-200/60 dark:bg-slate-900/60 backdrop-blur-3xl border border-blue-500/10 dark:border-blue-500/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700">
+                <div className="bg-slate-200/80 dark:bg-slate-900/60 backdrop-blur-3xl border border-blue-500/10 dark:border-blue-500/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-border dark:border-slate-950/10 dark:border-white/5 pb-4">
                      <h3 className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest flex items-center gap-2">
                         <ShieldAlert className="w-4 h-4" /> Oracle Fusion Access Credentials
@@ -275,7 +275,7 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              <div className="bg-slate-200/40 dark:bg-slate-900/40 backdrop-blur-3xl border border-border/50 dark:border-white/[0.05] rounded-[2rem] shadow-2xl p-6">
+              <div className="bg-slate-200/60 dark:bg-slate-900/40 backdrop-blur-3xl border border-border/50 dark:border-white/[0.05] rounded-[2rem] shadow-2xl p-6">
                 <div className="flex items-center justify-between mb-6 border-b border-border dark:border-slate-950/10 dark:border-white/5 pb-4">
                   <h3 className="text-xs font-black text-foreground/40 uppercase tracking-widest">Profile Identity</h3>
                   <ShieldCheck className="w-4 h-4 text-primary opacity-20" />
@@ -462,6 +462,9 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
       setGlobalNotification({ success: true, message: 'Student information updated' });
       const data = await getAllUsers();
       setUsers(data.filter((u:any) => u.id !== currentUserId));
+    } else {
+      setGlobalNotification({ success: false, message: result.message });
+      setTimeout(() => setGlobalNotification(null), 5000);
     }
   }
 
@@ -537,7 +540,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                             </label>
                             <label className="flex items-center justify-between cursor-pointer group">
                               <span className="text-[11px] font-bold text-foreground group-hover:text-foreground transition-colors">Payment Verified</span>
-                              <input type="checkbox" name="isPaid" defaultChecked={u.isPaid} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500" />
+                              <input type="checkbox" name="isPaid" defaultChecked={u.isPaid} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500 cursor-not-allowed" />
                             </label>
                           </div>
                        </div>
@@ -793,8 +796,8 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             </label>
             <div className="flex flex-col gap-1">
               <label className="flex items-center gap-2 cursor-pointer group">
-                 <input type="checkbox" name="isAvailableUhuru" defaultChecked={license ? license.isAvailableUhuru : false} className="w-5 h-5 rounded border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500" />
-                 <span className="text-[10px] font-black text-slate-950 dark:text-slate-800 dark:text-slate-900 dark:text-slate-400 group-hover:text-foreground uppercase tracking-widest transition-colors">Assigned</span>
+                 <input type="checkbox" name="isAvailableUhuru" disabled defaultChecked={license ? license.isAvailableUhuru : false} className="w-5 h-5 rounded border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500 cursor-not-allowed" />
+                 <span className="text-[10px] font-black text-slate-950 dark:text-slate-800 dark:text-slate-900 dark:text-slate-400 group-hover:text-foreground uppercase tracking-widest transition-colors opacity-50">Assigned</span>
               </label>
               {license?.assignedTo && (
                 <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-mono font-black ml-7 uppercase tracking-tighter">
