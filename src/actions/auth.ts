@@ -122,15 +122,15 @@ export async function logoutUser() {
   return { success: true };
 }
 
-export async function updateProfile(formData: FormData) {
+export async function updateProfile(userId: string, formData: FormData) {
   const user = await getCurrentUser();
-  if (!user) return { success: false, message: 'Unauthorized' };
+  if (!user || (!user.isAdmin && user.id !== userId)) return { success: false, message: 'Unauthorized' };
 
   const rawData = Object.fromEntries(formData.entries());
   
   try {
     await prisma.user.update({
-      where: { id: user.id },
+      where: { id: userId },
       data: {
         firstName: rawData.firstName as string,
         lastName: rawData.lastName as string,
@@ -363,9 +363,9 @@ export async function updateUserDetails(userId: string, formData: FormData) {
 
   if (startDate && data.chosenPlan) {
     endDate = new Date(startDate);
-    if (data.chosenPlan === 'Oracle Fusion 30 days') {
+    if (data.chosenPlan.startsWith('Oracle Fusion 30 days')) {
       endDate.setDate(endDate.getDate() + 30);
-    } else if (data.chosenPlan === 'Oracle Fusion 90 days') {
+    } else if (data.chosenPlan.startsWith('Oracle Fusion 90 days')) {
       endDate.setDate(endDate.getDate() + 90);
     }
   }

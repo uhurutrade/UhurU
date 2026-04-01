@@ -62,6 +62,24 @@ export default function DashboardPage() {
   async function handleUpdate(formData: FormData) {
     if (!user) return;
     setUpdating(true);
+    
+    const hasChanges = 
+      formData.get('firstName') !== user.firstName ||
+      formData.get('lastName') !== user.lastName ||
+      formData.get('phone') !== user.phone ||
+      formData.get('companyName') !== (user.companyName || '') ||
+      formData.get('country') !== user.country ||
+      formData.get('city') !== user.city ||
+      formData.get('postcode') !== user.postcode ||
+      formData.get('streetAddress') !== user.streetAddress;
+    
+    if (!hasChanges) {
+      setUpdating(false);
+      setGlobalNotification({ success: true, message: 'No changes to update' });
+      setTimeout(() => setGlobalNotification(null), 3000);
+      return;
+    }
+
     const result = await updateProfile(user.id, formData);
     setUpdating(false);
     if (result.success) {
@@ -277,6 +295,9 @@ export default function DashboardPage() {
                       <InputField name="country" label="Country" defaultValue={user.country} icon={<Globe />} />
                       <InputField name="city" label="City" defaultValue={user.city} icon={<Building2 />} />
                       <InputField name="postcode" label="Zip Code" defaultValue={user.postcode} icon={<MapPin />} />
+                      <div className="md:col-span-2">
+                        <InputField name="streetAddress" label="Address" defaultValue={user.streetAddress} icon={<Home />} />
+                      </div>
                     </div>
                   </div>
 
@@ -629,7 +650,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
               <div className="space-y-4">
                 <div className="flex justify-between items-start">
                    <div>
-                      <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-1">PO: {l.purchaseOrder || 'XXXX-X'}</p>
+                      <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-1">PO: {l.purchaseOrder || 'XXXXX-X'}</p>
                       <p className="text-sm font-bold text-slate-100 truncate max-w-[200px]">{l.urlLink}</p>
                    </div>
                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -679,19 +700,19 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             <input 
               name="purchaseOrder" 
               defaultValue={license?.purchaseOrder || ""} 
-              placeholder="0000-0"
-              maxLength={6}
+              placeholder="00000-0"
+              maxLength={7}
               onChange={(e) => {
                 let value = e.target.value.replace(/[^0-9]/g, '');
-                if (value.length > 4) {
-                  value = value.slice(0, 4) + '-' + value.slice(4, 5);
+                if (value.length > 5) {
+                  value = value.slice(0, 5) + '-' + value.slice(5, 6);
                 }
                 e.target.value = value;
               }}
               className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-xs text-white" 
               required 
             />
-            <p className="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-tighter">Fixed Format: 0000-0</p>
+            <p className="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-tighter">Fixed Format: 00000-0</p>
          </div>
          <div>
             <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1 block">Fusion Url</label>
@@ -727,6 +748,9 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             </div>
          </div>
          {/* Hidden since user said "me sobra" but logic needs it for now */}
+         <input type="hidden" name="id" value={license?.id || ""} />
+         <input type="hidden" name="userId" value={license?.userId || ""} />
+         <input type="hidden" name="lastUserId" value={license?.lastUserId || ""} />
          <input type="hidden" name="subscription" value={license?.subscription || "Oracle Fusion 30 days (£59)"} />
       </div>
       <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
