@@ -413,22 +413,17 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string | null>(null);
-  const [hasVerifiedTerms, setHasVerifiedTerms] = useState(false);
 
   useEffect(() => {
     async function load() {
       const data = await getAllUsers();
-      setUsers(data.filter((u:any) => u.id !== currentUserId));
+      setUsers(data); // No filtering out admin, show everyone
       setLoading(false);
     }
     load();
   }, [currentUserId]);
 
   async function handleUpdateStudent(userId: string, formData: FormData) {
-    if (!hasVerifiedTerms) {
-      alert("Administrator must verify contracting terms compliance before activating or updating students.");
-      return;
-    }
     const result = await updateUserDetails(userId, {
       isActive: formData.get('isActive') === 'on',
       start: formData.get('start') as string,
@@ -455,24 +450,6 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
 
   return (
     <div className="space-y-4">
-      {/* Admin Terms Check */}
-      <div className="mb-6 p-4 bg-blue-500/5 border border-blue-500/10 rounded-2xl flex items-center justify-between gap-4">
-         <div className="flex items-center gap-3">
-            <ShieldAlert className="w-5 h-5 text-blue-400" />
-            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Administrative Compliance Override</p>
-         </div>
-         <div className="flex items-center gap-3">
-            <input 
-              type="checkbox" 
-              id="admin-terms"
-              checked={hasVerifiedTerms}
-              onChange={(e) => setHasVerifiedTerms(e.target.checked)}
-              className="w-4 h-4 rounded border-white/20 bg-slate-900 accent-blue-500 cursor-pointer"
-            />
-            <label htmlFor="admin-terms" className="text-[10px] text-blue-400/80 font-bold uppercase tracking-widest cursor-pointer">I verify T&C Compliance</label>
-         </div>
-      </div>
-
       {users.map((u) => {
         const isVigente = u.isPaid && u.subscriptionEnd && new Date(u.subscriptionEnd) > new Date();
         return (
@@ -491,14 +468,17 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                          </span>
                        </div>
                        <div className="md:hidden overflow-hidden">
-                          <h4 className="font-bold text-foreground text-sm truncate">{u.firstName} {u.lastName}</h4>
+                          <h4 className="font-bold text-foreground text-sm truncate flex items-center gap-2">
+                             {u.firstName} {u.lastName}
+                             {u.isAdmin && <span className="text-[8px] text-blue-400 font-black border border-blue-500/20 px-1 rounded bg-blue-500/5">ADM</span>}
+                          </h4>
                           <p className="text-[9px] text-slate-500 font-mono truncate">{u.email}</p>
                        </div>
                     </div>
                     <div className="hidden md:block overflow-hidden">
                       <h4 className="font-bold text-foreground flex items-center gap-3 truncate">
                         {u.firstName} {u.lastName}
-                        {u.email === 'uhurutradeuk@gmail.com' ? 
+                        {u.isAdmin ? 
                            <span className="text-[10px] text-blue-400 font-mono font-black border border-blue-500/20 px-4 rounded-md bg-blue-500/5 uppercase tracking-[0.2em]">ADMIN</span> :
                            isVigente && <span className="text-[10px] text-emerald-400 font-mono font-black border border-emerald-500/20 px-2 rounded-md bg-emerald-500/5 uppercase tracking-widest">Active</span>
                         }
@@ -581,8 +561,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                           <button type="button" onClick={() => setActiveTab(null)} className="px-6 py-3 text-[10px] font-black uppercase text-slate-500 hover:text-white transition-colors">Cancel</button>
                           <button 
                             type="submit" 
-                            disabled={!hasVerifiedTerms}
-                            className={`px-10 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl flex items-center gap-3 ${hasVerifiedTerms ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/40 border border-white/20' : 'bg-slate-800 text-slate-600 cursor-not-allowed opacity-50 grayscale border border-white/5'}`}
+                            className="px-10 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl flex items-center gap-3 bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/40 border border-white/20"
                           >
                             <Save className="w-4 h-4" /> Save Student Data
                           </button>
