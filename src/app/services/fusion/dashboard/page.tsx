@@ -108,7 +108,7 @@ export default function DashboardPage() {
 
   const handlePayPlan = () => {
     const url = renewalPlan === "30" 
-      ? 'https://checkout.revolut.com/pay/9ddb9c6a-6764-4a60-93b7-d2b742ca02a8' 
+      ? 'https://checkout.revolut.com/payment-link/5e7fc3a4-1313-4072-974b-9328a667b616' 
       : 'https://amazon.es';
     const w = 800;
     const h = 700;
