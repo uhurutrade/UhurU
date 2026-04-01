@@ -20,7 +20,7 @@ export default function DashboardPage() {
   const [updating, setUpdating] = useState(false);
   const [renewalPlan, setRenewalPlan] = useState("");
   const [hasReadTerms, setHasReadTerms] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
+  const [termsVisited, setTermsVisited] = useState(false);
   const [globalNotification, setGlobalNotification] = useState<{ success: boolean; message: string } | null>(null);
 
   useEffect(() => {
@@ -79,6 +79,20 @@ export default function DashboardPage() {
     await logoutUser();
     window.location.href = '/services/fusion';
   }
+
+  const handleOpenTerms = () => {
+    const w = 900;
+    const h = 800;
+    const left = (window.screen.width / 2) - (w / 2);
+    const top = (window.screen.height / 2) - (h / 2);
+    
+    window.open(
+      '/services/fusion/terms', 
+      'ContractingTerms', 
+      `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no, width=${w}, height=${h}, top=${top}, left=${left}`
+    );
+    setTermsVisited(true);
+  };
 
   const handlePayPlan = () => {
     if (!hasReadTerms) return;
@@ -188,12 +202,13 @@ export default function DashboardPage() {
                                   <input 
                                     type="checkbox" 
                                     id="accept-terms"
+                                    disabled={!termsVisited}
                                     checked={hasReadTerms}
                                     onChange={(e) => setHasReadTerms(e.target.checked)}
-                                    className="mt-1 w-4 h-4 rounded border-white/20 bg-slate-900 accent-emerald-500 cursor-pointer"
+                                    className={`mt-1 w-4 h-4 rounded border-white/20 bg-slate-900 accent-emerald-500 ${termsVisited ? 'cursor-pointer' : 'cursor-not-allowed opacity-30'}`}
                                   />
-                                  <label htmlFor="accept-terms" className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed cursor-pointer select-none">
-                                    I have read and accept the <button type="button" onClick={() => setShowTerms(true)} className="text-emerald-400 hover:text-emerald-300 underline underline-offset-4 font-black">Contracting Terms & Conditions</button> of Oracle Fusion instances.
+                                  <label htmlFor="accept-terms" className={`text-[10px] font-bold uppercase tracking-widest leading-relaxed select-none ${termsVisited ? 'text-slate-400 cursor-pointer' : 'text-slate-600 cursor-not-allowed'}`}>
+                                    I have read and accept the <button type="button" onClick={handleOpenTerms} className="text-emerald-400 hover:text-emerald-300 underline underline-offset-4 font-black">Contracting Terms & Conditions</button> of Oracle Fusion instances.
                                   </label>
                                 </div>
                                 <button 
@@ -294,26 +309,6 @@ export default function DashboardPage() {
         <div className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-50 px-8 py-4 rounded-2xl shadow-2xl border backdrop-blur-xl animate-in slide-in-from-bottom-4 duration-500 flex items-center gap-3 ${globalNotification.success ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
           {globalNotification.success ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
           <span className="text-sm font-black uppercase tracking-widest">{globalNotification.message}</span>
-        </div>
-      )}
-
-      {/* Terms Modal */}
-      {showTerms && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="relative w-full max-w-5xl max-h-[90vh] overflow-hidden rounded-3xl shadow-2xl border border-white/10 flex flex-col">
-            <div className="flex-1 overflow-y-auto bg-white custom-scrollbar-light">
-               <ContractingTerms />
-            </div>
-            <div className="p-6 bg-slate-900 border-t border-white/10 flex justify-between items-center gap-4">
-               <p className="text-[10px] text-slate-500 font-mono font-black uppercase tracking-widest">Global Provisioning Agreement v2.4</p>
-               <button 
-                 onClick={() => { setShowTerms(false); setHasReadTerms(true); }}
-                 className="px-10 py-4 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-emerald-950/40 border border-white/20"
-               >
-                 Accept & Close
-               </button>
-            </div>
-          </div>
         </div>
       )}
     </div>
