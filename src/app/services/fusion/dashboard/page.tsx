@@ -419,20 +419,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
   }, [currentUserId]);
 
   async function handleUpdateStudent(userId: string, formData: FormData) {
-    const result = await updateUserDetails(userId, {
-      isActive: formData.get('isActive') === 'on',
-      start: formData.get('start') as string,
-      chosenPlan: formData.get('chosenPlan') as string,
-      isPaid: formData.get('isPaid') === 'on',
-      firstName: formData.get('firstName') as string,
-      lastName: formData.get('lastName') as string,
-      companyName: formData.get('companyName') as string,
-      phone: formData.get('phone') as string,
-      country: formData.get('country') as string,
-      city: formData.get('city') as string,
-      streetAddress: formData.get('streetAddress') as string,
-      postcode: formData.get('postcode') as string
-    });
+    const result = await updateUserDetails(userId, formData);
     
     if (result.success) {
       setGlobalNotification({ success: true, message: 'Student information updated' });

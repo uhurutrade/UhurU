@@ -341,25 +341,18 @@ export async function getAllUsers() {
   });
 }
 
-export async function updateUserDetails(userId: string, data: { 
-  isActive: boolean; 
-  start: string; 
-  chosenPlan?: string; 
-  isPaid?: boolean;
-  firstName?: string;
-  lastName?: string;
-  companyName?: string;
-  phone?: string;
-  country?: string;
-  city?: string;
-  streetAddress?: string;
-  postcode?: string;
-}) {
+export async function updateUserDetails(userId: string, formData: FormData) {
   const admin = await getCurrentUser();
   if (!admin?.isAdmin) throw new Error('Not authorized');
 
+  const data = Object.fromEntries(formData.entries()) as any;
+  
+  // Convert checkbox values
+  const isPaid = formData.get('isPaid') === 'on';
+  const isActive = formData.get('isActive') === 'on';
+
   // VALIDATION: If verified payment is checked, plan and date are mandatory
-  if (data.isPaid) {
+  if (isPaid) {
     if (!data.chosenPlan || !data.start) {
       throw new Error('PLAN_AND_DATE_REQUIRED');
     }
@@ -383,7 +376,7 @@ export async function updateUserDetails(userId: string, data: {
     select: { isPaid: true }
   });
 
-  if (!currentUser?.isPaid && data.isPaid) {
+  if (!currentUser?.isPaid && isPaid) {
     // ASIGN LICENSE - Randomized with prioritization
     const candidates = await prisma.license.findMany({
       where: { isAvailable: true, isAvailableUhuru: false }
@@ -402,7 +395,7 @@ export async function updateUserDetails(userId: string, data: {
       where: { id: chosen.id },
       data: { userId: userId, isAvailableUhuru: true }
     });
-  } else if (currentUser?.isPaid && !data.isPaid) {
+  } else if (currentUser?.isPaid && !isPaid) {
     // RELEASE LICENSE
     await prisma.license.updateMany({
       where: { userId: userId },
@@ -413,9 +406,9 @@ export async function updateUserDetails(userId: string, data: {
   await prisma.user.update({
     where: { id: userId },
     data: {
-      isActive: data.isActive,
+      isActive: isActive,
       chosenPlan: data.chosenPlan,
-      isPaid: data.isPaid,
+      isPaid: isPaid,
       subscriptionStart: startDate,
       subscriptionEnd: endDate,
       firstName: data.firstName,
@@ -426,7 +419,6 @@ export async function updateUserDetails(userId: string, data: {
       city: data.city,
       streetAddress: data.streetAddress,
       postcode: data.postcode,
-      // customerNumber is intentionally NOT included — it is immutable once assigned
     }
   });
   
