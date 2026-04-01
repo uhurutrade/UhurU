@@ -8,9 +8,7 @@ import {
 import { 
   User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
   CheckCircle2, AlertCircle, LogOut, Save, UserCircle, Loader2,
-  ShieldCheck, Calendar, Users, ArrowRight, Table, ChevronDown, ChevronUp, 
-  Power, RefreshCw, Hash, Key, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck, AlertTriangle, ShieldAlert
-} from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
@@ -124,8 +122,8 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
   }
@@ -135,32 +133,35 @@ export default function DashboardPage() {
   const isVigente = user.isAdmin || (user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date());
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-background text-foreground p-4 md:p-8 relative overflow-hidden font-sans transition-colors duration-300">
       {/* Background Orbs */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[140px]"></div>
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-600/5 rounded-full blur-[140px]"></div>
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-600/5 rounded-full blur-[140px] pointer-events-none"></div>
 
       <div className="max-w-[1700px] mx-auto z-10 relative">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg ring-1 ring-white/10 text-white">
+            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg ring-1 ring-white/10 text-white">
               <UserCircle className="w-7 h-7" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-black text-white tracking-tight uppercase tracking-widest">Oracle Hub</h1>
+                <h1 className="text-2xl font-black text-foreground tracking-tight uppercase tracking-widest">Oracle Hub</h1>
                 {user.customerNumber && <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 uppercase font-black">ID: {user.customerNumber.toString().padStart(4,'0')}</span>}
                 {user.isAdmin && <span className="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 uppercase font-black">ADMIN</span>}
               </div>
               <p className="text-xs text-slate-400">{user.email}</p>
             </div>
           </div>
-          <button 
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-5 py-2 bg-white/5 hover:bg-red-500/10 text-slate-300 hover:text-red-400 rounded-xl transition-all border border-white/5 hover:border-red-500/20 font-bold text-xs"
-          >
-            <LogOut className="w-4 h-4" /> Sign Out
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle className="h-10 w-10 bg-secondary/50 hover:bg-secondary rounded-xl transition-all border border-border" />
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-5 py-2 bg-secondary/50 hover:bg-red-500/10 text-foreground hover:text-red-400 rounded-xl transition-all border border-border font-bold text-xs h-10"
+            >
+              <LogOut className="w-4 h-4" /> <span className="hidden md:inline">Sign Out</span>
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -212,9 +213,9 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  <div className="md:text-right pt-4 md:pt-1 md:pr-1 opacity-40 border-t md:border-t-0 border-white/5 mt-4 md:mt-0">
+                  <div className="md:text-right pt-4 md:pt-1 md:pr-1 opacity-40 border-t md:border-t-0 border-border/50 dark:border-white/5 mt-4 md:mt-0">
                     <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Authenticated Account</span>
-                    <span className="text-lg font-black text-white tracking-[0.2em]">User ID: {user.customerNumber?.toString().padStart(4, '0')}</span>
+                    <span className="text-lg font-black text-foreground tracking-[0.2em]">User ID: {user.customerNumber?.toString().padStart(4, '0')}</span>
                   </div>
                 </div>
                 {isVigente && user.chosenPlan && (
@@ -226,12 +227,11 @@ export default function DashboardPage() {
               </div>
 
               {isVigente && (
-                <div className="bg-slate-900/60 backdrop-blur-3xl border border-blue-500/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-white/5 pb-4">
+                <div className="bg-card/40 dark:bg-slate-900/60 backdrop-blur-3xl border border-blue-500/10 dark:border-blue-500/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-border dark:border-white/5 pb-4">
                      <h3 className="text-[10px] font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
                         <ShieldAlert className="w-4 h-4" /> Oracle Fusion Access Credentials
                      </h3>
-                     <span className="text-[8px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-1 rounded font-black uppercase tracking-widest text-center w-fit">Secure Asset</span>
                   </div>
                   <div className="space-y-4">
                      <CredentialField label="Oracle Fusion Portal URL" value={user.licenses?.[0]?.urlLink} icon={<ExternalLink />} />
@@ -243,10 +243,10 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              <div className="bg-slate-900/40 backdrop-blur-3xl border border-white/[0.05] rounded-[2rem] shadow-2xl p-6">
-                <div className="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
-                  <h3 className="text-xs font-black text-white/40 uppercase tracking-widest">Profile Identity</h3>
-                  <ShieldCheck className="w-4 h-4 text-blue-500 opacity-20" />
+              <div className="bg-card/30 dark:bg-slate-900/40 backdrop-blur-3xl border border-border/50 dark:border-white/[0.05] rounded-[2rem] shadow-2xl p-6">
+                <div className="flex items-center justify-between mb-6 border-b border-border dark:border-white/5 pb-4">
+                  <h3 className="text-xs font-black text-foreground/40 uppercase tracking-widest">Profile Identity</h3>
+                  <ShieldCheck className="w-4 h-4 text-primary opacity-20" />
                 </div>
 
                 <form action={handleUpdate} className="space-y-6">
@@ -357,7 +357,7 @@ function TabButton({ active, onClick, icon, label }: any) {
   return (
     <button 
       onClick={onClick}
-      className={`flex items-center gap-3 px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-r border-white/5 ${active ? 'bg-blue-600/10 text-blue-400 border-b-2 border-b-blue-500' : 'text-slate-500 hover:bg-white/5'}`}
+      className={`flex items-center gap-3 px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-r border-border dark:border-white/5 ${active ? 'bg-primary/10 text-primary border-b-2 border-b-primary' : 'text-muted-foreground hover:bg-secondary/40 font-bold'}`}
     >
       {icon} {label}
     </button>

@@ -1,11 +1,6 @@
-'use client';
-
-import { useState } from 'react';
-import { registerUser, loginUser, requestPasswordReset } from '@/actions/auth';
-import { 
-  User, Mail, Lock, Building, MapPin, Building2, Phone, Globe, Home, 
   ShieldCheck, LogIn, UserPlus, ArrowRight, CheckCircle2, AlertCircle, RefreshCw
 } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function FusionPage() {
   const [view, setView] = useState<'login' | 'register' | 'forgot'>('login');
@@ -42,13 +37,16 @@ export default function FusionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-6 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6 relative overflow-hidden font-sans transition-colors duration-300">
+      <div className="fixed top-6 right-6 z-50">
+        <ThemeToggle className="h-10 w-10 bg-card/50 backdrop-blur-md border border-border shadow-xl hover:scale-110 transition-all rounded-xl" />
+      </div>
       {/* Background Orbs */}
       <div className="absolute top-0 -left-10 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
       <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse animation-delay-2000"></div>
 
       <div className="w-full max-w-2xl z-10 my-10">
-        <div className="bg-slate-900/60 backdrop-blur-2xl border border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
+        <div className="bg-card/30 dark:bg-slate-900/60 backdrop-blur-2xl border border-border/40 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
           
           {view !== 'forgot' && (
             <div className="flex border-b border-slate-800">
@@ -68,10 +66,10 @@ export default function FusionPage() {
           )}
 
           <div className="p-8 pb-4 text-center">
-            <div className="w-20 h-20 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-blue-500/20 shadow-xl shadow-blue-500/5">
-              {view === 'forgot' ? <RefreshCw className="w-10 h-10 text-blue-400" /> : <ShieldCheck className="w-10 h-10 text-blue-400" />}
+            <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-primary/20 shadow-xl shadow-primary/5">
+              {view === 'forgot' ? <RefreshCw className="w-10 h-10 text-primary" /> : <ShieldCheck className="w-10 h-10 text-primary" />}
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
               {view === 'forgot' ? 'Forgot Password' : 'Oracle Fusion Services'}
             </h1>
             <p className="text-slate-400">
@@ -107,7 +105,7 @@ export default function FusionPage() {
                       )}
                     </div>
                     <div className="relative group">
-                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors">
+                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
                         <Lock className="w-4 h-4" />
                       </div>
                       <input
@@ -115,7 +113,7 @@ export default function FusionPage() {
                         type="password"
                         required
                         placeholder="••••••••"
-                        className="w-full pl-10 pr-4 py-3 bg-slate-950/50 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-700 text-sm"
+                        className="w-full pl-10 pr-4 py-3 bg-secondary/20 dark:bg-slate-950/50 border border-border dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 text-sm"
                       />
                     </div>
                   </div>
@@ -138,7 +136,7 @@ export default function FusionPage() {
                 <div className="text-sm">
                   <p className="font-semibold">{status.message}</p>
                   {status.errors && (
-                    <ul className="list-disc list-inside mt-1 opacity-80 decoration-slate-600">
+                    <ul className="list-disc list-inside mt-1 opacity-80 decoration-border">
                       {Object.entries(status.errors).map(([f, ms]: any) => (ms as string[]).map((m, i) => <li key={i}>{m}</li>))}
                     </ul>
                   )}
@@ -164,11 +162,11 @@ export default function FusionPage() {
 
           <p className="p-8 pb-8 pt-0 text-center text-sm text-slate-500">
             {view === 'forgot' ? (
-              <button onClick={() => setView('login')} className="text-blue-400 hover:underline font-bold uppercase text-[10px] tracking-widest bg-blue-500/5 px-4 py-2 rounded-lg border border-blue-500/10 transition-all hover:bg-blue-500/10">Back to Login</button>
+              <button onClick={() => setView('login')} className="text-primary hover:underline font-bold uppercase text-[10px] tracking-widest bg-primary/5 px-4 py-2 rounded-lg border border-primary/10 transition-all hover:bg-primary/10">Back to Login</button>
             ) : (
-              <span className="bg-slate-950/50 px-4 py-2 rounded-full border border-white/5 inline-block">
+              <span className="bg-secondary/40 dark:bg-slate-950/50 px-4 py-2 rounded-full border border-border dark:border-white/5 inline-block">
                 {view === 'login' ? "Don't have an account?" : 'Already a member?'} 
-                <button onClick={() => setView(view === 'login' ? 'register' : 'login')} className="text-blue-400 hover:underline ml-2 font-black uppercase text-[10px] tracking-widest transition-colors">
+                <button onClick={() => setView(view === 'login' ? 'register' : 'login')} className="text-primary hover:underline ml-2 font-black uppercase text-[10px] tracking-widest transition-colors">
                   {view === 'login' ? 'Sign up' : 'Sign in'}
                 </button>
               </span>
@@ -183,11 +181,11 @@ export default function FusionPage() {
 function Input({ name, label, icon, placeholder, type = 'text', required = false }: any) {
   return (
     <div className="space-y-1.5 group">
-      <label className="text-sm font-semibold text-slate-500 group-focus-within:text-blue-400 transition-colors tracking-wider uppercase ml-1">
+      <label className="text-sm font-semibold text-muted-foreground group-focus-within:text-primary transition-colors tracking-wider uppercase ml-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <div className="relative">
-        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors">
+        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
           <span className="[&>svg]:w-4 [&>svg]:h-4">{icon}</span>
         </div>
         <input
@@ -195,7 +193,7 @@ function Input({ name, label, icon, placeholder, type = 'text', required = false
           type={type}
           placeholder={placeholder}
           required={required}
-          className="w-full pl-10 pr-4 py-3 bg-slate-950/50 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-700 text-sm"
+          className="w-full pl-10 pr-4 py-3 bg-secondary/20 dark:bg-slate-950/50 border border-border dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 text-sm"
         />
       </div>
     </div>

@@ -51,6 +51,7 @@ export async function getCurrentUser() {
         postcode: true,
         phone: true,
         customerNumber: true,
+        subscriptionStart: true,
         subscriptionEnd: true,
         isActive: true,
         chosenPlan: true,
