@@ -148,11 +148,12 @@ export default function DashboardPage() {
   const isVigente = user.isAdmin || (user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date());
 
   return (
-    <div className="min-h-screen bg-slate-200/30 dark:bg-background text-foreground relative overflow-hidden font-sans transition-colors duration-300">
+  return (
+    <div className="min-h-screen bg-[#e5e5e5] dark:bg-background text-foreground relative overflow-hidden font-sans transition-colors duration-300">
       <SubPageHeader backHref="/services" backText="Back to Services" />
       {/* Background Orbs */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] hidden dark:block dark:bg-blue-600/5 rounded-full blur-[140px] pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] hidden dark:block bg-purple-600/5 rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-slate-400 dark:bg-primary/5 rounded-full blur-[140px] opacity-[0.02] dark:opacity-100 pointer-events-none transition-all duration-1000"></div>
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-500 dark:bg-purple-600/5 rounded-full blur-[140px] opacity-[0.03] dark:opacity-100 pointer-events-none transition-all duration-1000 animation-delay-2000"></div>
 
       <div className="max-w-[1700px] mx-auto z-10 relative p-4 md:p-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
@@ -162,17 +163,17 @@ export default function DashboardPage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-black text-foreground tracking-tight uppercase tracking-widest">SkillHub</h1>
-                {user.customerNumber && <span className="text-[10px] bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 uppercase font-black">ID: {user.customerNumber.toString().padStart(4,'0')}</span>}
+                <h1 className="text-2xl font-black text-black dark:text-foreground tracking-tight uppercase tracking-widest">SkillHub</h1>
+                {user.customerNumber && <span className="text-[10px] bg-primary/10 text-primary dark:text-primary-foreground px-2 py-0.5 rounded border border-primary/20 uppercase font-black">ID: {user.customerNumber.toString().padStart(4,'0')}</span>}
                 {user.isAdmin && <span className="text-[9px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 uppercase font-black">ADMIN</span>}
               </div>
-              <p className="text-xs text-foreground/80">{user.email}</p>
+              <p className="text-xs text-black dark:text-black dark:text-white">{user.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button 
               onClick={handleLogout}
-              className="flex items-center gap-2 px-5 py-2 bg-secondary/50 hover:bg-red-500/10 text-foreground hover:text-red-400 rounded-xl transition-all border border-border font-bold text-xs h-10"
+              className="flex items-center gap-2 px-5 py-2 bg-secondary/50 hover:bg-red-500/10 text-black dark:text-foreground hover:text-red-400 rounded-xl transition-all border border-border font-bold text-xs h-10"
             >
               <LogOut className="w-4 h-4" /> <span className="hidden md:inline">Sign Out</span>
             </button>
@@ -184,10 +185,10 @@ export default function DashboardPage() {
           {!user.isAdmin && (
             <div className="lg:col-span-12 space-y-6 max-w-4xl mx-auto">
               {/* Status Card */}
-              <div className={`p-8 rounded-[2.5rem] border transition-all duration-700 ${isVigente ? 'bg-emerald-500/5 border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.05)]' : 'bg-red-500/5 border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.05)]'}`}>
+              <div className={`p-8 rounded-[2.5rem] border transition-all duration-700 ${isVigente ? 'bg-[#f2f2f2] dark:bg-emerald-500/5 border-[#c0c0c0] dark:border-emerald-500/20 shadow-xl dark:shadow-[0_0_50px_rgba(16,185,129,0.05)]' : 'bg-[#f2f2f2] dark:bg-red-500/5 border-[#c0c0c0] dark:border-red-500/20 shadow-xl dark:shadow-[0_0_50px_rgba(239,68,68,0.05)]'}`}>
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                   <div>
-                    <h4 className="text-[10px] font-black uppercase text-slate-950 dark:text-white/60 tracking-widest mb-1.5 px-1">Subscription Vigor</h4>
+                    <h4 className="text-[10px] font-black uppercase text-black dark:text-black dark:text-white/60 tracking-widest mb-1.5 px-1">Subscription Vigor</h4>
                     <p className={`text-2xl font-black tracking-tight ${isVigente ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-400'}`}>
                       {isVigente ? 'Subscription Active' : 'Subscription Inactive'}
                     </p>
@@ -197,7 +198,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-2">
                           <Calendar className="w-4 h-4" /> From: {user.subscriptionStart ? new Date(user.subscriptionStart).toLocaleDateString() : 'N/A'}
                         </p>
-                        <p className="text-sm font-black text-foreground/80 uppercase tracking-widest flex items-center gap-2">
+                        <p className="text-sm font-black text-black dark:text-black dark:text-white uppercase tracking-widest flex items-center gap-2">
                           <ArrowRight className="w-3.5 h-3.5" /> To: {user.subscriptionEnd ? new Date(user.subscriptionEnd).toLocaleDateString() : 'N/A'}
                         </p>
                       </div>
@@ -205,11 +206,11 @@ export default function DashboardPage() {
 
                     {!isVigente && (
                       <div className="mt-6 animate-in slide-in-from-top-2">
-                         <label className="text-[9px] font-black text-slate-950 dark:text-white uppercase tracking-widest block mb-3 px-1">Purchase License Renewal</label>
+                         <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest block mb-3 px-1">Purchase License Renewal</label>
                          <select 
                            value={renewalPlan}
                            onChange={(e) => setRenewalPlan(e.target.value)}
-                           className="w-full bg-slate-900/50 border border-slate-950/20 dark:border-white/20 rounded-2xl px-5 py-4 text-xs font-black text-foreground focus:ring-1 focus:ring-blue-500/50 outline-none appearance-none cursor-pointer hover:bg-slate-900 transition-all uppercase tracking-widest shadow-xl shadow-black/20">
+                           className="w-full bg-slate-900/50 border border-slate-950/20 dark:border-white/20 rounded-2xl px-5 py-4 text-xs font-black text-foreground focus:ring-1 focus:ring-primary/50 outline-none appearance-none cursor-pointer hover:bg-slate-900 transition-all uppercase tracking-widest shadow-xl shadow-black/20">
                             <option value="">Select a renewal plan...</option>
                             <option value="30">SkillHub 30 days (£59)</option>
                             <option value="90">SkillHub 90 days (£140)</option>
@@ -227,7 +228,7 @@ export default function DashboardPage() {
                                     onChange={(e) => setHasReadTerms(e.target.checked)}
                                     className={`mt-1 w-4 h-4 rounded border-slate-950/20 dark:border-white/20 bg-slate-900 accent-emerald-500 ${termsVisited ? 'cursor-pointer' : 'cursor-not-allowed opacity-30'}`}
                                   />
-                                  <label htmlFor="accept-terms" className={`text-[10px] font-bold uppercase tracking-widest leading-relaxed select-none ${termsVisited ? 'text-foreground/80 cursor-pointer' : 'text-slate-950 dark:text-white/40 cursor-not-allowed'}`}>
+                                  <label htmlFor="accept-terms" className={`text-[10px] font-bold uppercase tracking-widest leading-relaxed select-none ${termsVisited ? 'text-black dark:text-black dark:text-white cursor-pointer' : 'text-black/40 dark:text-black dark:text-white/40 cursor-not-allowed'}`}>
                                     I have read and accept the <button type="button" onClick={handleOpenTerms} className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-300 underline underline-offset-4 font-black">Contracting Terms & Conditions</button> of SkillHub instances.
                                   </label>
                                 </div>
@@ -247,8 +248,8 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="md:text-right pt-4 md:pt-1 md:pr-1 opacity-40 border-t md:border-t-0 border-border/50 dark:border-slate-950/10 dark:border-white/5 mt-4 md:mt-0">
-                    <span className="text-[9px] font-black text-slate-950 dark:text-white/60 uppercase tracking-widest block mb-1">Authenticated Account</span>
-                    <span className="text-lg font-black text-foreground tracking-[0.2em]">User ID: {user.customerNumber?.toString().padStart(4, '0')}</span>
+                    <span className="text-[9px] font-black text-black dark:text-black dark:text-white/60 uppercase tracking-widest block mb-1">Authenticated Account</span>
+                    <span className="text-lg font-black text-black dark:text-foreground tracking-[0.2em]">User ID: {user.customerNumber?.toString().padStart(4, '0')}</span>
                   </div>
                 </div>
                 {isVigente && user.chosenPlan && (
@@ -260,9 +261,9 @@ export default function DashboardPage() {
               </div>
 
               {isVigente && (
-                <div className="bg-slate-200/80 dark:bg-slate-900/60 backdrop-blur-3xl border border-blue-500/10 dark:border-blue-500/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700">
+                <div className="bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-3xl border border-[#c0c0c0] dark:border-primary/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700 focus-within:border-primary/40 transition-colors">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-border dark:border-slate-950/10 dark:border-white/5 pb-4">
-                     <h3 className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest flex items-center gap-2">
+                     <h3 className="text-[10px] font-black text-primary dark:text-blue-400 uppercase tracking-widest flex items-center gap-2">
                         <ShieldAlert className="w-4 h-4" /> SkillHub Access Credentials
                      </h3>
                   </div>
@@ -276,9 +277,9 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              <div className="bg-slate-200/60 dark:bg-slate-900/40 backdrop-blur-3xl border border-border/50 dark:border-white/[0.05] rounded-[2rem] shadow-2xl p-6">
+              <div className="bg-[#f2f2f2] dark:bg-slate-900/40 backdrop-blur-3xl border border-[#c0c0c0] dark:border-white/[0.05] rounded-[2rem] shadow-2xl p-6 transition-all">
                 <div className="flex items-center justify-between mb-6 border-b border-border dark:border-slate-950/10 dark:border-white/5 pb-4">
-                  <h3 className="text-xs font-black text-slate-950/40 dark:text-white uppercase tracking-widest">Profile Identity</h3>
+                  <h3 className="text-xs font-black text-black dark:text-white/40 dark:text-white uppercase tracking-widest">Profile Identity</h3>
                   <ShieldCheck className="w-4 h-4 text-primary opacity-20" />
                 </div>
 
@@ -291,7 +292,7 @@ export default function DashboardPage() {
                   </div>
                   
                   <div className="border-t border-slate-950/10 dark:border-white/5 pt-6">
-                    <h4 className="text-[10px] font-black uppercase text-slate-950 dark:text-white tracking-widest mb-4">Billing Address</h4>
+                    <h4 className="text-[10px] font-black uppercase text-black dark:text-white tracking-widest mb-4">Billing Address</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <InputField name="companyName" label="Company" defaultValue={user.companyName} icon={<Building />} />
                       <div className="md:col-span-2">
@@ -348,9 +349,9 @@ export default function DashboardPage() {
 function InputField({ name, label, defaultValue, placeholder, icon, readOnly = false }: any) {
   return (
     <div className="space-y-1.5 group">
-      <label className="text-[9px] font-black tracking-widest uppercase ml-1 block text-slate-950/60 dark:text-white">{label}</label>
+      <label className="text-[9px] font-black tracking-widest uppercase ml-1 block text-black dark:text-white">{label}</label>
       <div className="relative">
-        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-950 dark:text-white/40 group-focus-within:text-primary transition-colors">
+        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-black dark:text-white dark:text-black dark:text-white/40 group-focus-within:text-primary transition-colors">
           <span className="[&>svg]:w-3.5 [&>svg]:h-3.5">{icon}</span>
         </div>
         <input
@@ -375,10 +376,10 @@ function CredentialField({ label, value, icon, setGlobalNotification }: { label:
 
   return (
     <div className="space-y-1.5 group">
-      <label className="text-[9px] font-black tracking-widest uppercase ml-1 block text-slate-950/60 dark:text-white">{label}</label>
+      <label className="text-[9px] font-black tracking-widest uppercase ml-1 block text-black dark:text-white">{label}</label>
       <div className="relative flex items-center gap-2">
         <div className="relative flex-1">
-          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-950 dark:text-white/40">
+          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-black dark:text-white dark:text-black dark:text-white/40">
             <span className="[&>svg]:w-3.5 [&>svg]:h-3.5">{icon}</span>
           </div>
           <input
@@ -406,7 +407,7 @@ function CopyButton({ text, onCopy }: { text: string; onCopy?: any }) {
     <button 
       type="button"
       onClick={handleCopy} 
-      className={`px-4 py-3 rounded-xl border border-slate-950/10 dark:border-white/10 font-black text-[9px] uppercase tracking-widest transition-all ${copied ? 'bg-emerald-500 text-foreground border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'bg-white/5 text-foreground/80 hover:bg-white/10 hover:text-foreground'}`}
+      className={`px-4 py-3 rounded-xl border border-slate-950/10 dark:border-white/10 font-black text-[9px] uppercase tracking-widest transition-all ${copied ? 'bg-emerald-500 text-foreground border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'bg-white/5 text-black dark:text-white hover:bg-white/10 hover:text-foreground'}`}
     >
       {copied ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
     </button>
@@ -435,7 +436,7 @@ function TabButton({ active, onClick, icon, label }: any) {
   return (
     <button 
       onClick={onClick}
-      className={`flex items-center gap-3 px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-r border-border dark:border-slate-950/10 dark:border-white/5 ${active ? 'bg-primary/10 text-primary border-b-2 border-b-primary' : 'text-muted-foreground hover:bg-secondary/40 font-bold'}`}
+      className={`flex items-center gap-3 px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-r border-border dark:border-slate-950/10 dark:border-white/5 ${active ? 'bg-primary/10 text-primary border-b-2 border-b-primary' : 'text-black dark:text-white hover:bg-secondary/40 font-bold'}`}
     >
       {icon} {label}
     </button>
@@ -469,59 +470,59 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
     }
   }
 
-  if (loading) return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-500" /></div>;
+  if (loading) return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-primary dark:text-primary" /></div>;
 
   return (
     <div className="space-y-4">
       {users.map((u) => {
         const isVigente = u.isPaid && u.subscriptionEnd && new Date(u.subscriptionEnd) > new Date();
         return (
-          <div key={u.id} className={`p-1 rounded-[2rem] transition-all duration-300 ${activeTab === u.id ? 'bg-slate-900 dark:bg-blue-600/5 ring-1 ring-blue-500/10 shadow-2xl' : 'hover:bg-white/5 ring-1 ring-transparent'}`}>
+          <div key={u.id} className={`p-1 rounded-[2rem] transition-all duration-300 ${activeTab === u.id ? 'bg-slate-900 dark:bg-primary/5 ring-1 ring-primary/10 shadow-2xl' : 'hover:bg-white/5 ring-1 ring-transparent'}`}>
             <div className="p-4">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex-1 cursor-pointer flex items-center gap-3 md:gap-4" onClick={() => setActiveTab(activeTab === u.id ? null : u.id)}>
-                  <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-muted-foreground border border-border/50 shadow-inner shrink-0">
-                    {activeTab === u.id ? <ChevronUp className="w-5 h-5 text-blue-600 dark:text-blue-500" /> : <ChevronDown className="w-5 h-5" />}
+                  <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-black dark:text-black dark:text-white border border-border/50 shadow-inner shrink-0">
+                    {activeTab === u.id ? <ChevronUp className="w-5 h-5 text-primary dark:text-primary-foreground" /> : <ChevronDown className="w-5 h-5" />}
                   </div>
                   <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 overflow-hidden">
                     <div className="flex items-center gap-2">
-                       <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-900 dark:bg-blue-600/10 border border-blue-500/20 flex items-center justify-center shrink-0">
-                         <span className="text-blue-600 dark:text-blue-400 font-black text-[10px] md:text-[11px] font-mono leading-none">
+                       <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-900 dark:bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                         <span className="text-primary dark:text-primary-foreground font-black text-[10px] md:text-[11px] font-mono leading-none">
                            {u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : '—'}
                          </span>
                        </div>
                        <div className="md:hidden overflow-hidden">
-                          <h4 className="font-bold text-foreground text-sm truncate flex items-center gap-2">
+                          <h4 className="font-bold text-black dark:text-foreground text-sm truncate flex items-center gap-2">
                              {u.firstName} {u.lastName}
-                             {u.isAdmin && <span className="text-[8px] text-blue-600 dark:text-blue-400 font-black border border-blue-500/20 px-1 rounded bg-blue-500/5">ADM</span>}
+                             {u.isAdmin && <span className="text-[8px] text-primary dark:text-primary-foreground font-black border border-primary/20 px-1 rounded bg-primary/5">ADM</span>}
                           </h4>
-                          <p className="text-[9px] text-slate-950 dark:text-slate-800 dark:text-slate-900 dark:text-slate-400 font-mono truncate">{u.email}</p>
+                          <p className="text-[9px] text-black dark:text-black dark:text-white font-mono truncate">{u.email}</p>
                        </div>
                     </div>
                     <div className="hidden md:block overflow-hidden">
-                      <h4 className="font-bold text-foreground flex items-center gap-3 truncate">
+                      <h4 className="font-bold text-black dark:text-foreground flex items-center gap-3 truncate">
                         {u.firstName} {u.lastName}
                         {u.isAdmin ? 
-                           <span className="text-[10px] text-blue-600 dark:text-blue-400 font-mono font-black border border-blue-500/20 px-4 rounded-md bg-blue-500/5 uppercase tracking-[0.2em]">ADMIN</span> :
+                           <span className="text-[10px] text-primary dark:text-primary-foreground font-mono font-black border border-primary/20 px-4 rounded-md bg-primary/5 uppercase tracking-[0.2em]">ADMIN</span> :
                            isVigente && <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-black border border-emerald-500/20 px-2 rounded-md bg-emerald-500/5 uppercase tracking-widest">Active</span>
                         }
                       </h4>
-                      <p className="text-[10px] text-slate-950 dark:text-slate-800 dark:text-slate-900 dark:text-slate-400 font-mono truncate">{u.email}</p>
+                      <p className="text-[10px] text-black dark:text-black dark:text-white font-mono truncate">{u.email}</p>
                     </div>
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-3 md:gap-6 pl-14 md:pl-0">
                    <div className="text-right hidden sm:block">
-                      <p className="text-[9px] font-black text-slate-950 dark:text-white uppercase tracking-widest leading-none mb-1">Status</p>
+                      <p className="text-[9px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest leading-none mb-1">Status</p>
                       <span className={`text-[10px] font-black uppercase tracking-widest ${isVigente ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-500/50'}`}>
                         {isVigente ? 'Vigente' : 'Expirada'}
                       </span>
                    </div>
                    <div className="w-px h-8 bg-white/5 hidden sm:block" />
                    <div className="text-right">
-                      <p className="text-[9px] font-black text-slate-950 dark:text-white uppercase tracking-widest leading-none mb-1">Ends</p>
-                      <span className="text-[10px] font-black text-foreground/80 font-mono">
+                      <p className="text-[9px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest leading-none mb-1">Ends</p>
+                      <span className="text-[10px] font-black text-black dark:text-white font-mono">
                         {u.subscriptionEnd ? new Date(u.subscriptionEnd).toLocaleDateString() : 'N/A'}
                       </span>
                    </div>
@@ -533,29 +534,29 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                   <form action={(fd) => handleUpdateStudent(u.id, fd)} className="grid grid-cols-1 md:grid-cols-12 gap-8">
                     <div className="md:col-span-4 space-y-6">
                        <div className="bg-slate-900/50 p-6 rounded-3xl border border-slate-950/10 dark:border-white/5">
-                          <label className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-4">Account Status</label>
+                          <label className="text-[10px] font-black text-primary dark:text-primary-foreground uppercase tracking-widest block mb-4">Account Status</label>
                           <div className="space-y-4">
                             <label className="flex items-center justify-between cursor-pointer group">
-                              <span className="text-[11px] font-bold text-foreground group-hover:text-foreground transition-colors">Access Active</span>
-                              <input type="checkbox" name="isActive" defaultChecked={u.isActive} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-blue-500" />
+                              <span className="text-[11px] font-bold text-black dark:text-foreground group-hover:text-primary transition-colors">Access Active</span>
+                              <input type="checkbox" name="isActive" defaultChecked={u.isActive} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-primary" />
                             </label>
                             <label className="flex items-center justify-between cursor-pointer group">
-                              <span className="text-[11px] font-bold text-foreground group-hover:text-foreground transition-colors">Payment Verified</span>
+                              <span className="text-[11px] font-bold text-black dark:text-foreground group-hover:text-primary transition-colors">Payment Verified</span>
                               <input type="checkbox" name="isPaid" defaultChecked={u.isPaid} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500 cursor-not-allowed" />
                             </label>
                           </div>
                        </div>
 
                        <div className="bg-slate-900/50 p-6 rounded-3xl border border-slate-950/10 dark:border-white/5">
-                          <label className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-4">Assignment Period</label>
+                          <label className="text-[10px] font-black text-primary dark:text-primary-foreground uppercase tracking-widest block mb-4">Assignment Period</label>
                           <div className="space-y-4">
                             <div>
-                               <label className="text-[9px] font-black text-slate-950 dark:text-white uppercase tracking-widest mb-1 block">Start Date</label>
-                               <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-slate-950 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground" />
+                               <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Start Date</label>
+                               <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-slate-950 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" />
                             </div>
                             <div>
-                               <label className="text-[9px] font-black text-slate-950 dark:text-white uppercase tracking-widest mb-1 block">Selected Plan</label>
-                               <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-slate-950 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground">
+                               <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Selected Plan</label>
+                               <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-slate-950 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground">
                                   <option value="">No Plan</option>
                                   <option value="SkillHub 30 days (£59)">30 Days</option>
                                   <option value="SkillHub 90 days (£140)">90 Days</option>
@@ -583,10 +584,10 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                        </div>
                        
                        <div className="mt-8 flex justify-end gap-3">
-                          <button type="button" onClick={() => setActiveTab(null)} className="px-6 py-3 text-[10px] font-black uppercase text-slate-950 dark:text-slate-800 dark:text-slate-900 dark:text-slate-400 hover:text-foreground transition-colors">Cancel</button>
+                          <button type="button" onClick={() => setActiveTab(null)} className="px-6 py-3 text-[10px] font-black uppercase text-black dark:text-black dark:text-white hover:text-primary transition-colors">Cancel</button>
                           <button 
                             type="submit" 
-                            className="px-10 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl flex items-center gap-3 bg-slate-900 dark:bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/40 border border-slate-950/20 dark:border-white/20"
+                            className="px-10 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl flex items-center gap-3 bg-slate-900 dark:bg-primary hover:bg-primary/90 text-white shadow-primary/40 border border-slate-950/20 dark:border-white/20"
                           >
                             <Save className="w-4 h-4" /> Save Student Data
                           </button>
@@ -606,12 +607,12 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
 function InputAdmin({ name, label, defaultValue, readOnly }: any) {
   return (
     <div>
-      <label className="text-[9px] font-black text-slate-950 dark:text-white uppercase tracking-widest mb-1 block">{label}</label>
+      <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">{label}</label>
       <input 
         name={name} 
         defaultValue={defaultValue} 
         readOnly={readOnly}
-        className={`w-full bg-slate-900 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground focus:ring-1 focus:ring-blue-500 outline-none transition-all ${readOnly ? 'opacity-40 grayscale cursor-not-allowed' : 'hover:bg-slate-950'}`} 
+        className={`w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-foreground focus:ring-1 focus:ring-primary outline-none transition-all ${readOnly ? 'opacity-40 grayscale cursor-not-allowed' : 'hover:bg-white dark:hover:bg-slate-950'}`} 
       />
     </div>
   );
@@ -647,15 +648,15 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
     setLicenses(data);
   }
 
-  if (loading) return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-500" /></div>;
+  if (loading) return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-primary dark:text-primary" /></div>;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xs font-black uppercase text-slate-100 tracking-widest flex items-center gap-2">
-           <Hash className="w-4 h-4 text-blue-600 dark:text-blue-500" /> Registry Entries
+        <h3 className="text-xs font-black uppercase text-black dark:text-slate-100 tracking-widest flex items-center gap-2">
+           <Hash className="w-4 h-4 text-primary" /> Registry Entries
         </h3>
-        <button onClick={() => setEditingId('new')} className="bg-slate-900 dark:bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all shadow-xl shadow-blue-900/40 flex items-center gap-2 border border-slate-950/20 dark:border-white/20">
+        <button onClick={() => setEditingId('new')} className="bg-slate-900 dark:bg-primary hover:bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all shadow-xl shadow-primary/40 flex items-center gap-2 border border-slate-950/20 dark:border-white/20">
           <Plus className="w-4 h-4" /> Add Asset
         </button>
       </div>
@@ -667,7 +668,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                 <AlertTriangle className="w-8 h-8 text-red-500" />
               </div>
               <h3 className="text-xl font-black text-foreground mb-3 tracking-tight">Delete License?</h3>
-              <p className="text-foreground/80 text-sm leading-relaxed mb-8 text-[11px]">
+              <p className="text-black dark:text-white text-sm leading-relaxed mb-8 text-[11px]">
                 ¿Está seguro de que desea borrar la licencia? Si se borra, se desasignará de cualquier estudiante asignado.
               </p>
               <div className="flex gap-4">
@@ -693,25 +694,25 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
 
       <div className="space-y-3">
         {editingId === 'new' && (
-          <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-blue-500/30 shadow-2xl animate-in slide-in-from-top-4 duration-500 mb-6">
+          <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-primary/30 shadow-2xl animate-in slide-in-from-top-4 duration-500 mb-6">
              <LicenseForm onSave={handleAction} onCancel={() => setEditingId(null)} />
           </div>
         )}
 
         {licenses.map(l => (
-          <div key={l.id} className={`group p-1 rounded-[2rem] transition-all duration-300 ${editingId === l.id ? 'bg-slate-900 dark:bg-blue-600/5 ring-1 ring-blue-500/10 shadow-2xl' : 'hover:bg-white/5 ring-1 ring-transparent'}`}>
+          <div key={l.id} className={`group p-1 rounded-[2rem] transition-all duration-300 ${editingId === l.id ? 'bg-slate-900 dark:bg-primary/5 ring-1 ring-primary/10 shadow-2xl' : 'hover:bg-white/5 ring-1 ring-transparent'}`}>
             <div className="p-4">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex-1 flex items-center gap-4 cursor-pointer" onClick={() => setEditingId(editingId === l.id ? null : l.id)}>
-                   <div className="w-12 h-12 rounded-xl bg-slate-900 dark:bg-blue-600/10 border border-blue-500/20 flex flex-col items-center justify-center shrink-0">
-                      <span className="text-blue-600 dark:text-blue-400 font-black text-[9px] uppercase leading-none mb-1">PO</span>
+                   <div className="w-12 h-12 rounded-xl bg-slate-900 dark:bg-primary/10 border border-primary/20 flex flex-col items-center justify-center shrink-0">
+                      <span className="text-primary dark:text-blue-400 font-black text-[9px] uppercase leading-none mb-1">PO</span>
                       <span className="text-foreground font-black text-[10px] font-mono leading-none">
                         {l.purchaseOrder ? l.purchaseOrder.split('-')[0] : '—'}
                       </span>
                    </div>
                    <div className="flex-1 overflow-hidden">
                       <div className="flex flex-wrap items-center gap-3 mb-1">
-                        <h4 className="font-bold text-foreground text-sm truncate max-w-[300px] text-zinc-950 dark:text-zinc-100">{l.urlLink}</h4>
+                        <h4 className="font-bold text-foreground text-sm truncate max-w-[300px] text-black dark:text-white">{l.urlLink}</h4>
                         <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded border ${l.isAvailable ? 'text-emerald-600 dark:text-emerald-500 border-emerald-500/20 bg-emerald-500/5' : 'text-red-500/50 border-red-500/10 bg-red-500/5'}`}>
                            {l.isAvailable ? 'Working' : 'Occupied'}
                         </span>
@@ -723,10 +724,10 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                         )}
                       </div>
                       <div className="flex items-center gap-4">
-                        <p className="text-[10px] font-mono text-slate-800 dark:text-slate-400 flex items-center gap-1.5">
+                        <p className="text-[10px] font-mono text-black dark:text-black dark:text-white flex items-center gap-1.5">
                            <span className="text-[8px] font-black uppercase tracking-tighter opacity-50">User:</span> {l.username}
                         </p>
-                        <p className="text-[10px] font-mono text-slate-800 dark:text-slate-400 flex items-center gap-1.5">
+                        <p className="text-[10px] font-mono text-black dark:text-black dark:text-white flex items-center gap-1.5">
                            <span className="text-[8px] font-black uppercase tracking-tighter opacity-50">Pass:</span> {l.password}
                         </p>
                       </div>
@@ -734,7 +735,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                 </div>
 
                 <div className="flex items-center gap-2 pl-14 md:pl-0">
-                   <button onClick={() => setEditingId(editingId === l.id ? null : l.id)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-foreground/60 hover:bg-slate-900 dark:hover:bg-blue-600 hover:text-white transition-all border border-slate-950/10 dark:border-white/10 group/btn">
+                   <button onClick={() => setEditingId(editingId === l.id ? null : l.id)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-foreground/60 hover:bg-slate-900 dark:hover:bg-primary hover:text-white transition-all border border-slate-950/10 dark:border-white/10 group/btn">
                       {editingId === l.id ? <ChevronUp className="w-4 h-4" /> : <RefreshCw className="w-4 h-4 group-hover/btn:rotate-180 transition-transform duration-500" />}
                    </button>
                    <button onClick={() => setDeleteConfirmId(l.id)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-foreground/60 hover:bg-red-600 hover:text-white transition-all border border-slate-950/10 dark:border-white/10">
@@ -758,11 +759,11 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
 
 function LicenseForm({ license, onSave, onCancel }: any) {
   return (
-    <form action={onSave} className="bg-slate-950 p-6 rounded-3xl border border-blue-500/30 shadow-2xl animate-in zoom-in-95 duration-300 space-y-4 col-span-full">
+    <form action={onSave} className="bg-white dark:bg-slate-950 p-6 rounded-3xl border border-primary/30 shadow-2xl animate-in zoom-in-95 duration-300 space-y-4 col-span-full">
       <input type="hidden" name="id" value={license?.id || ''} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
          <div>
-            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">Purchase Order</label>
+            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Purchase Order</label>
             <input 
               name="purchaseOrder" 
               defaultValue={license?.purchaseOrder || ""} 
@@ -775,36 +776,36 @@ function LicenseForm({ license, onSave, onCancel }: any) {
                 }
                 e.target.value = value;
               }}
-              className="w-full bg-slate-900 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground" 
+              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" 
               required 
             />
-            <p className="text-[8px] text-slate-950 dark:text-slate-800 dark:text-slate-900 dark:text-slate-400 mt-1 uppercase font-bold tracking-tighter">Fixed Format: 00000-0</p>
+            <p className="text-[8px] text-black dark:text-black dark:text-white mt-1 uppercase font-bold tracking-tighter">Fixed Format: 00000-0</p>
          </div>
          <div>
-            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">SkillHub Url</label>
-            <input name="urlLink" defaultValue={license?.urlLink || ""} className="w-full bg-slate-900 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground" required />
+            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">SkillHub Url</label>
+            <input name="urlLink" defaultValue={license?.urlLink || ""} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" required />
          </div>
          <div>
-            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">Expiry</label>
-            <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-900 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground" />
+            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Expiry</label>
+            <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" />
          </div>
          <div>
-            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">SkillHub Username</label>
-            <input name="username" defaultValue={license?.username || ""} className="w-full bg-slate-900 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground" required />
+            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">SkillHub Username</label>
+            <input name="username" defaultValue={license?.username || ""} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" required />
          </div>
          <div>
-            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">SkillHub Password</label>
-            <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-900 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground" required />
+            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">SkillHub Password</label>
+            <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" required />
          </div>
          <div className="flex items-center gap-6 pt-4">
             <label className="flex items-center gap-2 cursor-pointer group">
-               <input type="checkbox" name="isAvailable" defaultChecked={license ? license.isAvailable : true} className="w-5 h-5 rounded border-slate-950/20 dark:border-white/20 bg-slate-950 accent-blue-500" />
-               <span className="text-[10px] font-black text-slate-950/60 dark:text-white group-hover:text-foreground uppercase tracking-widest transition-colors">Working</span>
+               <input type="checkbox" name="isAvailable" defaultChecked={license ? license.isAvailable : true} className="w-5 h-5 rounded border-slate-200 dark:border-white/20 bg-white dark:bg-slate-950 accent-primary" />
+               <span className="text-[10px] font-black text-black dark:text-white group-hover:text-primary uppercase tracking-widest transition-colors">Working</span>
             </label>
             <div className="flex flex-col gap-1">
               <label className="flex items-center gap-2 cursor-pointer group">
-                 <input type="checkbox" name="isAvailableUhuru" disabled defaultChecked={license ? license.isAvailableUhuru : false} className="w-5 h-5 rounded border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500 cursor-not-allowed" />
-                 <span className="text-[10px] font-black text-slate-950/60 dark:text-white group-hover:text-foreground uppercase tracking-widest transition-colors opacity-50">Assigned</span>
+                 <input type="checkbox" name="isAvailableUhuru" disabled defaultChecked={license ? license.isAvailableUhuru : false} className="w-5 h-5 rounded border-slate-200 dark:border-white/20 bg-white dark:bg-slate-950 accent-emerald-500 cursor-not-allowed" />
+                 <span className="text-[10px] font-black text-black/40 dark:text-white group-hover:text-black dark:group-hover:text-foreground uppercase tracking-widest transition-colors opacity-50">Assigned</span>
               </label>
               {license?.assignedTo && (
                 <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-mono font-black ml-7 uppercase tracking-tighter">
@@ -819,9 +820,9 @@ function LicenseForm({ license, onSave, onCancel }: any) {
          <input type="hidden" name="lastUserId" value={license?.lastUserId || ""} />
          <input type="hidden" name="subscription" value={license?.subscription || "SkillHub 30 days (£59)"} />
       </div>
-      <div className="flex justify-end gap-3 pt-4 border-t border-slate-950/10 dark:border-white/5">
-         <button type="button" onClick={onCancel} className="px-6 py-3 text-[10px] font-black uppercase text-slate-950/60 dark:text-white/60 hover:text-foreground transition-colors">Cancel</button>
-         <button type="submit" className="bg-slate-900 dark:bg-blue-600 hover:bg-blue-500 text-white font-black uppercase text-[10px] tracking-widest px-10 py-3 rounded-xl transition-all shadow-xl shadow-blue-900/40 border border-slate-950/20 dark:border-white/20 flex items-center gap-2">
+      <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/5">
+         <button type="button" onClick={onCancel} className="px-6 py-3 text-[10px] font-black uppercase text-black dark:text-black dark:text-white/60 hover:text-primary transition-colors">Cancel</button>
+         <button type="submit" className="bg-slate-900 dark:bg-primary hover:bg-primary/90 text-white font-black uppercase text-[10px] tracking-widest px-10 py-3 rounded-xl transition-all shadow-xl shadow-primary/40 border border-slate-200 dark:border-white/20 flex items-center gap-2">
             <Save className="w-4 h-4" /> Finalize Asset
          </button>
       </div>

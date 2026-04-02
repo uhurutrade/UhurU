@@ -45,26 +45,26 @@ export default function SkillHubPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col items-center relative overflow-hidden font-sans transition-colors duration-300 pb-20">
+    <div className="min-h-screen bg-[#e5e5e5] dark:bg-background text-foreground flex flex-col items-center relative overflow-hidden font-sans transition-colors duration-300 pb-20">
       <SubPageHeader backHref="/services" backText="Back to Services" />
       {/* Background Orbs */}
-      <div className="absolute top-0 -left-10 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-      <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse animation-delay-2000"></div>
+      <div className="absolute top-0 -left-10 w-96 h-96 bg-slate-400 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.02] dark:opacity-20 animate-pulse transition-all duration-1000"></div>
+      <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-slate-500 dark:bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.03] dark:opacity-20 animate-pulse animation-delay-2000 transition-all duration-1000"></div>
 
-      <div className="w-full max-w-2xl z-10 my-10">
-        <div className="bg-card/30 dark:bg-slate-900/60 backdrop-blur-2xl border border-border/40 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
+      <div className="w-full max-w-2xl z-10 my-10 px-4">
+        <div className="bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-2xl border border-[#c0c0c0] dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
           
           {view !== 'forgot' && (
             <div className="flex border-b border-slate-800">
               <button 
                 onClick={() => { setView('login'); setStatus(null); }}
-                className={`flex-1 py-6 font-semibold flex items-center justify-center gap-2 transition-all ${view === 'login' ? 'bg-blue-600 text-white shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'}`}
+                className={`flex-1 py-6 font-semibold flex items-center justify-center gap-2 transition-all ${view === 'login' ? 'bg-primary text-white shadow-inner' : 'text-black dark:text-white hover:text-primary hover:bg-slate-200 dark:hover:bg-slate-800/50'}`}
               >
                 <LogIn className="w-5 h-5" /> Sign In
               </button>
               <button 
                 onClick={() => { setView('register'); setStatus(null); }}
-                className={`flex-1 py-6 font-semibold flex items-center justify-center gap-2 transition-all ${view === 'register' ? 'bg-blue-600 text-white shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'}`}
+                className={`flex-1 py-6 font-semibold flex items-center justify-center gap-2 transition-all ${view === 'register' ? 'bg-primary text-white shadow-inner' : 'text-black dark:text-white hover:text-primary hover:bg-slate-200 dark:hover:bg-slate-800/50'}`}
               >
                 <UserPlus className="w-5 h-5" /> Sign Up
               </button>
@@ -78,13 +78,14 @@ export default function SkillHubPage() {
             </div>
 
             {/* SkillHub Friendly Logo */}
-            <div className="flex flex-col items-center mb-8">
-              <div className="font-black tracking-tighter text-foreground flex items-center gap-0.5" style={{ fontFamily: 'var(--font-outfit), sans-serif', fontSize: '6.75rem', lineHeight: '1' }}>
-                <span className="text-foreground">Skill</span>
-                <span className="text-primary drop-shadow-[0_0_40px_rgba(37,99,235,0.35)]">Hub</span>
-                <div className="w-6 h-6 bg-primary rounded-full mt-auto mb-4 animate-pulse ml-3"></div>
+            <div className="flex flex-col items-center mb-6">
+              <div className="font-black tracking-tighter text-foreground flex items-center gap-0.5 leading-none" 
+                   style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
+                <span className="text-4xl sm:text-[5.5rem] text-black dark:text-white transition-all duration-500">Skill</span>
+                <span className="text-4xl sm:text-[5.5rem] text-primary drop-shadow-[0_0_20px_rgba(37,99,235,0.25)] sm:drop-shadow-[0_0_35px_rgba(37,99,235,0.3)] transition-all duration-500">Hub</span>
+                <div className="w-2.5 h-2.5 sm:w-5 sm:h-5 bg-primary rounded-full mt-auto mb-1.5 sm:mb-3 animate-pulse ml-1.5 sm:ml-2.5"></div>
               </div>
-              <p className="mt-4 text-xl font-medium text-slate-500 dark:text-slate-400 tracking-wide">
+              <p className="mt-4 text-lg sm:text-2xl font-normal text-black dark:text-white tracking-wide text-center px-4 leading-relaxed">
                 Get your Oracle Fusion Instance Access for Learning
               </p>
             </div>
@@ -104,12 +105,12 @@ export default function SkillHubPage() {
               
                   <div className="relative">
                     <div className="flex items-center justify-between mb-1.5 px-1">
-                      <label className="text-sm font-semibold text-slate-500 tracking-wider uppercase">Password <span className="text-red-500">*</span></label>
+                      <label className="text-sm font-bold text-black dark:text-white tracking-wide">Password <span className="text-red-500">*</span></label>
                       {view === 'login' && (
                         <button 
                           type="button"
                           onClick={() => { setView('forgot'); setStatus(null); }}
-                          className="text-[10px] font-black text-blue-400 uppercase tracking-widest hover:text-blue-300 transition-colors"
+                          className="text-[10px] font-black text-primary dark:text-primary-foreground uppercase tracking-widest hover:text-blue-600 transition-colors"
                         >
                           Forgot password?
                         </button>
@@ -158,7 +159,7 @@ export default function SkillHubPage() {
             <button
               disabled={loading}
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-500 hover:scale-[1.02] active:scale-95 disabled:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 group"
+              className="w-full bg-primary hover:bg-primary/90 hover:scale-[1.02] active:scale-95 disabled:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group"
               style={{ fontFamily: 'var(--font-outfit), sans-serif', fontSize: '1.25rem' }}
             >
               {loading ? (
@@ -172,11 +173,11 @@ export default function SkillHubPage() {
             </button>
           </form>
 
-          <p className="p-8 pb-8 pt-0 text-center text-sm text-slate-500">
+          <div className="p-8 pb-8 pt-0 text-center text-sm text-black dark:text-white">
             {view === 'forgot' ? (
               <button onClick={() => setView('login')} className="text-primary hover:underline font-bold uppercase text-xs tracking-widest bg-primary/5 px-4 py-2 rounded-lg border border-primary/10 transition-all hover:bg-primary/10">Back to Login</button>
             ) : (
-              <div className="flex items-center justify-center gap-2 text-xl font-medium text-slate-500 dark:text-slate-400" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
+              <div className="flex items-center justify-center gap-2 text-xl font-medium text-black dark:text-white" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
                 <span>{view === 'login' ? "Don't have an account?" : 'Already a member?'}</span>
                 <button 
                   onClick={() => setView(view === 'login' ? 'register' : 'login')} 
@@ -186,7 +187,7 @@ export default function SkillHubPage() {
                 </button>
               </div>
             )}
-          </p>
+          </div>
         </div>
       </div>
     </div>
@@ -196,7 +197,7 @@ export default function SkillHubPage() {
 function Input({ name, label, icon, placeholder, type = 'text', required = false }: any) {
   return (
     <div className="space-y-1.5 group">
-      <label className="text-sm font-semibold text-muted-foreground group-focus-within:text-primary transition-colors tracking-wider uppercase ml-1">
+      <label className="text-sm font-bold text-black dark:text-white tracking-wide ml-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <div className="relative">
@@ -208,7 +209,7 @@ function Input({ name, label, icon, placeholder, type = 'text', required = false
           type={type}
           placeholder={placeholder}
           required={required}
-          className="w-full pl-10 pr-4 py-3 bg-secondary/20 dark:bg-slate-950/50 border border-border dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 text-sm"
+          className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 text-sm shadow-sm dark:shadow-none"
         />
       </div>
     </div>
