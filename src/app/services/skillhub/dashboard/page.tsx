@@ -148,7 +148,6 @@ export default function DashboardPage() {
   const isVigente = user.isAdmin || (user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date());
 
   return (
-  return (
     <div className="min-h-screen bg-[#e5e5e5] dark:bg-background text-foreground relative overflow-hidden font-sans transition-colors duration-300">
       <SubPageHeader backHref="/services" backText="Back to Services" />
       {/* Background Orbs */}
@@ -815,7 +814,6 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             </div>
          </div>
          {/* Hidden since user said "me sobra" but logic needs it for now */}
-         <input type="hidden" name="id" value={license?.id || ""} />
          <input type="hidden" name="userId" value={license?.userId || ""} />
          <input type="hidden" name="lastUserId" value={license?.lastUserId || ""} />
          <input type="hidden" name="subscription" value={license?.subscription || "SkillHub 30 days (£59)"} />
