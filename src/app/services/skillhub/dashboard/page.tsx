@@ -198,7 +198,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-2">
                           <Calendar className="w-4 h-4" /> From: {user.subscriptionStart ? new Date(user.subscriptionStart).toLocaleDateString() : 'N/A'}
                         </p>
-                        <p className="text-sm font-black text-black dark:text-black dark:text-white uppercase tracking-widest flex items-center gap-2">
+                        <p className="text-sm font-black text-black dark:text-white uppercase tracking-widest flex items-center gap-2">
                           <ArrowRight className="w-3.5 h-3.5" /> To: {user.subscriptionEnd ? new Date(user.subscriptionEnd).toLocaleDateString() : 'N/A'}
                         </p>
                       </div>
@@ -248,7 +248,7 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="md:text-right pt-4 md:pt-1 md:pr-1 opacity-40 border-t md:border-t-0 border-border/50 dark:border-slate-950/10 dark:border-white/5 mt-4 md:mt-0">
-                    <span className="text-[9px] font-black text-black dark:text-black dark:text-white/60 uppercase tracking-widest block mb-1">Authenticated Account</span>
+                    <span className="text-[9px] font-black text-black dark:text-white/60 uppercase tracking-widest block mb-1">Authenticated Account</span>
                     <span className="text-lg font-black text-black dark:text-foreground tracking-[0.2em]">User ID: {user.customerNumber?.toString().padStart(4, '0')}</span>
                   </div>
                 </div>
@@ -279,7 +279,7 @@ export default function DashboardPage() {
 
               <div className="bg-[#f2f2f2] dark:bg-slate-900/40 backdrop-blur-3xl border border-[#c0c0c0] dark:border-white/[0.05] rounded-[2rem] shadow-2xl p-6 transition-all">
                 <div className="flex items-center justify-between mb-6 border-b border-border dark:border-slate-950/10 dark:border-white/5 pb-4">
-                  <h3 className="text-xs font-black text-black dark:text-white/40 dark:text-white uppercase tracking-widest">Profile Identity</h3>
+                  <h3 className="text-xs font-black text-black dark:text-white uppercase tracking-widest">Profile Identity</h3>
                   <ShieldCheck className="w-4 h-4 text-primary opacity-20" />
                 </div>
 

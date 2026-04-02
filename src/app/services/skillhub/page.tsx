@@ -85,7 +85,7 @@ export default function SkillHubPage() {
                 <span className="text-4xl sm:text-[5.5rem] text-primary drop-shadow-[0_0_20px_rgba(37,99,235,0.25)] sm:drop-shadow-[0_0_35px_rgba(37,99,235,0.3)] transition-all duration-500">Hub</span>
                 <div className="w-2.5 h-2.5 sm:w-5 sm:h-5 bg-primary rounded-full mt-auto mb-1.5 sm:mb-3 animate-pulse ml-1.5 sm:ml-2.5"></div>
               </div>
-              <p className="mt-12 text-xl sm:text-[6.5rem] font-medium text-black dark:text-white tracking-tighter text-center px-4 leading-none w-full max-w-none whitespace-nowrap">
+              <p className="mt-4 text-xs sm:text-2xl font-normal text-black dark:text-white tracking-wide text-center px-4">
                 Get your Oracle Fusion Instance Access for Learning
               </p>
             </div>
@@ -155,11 +155,10 @@ export default function SkillHubPage() {
                 </div>
               </div>
             )}
-
             <button
               disabled={loading}
               type="submit"
-              className="w-full bg-primary hover:bg-primary/90 hover:scale-[1.02] active:scale-95 disabled:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group"
+              className="w-full bg-primary hover:bg-primary/90 hover:scale-[1.02] active:scale-95 disabled:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group"
               style={{ fontFamily: 'var(--font-outfit), sans-serif', fontSize: '1.25rem' }}
             >
               {loading ? (
