@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
-import { Inter, Poppins } from 'next/font/google';
+import { Inter, Poppins, Outfit } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster";
 import Script from 'next/script';
@@ -18,6 +18,12 @@ const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
   display: 'swap',
   variable: '--font-poppins',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-outfit',
 });
 
 export const metadata: Metadata = {
@@ -60,7 +66,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("font-body antialiased", inter.variable, poppins.variable)}>
+      <body className={cn("font-body antialiased", inter.variable, poppins.variable, outfit.variable)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

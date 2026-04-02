@@ -17,7 +17,7 @@ export function ContractingTerms() {
         </div>
         <div className="text-right">
           <h1 className="text-white text-3xl font-black uppercase tracking-tight mb-1">PROVISIONING AGREEMENT</h1>
-          <p className="text-blue-400/80 font-mono text-[10px] uppercase tracking-[0.2em]">ID: UT-FUSION-2026-X | {new Date().toLocaleDateString('en-GB')}</p>
+          <p className="text-blue-400/80 font-mono text-[10px] uppercase tracking-[0.2em]">ID: UT-SKILLHUB-2026-X | {new Date().toLocaleDateString('en-GB')}</p>
         </div>
       </div>
 
@@ -28,10 +28,10 @@ export function ContractingTerms() {
             <h2 className="text-emerald-500 text-xl font-bold uppercase tracking-wide border-b-2 border-emerald-500/20 pb-1">1. Executive Summary</h2>
           </div>
           <p className="text-slate-600 leading-relaxed text-justify mb-4">
-            Uhuru Trade Ltd provides temporary access to Oracle Fusion Cloud Instances exclusively for educational, research, and professional development purposes. These "Vision Instances" are pre-configured environments designed to allow consultants and students to explore functional and technical capabilities of the Oracle ERP/SCM/HCM Cloud ecosystem without the risks associated with production data.
+            Uhuru Trade Ltd provides temporary access to SkillHub Cloud Instances exclusively for educational, research, and professional development purposes. These "Vision Instances" are pre-configured environments designed to allow consultants and students to explore functional and technical capabilities of the SkillHub ERP/SCM/HCM ecosystem without the risks associated with production data.
           </p>
           <p className="text-slate-400 text-sm italic leading-relaxed text-left border-l-2 border-slate-100 pl-4">
-            Uhuru Trade Ltd proporciona acceso temporal a instancias de Oracle Fusion Cloud exclusivamente para fines educativos, de investigación y desarrollo profesional. Estas "instancias Vision" son entornos ya configurados que permiten explorar las capacidades del ecosistema Oracle sin riesgos para los datos de producción.
+            Uhuru Trade Ltd proporciona acceso temporal a instancias de SkillHub Cloud exclusivamente para fines educativos, de investigación y desarrollo profesional. Estas "instancias Vision" son entornos ya configurados que permiten explorar las capacidades del ecosistema SkillHub sin riesgos para los datos de producción.
           </p>
         </section>
 

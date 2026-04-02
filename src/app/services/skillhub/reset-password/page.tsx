@@ -27,7 +27,7 @@ function ResetPasswordForm() {
       const result = await resetPassword(formData);
       setStatus(result);
       if (result.success) {
-        setTimeout(() => window.location.href = '/services/fusion', 3000);
+        setTimeout(() => window.location.href = '/services/skillhub', 3000);
       }
     } catch (error) {
       setStatus({ success: false, message: 'Error processing the request.' });

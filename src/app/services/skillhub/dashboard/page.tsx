@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ContractingTerms } from '@/components/uhuru/ContractingTerms';
+import SubPageHeader from '@/components/uhuru/subpage-header';
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
@@ -27,7 +28,7 @@ export default function DashboardPage() {
   useEffect(() => {
     async function load() {
       const data = await getCurrentUser();
-      if (!data) window.location.href = '/services/fusion';
+      if (!data) window.location.href = '/services/skillhub';
       else setUser(data);
       setLoading(false);
     }
@@ -40,7 +41,7 @@ export default function DashboardPage() {
       if (timeout) clearTimeout(timeout);
       timeout = setTimeout(async () => {
         await logoutUser();
-        window.location.href = '/services/fusion';
+        window.location.href = '/services/skillhub';
       }, 30 * 60 * 1000);
     };
 
@@ -96,7 +97,7 @@ export default function DashboardPage() {
 
   async function handleLogout() {
     await logoutUser();
-    window.location.href = '/services/fusion';
+    window.location.href = '/services/skillhub';
   }
 
   const handleOpenTerms = () => {
@@ -106,7 +107,7 @@ export default function DashboardPage() {
     const top = (window.screen.height / 2) - (h / 2);
     
     window.open(
-      '/services/fusion/terms', 
+      '/services/skillhub/terms', 
       'ContractingTerms', 
       `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no, width=${w}, height=${h}, top=${top}, left=${left}`
     );
@@ -147,12 +148,13 @@ export default function DashboardPage() {
   const isVigente = user.isAdmin || (user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date());
 
   return (
-    <div className="min-h-screen bg-slate-200/30 dark:bg-background text-foreground p-4 md:p-8 relative overflow-hidden font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-slate-200/30 dark:bg-background text-foreground relative overflow-hidden font-sans transition-colors duration-300">
+      <SubPageHeader backHref="/services" backText="Back to Services" />
       {/* Background Orbs */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] hidden dark:block dark:bg-blue-600/5 rounded-full blur-[140px] pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] hidden dark:block bg-purple-600/5 rounded-full blur-[140px] pointer-events-none"></div>
 
-      <div className="max-w-[1700px] mx-auto z-10 relative">
+      <div className="max-w-[1700px] mx-auto z-10 relative p-4 md:p-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg ring-1 ring-white/10 text-foreground">
@@ -160,7 +162,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-black text-foreground tracking-tight uppercase tracking-widest">Oracle Hub</h1>
+                <h1 className="text-2xl font-black text-foreground tracking-tight uppercase tracking-widest">SkillHub</h1>
                 {user.customerNumber && <span className="text-[10px] bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 uppercase font-black">ID: {user.customerNumber.toString().padStart(4,'0')}</span>}
                 {user.isAdmin && <span className="text-[9px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 uppercase font-black">ADMIN</span>}
               </div>
@@ -168,7 +170,6 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <ThemeToggle className="h-10 w-10 bg-secondary/50 hover:bg-secondary rounded-xl transition-all border border-border" />
             <button 
               onClick={handleLogout}
               className="flex items-center gap-2 px-5 py-2 bg-secondary/50 hover:bg-red-500/10 text-foreground hover:text-red-400 rounded-xl transition-all border border-border font-bold text-xs h-10"
@@ -210,8 +211,8 @@ export default function DashboardPage() {
                            onChange={(e) => setRenewalPlan(e.target.value)}
                            className="w-full bg-slate-900/50 border border-slate-950/20 dark:border-white/20 rounded-2xl px-5 py-4 text-xs font-black text-foreground focus:ring-1 focus:ring-blue-500/50 outline-none appearance-none cursor-pointer hover:bg-slate-900 transition-all uppercase tracking-widest shadow-xl shadow-black/20">
                             <option value="">Select a renewal plan...</option>
-                            <option value="30">Oracle Fusion 30 days (£59)</option>
-                            <option value="90">Oracle Fusion 90 days (£140)</option>
+                            <option value="30">SkillHub 30 days (£59)</option>
+                            <option value="90">SkillHub 90 days (£140)</option>
                          </select>
 
                          {renewalPlan && (
@@ -227,7 +228,7 @@ export default function DashboardPage() {
                                     className={`mt-1 w-4 h-4 rounded border-slate-950/20 dark:border-white/20 bg-slate-900 accent-emerald-500 ${termsVisited ? 'cursor-pointer' : 'cursor-not-allowed opacity-30'}`}
                                   />
                                   <label htmlFor="accept-terms" className={`text-[10px] font-bold uppercase tracking-widest leading-relaxed select-none ${termsVisited ? 'text-foreground/80 cursor-pointer' : 'text-slate-950 dark:text-white/40 cursor-not-allowed'}`}>
-                                    I have read and accept the <button type="button" onClick={handleOpenTerms} className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-300 underline underline-offset-4 font-black">Contracting Terms & Conditions</button> of Oracle Fusion instances.
+                                    I have read and accept the <button type="button" onClick={handleOpenTerms} className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-300 underline underline-offset-4 font-black">Contracting Terms & Conditions</button> of SkillHub instances.
                                   </label>
                                 </div>
                                 <button 
@@ -262,14 +263,14 @@ export default function DashboardPage() {
                 <div className="bg-slate-200/80 dark:bg-slate-900/60 backdrop-blur-3xl border border-blue-500/10 dark:border-blue-500/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-border dark:border-slate-950/10 dark:border-white/5 pb-4">
                      <h3 className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest flex items-center gap-2">
-                        <ShieldAlert className="w-4 h-4" /> Oracle Fusion Access Credentials
+                        <ShieldAlert className="w-4 h-4" /> SkillHub Access Credentials
                      </h3>
                   </div>
                   <div className="space-y-4">
-                     <CredentialField label="Oracle Fusion Portal URL" value={user.licenses?.[0]?.urlLink} icon={<ExternalLink />} setGlobalNotification={setGlobalNotification} />
+                     <CredentialField label="SkillHub Portal URL" value={user.licenses?.[0]?.urlLink} icon={<ExternalLink />} setGlobalNotification={setGlobalNotification} />
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <CredentialField label="Oracle Fusion Username" value={user.licenses?.[0]?.username} icon={<User />} setGlobalNotification={setGlobalNotification} />
-                        <CredentialField label="Oracle Fusion Password" value={user.licenses?.[0]?.password} icon={<Lock />} setGlobalNotification={setGlobalNotification} />
+                        <CredentialField label="SkillHub Username" value={user.licenses?.[0]?.username} icon={<User />} setGlobalNotification={setGlobalNotification} />
+                        <CredentialField label="SkillHub Password" value={user.licenses?.[0]?.password} icon={<Lock />} setGlobalNotification={setGlobalNotification} />
                      </div>
                   </div>
                 </div>
@@ -556,8 +557,8 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                <label className="text-[9px] font-black text-slate-950 dark:text-white uppercase tracking-widest mb-1 block">Selected Plan</label>
                                <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-slate-950 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground">
                                   <option value="">No Plan</option>
-                                  <option value="Oracle Fusion 30 days (£59)">30 Days</option>
-                                  <option value="Oracle Fusion 90 days (£140)">90 Days</option>
+                                  <option value="SkillHub 30 days (£59)">30 Days</option>
+                                  <option value="SkillHub 90 days (£140)">90 Days</option>
                                </select>
                             </div>
                           </div>
@@ -780,7 +781,7 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             <p className="text-[8px] text-slate-950 dark:text-slate-800 dark:text-slate-900 dark:text-slate-400 mt-1 uppercase font-bold tracking-tighter">Fixed Format: 00000-0</p>
          </div>
          <div>
-            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">Fusion Url</label>
+            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">SkillHub Url</label>
             <input name="urlLink" defaultValue={license?.urlLink || ""} className="w-full bg-slate-900 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground" required />
          </div>
          <div>
@@ -788,11 +789,11 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-900 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground" />
          </div>
          <div>
-            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">Fusion Username</label>
+            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">SkillHub Username</label>
             <input name="username" defaultValue={license?.username || ""} className="w-full bg-slate-900 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground" required />
          </div>
          <div>
-            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">Fusion Pass</label>
+            <label className="text-[9px] font-black text-slate-950/60 dark:text-white uppercase tracking-widest mb-1 block">SkillHub Password</label>
             <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-900 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-foreground" required />
          </div>
          <div className="flex items-center gap-6 pt-4">
@@ -816,7 +817,7 @@ function LicenseForm({ license, onSave, onCancel }: any) {
          <input type="hidden" name="id" value={license?.id || ""} />
          <input type="hidden" name="userId" value={license?.userId || ""} />
          <input type="hidden" name="lastUserId" value={license?.lastUserId || ""} />
-         <input type="hidden" name="subscription" value={license?.subscription || "Oracle Fusion 30 days (£59)"} />
+         <input type="hidden" name="subscription" value={license?.subscription || "SkillHub 30 days (£59)"} />
       </div>
       <div className="flex justify-end gap-3 pt-4 border-t border-slate-950/10 dark:border-white/5">
          <button type="button" onClick={onCancel} className="px-6 py-3 text-[10px] font-black uppercase text-slate-950/60 dark:text-white/60 hover:text-foreground transition-colors">Cancel</button>
