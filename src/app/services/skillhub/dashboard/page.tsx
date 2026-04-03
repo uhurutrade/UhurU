@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { 
   getCurrentUser, updateProfile, logoutUser, getAllUsers, 
   updateUserDetails, getAllLicenses, upsertLicense, deleteLicense,
-  reassignStudentLicense
+  reassignStudentLicense, syncAllLicensesStatus
 } from '@/actions/auth';
 import { 
   User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
@@ -272,14 +272,14 @@ export default function DashboardPage() {
                 <div className="bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-3xl border border-[#c0c0c0] dark:border-primary/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700 focus-within:border-primary/40 transition-colors">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-border dark:border-slate-950/10 dark:border-white/5 pb-4">
                      <h3 className="text-[10px] font-black text-primary dark:text-blue-400 uppercase tracking-widest flex items-center gap-2">
-                        <ShieldAlert className="w-4 h-4" /> SkillHub Access Credentials
+                        <ShieldAlert className="w-4 h-4" /> Oracle Fusion Access Credentials
                      </h3>
                   </div>
                   <div className="space-y-4">
-                     <CredentialField label="SkillHub Portal URL" value={user.licenses?.[0]?.urlLink} icon={<ExternalLink />} setGlobalNotification={setGlobalNotification} />
+                     <CredentialField label="Oracle Fusion URL" value={user.licenses?.[0]?.urlLink} icon={<ExternalLink />} setGlobalNotification={setGlobalNotification} />
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <CredentialField label="SkillHub Username" value={user.licenses?.[0]?.username} icon={<User />} setGlobalNotification={setGlobalNotification} />
-                        <CredentialField label="SkillHub Password" value={user.licenses?.[0]?.password} icon={<Lock />} setGlobalNotification={setGlobalNotification} />
+                        <CredentialField label="Oracle Fusion Username" value={user.licenses?.[0]?.username} icon={<User />} setGlobalNotification={setGlobalNotification} />
+                        <CredentialField label="Oracle Fusion Password" value={user.licenses?.[0]?.password} icon={<Lock />} setGlobalNotification={setGlobalNotification} />
                      </div>
                   </div>
                 </div>
@@ -730,9 +730,26 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
         <h3 className="text-xs font-black uppercase text-black dark:text-slate-100 tracking-widest flex items-center gap-2">
            <Hash className="w-4 h-4 text-primary" /> Registry Entries
         </h3>
-        <button onClick={() => setEditingId('new')} className="bg-slate-900 dark:bg-primary hover:bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all shadow-xl shadow-primary/40 flex items-center gap-2 border border-slate-950/20 dark:border-white/20">
-          <Plus className="w-4 h-4" /> Add Asset
-        </button>
+        <div className="flex items-center gap-3">
+           <button 
+             onClick={async () => {
+               setUpdating(true);
+               await syncAllLicensesStatus();
+               const data = await getAllLicenses();
+               setLicenses(data);
+               setUpdating(false);
+               setGlobalNotification({ success: true, message: 'All URLs verified' });
+             }}
+             disabled={updating}
+             className="bg-white/5 hover:bg-white/10 text-black dark:text-foreground text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all border border-slate-950/20 dark:border-white/10 flex items-center gap-2 disabled:opacity-50"
+           >
+             {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+             Refresh Available Url
+           </button>
+           <button onClick={() => setEditingId('new')} className="bg-slate-900 dark:bg-primary hover:bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all shadow-xl shadow-primary/40 flex items-center gap-2 border border-slate-950/20 dark:border-white/20">
+             <Plus className="w-4 h-4" /> Add Asset
+           </button>
+        </div>
       </div>
 
       {deleteConfirmId && (
@@ -858,7 +875,7 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             <p className="text-[8px] text-black dark:text-black dark:text-white mt-1 uppercase font-bold tracking-tighter">Fixed Format: 00000-0</p>
          </div>
          <div>
-            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">SkillHub Url</label>
+            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Oracle Fusion Url</label>
             <input name="urlLink" defaultValue={license?.urlLink || ""} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" required />
          </div>
          <div>
@@ -866,11 +883,11 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" />
          </div>
          <div>
-            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">SkillHub Username</label>
+            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Oracle Fusion Username</label>
             <input name="username" defaultValue={license?.username || ""} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" required />
          </div>
          <div>
-            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">SkillHub Password</label>
+            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Oracle Fusion Password</label>
             <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" required />
          </div>
          <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/5">
