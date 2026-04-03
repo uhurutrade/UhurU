@@ -27,6 +27,13 @@ export default function DashboardPage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (globalNotification) {
+      const timer = setTimeout(() => setGlobalNotification(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [globalNotification]);
+
+  useEffect(() => {
     async function load() {
       const data = await getCurrentUser();
       if (!data) window.location.href = '/services/skillhub';
@@ -340,7 +347,9 @@ export default function DashboardPage() {
           {globalNotification.message === 'Copied' ? <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : 
            globalNotification.success ? <CheckCircle2 className="w-5 h-5" /> : 
            <AlertCircle className="w-5 h-5" />}
-          <span className="text-sm font-black uppercase tracking-widest">{globalNotification.message}</span>
+          <span className="text-sm font-black tracking-wide">
+            {globalNotification.message.toLowerCase().replace(/\b\w/g, s => s.toUpperCase())}
+          </span>
         </div>
       )}
     </div>
@@ -505,7 +514,10 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                          </span>
                        </div>
                        <div className="md:hidden overflow-hidden">
-                          <h4 className="font-bold text-black dark:text-foreground text-sm truncate flex items-center gap-2">
+                          <h4 className="font-bold text-black dark:text-foreground text-sm truncate flex items-center gap-3">
+                             <span className={`text-[8px] font-black uppercase tracking-wider shrink-0 ${u.isPaid ? 'text-emerald-500' : 'text-red-500'}`}>
+                               {u.isPaid ? 'Active' : 'Inactive'}
+                             </span>
                              {u.firstName} {u.lastName}
                              {u.isAdmin && <span className="text-[8px] text-primary dark:text-primary-foreground font-black border border-primary/20 px-1 rounded bg-primary/5">ADM</span>}
                           </h4>
@@ -513,12 +525,12 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                        </div>
                     </div>
                     <div className="hidden md:block overflow-hidden">
-                      <h4 className="font-bold text-black dark:text-foreground flex items-center gap-3 truncate">
+                      <h4 className="font-black text-black dark:text-foreground flex items-center gap-4 truncate">
+                        <span className={`text-[9px] font-black uppercase tracking-[0.2em] shrink-0 ${u.isPaid ? 'text-emerald-500' : 'text-red-500'}`}>
+                           {u.isPaid ? 'Active Plan' : 'Inactive Plan'}
+                        </span>
                         {u.firstName} {u.lastName}
-                        {u.isAdmin ? 
-                           <span className="text-[10px] text-primary dark:text-primary-foreground font-mono font-black border border-primary/20 px-4 rounded-md bg-primary/5 uppercase tracking-[0.2em]">ADMIN</span> :
-                           isVigente && <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-black border border-emerald-500/20 px-2 rounded-md bg-emerald-500/5 uppercase tracking-widest">Active</span>
-                        }
+                        {u.isAdmin && <span className="text-[10px] text-primary dark:text-primary-foreground font-mono font-black border border-primary/20 px-4 rounded-md bg-primary/5 uppercase tracking-[0.2em]">ADMIN</span>}
                       </h4>
                       <p className="text-[10px] text-black dark:text-black dark:text-white font-mono truncate">{u.email}</p>
                     </div>

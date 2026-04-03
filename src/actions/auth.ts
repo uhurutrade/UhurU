@@ -380,26 +380,7 @@ export async function updateUserDetails(userId: string, formData: FormData) {
       select: { isPaid: true }
     });
 
-    if (!currentUser?.isPaid && isPaid) {
-      // ASIGN LICENSE - Randomized with prioritization
-      const candidates = await prisma.license.findMany({
-        where: { isAvailable: true, isAvailableUhuru: false }
-      });
-
-      if (candidates.length === 0) return { success: false, message: 'NO_LICENSES_AVAILABLE' };
-
-      // Filter to prioritize licenses that HAVEN'T been used by this user lately
-      const preferred = candidates.filter(l => l.lastUserId !== userId);
-      const source = preferred.length > 0 ? preferred : candidates;
-      
-      // Pick ANY from the source randomly
-      const chosen = source[Math.floor(Math.random() * source.length)];
-
-      await prisma.license.update({
-        where: { id: chosen.id },
-        data: { userId: userId, isAvailableUhuru: true }
-      });
-    } else if (currentUser?.isPaid && !isPaid) {
+    if (currentUser?.isPaid && !isPaid) {
       // RELEASE LICENSE
       await prisma.license.updateMany({
         where: { userId: userId },

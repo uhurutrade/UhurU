@@ -15,6 +15,13 @@ export default function SkillHubPage() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ success: boolean; message: string; errors?: any } | null>(null);
 
+  useEffect(() => {
+    if (status) {
+      const timer = setTimeout(() => setStatus(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
+
   async function handleAction(formData: FormData) {
     setLoading(true);
     setStatus(null);
@@ -148,7 +155,9 @@ export default function SkillHubPage() {
               <div className={`p-4 rounded-xl flex items-start gap-3 border shadow-sm ${status.success ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
                 {status.success ? <CheckCircle2 className="w-5 h-5 mt-0.5" /> : <AlertCircle className="w-5 h-5 mt-0.5" />}
                 <div className="text-sm">
-                  <p className="font-semibold">{status.message}</p>
+                  <p className="font-semibold uppercase-to-titlecase">
+                    {status.message.toLowerCase().replace(/\b\w/g, s => s.toUpperCase())}
+                  </p>
                   {status.errors && (
                     <ul className="list-disc list-inside mt-1 opacity-80 decoration-border">
                       {Object.entries(status.errors).map(([f, ms]: any) => (ms as string[]).map((m, i) => <li key={i}>{m}</li>))}
