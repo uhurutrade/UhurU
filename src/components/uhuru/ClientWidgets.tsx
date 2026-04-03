@@ -8,7 +8,7 @@ const CookieConsentBanner = dynamic(() => import('./CookieConsentBanner'), { ssr
 
 export default function ClientWidgets() {
   const pathname = usePathname();
-  const isFusionPath = pathname?.startsWith('/services/fusion');
+  const isFusionPath = pathname?.startsWith('/services/skillhub');
 
   return (
     <>

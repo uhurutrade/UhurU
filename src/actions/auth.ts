@@ -263,7 +263,7 @@ export async function requestPasswordReset(formData: FormData) {
   const headerList = await headers();
   const host = headerList.get('host');
   const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const resetLink = `${protocol}://${host}/services/fusion/reset-password?token=${token}`;
+  const resetLink = `${protocol}://${host}/services/skillhub/reset-password?token=${token}`;
 
   await sendEmail({
     to: email,

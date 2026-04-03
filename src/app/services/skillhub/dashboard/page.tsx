@@ -174,7 +174,7 @@ export default function DashboardPage() {
                 {user.customerNumber && <span className="text-[10px] bg-primary/10 text-primary dark:text-primary-foreground px-2 py-0.5 rounded border border-primary/20 uppercase font-black">ID: {user.customerNumber.toString().padStart(4,'0')}</span>}
                 {user.isAdmin && <span className="text-[9px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 uppercase font-black">ADMIN</span>}
               </div>
-              <p className="text-[10px] font-bold text-black dark:text-white/60 mb-1">Get your Oracle Fusion Instance Access for Learning</p>
+              <p className="text-[10px] font-bold text-black dark:text-white/60 mb-1">Get your SkillHub Instance Access for Learning</p>
               <p className="text-xs text-black dark:text-white font-mono">{user.email}</p>
             </div>
           </div>

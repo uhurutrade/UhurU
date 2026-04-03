@@ -8,10 +8,10 @@ export async function middleware(request: NextRequest) {
   const session = request.cookies.get('session')?.value;
 
   // Protect the Fusion Dashboard specifically
-  if (request.nextUrl.pathname.startsWith('/services/fusion/dashboard')) {
+  if (request.nextUrl.pathname.startsWith('/services/skillhub/dashboard')) {
     if (!session) {
       // Direct access attempt without session -> Redirect to login
-      return NextResponse.redirect(new URL('/services/fusion', request.url));
+      return NextResponse.redirect(new URL('/services/skillhub', request.url));
     }
 
     try {
@@ -20,7 +20,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     } catch (e) {
       // Invalid or expired session -> Redirect to login
-      const response = NextResponse.redirect(new URL('/services/fusion', request.url));
+      const response = NextResponse.redirect(new URL('/services/skillhub', request.url));
       response.cookies.delete('session');
       return response;
     }
@@ -31,5 +31,5 @@ export async function middleware(request: NextRequest) {
 
 // Ensure middleware only runs for relevant routes
 export const config = {
-  matcher: ['/services/fusion/dashboard/:path*'],
+  matcher: ['/services/skillhub/dashboard/:path*'],
 };

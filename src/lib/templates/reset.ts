@@ -39,7 +39,7 @@ export const getResetTemplate = (link: string) => `
         </div>
         <div class="footer">
             © ${new Date().getFullYear()} Uhuru Trade Ltd. All rights reserved.<br>
-            Professional Oracle Fusion & Learning Platform Services.<br>
+            Professional SkillHub & Learning Platform Services.<br>
             <a href="https://uhurutrade.com">www.uhurutrade.com</a>
         </div>
     </div>
