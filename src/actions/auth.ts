@@ -349,7 +349,12 @@ export async function updateUserDetails(userId: string, formData: FormData) {
   
   // Convert checkbox values
   const isPaid = formData.get('isPaid') === 'on';
-  const isActive = formData.get('isActive') === 'on';
+  let isActive = formData.get('isActive') === 'on';
+
+  const targetUser = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+  if (targetUser?.email === ADMIN_EMAIL) {
+    isActive = true; // Protect superadmin
+  }
 
   // VALIDATION: If verified payment is checked, plan and date are mandatory
   const plan = formData.get('chosenPlan') as string;
