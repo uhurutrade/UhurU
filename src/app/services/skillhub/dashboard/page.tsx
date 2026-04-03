@@ -578,27 +578,26 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                 defaultChecked={u.isPaid} 
                                 onChange={(e) => {
                                   const form = e.target.form;
-                                  const start = form?.start?.value;
-                                  const plan = form?.chosenPlan?.value;
+                                  const start = (form?.elements.namedItem('start') as HTMLInputElement)?.value;
+                                  const plan = (form?.elements.namedItem('chosenPlan') as HTMLSelectElement)?.value;
                                   if (e.target.checked && (!start || !plan || plan === "")) {
                                     e.target.checked = false;
-                                    setGlobalNotification({ success: false, message: 'Select Start Date & Plan first' });
-                                    setTimeout(() => setGlobalNotification(null), 3000);
+                                    setGlobalNotification({ success: false, message: 'Select Start Date & Plan First' });
                                   }
                                 }}
-                                className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500 transition-all hover:scale-110" 
+                                className="w-5 h-5 rounded-md border-2 border-primary/20 bg-white/10 dark:bg-white/10 accent-primary cursor-pointer hover:bg-white/20 transition-all shadow-sm" 
                               />
                             </label>
-                            <label className="flex items-center justify-between cursor-pointer group opacity-80">
+                            <label className="flex items-center justify-between opacity-50">
                                <div className="flex items-center gap-2">
-                                 <span className="text-[11px] font-bold text-black dark:text-foreground group-hover:text-primary transition-colors">Licence Assigned</span>
+                                 <span className="text-[11px] font-bold text-black dark:text-foreground">Licence Assigned</span>
                                  {u.licenses?.length > 0 && (
                                    <span className="text-[9px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/20 font-black">
                                      {u.licenses[0].purchaseOrder}
                                    </span>
                                  )}
                                </div>
-                               <input type="checkbox" disabled checked={u.licenses?.length > 0} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500 cursor-not-allowed" />
+                               <input type="checkbox" disabled checked={u.licenses?.length > 0} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/10 bg-black/40 accent-emerald-500 cursor-not-allowed" />
                             </label>
                             <div className="pt-2 flex justify-center">
                                <button 

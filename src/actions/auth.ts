@@ -418,6 +418,9 @@ export async function reassignStudentLicense(userId: string) {
   if (!admin?.isAdmin) throw new Error('Not authorized');
 
   try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user?.isPaid) return { success: false, message: 'STUDENT_NOT_PAID' };
+
     // 1. UNASSIGN ALL Current Licenses for this user
     await prisma.license.updateMany({
       where: { userId: userId },
