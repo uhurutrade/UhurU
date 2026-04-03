@@ -92,7 +92,10 @@ export async function getCurrentUser() {
       user.subscriptionEnd = null;
     }
     
-    if (!user.isActive) return null;
+    if (!user.isActive) {
+      cookieStore.delete('session');
+      return null;
+    }
 
     // Refresh session for 30m inactivity logic
     const token = await new SignJWT({ userId: user.id, email: user.email })

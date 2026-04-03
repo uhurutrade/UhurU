@@ -394,7 +394,7 @@ function CredentialField({ label, value, icon, setGlobalNotification }: { label:
           </div>
           <input
             readOnly
-            value={value || 'Provisioning Asset...'}
+            value={value || 'Refreshing...'}
             className="w-full pl-9 pr-4 py-3 bg-white/5 border border-slate-950/10 dark:border-white/10 rounded-xl font-bold text-foreground cursor-default focus:outline-none text-[11px]"
           />
         </div>
@@ -568,7 +568,13 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                           <div className="space-y-4">
                             <label className="flex items-center justify-between cursor-pointer group">
                               <span className="text-[11px] font-bold text-black dark:text-foreground group-hover:text-primary transition-colors">Access Active</span>
-                              <input type="checkbox" name="isActive" defaultChecked={u.isActive} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-primary" />
+                              <input 
+                                type="checkbox" 
+                                name="isActive" 
+                                defaultChecked={u.isActive} 
+                                disabled={u.email === 'uhurutradeuk@gmail.com'}
+                                className={`w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 accent-primary ${u.email === 'uhurutradeuk@gmail.com' ? 'bg-slate-950/50 cursor-not-allowed opacity-50' : 'bg-slate-950'}`} 
+                              />
                             </label>
                             <label className="flex items-center justify-between cursor-pointer group">
                               <span className="text-[11px] font-bold text-black dark:text-foreground group-hover:text-primary transition-colors">Payment Verified</span>
