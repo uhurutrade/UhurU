@@ -363,9 +363,9 @@ export async function updateUserDetails(userId: string, formData: FormData) {
 
   if (startDate && plan) {
     endDate = new Date(startDate);
-    if (plan.startsWith('Oracle Fusion 30 days')) {
+    if (plan.includes('30 days')) {
       endDate.setDate(endDate.getDate() + 30);
-    } else if (plan.startsWith('Oracle Fusion 90 days')) {
+    } else if (plan.includes('90 days')) {
       endDate.setDate(endDate.getDate() + 90);
     }
   }
