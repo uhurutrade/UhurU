@@ -336,7 +336,7 @@ export async function getAllUsers() {
   }
 
   return await prisma.user.findMany({
-    include: { licenses: { select: { subscription: true } } },
+    include: { licenses: { select: { id: true, purchaseOrder: true } } },
     orderBy: { createdAt: 'desc' },
   });
 }
@@ -432,6 +432,45 @@ export async function updateUserDetails(userId: string, formData: FormData) {
   }
 }
 
+export async function reassignStudentLicense(userId: string) {
+  const admin = await getCurrentUser();
+  if (!admin?.isAdmin) throw new Error('Not authorized');
+
+  try {
+    // 1. UNASSIGN ALL Current Licenses for this user
+    await prisma.license.updateMany({
+      where: { userId: userId },
+      data: { userId: null, isAvailableUhuru: false, lastUserId: userId }
+    });
+
+    // 2. FIND NEW LICENSE (Working=true, Assigned=false)
+    const candidates = await prisma.license.findMany({
+      where: { isAvailable: true, isAvailableUhuru: false }
+    });
+
+    if (candidates.length === 0) {
+       return { success: false, message: 'NO_LICENSES_AVAILABLE' };
+    }
+
+    // Prioritize licenses that HAVEN'T been used by this user lately
+    const preferred = candidates.filter(l => l.lastUserId !== userId);
+    const source = preferred.length > 0 ? preferred : candidates;
+    
+    // Pick ANY from the source randomly
+    const chosen = source[Math.floor(Math.random() * source.length)];
+
+    await prisma.license.update({
+      where: { id: chosen.id },
+      data: { userId: userId, isAvailableUhuru: true }
+    });
+
+    return { success: true, message: 'License reassigned successfully' };
+  } catch (error) {
+    console.error('Reassign error:', error);
+    return { success: false, message: 'Error reassigning license' };
+  }
+}
+
 // LICENSE ACTIONS
 export async function getAllLicenses() {
   const admin = await getCurrentUser();
@@ -448,6 +487,16 @@ export async function upsertLicense(formData: FormData) {
   if (!admin?.isAdmin) throw new Error('Not authorized');
 
   const id = formData.get('id') as string;
+  const isAvailable = formData.get('isAvailable') === 'on';
+  let userId = formData.get('userId') as string || null;
+  let isAvailableUhuru = formData.get('isAvailableUhuru') === 'on';
+
+  // If MARKED AS NOT WORKING, unassign ANY student from it
+  if (!isAvailable) {
+    userId = null;
+    isAvailableUhuru = false;
+  }
+
   const data = {
     subscription: formData.get('subscription') as string,
     purchaseOrder: formData.get('purchaseOrder') as string,
@@ -455,9 +504,9 @@ export async function upsertLicense(formData: FormData) {
     urlLink: formData.get('urlLink') as string,
     username: formData.get('username') as string,
     password: formData.get('password') as string,
-    isAvailable: formData.get('isAvailable') === 'on',
-    isAvailableUhuru: formData.get('isAvailableUhuru') === 'on',
-    userId: formData.get('userId') as string || null,
+    isAvailable,
+    isAvailableUhuru,
+    userId,
   };
 
   if (id) {

@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { 
   getCurrentUser, updateProfile, logoutUser, getAllUsers, 
-  updateUserDetails, getAllLicenses, upsertLicense, deleteLicense 
+  updateUserDetails, getAllLicenses, upsertLicense, deleteLicense,
+  reassignStudentLicense
 } from '@/actions/auth';
 import { 
   User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
@@ -463,11 +464,23 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
     if (result.success) {
       setGlobalNotification({ success: true, message: 'Student information updated' });
       const data = await getAllUsers();
-      setUsers(data.filter((u:any) => u.id !== currentUserId));
+      setUsers(data);
     } else {
       setGlobalNotification({ success: false, message: result.message });
       setTimeout(() => setGlobalNotification(null), 5000);
     }
+  }
+
+  async function handleForceReassign(userId: string) {
+     const result = await reassignStudentLicense(userId);
+     if (result.success) {
+        setGlobalNotification({ success: true, message: 'License rotated successfully' });
+        const data = await getAllUsers();
+        setUsers(data);
+     } else {
+        setGlobalNotification({ success: false, message: result.message });
+        setTimeout(() => setGlobalNotification(null), 3000);
+     }
   }
 
   if (loading) return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-primary dark:text-primary" /></div>;
@@ -542,8 +555,44 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                             </label>
                             <label className="flex items-center justify-between cursor-pointer group">
                               <span className="text-[11px] font-bold text-black dark:text-foreground group-hover:text-primary transition-colors">Payment Verified</span>
-                              <input type="checkbox" name="isPaid" defaultChecked={u.isPaid} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500 cursor-not-allowed" />
+                              <input 
+                                type="checkbox" 
+                                name="isPaid" 
+                                defaultChecked={u.isPaid} 
+                                onChange={(e) => {
+                                  const form = e.target.form;
+                                  const start = form?.start?.value;
+                                  const plan = form?.chosenPlan?.value;
+                                  if (e.target.checked && (!start || !plan || plan === "")) {
+                                    e.target.checked = false;
+                                    setGlobalNotification({ success: false, message: 'Select Start Date & Plan first' });
+                                    setTimeout(() => setGlobalNotification(null), 3000);
+                                  }
+                                }}
+                                className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500 transition-all hover:scale-110" 
+                              />
                             </label>
+                            <label className="flex items-center justify-between cursor-pointer group opacity-80">
+                               <div className="flex items-center gap-2">
+                                 <span className="text-[11px] font-bold text-black dark:text-foreground group-hover:text-primary transition-colors">Licence Assigned</span>
+                                 {u.licenses?.length > 0 && (
+                                   <span className="text-[9px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/20 font-black">
+                                     {u.licenses[0].purchaseOrder}
+                                   </span>
+                                 )}
+                               </div>
+                               <input type="checkbox" disabled checked={u.licenses?.length > 0} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 bg-slate-950 accent-emerald-500 cursor-not-allowed" />
+                            </label>
+                            <div className="pt-2 flex justify-center">
+                               <button 
+                                 type="button" 
+                                 onClick={() => handleForceReassign(u.id)}
+                                 className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all group"
+                               >
+                                 <RefreshCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500" />
+                                 Rotate Asset
+                               </button>
+                            </div>
                           </div>
                        </div>
 
@@ -704,6 +753,9 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
             <div className="p-4">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex-1 flex items-center gap-4 cursor-pointer" onClick={() => setEditingId(editingId === l.id ? null : l.id)}>
+                   <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-black dark:text-white border border-border/50 shadow-inner shrink-0">
+                     {editingId === l.id ? <ChevronUp className="w-5 h-5 text-primary" /> : <ChevronDown className="w-5 h-5" />}
+                   </div>
                    <div className="w-12 h-12 rounded-xl bg-slate-900 dark:bg-primary/10 border border-primary/20 flex flex-col items-center justify-center shrink-0">
                       <span className="text-primary dark:text-blue-400 font-black text-[9px] uppercase leading-none mb-1">PO</span>
                       <span className="text-foreground font-black text-[10px] font-mono leading-none">
@@ -797,19 +849,19 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">SkillHub Password</label>
             <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" required />
          </div>
-         <div className="flex items-center gap-6 pt-4">
-            <label className="flex items-center gap-2 cursor-pointer group">
+         <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/5">
+            <label className="flex items-center gap-4 cursor-pointer group">
                <input type="checkbox" name="isAvailable" defaultChecked={license ? license.isAvailable : true} className="w-5 h-5 rounded border-slate-200 dark:border-white/20 bg-white dark:bg-slate-950 accent-primary" />
-               <span className="text-[10px] font-black text-black dark:text-white group-hover:text-primary uppercase tracking-widest transition-colors">Working</span>
+               <span className="text-[11px] font-black text-black dark:text-white group-hover:text-primary uppercase tracking-widest transition-colors">Asset Working</span>
             </label>
-            <div className="flex flex-col gap-1">
-              <label className="flex items-center gap-2 cursor-pointer group">
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-4 cursor-pointer group shrink-0">
                  <input type="checkbox" name="isAvailableUhuru" disabled defaultChecked={license ? license.isAvailableUhuru : false} className="w-5 h-5 rounded border-slate-200 dark:border-white/20 bg-white dark:bg-slate-950 accent-emerald-500 cursor-not-allowed" />
-                 <span className="text-[10px] font-black text-black/40 dark:text-white group-hover:text-black dark:group-hover:text-foreground uppercase tracking-widest transition-colors opacity-50">Assigned</span>
+                 <span className="text-[11px] font-black text-black/40 dark:text-white group-hover:text-black dark:group-hover:text-foreground uppercase tracking-widest transition-colors opacity-50">Assigned</span>
               </label>
               {license?.assignedTo && (
-                <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-mono font-black ml-7 uppercase tracking-tighter">
-                  Student ID: {license.assignedTo.customerNumber?.toString().padStart(4, '0')}
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-black uppercase tracking-tighter bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20 whitespace-nowrap">
+                  ID: {license.assignedTo.customerNumber?.toString().padStart(4, '0')}
                 </span>
               )}
             </div>
