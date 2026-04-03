@@ -327,10 +327,7 @@ export async function getAllUsers() {
     await prisma.user.updateMany({
       where: { id: { in: expiredIds } },
       data: {
-        isPaid: false,
-        chosenPlan: null,
-        subscriptionStart: null,
-        subscriptionEnd: null
+        isPaid: false
       }
     });
   }
