@@ -578,8 +578,11 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                 defaultChecked={u.isPaid} 
                                 onChange={(e) => {
                                   const form = e.target.form;
-                                  const start = (form?.elements.namedItem('start') as HTMLInputElement)?.value;
-                                  const plan = (form?.elements.namedItem('chosenPlan') as HTMLSelectElement)?.value;
+                                  if (!form) return;
+                                  const formData = new FormData(form);
+                                  const start = formData.get('start');
+                                  const plan = formData.get('chosenPlan');
+                                  
                                   if (e.target.checked && (!start || !plan || plan === "")) {
                                     e.target.checked = false;
                                     setGlobalNotification({ success: false, message: 'Select Start Date & Plan First' });
