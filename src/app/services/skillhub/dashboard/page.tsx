@@ -516,12 +516,12 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                        <div className="md:hidden overflow-hidden">
                           <h4 className="font-bold text-black dark:text-foreground text-sm truncate flex items-center gap-3">
                              <div className="flex flex-col">
-                               <span className={`text-[8px] font-black uppercase tracking-wider shrink-0 ${u.isPaid ? 'text-emerald-500' : 'text-red-500'}`}>
-                                 {u.isPaid ? 'Active' : 'Inactive'}
+                               <span className={`text-[8px] font-black tracking-wider shrink-0 ${u.isPaid ? 'text-emerald-500' : 'text-red-500'}`}>
+                                 {u.isPaid ? 'Active Plan' : 'Inactive Plan'}
                                </span>
                                {u.isPaid && (
-                                 <span className={`text-[7px] font-black uppercase tracking-tight shrink-0 ${u.licenses?.length > 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
-                                   {u.licenses?.length > 0 ? 'Asset Ok' : 'Unassigned'}
+                                 <span className={`text-[7px] font-black tracking-tight shrink-0 ${u.licenses?.length > 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
+                                   {u.licenses?.length > 0 ? 'Assigned' : 'Unassigned'}
                                  </span>
                                )}
                              </div>
@@ -533,12 +533,12 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                     </div>
                     <div className="hidden md:block overflow-hidden">
                       <h4 className="font-black text-black dark:text-foreground flex items-center gap-4 truncate">
-                        <span className={`text-[9px] font-black uppercase tracking-[0.2em] shrink-0 ${u.isPaid ? 'text-emerald-500' : 'text-red-500'}`}>
+                        <span className={`text-[9px] font-black tracking-[0.05em] shrink-0 ${u.isPaid ? 'text-emerald-500' : 'text-red-500'}`}>
                            {u.isPaid ? 'Active Plan' : 'Inactive Plan'}
                         </span>
                         {u.isPaid && (
-                          <span className={`text-[9px] font-black uppercase tracking-[0.2em] shrink-0 ${u.licenses?.length > 0 ? 'text-emerald-500' : 'text-amber-500 animate-pulse'}`}>
-                             {u.licenses?.length > 0 ? 'Licence Assigned' : 'Unassigned'}
+                          <span className={`text-[9px] font-black tracking-[0.05em] shrink-0 ${u.licenses?.length > 0 ? 'text-emerald-500' : 'text-amber-500 animate-pulse'}`}>
+                             {u.licenses?.length > 0 ? 'Assigned' : 'Unassigned'}
                           </span>
                         )}
                         <span>{u.firstName} {u.lastName}</span>
@@ -773,16 +773,10 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                    <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-black dark:text-white border border-border/50 shadow-inner shrink-0">
                      {editingId === l.id ? <ChevronUp className="w-5 h-5 text-primary" /> : <ChevronDown className="w-5 h-5" />}
                    </div>
-                   <div className="w-12 h-12 rounded-xl bg-slate-900 dark:bg-primary/10 border border-primary/20 flex flex-col items-center justify-center shrink-0 leading-none">
-                      <span className="text-primary dark:text-blue-400 font-black text-[8px] uppercase tracking-tighter mb-0.5">PO</span>
-                      <span className="text-foreground font-black text-[10px] font-mono leading-none">
-                        {l.purchaseOrder ? l.purchaseOrder.split('-')[0] : '—'}
+                   <div className="w-20 h-10 rounded-xl bg-slate-900 dark:bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                      <span className="text-foreground font-black text-xs font-mono tracking-tighter">
+                        {l.purchaseOrder || '—'}
                       </span>
-                      {l.purchaseOrder?.includes('-') && (
-                        <span className="text-primary/60 dark:text-blue-400/60 font-black text-[7px] mt-0.5 font-mono">
-                          #{l.purchaseOrder.split('-')[1]}
-                        </span>
-                      )}
                    </div>
                    <div className="flex-1 overflow-hidden">
                       <div className="flex flex-wrap items-center gap-3 mb-1">
