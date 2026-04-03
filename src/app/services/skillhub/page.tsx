@@ -103,32 +103,34 @@ export default function SkillHubPage() {
 
               <Input name="email" label="Email Address" type="email" icon={<Mail />} placeholder="you@email.com" required />
               
-                  <div className="relative">
-                    <div className="flex items-center justify-between mb-1.5 px-1">
-                      <label className="text-sm font-bold text-black dark:text-white tracking-wide">Password <span className="text-red-500">*</span></label>
-                      {view === 'login' && (
-                        <button 
-                          type="button"
-                          onClick={() => { setView('forgot'); setStatus(null); }}
-                          className="text-[10px] font-black text-primary dark:text-primary-foreground uppercase tracking-widest hover:text-blue-600 transition-colors"
-                        >
-                          Forgot password?
-                        </button>
-                      )}
-                    </div>
-                    <div className="relative group">
-                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
-                        <Lock className="w-4 h-4" />
+                  {view !== 'forgot' && (
+                    <div className="relative">
+                      <div className="flex items-center justify-between mb-1.5 px-1">
+                        <label className="text-sm font-bold text-black dark:text-white tracking-wide">Password <span className="text-red-500">*</span></label>
+                        {view === 'login' && (
+                          <button 
+                            type="button"
+                            onClick={() => { setView('forgot'); setStatus(null); }}
+                            className="text-[10px] font-black text-primary dark:text-primary-foreground tracking-widest hover:text-blue-600 transition-colors"
+                          >
+                            Forgot Password?
+                          </button>
+                        )}
                       </div>
-                      <input
-                        name="password"
-                        type="password"
-                        required
-                        placeholder="••••••••"
-                        className="w-full pl-10 pr-4 py-3 bg-secondary/20 dark:bg-slate-950/50 border border-border dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 text-sm"
-                      />
+                      <div className="relative group">
+                        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
+                          <Lock className="w-4 h-4" />
+                        </div>
+                        <input
+                          name="password"
+                          type="password"
+                          required
+                          placeholder="••••••••"
+                          className="w-full pl-10 pr-4 py-3 bg-secondary/20 dark:bg-slate-950/50 border border-border dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 text-sm"
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
 
               {view === 'register' && (
                 <>
