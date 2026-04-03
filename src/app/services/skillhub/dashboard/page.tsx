@@ -515,9 +515,16 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                        </div>
                        <div className="md:hidden overflow-hidden">
                           <h4 className="font-bold text-black dark:text-foreground text-sm truncate flex items-center gap-3">
-                             <span className={`text-[8px] font-black uppercase tracking-wider shrink-0 ${u.isPaid ? 'text-emerald-500' : 'text-red-500'}`}>
-                               {u.isPaid ? 'Active' : 'Inactive'}
-                             </span>
+                             <div className="flex flex-col">
+                               <span className={`text-[8px] font-black uppercase tracking-wider shrink-0 ${u.isPaid ? 'text-emerald-500' : 'text-red-500'}`}>
+                                 {u.isPaid ? 'Active' : 'Inactive'}
+                               </span>
+                               {u.isPaid && (
+                                 <span className={`text-[7px] font-black uppercase tracking-tight shrink-0 ${u.licenses?.length > 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
+                                   {u.licenses?.length > 0 ? 'Asset Ok' : 'Unassigned'}
+                                 </span>
+                               )}
+                             </div>
                              {u.firstName} {u.lastName}
                              {u.isAdmin && <span className="text-[8px] text-primary dark:text-primary-foreground font-black border border-primary/20 px-1 rounded bg-primary/5">ADM</span>}
                           </h4>
@@ -529,22 +536,20 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                         <span className={`text-[9px] font-black uppercase tracking-[0.2em] shrink-0 ${u.isPaid ? 'text-emerald-500' : 'text-red-500'}`}>
                            {u.isPaid ? 'Active Plan' : 'Inactive Plan'}
                         </span>
-                        {u.firstName} {u.lastName}
+                        {u.isPaid && (
+                          <span className={`text-[9px] font-black uppercase tracking-[0.2em] shrink-0 ${u.licenses?.length > 0 ? 'text-emerald-500' : 'text-amber-500 animate-pulse'}`}>
+                             {u.licenses?.length > 0 ? 'Licence Assigned' : 'Unassigned'}
+                          </span>
+                        )}
+                        <span>{u.firstName} {u.lastName}</span>
+                        <span className="text-[10px] text-muted-foreground font-mono font-medium opacity-50 ml-2">({u.email})</span>
                         {u.isAdmin && <span className="text-[10px] text-primary dark:text-primary-foreground font-mono font-black border border-primary/20 px-4 rounded-md bg-primary/5 uppercase tracking-[0.2em]">ADMIN</span>}
                       </h4>
-                      <p className="text-[10px] text-black dark:text-black dark:text-white font-mono truncate">{u.email}</p>
                     </div>
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-3 md:gap-6 pl-14 md:pl-0">
-                   <div className="text-right hidden sm:block">
-                      <p className="text-[9px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest leading-none mb-1">Status</p>
-                      <span className={`text-[10px] font-black uppercase tracking-widest ${isVigente ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-500/50'}`}>
-                        {isVigente ? 'Vigente' : 'Expirada'}
-                      </span>
-                   </div>
-                   <div className="w-px h-8 bg-white/5 hidden sm:block" />
                    <div className="text-right">
                       <p className="text-[9px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest leading-none mb-1">Ends</p>
                       <span className="text-[10px] font-black text-black dark:text-white font-mono">
@@ -768,11 +773,16 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                    <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-black dark:text-white border border-border/50 shadow-inner shrink-0">
                      {editingId === l.id ? <ChevronUp className="w-5 h-5 text-primary" /> : <ChevronDown className="w-5 h-5" />}
                    </div>
-                   <div className="w-12 h-12 rounded-xl bg-slate-900 dark:bg-primary/10 border border-primary/20 flex flex-col items-center justify-center shrink-0">
-                      <span className="text-primary dark:text-blue-400 font-black text-[9px] uppercase leading-none mb-1">PO</span>
+                   <div className="w-12 h-12 rounded-xl bg-slate-900 dark:bg-primary/10 border border-primary/20 flex flex-col items-center justify-center shrink-0 leading-none">
+                      <span className="text-primary dark:text-blue-400 font-black text-[8px] uppercase tracking-tighter mb-0.5">PO</span>
                       <span className="text-foreground font-black text-[10px] font-mono leading-none">
                         {l.purchaseOrder ? l.purchaseOrder.split('-')[0] : '—'}
                       </span>
+                      {l.purchaseOrder?.includes('-') && (
+                        <span className="text-primary/60 dark:text-blue-400/60 font-black text-[7px] mt-0.5 font-mono">
+                          #{l.purchaseOrder.split('-')[1]}
+                        </span>
+                      )}
                    </div>
                    <div className="flex-1 overflow-hidden">
                       <div className="flex flex-wrap items-center gap-3 mb-1">
