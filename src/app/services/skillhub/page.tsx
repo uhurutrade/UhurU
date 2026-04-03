@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { registerUser, loginUser, requestPasswordReset } from '@/actions/auth';
 import { 
   User, Mail, Lock, Building, MapPin, Building2, Phone, Globe, Home, 
