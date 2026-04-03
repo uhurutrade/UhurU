@@ -73,7 +73,7 @@ export default function SkillHubPage() {
 
           <div className="p-8 pb-4 text-center">
             {/* Uhuru Official Logo */}
-            <div className="flex justify-center mb-8 scale-125 transform origin-center -translate-x-3">
+            <div className="flex justify-center mb-6">
               <Logo />
             </div>
 
@@ -81,11 +81,11 @@ export default function SkillHubPage() {
             <div className="flex flex-col items-center mb-6">
               <div className="font-black tracking-tighter text-foreground flex items-center gap-0.5 leading-none" 
                    style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
-                <span className="text-4xl sm:text-[5.5rem] text-black dark:text-white transition-all duration-500">Skill</span>
-                <span className="text-4xl sm:text-[5.5rem] text-primary drop-shadow-[0_0_20px_rgba(37,99,235,0.25)] sm:drop-shadow-[0_0_35px_rgba(37,99,235,0.3)] transition-all duration-500">Hub</span>
-                <div className="w-2.5 h-2.5 sm:w-5 sm:h-5 bg-primary rounded-full mt-auto mb-1.5 sm:mb-3 animate-pulse ml-1.5 sm:ml-2.5"></div>
+                <span className="text-4xl sm:text-7xl text-black dark:text-white transition-all duration-500">Skill</span>
+                <span className="text-4xl sm:text-7xl text-primary drop-shadow-[0_0_20px_rgba(37,99,235,0.25)] sm:drop-shadow-[0_0_35px_rgba(37,99,235,0.3)] transition-all duration-500">Hub</span>
+                <div className="w-2.5 h-2.5 sm:w-4 sm:h-4 bg-primary rounded-full mt-auto mb-1.5 sm:mb-2.5 animate-pulse ml-1.5 sm:ml-2"></div>
               </div>
-              <p className="mt-4 text-xs sm:text-2xl font-normal text-black dark:text-white tracking-wide text-center px-4">
+              <p className="mt-4 text-xs sm:text-xl font-medium text-black dark:text-white tracking-wide text-center px-4">
                 Get your Oracle Fusion Instance Access for Learning
               </p>
             </div>
