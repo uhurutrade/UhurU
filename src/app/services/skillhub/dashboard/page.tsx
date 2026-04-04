@@ -697,6 +697,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     async function load() {
