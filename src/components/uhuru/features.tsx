@@ -39,6 +39,24 @@ export default function Features() {
       <div className="container mx-auto max-w-[1400px] space-y-12 px-4 md:px-10 relative overflow-visible">
         <div className="flex flex-col items-center justify-center space-y-4 text-center relative overflow-visible">
           
+          {/* Dedicated Promo Area - Matches Hero Button Spacing */}
+          <div className="flex flex-col sm:flex-row justify-center items-center relative z-30 min-h-[60px] md:min-h-[80px] w-full">
+            {mounted && (
+              <Link href="/services/skillhub" className="group flex shrink-0 transform hover:scale-110 transition-all duration-300">
+                <div className="transform -rotate-12 flex flex-col items-center opacity-95 group-hover:opacity-100 group-hover:-rotate-6 transition-all duration-300">
+                  <span className="text-blue-500 font-black text-4xl md:text-5xl lg:text-3xl xl:text-4xl tracking-tighter drop-shadow-2xl">
+                    £18
+                  </span>
+                  <span className="text-white font-black text-[8px] md:text-[10px] tracking-normal -mt-2 drop-shadow-md">
+                    1 Week Access
+                  </span>
+                  <span className="text-blue-400 font-black text-[8px] md:text-[10px] tracking-normal mt-0.5 drop-shadow-lg">
+                    Oracle Fusion
+                  </span>
+                </div>
+              </Link>
+            )}
+          </div>
 
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl font-headline">Our Capabilities</h2>
