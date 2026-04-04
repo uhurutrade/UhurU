@@ -527,25 +527,39 @@ export async function syncAllLicensesStatus() {
       if (!license.urlLink) continue;
 
       let isWorking = false;
+      let statusCode = 0;
       try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
+        const timeout = setTimeout(() => controller.abort(), 20000);
         
         const response = await fetch(license.urlLink, { 
           signal: controller.signal,
-          headers: { 'User-Agent': 'Mozilla/5.0' }
+          headers: { 
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9'
+          }
         });
         
+        statusCode = response.status;
+        const finalUrl = response.url;
         const text = await response.text();
-        isWorking = text.toLowerCase().includes('signin');
+        const hasSignIn = text.toLowerCase().includes('signin') || finalUrl.toLowerCase().includes('signin');
+        isWorking = response.ok && hasSignIn;
+        console.log(`🔍 Checked URL: ${license.urlLink} | Status: ${statusCode} | hasSignIn: ${hasSignIn}`);
+        console.log(`📍 Final Destination: ${finalUrl}`);
+        if (!isWorking) {
+          console.log(`📄 Payload Sample: ${text.substring(0, 150).replace(/\s+/g, ' ')}...`);
+        }
         clearTimeout(timeout);
-      } catch (err) {
+      } catch (err: any) {
         isWorking = false;
+        console.log(`⚠️ Check error for ${license.urlLink}: ${err.message || err}`);
       }
 
       const statusIcon = isWorking ? '✅' : '❌';
       const statusText = isWorking ? 'AVAILABLE' : 'ERROR/DOWN';
-      console.log(`${statusIcon} URL: ${license.urlLink} [${statusText}]`);
+      console.log(`${statusIcon} Final Verdict: ${license.urlLink} [${statusText}]`);
 
       if (!isWorking) {
         await prisma.license.update({
