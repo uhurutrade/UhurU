@@ -1,14 +1,22 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ArrowRight } from 'lucide-react';
 
 export default function Hero() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
-    <section className="w-full pt-12 md:pt-24 lg:pt-32 pb-6 md:pb-12 lg:pb-16 bg-background dark:bg-background">
-      <div className="container mx-auto max-w-7xl px-4 md:px-10 flex flex-col items-center text-center">
-        <div className="flex flex-col justify-center space-y-6 w-full max-w-full">
+    <section className="relative w-full pt-20 md:pt-32 lg:pt-40 pb-0 bg-background dark:bg-background overflow-visible">
+      <div className="container mx-auto max-w-7xl px-4 md:px-10 flex flex-col items-center text-center relative overflow-visible">
+        <div className="flex flex-col justify-center space-y-6 w-full max-w-full relative">
           <div className="space-y-4">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tighter font-headline leading-[1.1]">
               When we talk tech, money listens
@@ -17,7 +25,8 @@ export default function Hero() {
               AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments
             </p>
           </div>
-          <div className="flex flex-col gap-4 sm:flex-row justify-center">
+          
+          <div className="flex flex-col gap-4 sm:flex-row justify-center items-center relative z-10">
             <Button asChild size="lg" className="border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary">
               <Link href="/about-us">Click Us</Link>
             </Button>

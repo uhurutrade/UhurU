@@ -93,7 +93,7 @@ export default function SkillHubPage() {
                 <div className="w-2.5 h-2.5 sm:w-4 sm:h-4 bg-primary rounded-full mt-auto mb-1.5 sm:mb-2.5 animate-pulse ml-1.5 sm:ml-2"></div>
               </div>
               <p className="mt-4 text-xs sm:text-xl font-medium text-black dark:text-white tracking-wide text-center px-4">
-                Get your SkillHub Instance Access for Learning
+                Get access to your Oracle Fusion instance for Learning
               </p>
             </div>
           </div>
