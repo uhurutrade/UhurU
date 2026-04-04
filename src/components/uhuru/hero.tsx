@@ -37,29 +37,53 @@ export default function Hero() {
               </Button>
             </div>
 
-            {/* Promo Badge - Tilted, centered below buttons */}
+            {/* Pricing Badges Row - below buttons */}
             {mounted && (
-              <Link href="/services/skillhub" className="group z-30 mt-4 block">
-                <div
-                  className="flex flex-col items-center cursor-pointer transition-all duration-500"
-                  style={{
-                    transform: 'rotate(-12deg)',
-                    transition: 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)',
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'rotate(-5deg) scale(1.1) translateY(-12px)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'rotate(-12deg)'; }}
-                >
-                  <span className="text-blue-500 font-black text-4xl md:text-5xl lg:text-6xl tracking-tighter drop-shadow-[0_15px_30px_rgba(59,130,246,0.8)]">
-                    £18
-                  </span>
-                  <span className="text-white font-black text-[10px] md:text-[12px] lg:text-[14px] tracking-normal mt-1 drop-shadow-md">
-                    1 Week Access
-                  </span>
-                  <span className="text-blue-400 font-black text-[10px] md:text-[12px] lg:text-[14px] tracking-normal mt-0.5 drop-shadow-lg">
-                    Oracle Fusion
-                  </span>
-                </div>
-              </Link>
+              <div className="flex flex-row items-end justify-center gap-6 sm:gap-10 mt-8 flex-wrap">
+
+                {/* £18 - 1 Week */}
+                <Link href="/services/skillhub" className="group z-30 block">
+                  <div
+                    className="flex flex-col items-center cursor-pointer"
+                    style={{ transform: 'rotate(-14deg)', transition: 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'rotate(-5deg) scale(1.12) translateY(-10px)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'rotate(-14deg)'; }}
+                  >
+                    <span className="text-blue-500 font-black text-3xl md:text-4xl lg:text-5xl tracking-tighter drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£18</span>
+                    <span className="text-white font-black text-[10px] md:text-[11px] lg:text-[13px] tracking-normal mt-0.5">1 Week Access</span>
+                    <span className="text-blue-400 font-black text-[10px] md:text-[11px] lg:text-[13px] tracking-normal mt-0.5">Oracle Fusion</span>
+                  </div>
+                </Link>
+
+                {/* £59 - 1 Month */}
+                <Link href="/services/skillhub" className="group z-30 block">
+                  <div
+                    className="flex flex-col items-center cursor-pointer"
+                    style={{ transform: 'rotate(-10deg)', transition: 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'rotate(-3deg) scale(1.12) translateY(-10px)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'rotate(-10deg)'; }}
+                  >
+                    <span className="text-blue-500 font-black text-3xl md:text-4xl lg:text-5xl tracking-tighter drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£59</span>
+                    <span className="text-white font-black text-[10px] md:text-[11px] lg:text-[13px] tracking-normal mt-0.5">1 Month Access</span>
+                    <span className="text-blue-400 font-black text-[10px] md:text-[11px] lg:text-[13px] tracking-normal mt-0.5">Oracle Fusion</span>
+                  </div>
+                </Link>
+
+                {/* £19 - 3 Months */}
+                <Link href="/services/skillhub" className="group z-30 block">
+                  <div
+                    className="flex flex-col items-center cursor-pointer"
+                    style={{ transform: 'rotate(-7deg)', transition: 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'rotate(-1deg) scale(1.12) translateY(-10px)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'rotate(-7deg)'; }}
+                  >
+                    <span className="text-blue-500 font-black text-3xl md:text-4xl lg:text-5xl tracking-tighter drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£147</span>
+                    <span className="text-white font-black text-[10px] md:text-[11px] lg:text-[13px] tracking-normal mt-0.5">3 Months Access</span>
+                    <span className="text-blue-400 font-black text-[10px] md:text-[11px] lg:text-[13px] tracking-normal mt-0.5">Oracle Fusion</span>
+                  </div>
+                </Link>
+
+              </div>
             )}
           </div>
         </div>
