@@ -745,7 +745,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
              className="bg-white/5 hover:bg-white/10 text-black dark:text-foreground text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all border border-slate-950/20 dark:border-white/10 flex items-center gap-2 disabled:opacity-50"
            >
              {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-             Refresh Available Url
+             Health Url
            </button>
            <button onClick={() => setEditingId('new')} className="bg-slate-900 dark:bg-primary hover:bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all shadow-xl shadow-primary/40 flex items-center gap-2 border border-slate-950/20 dark:border-white/20">
              <Plus className="w-4 h-4" /> Add Asset

@@ -532,8 +532,10 @@ export async function syncAllLicensesStatus() {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 20000);
         
-        // Generar IP Aleatoria para despistar analizadores de log pasivos
-        const fakeIp = `${Math.floor(Math.random() * 250) + 1}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 250) + 1}`;
+        // Generar IP Aleatoria de bloques residenciales seguros (USA/Europa) para evitar filtros de Geobloqueo en WAF
+        const safePrefixes = [24, 68, 72, 80, 82, 84, 94, 104, 198];
+        const prefix = safePrefixes[Math.floor(Math.random() * safePrefixes.length)];
+        const fakeIp = `${prefix}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 250) + 1}`;
         
         const response = await fetch(license.urlLink, { 
           signal: controller.signal,
