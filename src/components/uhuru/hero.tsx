@@ -14,7 +14,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full pt-10 md:pt-16 lg:pt-20 pb-0 bg-background dark:bg-background overflow-visible">
+    <section className="relative w-full pt-10 md:pt-16 lg:pt-20 pb-8 md:pb-12 bg-background dark:bg-background overflow-visible">
       <div className="container mx-auto max-w-7xl px-4 md:px-10 flex flex-col items-center text-center relative overflow-visible">
         <div className="flex flex-col justify-center space-y-6 w-full max-w-full relative">
           <div className="space-y-4">
@@ -26,14 +26,41 @@ export default function Hero() {
             </p>
           </div>
           
-          <div className="flex flex-col gap-6 sm:flex-row justify-center items-center relative z-20 mt-4">
-            <Button asChild size="lg" className="border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary order-1">
-              <Link href="/about-us">Click Us</Link>
-            </Button>
+          <div className="flex flex-col gap-2 items-center justify-center mt-4">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center relative z-20 w-full">
+              <Button asChild size="lg" className="border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary order-1">
+                <Link href="/about-us">Click Us</Link>
+              </Button>
 
-            <Button asChild size="lg" variant="outline" className="border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-transparent dark:hover:text-white order-2">
-              <Link href="/contact">Contact</Link>
-            </Button>
+              <Button asChild size="lg" variant="outline" className="border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-transparent dark:hover:text-white order-2">
+                <Link href="/contact">Contact</Link>
+              </Button>
+            </div>
+
+            {/* Promo Badge - Tilted, centered below buttons */}
+            {mounted && (
+              <Link href="/services/skillhub" className="group z-30 mt-4 block">
+                <div
+                  className="flex flex-col items-center cursor-pointer transition-all duration-500"
+                  style={{
+                    transform: 'rotate(-12deg)',
+                    transition: 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'rotate(-5deg) scale(1.1) translateY(-12px)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'rotate(-12deg)'; }}
+                >
+                  <span className="text-blue-500 font-black text-4xl md:text-5xl lg:text-6xl tracking-tighter drop-shadow-[0_15px_30px_rgba(59,130,246,0.8)]">
+                    £18
+                  </span>
+                  <span className="text-white font-black text-[10px] md:text-[12px] lg:text-[14px] tracking-normal mt-1 drop-shadow-md">
+                    1 Week Access
+                  </span>
+                  <span className="text-blue-400 font-black text-[10px] md:text-[12px] lg:text-[14px] tracking-normal mt-0.5 drop-shadow-lg">
+                    Oracle Fusion
+                  </span>
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       </div>
