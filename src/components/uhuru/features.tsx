@@ -39,24 +39,6 @@ export default function Features() {
       <div className="container mx-auto max-w-[1400px] space-y-12 px-4 md:px-10 relative overflow-visible">
         <div className="flex flex-col items-center justify-center space-y-4 text-center relative overflow-visible">
           
-          {/* Floating Promo - Positioned exactly to the left of the title */}
-          {mounted && (
-            <Link href="/services/skillhub" className="absolute left-[2%] lg:left-[5%] top-0 -translate-y-1/2 z-30 group">
-              <div className="flex flex-col items-center justify-center transform group-hover:scale-110 transition-all duration-300">
-                <div className="transform -rotate-12 flex flex-col items-center opacity-95 group-hover:opacity-100 group-hover:-rotate-6 transition-all duration-300">
-                  <span className="text-blue-500 font-black text-4xl md:text-6xl lg:text-7xl tracking-tighter drop-shadow-2xl">
-                    £18
-                  </span>
-                  <span className="text-white font-black text-[10px] md:text-sm tracking-normal -mt-2 drop-shadow-md">
-                    1 Week Access
-                  </span>
-                  <span className="text-blue-400 font-black text-[10px] md:text-sm tracking-normal mt-1 drop-shadow-lg">
-                    Oracle Fusion
-                  </span>
-                </div>
-              </div>
-            </Link>
-          )}
 
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl font-headline">Our Capabilities</h2>

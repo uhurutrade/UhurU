@@ -26,11 +26,31 @@ export default function Hero() {
             </p>
           </div>
           
-          <div className="flex flex-col gap-4 sm:flex-row justify-center items-center relative z-10">
-            <Button asChild size="lg" className="border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary">
+          <div className="flex flex-col gap-6 sm:flex-row justify-center items-center relative z-20 mt-4">
+            <Button asChild size="lg" className="border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary order-1">
               <Link href="/about-us">Click Us</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-transparent dark:hover:text-white">
+
+            {/* Promo Badge - Integrated with buttons */}
+            {mounted && (
+              <Link href="/services/skillhub" className="order-none sm:order-2 group z-30 flex shrink-0">
+                <div className="flex flex-col items-center justify-center transform hover:scale-110 transition-all duration-300">
+                  <div className="transform -rotate-12 flex flex-col items-center opacity-95 group-hover:opacity-100 group-hover:-rotate-6 transition-all duration-300">
+                    <span className="text-blue-500 font-black text-4xl md:text-5xl lg:text-6xl tracking-tighter drop-shadow-2xl">
+                      £18
+                    </span>
+                    <span className="text-white font-black text-[8px] md:text-[10px] tracking-normal -mt-2 drop-shadow-md">
+                      1 Week Access
+                    </span>
+                    <span className="text-blue-400 font-black text-[8px] md:text-[10px] tracking-normal mt-0.5 drop-shadow-lg">
+                      Oracle Fusion
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            )}
+
+            <Button asChild size="lg" variant="outline" className="border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-transparent dark:hover:text-white order-3">
               <Link href="/contact">Contact</Link>
             </Button>
           </div>
