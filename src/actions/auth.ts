@@ -487,12 +487,12 @@ export async function upsertLicense(formData: FormData) {
   }
 
   const data = {
-    subscription: formData.get('subscription') as string,
-    purchaseOrder: formData.get('purchaseOrder') as string,
+    subscription: (formData.get('subscription') as string)?.trim(),
+    purchaseOrder: (formData.get('purchaseOrder') as string)?.trim(),
     expiryDate: formData.get('expiryDate') ? new Date(formData.get('expiryDate') as string) : null,
-    urlLink: formData.get('urlLink') as string,
-    username: formData.get('username') as string,
-    password: formData.get('password') as string,
+    urlLink: (formData.get('urlLink') as string)?.trim(),
+    username: (formData.get('username') as string)?.trim(),
+    password: (formData.get('password') as string)?.trim(),
     isAvailable,
     isAvailableUhuru,
     userId,
@@ -518,6 +518,8 @@ export async function syncAllLicensesStatus() {
   const admin = await getCurrentUser();
   if (!admin?.isAdmin) throw new Error('Not authorized');
 
+  console.log('🔄 Starting Global License URL Sync...');
+
   try {
     const licenses = await prisma.license.findMany();
     
@@ -531,7 +533,7 @@ export async function syncAllLicensesStatus() {
         
         const response = await fetch(license.urlLink, { 
           signal: controller.signal,
-          headers: { 'User-Agent': 'Mozilla/5.0' } // Simulation to avoid some simple blocks
+          headers: { 'User-Agent': 'Mozilla/5.0' }
         });
         
         const text = await response.text();
@@ -541,20 +543,16 @@ export async function syncAllLicensesStatus() {
         isWorking = false;
       }
 
-      // Update if status changed or if NOT working to ensure consistency
-      // Rule: If NOT working, MUST be unassigned
+      const statusIcon = isWorking ? '✅' : '❌';
+      const statusText = isWorking ? 'AVAILABLE' : 'ERROR/DOWN';
+      console.log(`${statusIcon} URL: ${license.urlLink} [${statusText}]`);
+
       if (!isWorking) {
         await prisma.license.update({
           where: { id: license.id },
-          data: {
-            isAvailable: false,
-            isAvailableUhuru: false,
-            userId: null
-          }
+          data: { isAvailable: false, isAvailableUhuru: false, userId: null }
         });
       } else {
-        // If it WAS down and now it is UP, we just mark as working 
-        // (but we don't automatically assign anyone back)
         await prisma.license.update({
           where: { id: license.id },
           data: { isAvailable: true }
@@ -562,9 +560,10 @@ export async function syncAllLicensesStatus() {
       }
     }
     
+    console.log('🏁 License URL Sync Finished.');
     return { success: true, message: 'All licenses synced successfully' };
   } catch (error) {
-    console.error('Sync error:', error);
+    console.error('❌ Sync error:', error);
     return { success: false, message: 'Error syncing licenses' };
   }
 }
