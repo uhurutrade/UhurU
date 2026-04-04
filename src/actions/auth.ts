@@ -532,8 +532,15 @@ export async function syncAllLicensesStatus() {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 20000);
         
+        // Generar IP Aleatoria para despistar analizadores de log pasivos
+        const fakeIp = `${Math.floor(Math.random() * 250) + 1}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 250) + 1}`;
+        
         const response = await fetch(license.urlLink, { 
-          signal: controller.signal
+          signal: controller.signal,
+          headers: {
+            'X-Forwarded-For': fakeIp,
+            'X-Real-IP': fakeIp
+          }
         });
         
         statusCode = response.status;
@@ -561,6 +568,12 @@ export async function syncAllLicensesStatus() {
         await prisma.license.update({
           where: { id: license.id },
           data: { isAvailable: false, isAvailableUhuru: false, userId: null }
+        });
+      } else if (!license.isAvailable) {
+        // La URL funciona, pero en la DB estaba apagado -> Lo auto-sana a encendido
+        await prisma.license.update({
+          where: { id: license.id },
+          data: { isAvailable: true }
         });
       }
 
