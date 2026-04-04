@@ -257,7 +257,7 @@ export default function DashboardPage() {
 
                   <div className="md:text-right pt-4 md:pt-1 md:pr-1 opacity-40 border-t md:border-t-0 border-border/50 dark:border-slate-950/10 dark:border-white/5 mt-4 md:mt-0">
                     <span className="text-[9px] font-black text-black dark:text-white/60 uppercase tracking-widest block mb-1">Authenticated Account</span>
-                    <span className="text-lg font-black text-black dark:text-foreground tracking-[0.2em]">User ID: {user.customerNumber?.toString().padStart(4, '0')}</span>
+                    <span className="text-lg font-black text-black dark:text-foreground tracking-[0.2em]">User ID: {String(user.customerNumber || 0).padStart(4, '0')}</span>
                   </div>
                 </div>
                 {isVigente && user.chosenPlan && (
@@ -811,7 +811,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                         </span>
                         {l.assignedTo && (
                           <div className="flex items-center gap-2 text-[10px] font-black font-mono">
-                             <span className="text-foreground">ID: {l.assignedTo.customerNumber?.toString().padStart(4, "0")}</span>
+                             <span className="text-foreground">ID: {String(l.assignedTo.customerNumber || 0).padStart(4, '0')}</span>
                              <span className="text-yellow-500 uppercase tracking-widest text-[9px]">Assigned</span>
                           </div>
                         )}
@@ -902,7 +902,7 @@ function LicenseForm({ license, onSave, onCancel }: any) {
               </label>
               {license?.assignedTo && (
                 <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-black uppercase tracking-tighter bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20 whitespace-nowrap">
-                  ID: {license.assignedTo.customerNumber?.toString().padStart(4, '0')}
+                  ID: {String(license.assignedTo.customerNumber || 0).padStart(4, '0')}
                 </span>
               )}
             </div>

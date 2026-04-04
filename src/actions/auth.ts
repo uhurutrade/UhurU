@@ -467,7 +467,7 @@ export async function getAllLicenses() {
 
   return await prisma.license.findMany({
     include: { assignedTo: { select: { email: true, firstName: true, lastName: true, customerNumber: true, id: true } } },
-    orderBy: { subscription: 'asc' }
+    orderBy: { purchaseOrder: 'asc' }
   });
 }
 
