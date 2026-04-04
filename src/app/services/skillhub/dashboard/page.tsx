@@ -15,6 +15,8 @@ import {
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ContractingTerms } from '@/components/uhuru/ContractingTerms';
 import SubPageHeader from '@/components/uhuru/subpage-header';
+import SkillHubHeader from '@/components/uhuru/skillhub-header';
+
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
@@ -162,63 +164,9 @@ export default function DashboardPage() {
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-slate-400 dark:bg-primary/5 rounded-full blur-[140px] opacity-[0.02] dark:opacity-100 pointer-events-none transition-all duration-1000"></div>
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-500 dark:bg-purple-600/5 rounded-full blur-[140px] opacity-[0.03] dark:opacity-100 pointer-events-none transition-all duration-1000 animation-delay-2000"></div>
 
+      <SkillHubHeader user={user} />
+
       <div className="max-w-[1700px] mx-auto z-10 relative p-4 md:p-8">
-        <header className="flex flex-wrap items-center justify-between mb-10 gap-x-8 gap-y-4 bg-white/5 dark:bg-slate-900/40 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-transparent opacity-50 pointer-events-none"></div>
-          
-          <div className="flex items-center gap-6 z-10">
-            {/* Logo Icon */}
-            <div className="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.4)] ring-1 ring-white/10 group-hover:scale-105 transition-transform duration-500">
-               <UserCircle className="w-6 h-6 text-white" />
-            </div>
-
-            {/* Branding Logo Text */}
-            <div className="text-2xl font-black tracking-tight flex items-baseline select-none transition-all duration-300">
-               <span className="text-black dark:text-white">Skill</span>
-               <span className="text-blue-500 dark:text-blue-400">Hub</span>
-               <span className="text-blue-600 dark:text-blue-500 ml-0.5 scale-125">.</span>
-            </div>
-
-            <div className="h-4 w-px bg-white/20 mx-1 hidden md:block"></div>
-
-            {/* Account Info Labels */}
-            <div className="flex items-center gap-4">
-              {user.customerNumber && (
-                <div className="flex items-center gap-2 bg-blue-900/30 text-blue-200 px-3 py-1.5 rounded-lg border border-blue-500/30 shadow-sm transition-colors hover:bg-blue-900/50">
-                  <span className="text-[10px] font-black opacity-50 uppercase tracking-tighter">ID:</span>
-                  <span className="text-[12px] font-black font-mono tracking-wider">{user.customerNumber.toString().padStart(4,'0')}</span>
-                </div>
-              )}
-              <span className="text-xs font-mono font-bold text-black/70 dark:text-white/60 lowercase px-2">
-                {user.email}
-              </span>
-              {user.isAdmin && (
-                <span className="text-emerald-500 dark:text-emerald-400 uppercase font-black text-[11px] tracking-[0.2em] px-2 border-l border-white/10 ml-2">
-                  Admin
-                </span>
-              )}
-            </div>
-
-            <div className="h-4 w-px bg-white/20 mx-1 hidden lg:block"></div>
-
-            {/* Description */}
-            <div className="hidden xl:flex flex-col">
-              <span className="text-[9px] font-black text-black/50 dark:text-white/40 uppercase tracking-[0.15em] mb-0.5">Application Learning Portal</span>
-              <p className="text-[11px] font-bold text-black/80 dark:text-white/80 leading-none">Get your SkillHub Instance Access for Learning</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6 z-10">
-            <button 
-              onClick={handleLogout}
-              className="group flex items-center gap-2.5 px-6 py-2.5 bg-slate-950 dark:bg-white/5 hover:bg-red-500/10 text-white dark:text-white/60 hover:text-red-400 rounded-xl transition-all border border-white/10 font-black text-[11px] uppercase tracking-widest h-11 shadow-xl hover:shadow-red-500/5"
-            >
-              <LogOut className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              Sign Out
-            </button>
-          </div>
-        </header>
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {!user.isAdmin && (
