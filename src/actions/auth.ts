@@ -533,20 +533,16 @@ export async function syncAllLicensesStatus() {
         const timeout = setTimeout(() => controller.abort(), 20000);
         
         const response = await fetch(license.urlLink, { 
-          signal: controller.signal,
-          headers: { 
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.9'
-          }
+          signal: controller.signal
         });
         
         statusCode = response.status;
         const finalUrl = response.url;
         const text = await response.text();
-        const hasSignIn = text.toLowerCase().includes('signin') || finalUrl.toLowerCase().includes('signin');
-        isWorking = response.ok && hasSignIn;
-        console.log(`🔍 Checked URL: ${license.urlLink} | Status: ${statusCode} | hasSignIn: ${hasSignIn}`);
+        const lowerText = text.toLowerCase();
+        const isValidOracleResponse = lowerText.includes('signin') || lowerText.includes('loopback script') || lowerText.includes('oracle') || finalUrl.toLowerCase().includes('signin');
+        isWorking = response.ok && isValidOracleResponse;
+        console.log(`🔍 Checked URL: ${license.urlLink} | Status: ${statusCode} | isValid: ${isValidOracleResponse}`);
         console.log(`📍 Final Destination: ${finalUrl}`);
         if (!isWorking) {
           console.log(`📄 Payload Sample: ${text.substring(0, 150).replace(/\s+/g, ' ')}...`);
@@ -566,12 +562,11 @@ export async function syncAllLicensesStatus() {
           where: { id: license.id },
           data: { isAvailable: false, isAvailableUhuru: false, userId: null }
         });
-      } else {
-        await prisma.license.update({
-          where: { id: license.id },
-          data: { isAvailable: true }
-        });
       }
+
+      // Modo Sigiloso: Retardo aleatorio entre 1.5 y 3.5 segundos para no saturar Oracle WAF
+      const delayMs = Math.floor(Math.random() * 2000) + 1500;
+      await new Promise(r => setTimeout(r, delayMs));
     }
     
     console.log('🏁 License URL Sync Finished.');
