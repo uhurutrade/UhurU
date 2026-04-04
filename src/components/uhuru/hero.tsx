@@ -14,7 +14,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full pt-20 md:pt-32 lg:pt-40 pb-0 bg-background dark:bg-background overflow-visible">
+    <section className="relative w-full pt-10 md:pt-16 lg:pt-20 pb-0 bg-background dark:bg-background overflow-visible">
       <div className="container mx-auto max-w-7xl px-4 md:px-10 flex flex-col items-center text-center relative overflow-visible">
         <div className="flex flex-col justify-center space-y-6 w-full max-w-full relative">
           <div className="space-y-4">
