@@ -486,9 +486,18 @@ export async function upsertLicense(formData: FormData) {
     isAvailableUhuru = false;
   }
 
+  const purchaseOrder = (formData.get('purchaseOrder') as string)?.trim();
+  
+  if (purchaseOrder) {
+    const existing = await prisma.license.findFirst({ where: { purchaseOrder } });
+    if (existing && existing.id !== id) {
+      return { success: false, message: 'Purchase Order already in use by another asset' };
+    }
+  }
+
   const data = {
     subscription: (formData.get('subscription') as string)?.trim(),
-    purchaseOrder: (formData.get('purchaseOrder') as string)?.trim(),
+    purchaseOrder: purchaseOrder,
     expiryDate: formData.get('expiryDate') ? new Date(formData.get('expiryDate') as string) : null,
     urlLink: (formData.get('urlLink') as string)?.trim(),
     username: (formData.get('username') as string)?.trim(),

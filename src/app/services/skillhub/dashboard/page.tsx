@@ -430,7 +430,7 @@ function AdminCenter({ currentUserId, setGlobalNotification }: { currentUserId: 
   return (
     <div className="bg-card/40 dark:bg-slate-900/60 backdrop-blur-3xl border border-border/50 dark:border-white/[0.05] rounded-[2.5rem] shadow-2xl h-full flex flex-col overflow-hidden">
       <div className="flex overflow-x-auto border-b border-border dark:border-slate-950/10 dark:border-white/5 bg-secondary/20 dark:bg-slate-950/20 no-scrollbar">
-        <TabButton active={activeView === 'students'} onClick={() => setActiveView('students')} icon={<Users className="w-4 h-4" />} label="Student Registry" />
+        <TabButton active={activeView === 'students'} onClick={() => setActiveView('students')} icon={<Users className="w-4 h-4" />} label="Users" />
         <TabButton active={activeView === 'licenses'} onClick={() => setActiveView('licenses')} icon={<Table className="w-4 h-4" />} label="License Inventory" />
       </div>
       
@@ -709,7 +709,12 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
   }, []);
 
   async function handleAction(formData: FormData) {
-    await upsertLicense(formData);
+    const result = await upsertLicense(formData);
+    if (!result.success) {
+      setGlobalNotification({ success: false, message: result.message || 'Error updating license' });
+      setTimeout(() => setGlobalNotification(null), 3000);
+      return;
+    }
     setGlobalNotification({ success: true, message: 'License updated' });
     const data = await getAllLicenses();
     setLicenses(data);
@@ -807,13 +812,13 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                    <div className="flex-1 overflow-hidden">
                       <div className="flex flex-wrap items-center gap-3 mb-1">
                         <h4 className="font-bold text-foreground text-sm truncate max-w-[300px] text-black dark:text-white">{l.urlLink}</h4>
-                        <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded border ${l.isAvailable ? 'text-emerald-600 dark:text-emerald-500 border-emerald-500/20 bg-emerald-500/5' : 'text-red-500/50 border-red-500/10 bg-red-500/5'}`}>
+                        <span className={`text-[11px] font-black ${l.isAvailable ? 'text-emerald-500' : 'text-red-500/50'}`}>
                            {l.isAvailable ? 'Working' : 'Occupied'}
                         </span>
                         {l.assignedTo && (
-                          <div className="flex items-center gap-2 text-[10px] font-black font-mono">
+                          <div className="flex items-center gap-2 text-[11px] font-black font-mono">
                              <span className="text-foreground">ID: {String(l.assignedTo.customerNumber || 0).padStart(4, '0')}</span>
-                             <span className="text-yellow-500 uppercase tracking-widest text-[9px]">Assigned</span>
+                             <span className="text-yellow-500 tracking-widest">Assigned</span>
                           </div>
                         )}
                       </div>
@@ -902,8 +907,8 @@ function LicenseForm({ license, onSave, onCancel }: any) {
                  <span className="text-[11px] font-black text-black/40 dark:text-white group-hover:text-black dark:group-hover:text-foreground uppercase tracking-widest transition-colors opacity-50">Assigned</span>
               </label>
               {license?.assignedTo && (
-                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-black uppercase tracking-tighter bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20 whitespace-nowrap">
-                  ID: {String(license.assignedTo.customerNumber || 0).padStart(4, '0')}
+                <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono font-black uppercase tracking-tighter whitespace-nowrap">
+                  Id: {String(license.assignedTo.customerNumber || 0).padStart(4, '0')}
                 </span>
               )}
             </div>
@@ -916,7 +921,7 @@ function LicenseForm({ license, onSave, onCancel }: any) {
       <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/5">
          <button type="button" onClick={onCancel} className="px-6 py-3 text-[10px] font-black uppercase text-black dark:text-black dark:text-white/60 hover:text-primary transition-colors">Cancel</button>
          <button type="submit" className="bg-slate-900 dark:bg-primary hover:bg-primary/90 text-white font-black uppercase text-[10px] tracking-widest px-10 py-3 rounded-xl transition-all shadow-xl shadow-primary/40 border border-slate-200 dark:border-white/20 flex items-center gap-2">
-            <Save className="w-4 h-4" /> Finalize Asset
+            <Save className="w-4 h-4" /> Save Licence
          </button>
       </div>
     </form>
