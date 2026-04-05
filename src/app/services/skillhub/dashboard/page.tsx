@@ -614,9 +614,9 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Selected Plan</label>
                                <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
                                   <option value="">No Plan</option>
-                                  <option value="Oracle Fusion 7 days (£18)">7 Days</option>
-                                  <option value="Oracle Fusion 30 days (£59)">30 Days</option>
-                                  <option value="Oracle Fusion 90 days (£140)">90 Days</option>
+                                  <option value="Oracle Fusion 7 days (£18)">Oracle Fusion 7 days</option>
+                                  <option value="Oracle Fusion 30 days (£59)">Oracle Fusion 30 days</option>
+                                  <option value="Oracle Fusion 90 days (£140)">Oracle Fusion 90 days</option>
                                </select>
                             </div>
                           </div>
