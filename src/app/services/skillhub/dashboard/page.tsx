@@ -126,9 +126,10 @@ export default function DashboardPage() {
 
   const handlePayPlan = () => {
     if (!hasReadTerms) return;
-    const url = renewalPlan === "30" 
-      ? 'https://checkout.revolut.com/payment-link/5e7fc3a4-1313-4072-974b-9328a667b616' 
-      : 'https://amazon.es';
+    let url = 'https://amazon.es';
+    if (renewalPlan === "7") url = 'https://cnn.com';
+    else if (renewalPlan === "30") url = 'https://checkout.revolut.com/payment-link/5e7fc3a4-1313-4072-974b-9328a667b616';
+    
     const w = 800;
     const h = 700;
     const left = (window.screen.width / 2) - (w / 2);
@@ -175,7 +176,7 @@ export default function DashboardPage() {
               <div className={`p-8 rounded-[2.5rem] border transition-all duration-700 ${isVigente ? 'bg-[#f2f2f2] dark:bg-emerald-500/5 border-[#c0c0c0] dark:border-emerald-500/20 shadow-xl dark:shadow-[0_0_50px_rgba(16,185,129,0.05)]' : 'bg-[#f2f2f2] dark:bg-red-500/5 border-[#c0c0c0] dark:border-red-500/20 shadow-xl dark:shadow-[0_0_50px_rgba(239,68,68,0.05)]'}`}>
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                   <div>
-                    <h4 className="text-[10px] font-black uppercase text-black dark:text-white/60 tracking-widest mb-1.5 px-1">Subscription Vigor</h4>
+                    <h4 className="text-[10px] font-black text-black dark:text-white/60 tracking-widest mb-1.5 px-1">Subscription Status</h4>
                     <p className={`text-2xl font-black tracking-tight ${isVigente ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                       {isVigente ? 'Subscription Active' : 'Subscription Inactive'}
                     </p>
@@ -193,14 +194,15 @@ export default function DashboardPage() {
 
                     {!isVigente && (
                       <div className="mt-6 animate-in slide-in-from-top-2">
-                         <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest block mb-3 px-1">Purchase License Renewal</label>
+                         <label className="text-[9px] font-black text-black dark:text-white tracking-widest block mb-3 px-1">Purchase License Renewal</label>
                          <select 
                            value={renewalPlan}
                            onChange={(e) => setRenewalPlan(e.target.value)}
-                           className="w-full bg-white dark:bg-slate-900/50 border border-slate-950/20 dark:border-white/20 rounded-2xl px-5 py-4 text-xs font-black text-foreground focus:ring-1 focus:ring-primary/50 outline-none appearance-none cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-all uppercase tracking-widest shadow-xl shadow-black/20">
-                            <option value="" className="text-foreground">Select a renewal plan...</option>
-                            <option value="30" className="text-foreground">SkillHub 30 days (£59)</option>
-                            <option value="90" className="text-foreground">SkillHub 90 days (£140)</option>
+                           className="w-full bg-white dark:bg-slate-900/50 border border-slate-950/20 dark:border-white/20 rounded-2xl px-5 py-4 text-xs font-black text-foreground focus:ring-1 focus:ring-primary/50 outline-none appearance-none cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-all tracking-wide shadow-xl shadow-black/20">
+                            <option value="" className="text-foreground">Select Oracle Fusion Plan...</option>
+                            <option value="7" className="text-foreground">Oracle Fusion 7 days (£18)</option>
+                            <option value="30" className="text-foreground">Oracle Fusion 30 days (£59)</option>
+                            <option value="90" className="text-foreground">Oracle Fusion 90 days (£140)</option>
                          </select>
 
                          {renewalPlan && (
@@ -215,7 +217,7 @@ export default function DashboardPage() {
                                       onChange={(e) => setHasReadTerms(e.target.checked)}
                                       className={`mt-1 w-4 h-4 rounded border-slate-950/20 dark:border-white/20 bg-white dark:bg-slate-900 accent-emerald-500 ${termsVisited ? 'cursor-pointer' : 'cursor-not-allowed opacity-30'}`}
                                     />
-                                  <label htmlFor="accept-terms" className={`text-[10px] font-bold uppercase tracking-widest leading-relaxed select-none ${termsVisited ? 'text-black dark:text-white cursor-pointer' : 'text-black/40 dark:text-black dark:text-white/40 cursor-not-allowed'}`}>
+                                  <label htmlFor="accept-terms" className={`text-[10px] font-bold tracking-widest leading-relaxed select-none ${termsVisited ? 'text-black dark:text-white cursor-pointer' : 'text-black/40 dark:text-black dark:text-white/40 cursor-not-allowed'}`}>
                                     I have read and accept the <button type="button" onClick={handleOpenTerms} className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-300 underline underline-offset-4 font-black">Contracting Terms & Conditions</button> of SkillHub instances.
                                   </label>
                                 </div>
@@ -611,8 +613,9 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Selected Plan</label>
                                <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
                                   <option value="">No Plan</option>
-                                  <option value="SkillHub 30 days (£59)">30 Days</option>
-                                  <option value="SkillHub 90 days (£140)">90 Days</option>
+                                  <option value="Oracle Fusion 7 days (£18)">7 Days</option>
+                                  <option value="Oracle Fusion 30 days (£59)">30 Days</option>
+                                  <option value="Oracle Fusion 90 days (£140)">90 Days</option>
                                </select>
                             </div>
                           </div>

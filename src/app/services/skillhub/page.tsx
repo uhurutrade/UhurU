@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { registerUser, loginUser, requestPasswordReset } from '@/actions/auth';
 import { 
   User, Mail, Lock, Building, MapPin, Building2, Phone, Globe, Home, 
@@ -14,6 +14,13 @@ export default function SkillHubPage() {
   const [view, setView] = useState<'login' | 'register' | 'forgot'>('login');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ success: boolean; message: string; errors?: any } | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (formRef.current) {
+      formRef.current.reset();
+    }
+  }, [view]);
 
   useEffect(() => {
     if (status) {
@@ -92,10 +99,10 @@ export default function SkillHubPage() {
       <div className="absolute top-0 -left-10 w-96 h-96 bg-slate-400 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.02] dark:opacity-20 animate-pulse transition-all duration-1000"></div>
       <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-slate-500 dark:bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.03] dark:opacity-20 animate-pulse animation-delay-2000 transition-all duration-1000"></div>
 
-      <div className="w-full max-w-3xl mx-auto z-10 mt-10 mb-20 px-4 flex flex-col gap-6 items-center justify-start relative">
+      <div className="w-full max-w-[1400px] mx-auto z-10 lg:mt-16 mb-20 px-4 flex flex-col lg:flex-row gap-10 items-center lg:items-start justify-center relative transition-all duration-700">
         
         {/* Login/Register Form Card */}
-        <div className="w-full max-w-2xl bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-2xl border border-[#c0c0c0] dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
+        <div className="w-full max-w-2xl lg:sticky lg:top-10 bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-2xl border border-[#c0c0c0] dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
           
           {view !== 'forgot' && (
             <div className="flex border-b border-slate-800">
@@ -134,17 +141,17 @@ export default function SkillHubPage() {
             </div>
           </div>
 
-          <form action={handleAction} className="p-8 pt-4 space-y-6">
+          <form ref={formRef} action={handleAction} className="p-8 pt-4 space-y-6">
             <div className={`grid gap-4 ${view === 'register' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
               
               {view === 'register' && (
                 <>
-                  <Input name="firstName" label="First Name" icon={<User />} placeholder="Raúl" required />
-                  <Input name="lastName" label="Last Name" icon={<User />} placeholder="Ortega" required />
+                  <Input name="firstName" label="First Name" icon={<User />} placeholder="John" required />
+                  <Input name="lastName" label="Last Name" icon={<User />} placeholder="Doe" required />
                 </>
               )}
 
-              <Input name="email" label="Email Address" type="email" icon={<Mail />} placeholder="you@email.com" required />
+              <Input name="email" label="Email Address" type="email" icon={<Mail />} placeholder="john.doe@example.com" required />
               
                   {view !== 'forgot' && (
                     <div className="relative">
@@ -153,6 +160,7 @@ export default function SkillHubPage() {
                         {view === 'login' && (
                           <button 
                             type="button"
+                            tabIndex={-1}
                             onClick={() => { setView('forgot'); setStatus(null); }}
                             className="text-[10px] font-black text-primary dark:text-primary-foreground tracking-widest hover:text-blue-600 transition-colors"
                           >
@@ -169,6 +177,7 @@ export default function SkillHubPage() {
                           type="password"
                           required
                           placeholder="••••••••"
+                          autoComplete="new-password"
                           className="w-full pl-10 pr-4 py-3 bg-secondary/20 dark:bg-slate-900 border border-border dark:border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 dark:placeholder:text-white/50 text-sm dark:text-white"
                         />
                       </div>
@@ -177,12 +186,12 @@ export default function SkillHubPage() {
 
               {view === 'register' && (
                 <>
-                  <Input name="companyName" label="Company (Optional)" icon={<Building />} placeholder="Uhuru Trade Ltd." />
-                  <Input name="phone" label="Phone" icon={<Phone />} placeholder="+34 600 000 000" required />
-                  <Input name="country" label="Country" icon={<Globe />} placeholder="Spain" required />
-                  <Input name="city" label="City" icon={<Building2 />} placeholder="Madrid" required />
-                  <Input name="streetAddress" label="Street Address" icon={<Home />} placeholder="Street Name 123" required />
-                  <Input name="postcode" label="Zip Code" icon={<MapPin />} placeholder="28001" required />
+                  <Input name="companyName" label="Company" icon={<Building />} placeholder="Global Solutions Ltd" />
+                  <Input name="phone" label="Phone" icon={<Phone />} placeholder="+44 20 7946 0000" />
+                  <Input name="country" label="Country" icon={<Globe />} placeholder="United Kingdom" />
+                  <Input name="city" label="City" icon={<Building2 />} placeholder="London" />
+                  <Input name="streetAddress" label="Street Address" icon={<Home />} placeholder="123 Baker Street" />
+                  <Input name="postcode" label="Zip Code" icon={<MapPin />} placeholder="NW1 6XE" />
                 </>
               )}
             </div>
@@ -325,6 +334,7 @@ function Input({ name, label, icon, placeholder, type = 'text', required = false
           type={type}
           placeholder={placeholder}
           required={required}
+          autoComplete="off"
           className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 dark:placeholder:text-white/50 text-sm shadow-sm dark:shadow-none dark:text-white"
         />
       </div>
