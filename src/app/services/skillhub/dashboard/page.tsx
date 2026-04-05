@@ -238,8 +238,8 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="md:text-right pt-4 md:pt-1 md:pr-1 border-t md:border-t-0 border-black/50 dark:border-white/5 mt-4 md:mt-0">
-                    <span className="text-xs font-black text-black tracking-normal block mb-1">Authenticated Account</span>
-                    <span className="text-xl font-black text-black tracking-tight">User ID: {String(user.customerNumber || 0).padStart(4, '0')}</span>
+                    <span className="text-xs font-black text-black dark:text-white tracking-normal block mb-1">Authenticated Account</span>
+                    <span className="text-xl font-black text-black dark:text-white tracking-tight">User ID: {String(user.customerNumber || 0).padStart(4, '0')}</span>
                   </div>
                 </div>
                 {isVigente && user.chosenPlan && (
@@ -274,20 +274,20 @@ export default function DashboardPage() {
 
               <div className="bg-[#f2f2f2] dark:bg-slate-900/40 backdrop-blur-3xl border border-[#c0c0c0] dark:border-white/[0.05] rounded-[2rem] shadow-2xl p-6 transition-all">
                 <div className="flex items-center justify-between mb-6 border-b border-border dark:border-slate-950/10 dark:border-white/5 pb-4">
-                  <h3 className="text-xs font-black text-black dark:text-white tracking-normal">Profile Identity</h3>
+                  <h3 className="text-base font-black text-black dark:text-white tracking-normal">Profile Identity</h3>
                   <ShieldCheck className="w-4 h-4 text-primary opacity-20" />
                 </div>
 
                 <form action={handleUpdate} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <InputField name="firstName" label="First Name" defaultValue={user.firstName} icon={<User />} setGlobalNotification={setGlobalNotification} />
-                    <InputField name="lastName" label="Last Name" defaultValue={user.lastName} icon={<User />} setGlobalNotification={setGlobalNotification} />
-                    <InputField name="email" label="Email" defaultValue={user.email} icon={<Mail />} readOnly />
+                    <InputField name="firstName" label="First Name" defaultValue={user.firstName} icon={<User />} required />
+                    <InputField name="lastName" label="Last Name" defaultValue={user.lastName} icon={<User />} required />
+                    <InputField name="email" label="Email" defaultValue={user.email} icon={<Mail />} required readOnly />
                     <InputField name="phone" label="Phone" defaultValue={user.phone} icon={<Phone />} />
                   </div>
                   
                   <div className="border-t border-slate-950/10 dark:border-white/5 pt-6">
-                    <h4 className="text-xs font-black text-black dark:text-white tracking-normal mb-4">Billing Address</h4>
+                    <h4 className="text-base font-black text-black dark:text-white tracking-normal mb-4">Billing Address</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <InputField name="companyName" label="Company" defaultValue={user.companyName} icon={<Building />} />
                       <div className="md:col-span-2">
@@ -343,10 +343,13 @@ export default function DashboardPage() {
   );
 }
 
-function InputField({ name, label, defaultValue, placeholder, icon, readOnly = false }: any) {
+function InputField({ name, label, defaultValue, placeholder, icon, readOnly = false, required = false }: any) {
   return (
     <div className="space-y-1.5 group">
-      <label className="text-xs font-black tracking-normal ml-1 block text-black dark:text-white">{label}</label>
+      <label className="text-xs font-black tracking-normal ml-1 block text-black dark:text-white">
+        {required && <span className="text-red-500 mr-1">*</span>}
+        {label}
+      </label>
       <div className="relative">
         <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-black dark:text-white/40 group-focus-within:text-primary transition-colors">
           <span className="[&>svg]:w-3.5 [&>svg]:h-3.5">{icon}</span>
@@ -356,6 +359,7 @@ function InputField({ name, label, defaultValue, placeholder, icon, readOnly = f
           defaultValue={defaultValue}
           placeholder={placeholder}
           readOnly={readOnly}
+          required={required}
           className={`w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white transition-all focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/40 text-xs ${readOnly ? 'opacity-90 cursor-default' : 'group-hover:bg-black/10 dark:group-hover:bg-slate-900/50'}`}
         />
       </div>
@@ -415,10 +419,10 @@ function AdminCenter({ currentUserId, setGlobalNotification }: { currentUserId: 
   const [activeView, setActiveView] = useState<'students' | 'licenses'>('students');
 
   return (
-    <div className="bg-slate-200/60 dark:bg-slate-900/60 backdrop-blur-3xl border border-black/20 dark:border-white/[0.05] rounded-[2.5rem] shadow-2xl h-full flex flex-col overflow-hidden">
-      <div className="flex overflow-x-auto border-b border-black/20 dark:border-white/5 bg-black/5 dark:bg-slate-950/20 no-scrollbar">
-        <TabButton active={activeView === 'students'} onClick={() => setActiveView('students')} icon={<Users className="w-4 h-4" />} label="Users" />
-        <TabButton active={activeView === 'licenses'} onClick={() => setActiveView('licenses')} icon={<Table className="w-4 h-4" />} label="License Inventory" />
+    <div className="bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-3xl border border-black dark:border-white/[0.05] rounded-[2.5rem] shadow-2xl h-full flex flex-col overflow-hidden">
+      <div className="flex overflow-x-auto border-b border-black dark:border-white/5 bg-black/5 dark:bg-slate-950/20 no-scrollbar">
+        <TabButton active={activeView === 'students'} onClick={() => setActiveView('students')} icon={<Users className="w-5 h-5" />} label="Users" />
+        <TabButton active={activeView === 'licenses'} onClick={() => setActiveView('licenses')} icon={<Table className="w-5 h-5" />} label="License Inventory" />
       </div>
       
       <div className="flex-1 p-6 overflow-y-auto max-h-[700px] custom-scrollbar focus:outline-none">
@@ -433,7 +437,7 @@ function TabButton({ active, onClick, icon, label }: any) {
   return (
     <button 
       onClick={onClick}
-      className={`flex items-center gap-3 px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-r border-border dark:border-slate-950/10 dark:border-white/5 ${active ? 'bg-primary/10 text-primary border-b-2 border-b-primary' : 'text-black dark:text-white hover:bg-secondary/40 font-bold'}`}
+      className={`flex items-center gap-3 px-8 py-5 text-[12px] font-black lowercase-to-titlecase tracking-[0.05em] transition-all border-r border-black/10 dark:border-white/5 ${active ? 'bg-primary/5 text-primary' : 'text-black dark:text-white hover:bg-black/5 font-bold'}`}
     >
       {icon} {label}
     </button>
@@ -529,7 +533,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                           </span>
                         )}
                         <span>{u.firstName} {u.lastName}</span>
-                        <span className="text-[10px] text-muted-foreground font-mono font-medium opacity-50 ml-2">({u.email})</span>
+                        <span className="text-[10px] text-black dark:text-white font-mono font-medium ml-2">({u.email})</span>
                         {u.isAdmin && <span className="text-[10px] text-primary dark:text-primary-foreground font-mono font-black border border-primary/20 px-4 rounded-md bg-primary/5 uppercase tracking-[0.2em]">ADMIN</span>}
                       </h4>
                     </div>
@@ -539,7 +543,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                 <div className="flex items-center gap-3 md:gap-6 pl-14 md:pl-0">
                     <div className="text-right whitespace-nowrap">
                        <div className="flex items-center gap-2">
-                         <span className="text-[10px] font-black text-black dark:text-white/40 uppercase tracking-[0.2em]">Ends</span>
+                         <span className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em]">Ends</span>
                          <span className="text-sm font-black text-black dark:text-white font-mono tracking-tight bg-black/5 dark:bg-white/5 px-3 py-1 rounded-lg border border-black/5 dark:border-white/10">
                            {u.subscriptionEnd ? new Date(u.subscriptionEnd).toISOString().split('T')[0].split('-').reverse().join('-') : 'N/A'}
                          </span>
@@ -553,20 +557,20 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                   <form action={(fd) => handleUpdateStudent(u.id, fd)} className="grid grid-cols-1 md:grid-cols-12 gap-8">
                     <div className="md:col-span-4 space-y-6">
                        <div className="bg-white dark:bg-slate-900/50 p-6 rounded-3xl border border-slate-950/10 dark:border-white/5">
-                          <label className="text-[12px] font-black text-primary dark:text-primary-foreground tracking-normal block mb-4">Account Status</label>
+                          <label className="text-sm font-black text-black dark:text-primary-foreground tracking-normal block mb-4">Account Status</label>
                           <div className="space-y-4">
                             <label className="flex items-center justify-between cursor-pointer group">
-                              <span className="text-[11px] font-bold text-black dark:text-foreground group-hover:text-primary transition-colors">Access Active</span>
+                              <span className="text-[11px] font-black text-black dark:text-foreground group-hover:text-primary transition-colors">Access Active</span>
                               <input 
                                 type="checkbox" 
                                 name="isActive" 
                                 defaultChecked={u.isActive} 
                                 disabled={u.email === 'uhurutradeuk@gmail.com'}
-                                className={`w-5 h-5 rounded-md border-slate-950/20 dark:border-white/20 accent-primary ${u.email === 'uhurutradeuk@gmail.com' ? 'bg-slate-950/50 cursor-not-allowed opacity-50' : 'bg-slate-950'}`} 
+                                className={`w-5 h-5 rounded-md border-black/20 dark:border-white/20 accent-primary ${u.email === 'uhurutradeuk@gmail.com' ? 'bg-slate-950/50 cursor-not-allowed opacity-50' : 'bg-slate-950'}`} 
                               />
                             </label>
                             <label className="flex items-center justify-between cursor-pointer group">
-                              <span className="text-[11px] font-bold text-black dark:text-foreground group-hover:text-primary transition-colors">Payment Verified</span>
+                              <span className="text-[11px] font-black text-black dark:text-foreground group-hover:text-primary transition-colors">Payment Verified</span>
                               <input 
                                 type="checkbox" 
                                 name="isPaid" 
@@ -583,19 +587,19 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                     setGlobalNotification({ success: false, message: 'Select Start Date & Plan First' });
                                   }
                                 }}
-                                className="w-5 h-5 rounded-md border-2 border-primary/20 bg-white/10 dark:bg-white/10 accent-primary cursor-pointer hover:bg-white/20 transition-all shadow-sm" 
+                                className="w-5 h-5 rounded-md border-2 border-black/20 bg-white/10 dark:bg-white/10 accent-primary cursor-pointer hover:bg-white/20 transition-all shadow-sm" 
                               />
                             </label>
-                            <label className="flex items-center justify-between opacity-50">
+                            <label className="flex items-center justify-between">
                                <div className="flex items-center gap-2">
-                                 <span className="text-[11px] font-bold text-black dark:text-foreground">Licence Assigned</span>
+                                 <span className="text-[11px] font-black text-black dark:text-foreground">Licence Assigned</span>
                                  {u.licenses?.length > 0 && (
-                                   <span className="text-[9px] bg-emerald-500/10 text-emerald-700 dark:text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/20 font-black">
+                                   <span className="text-[11px] bg-emerald-500/10 text-emerald-700 dark:text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/20 font-black">
                                      {u.licenses[0].purchaseOrder}
                                    </span>
                                  )}
                                </div>
-                               <input type="checkbox" disabled checked={u.licenses?.length > 0} className="w-5 h-5 rounded-md border-slate-950/20 dark:border-white/10 bg-black/40 accent-emerald-500 cursor-not-allowed" />
+                               <input type="checkbox" disabled checked={u.licenses?.length > 0} className="w-5 h-5 rounded-md border-black/20 dark:border-white/10 bg-black/40 accent-emerald-500 cursor-not-allowed" />
                             </label>
                             <div className="pt-2 flex justify-center">
                                <button 
@@ -611,14 +615,14 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                        </div>
 
                        <div className="bg-white dark:bg-slate-900/50 p-6 rounded-3xl border border-slate-950/10 dark:border-white/5">
-                          <label className="text-[12px] font-black text-primary dark:text-primary-foreground tracking-normal block mb-4">Assignment Period</label>
+                          <label className="text-sm font-black text-black dark:text-primary-foreground tracking-normal block mb-4">Assignment Period</label>
                           <div className="space-y-4">
                             <div>
-                               <label className="text-[9px] font-black text-black dark:text-white tracking-normal mb-1 block">Start Date</label>
+                               <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Start Date</label>
                                <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
                             </div>
                             <div>
-                               <label className="text-[9px] font-black text-black dark:text-white tracking-normal mb-1 block">Selected Plan</label>
+                               <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Selected Plan</label>
                                <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
                                   <option value="">No Plan</option>
                                   <option value="7">Oracle Fusion 7 days</option>
@@ -627,7 +631,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                </select>
                             </div>
                             <div>
-                                <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block flex items-center gap-1">
+                                <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block flex items-center gap-1">
                                   <Activity className="w-2.5 h-2.5" /> Adjust License Duration
                                 </label>
                                 <select name="addDays" defaultValue="0" className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
@@ -646,9 +650,9 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
 
                     <div className="md:col-span-8">
                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <InputAdmin name="firstName" label="First Name" defaultValue={u.firstName} readOnly={u.id !== currentUserId} />
-                          <InputAdmin name="lastName" label="Last Name" defaultValue={u.lastName} readOnly={u.id !== currentUserId} />
-                          <InputAdmin name="email" label="Email" defaultValue={u.email} readOnly />
+                          <InputAdmin name="firstName" label="First Name" defaultValue={u.firstName} readOnly={u.id !== currentUserId} required />
+                          <InputAdmin name="lastName" label="Last Name" defaultValue={u.lastName} readOnly={u.id !== currentUserId} required />
+                          <InputAdmin name="email" label="Email" defaultValue={u.email} readOnly required />
                           <InputAdmin name="phone" label="Phone" defaultValue={u.phone} readOnly={u.id !== currentUserId} />
                           <InputAdmin name="companyName" label="Company" defaultValue={u.companyName} readOnly={u.id !== currentUserId} />
                            <div className="sm:col-span-2">
@@ -682,14 +686,18 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
   );
 }
 
-function InputAdmin({ name, label, defaultValue, readOnly }: any) {
+function InputAdmin({ name, label, defaultValue, readOnly, required = false }: any) {
   return (
     <div>
-      <label className="text-[12px] font-black text-black dark:text-white tracking-normal mb-1 block">{label}</label>
+      <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">
+        {required && <span className="text-red-500 mr-1">*</span>}
+        {label}
+      </label>
       <input 
         name={name} 
         defaultValue={defaultValue} 
         readOnly={readOnly}
+        required={required}
         className={`w-full bg-slate-50 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-foreground dark:text-white focus:ring-1 focus:ring-primary outline-none transition-all ${readOnly ? 'opacity-90 cursor-not-allowed bg-slate-100' : 'hover:bg-white dark:hover:bg-slate-900/50'}`} 
       />
     </div>
@@ -816,7 +824,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                    <div className="flex-1 overflow-hidden">
                       <div className="flex flex-wrap items-center gap-3 mb-1">
                         <h4 className="font-bold text-foreground text-sm truncate max-w-[300px] text-black dark:text-white">{l.urlLink}</h4>
-                        <span className={`text-[11px] font-black ${l.isAvailable ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-500/50'}`}>
+                        <span className={`text-[11px] font-black ${l.isAvailable ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-600'}`}>
                            {l.isAvailable ? 'Working' : 'Occupied'}
                         </span>
                         {l.assignedTo && (
@@ -828,10 +836,10 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                       </div>
                       <div className="flex items-center gap-4">
                         <p className="text-[10px] font-mono text-black dark:text-white flex items-center gap-1.5">
-                           <span className="text-[8px] font-black uppercase tracking-tighter opacity-50">User:</span> {l.username}
+                           <span className="text-[10px] font-black tracking-normal">User:</span> {l.username}
                         </p>
                         <p className="text-[10px] font-mono text-black dark:text-white flex items-center gap-1.5">
-                           <span className="text-[8px] font-black uppercase tracking-tighter opacity-50">Pass:</span> {l.password}
+                           <span className="text-[10px] font-black tracking-normal">Pass:</span> {l.password}
                         </p>
                       </div>
                    </div>
@@ -866,7 +874,7 @@ function LicenseForm({ license, onSave, onCancel }: any) {
       <input type="hidden" name="id" value={license?.id || ''} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
          <div>
-            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Purchase Order</label>
+            <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Purchase Order</label>
             <input 
               name="purchaseOrder" 
               defaultValue={license?.purchaseOrder || ""} 
@@ -885,30 +893,30 @@ function LicenseForm({ license, onSave, onCancel }: any) {
             <p className="text-[8px] text-black dark:text-white mt-1 uppercase font-bold tracking-tighter">Fixed Format: 00000-0</p>
          </div>
          <div>
-            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Oracle Fusion Url</label>
+            <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Oracle Fusion Url</label>
             <input name="urlLink" defaultValue={license?.urlLink || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
          </div>
          <div>
-            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Expiry</label>
+            <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Expiry</label>
             <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
          </div>
          <div>
-            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Oracle Fusion Username</label>
+            <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Oracle Fusion Username</label>
             <input name="username" defaultValue={license?.username || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
          </div>
          <div>
-            <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Oracle Fusion Password</label>
+            <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Oracle Fusion Password</label>
             <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
          </div>
          <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/5">
             <label className="flex items-center gap-4 cursor-pointer group">
                <input type="checkbox" name="isAvailable" defaultChecked={license ? license.isAvailable : true} className="w-5 h-5 rounded border-slate-200 dark:border-white/20 bg-white dark:bg-slate-950 accent-primary" />
-               <span className="text-[11px] font-black text-black dark:text-white group-hover:text-primary uppercase tracking-widest transition-colors">Asset Working</span>
+               <span className="text-[11px] font-black text-black dark:text-white group-hover:text-primary tracking-normal transition-colors">Asset Working</span>
             </label>
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-4 cursor-pointer group shrink-0">
                  <input type="checkbox" name="isAvailableUhuru" disabled defaultChecked={license ? license.isAvailableUhuru : false} className="w-5 h-5 rounded border-slate-200 dark:border-white/20 bg-white dark:bg-slate-950 accent-emerald-500 cursor-not-allowed" />
-                 <span className="text-[11px] font-black text-black/40 dark:text-white group-hover:text-black dark:group-hover:text-foreground uppercase tracking-widest transition-colors opacity-50">Assigned</span>
+                 <span className="text-[11px] font-black text-black dark:text-white group-hover:text-black dark:group-hover:text-foreground tracking-normal transition-colors">Assigned</span>
               </label>
               {license?.assignedTo && (
                 <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono font-black uppercase tracking-tighter whitespace-nowrap">

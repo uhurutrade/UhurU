@@ -29,16 +29,8 @@ export default function SkillHubHeader({ user }: SkillHubHeaderProps) {
 
         {/* User context - ID and Email in a single line to the right of logo */}
         <div className="flex items-center gap-3 md:gap-6 min-w-0 overflow-hidden border-l border-black/10 dark:border-white/10 pl-4 md:pl-10 h-8 md:h-10">
-          {user.customerNumber && (
-            <div className="shrink-0">
-              <span className="text-[12px] md:text-xs bg-blue-900/10 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-lg border border-blue-500/10 font-black tracking-tight">
-                ID: {user.customerNumber.toString().padStart(4, '0')}
-              </span>
-            </div>
-          )}
-          
           <div className="min-w-0 flex items-center">
-            <span className="text-[11px] md:text-xs font-mono font-bold text-black/60 dark:text-white/40 lowercase tracking-tight truncate max-w-[150px] md:max-w-none">
+            <span className="text-xs md:text-sm font-mono font-bold text-black dark:text-white lowercase tracking-tight truncate max-w-[150px] md:max-w-none">
               {user.email}
             </span>
           </div>
