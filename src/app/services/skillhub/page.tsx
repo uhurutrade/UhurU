@@ -68,7 +68,7 @@ export default function SkillHubPage() {
       <SubPageHeader backHref="/" backText="Back Home" />
       {/* Background Orbs */}
       <div className="absolute top-0 -left-10 w-96 h-96 bg-slate-400 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.02] dark:opacity-20 animate-pulse transition-all duration-1000"></div>
-      <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-slate-500 dark:bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.03] dark:opacity-20 animate-pulse animation-delay-2000 transition-all duration-1000"></div>
+      <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-slate-500 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.03] dark:opacity-20 animate-pulse animation-delay-2000 transition-all duration-1000"></div>
 
       <div className="w-full max-w-[1400px] mx-auto z-10 mt-6 md:mt-10 lg:mt-16 mb-20 px-4 md:px-6 flex flex-col lg:flex-row gap-8 lg:gap-10 items-center lg:items-start justify-center relative transition-all duration-700">
         

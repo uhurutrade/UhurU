@@ -52,9 +52,9 @@ export default function Hero() {
                     e.currentTarget.style.transform = 'rotate(-14deg)';
                   }}
                 >
-                  <span className="text-primary dark:text-blue-500 font-black text-3xl md:text-4xl lg:text-[43px] tracking-tighter drop-shadow-none dark:drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£18</span>
+                  <span className="text-primary dark:text-primary font-black text-3xl md:text-4xl lg:text-[43px] tracking-tighter drop-shadow-none dark:drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£18</span>
                   <span className="text-black dark:text-white font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5 whitespace-nowrap">7 Days Access</span>
-                  <span className="text-primary dark:text-blue-400 font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5">Oracle Fusion</span>
+                  <span className="text-primary dark:text-primary font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5">Oracle Fusion</span>
                 </div>
               </Link>
 
@@ -70,9 +70,9 @@ export default function Hero() {
                     e.currentTarget.style.transform = 'rotate(-10deg)';
                   }}
                 >
-                  <span className="text-primary dark:text-blue-500 font-black text-3xl md:text-4xl lg:text-[43px] tracking-tighter drop-shadow-none dark:drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£59</span>
+                  <span className="text-primary dark:text-primary font-black text-3xl md:text-4xl lg:text-[43px] tracking-tighter drop-shadow-none dark:drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£59</span>
                   <span className="text-black dark:text-white font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5 whitespace-nowrap">30 Days Access</span>
-                  <span className="text-primary dark:text-blue-400 font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5">Oracle Fusion</span>
+                  <span className="text-primary dark:text-primary font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5">Oracle Fusion</span>
                 </div>
               </Link>
 
@@ -88,9 +88,9 @@ export default function Hero() {
                     e.currentTarget.style.transform = 'rotate(-7deg)';
                   }}
                 >
-                  <span className="text-primary dark:text-blue-500 font-black text-3xl md:text-4xl lg:text-[43px] tracking-tighter drop-shadow-none dark:drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£147</span>
+                  <span className="text-primary dark:text-primary font-black text-3xl md:text-4xl lg:text-[43px] tracking-tighter drop-shadow-none dark:drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£147</span>
                   <span className="text-black dark:text-white font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5 whitespace-nowrap">90 Days Access</span>
-                  <span className="text-primary dark:text-blue-400 font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5">Oracle Fusion</span>
+                  <span className="text-primary dark:text-primary font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5">Oracle Fusion</span>
                 </div>
               </Link>
 

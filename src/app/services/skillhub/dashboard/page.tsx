@@ -164,7 +164,7 @@ export default function DashboardPage() {
       <SubPageHeader backHref="/" backText="Back Home" />
       {/* Background Orbs */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-slate-400 dark:bg-primary/5 rounded-full blur-[140px] opacity-[0.02] dark:opacity-100 pointer-events-none transition-all duration-1000"></div>
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-500 dark:bg-purple-600/5 rounded-full blur-[140px] opacity-[0.03] dark:opacity-100 pointer-events-none transition-all duration-1000 animation-delay-2000"></div>
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-500 dark:bg-blue-600/5 rounded-full blur-[140px] opacity-[0.03] dark:opacity-100 pointer-events-none transition-all duration-1000 animation-delay-2000"></div>
 
       <SkillHubHeader user={user} />
 
