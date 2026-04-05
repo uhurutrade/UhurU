@@ -245,7 +245,12 @@ export default function DashboardPage() {
                 {isVigente && user.chosenPlan && (
                   <div className="mt-4 pt-4 border-t border-slate-950/10 dark:border-white/5 flex items-center gap-2">
                     <Activity className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                    <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-500/60 tracking-widest">{user.chosenPlan}</span>
+                    <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-500/60 tracking-widest">
+                      {user.chosenPlan === "7" ? "Oracle Fusion 7 Days" : 
+                       user.chosenPlan === "30" ? "Oracle Fusion 30 Days" : 
+                       user.chosenPlan === "90" ? "Oracle Fusion 90 Days" : 
+                       `Oracle Fusion ${user.chosenPlan}`}
+                    </span>
                   </div>
                 )}
               </div>
