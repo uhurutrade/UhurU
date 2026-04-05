@@ -8,6 +8,7 @@ import { cookies, headers } from 'next/headers';
 import { randomUUID } from 'crypto';
 import { sendEmail } from '@/lib/mail';
 import { getResetTemplate } from '@/lib/templates/reset';
+import { revalidatePath } from 'next/cache';
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'super-secret-key');
 const ADMIN_EMAIL = 'uhurutradeuk@gmail.com';
@@ -438,6 +439,7 @@ export async function updateUserDetails(userId: string, formData: FormData) {
       }
     });
     
+    revalidatePath('/services/skillhub/dashboard');
     return { success: true, message: 'User updated successfully' };
   } catch (error) {
     return { success: false, message: 'Error updating student details' };
