@@ -587,7 +587,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                     setGlobalNotification({ success: false, message: 'Select Start Date & Plan First' });
                                   }
                                 }}
-                                className="w-5 h-5 rounded-md border-2 border-black/20 bg-white/10 dark:bg-white/10 accent-primary cursor-pointer hover:bg-white/20 transition-all shadow-sm" 
+                                className="w-5 h-5 rounded-md border-2 border-black bg-white dark:bg-white/10 accent-primary cursor-pointer hover:bg-white/20 transition-all shadow-sm" 
                               />
                             </label>
                             <label className="flex items-center justify-between">
@@ -605,7 +605,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                <button 
                                  type="button" 
                                  onClick={() => handleForceReassign(u.id)}
-                                 className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all group"
+                                 className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary border border-black dark:border-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all group"
                                >
                                  <RefreshCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500" />
                                  Rotate Asset
@@ -619,11 +619,11 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                           <div className="space-y-4">
                             <div>
                                <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Start Date</label>
-                               <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
+                               <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-white dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
                             </div>
                             <div>
                                <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Selected Plan</label>
-                               <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
+                               <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
                                   <option value="">No Plan</option>
                                   <option value="7">Oracle Fusion 7 days</option>
                                   <option value="30">Oracle Fusion 30 days</option>
@@ -634,7 +634,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                 <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block flex items-center gap-1">
                                   <Activity className="w-2.5 h-2.5" /> Adjust License Duration
                                 </label>
-                                <select name="addDays" defaultValue="0" className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
+                                <select name="addDays" defaultValue="0" className="w-full bg-white dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
                                    <option value="0">Keep Current Expiry</option>
                                    <option value="1">+1 Extra Day</option>
                                    <option value="2">+2 Extra Days</option>
@@ -886,26 +886,26 @@ function LicenseForm({ license, onSave, onCancel }: any) {
                 }
                 e.target.value = value;
               }}
-              className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white"
+              className="w-full bg-slate-50 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white"
               required 
             />
             <p className="text-[8px] text-black dark:text-white mt-1 uppercase font-bold tracking-tighter">Fixed Format: 00000-0</p>
          </div>
          <div>
             <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Oracle Fusion Url</label>
-            <input name="urlLink" defaultValue={license?.urlLink || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
+            <input name="urlLink" defaultValue={license?.urlLink || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
          </div>
          <div>
             <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Expiry</label>
-            <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
+            <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
          </div>
          <div>
             <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Oracle Fusion Username</label>
-            <input name="username" defaultValue={license?.username || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
+            <input name="username" defaultValue={license?.username || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
          </div>
          <div>
             <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Oracle Fusion Password</label>
-            <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
+            <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
          </div>
          <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/5">
             <label className="flex items-center gap-4 cursor-pointer group">
