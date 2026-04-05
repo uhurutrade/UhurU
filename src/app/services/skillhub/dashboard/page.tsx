@@ -486,7 +486,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
       {users.map((u) => {
         const isVigente = u.isPaid && u.subscriptionEnd && new Date(u.subscriptionEnd) > new Date();
         return (
-          <div key={u.id} className={`p-1 rounded-[2rem] transition-all duration-300 ${activeTab === u.id ? 'bg-white dark:bg-primary/5 ring-1 ring-primary/10 shadow-2xl' : 'hover:bg-black/5 dark:bg-white/5 ring-1 ring-transparent'}`}>
+          <div key={`${u.id}-${u.chosenPlan}-${u.subscriptionEnd}`} className={`p-1 rounded-[2rem] transition-all duration-300 ${activeTab === u.id ? 'bg-white dark:bg-primary/5 ring-1 ring-primary/10 shadow-2xl' : 'hover:bg-black/5 dark:bg-white/5 ring-1 ring-transparent'}`}>
             <div className="p-4">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex-1 cursor-pointer flex items-center gap-3 md:gap-4" onClick={() => setActiveTab(activeTab === u.id ? null : u.id)}>
