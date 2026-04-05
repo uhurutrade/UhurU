@@ -184,10 +184,10 @@ export default function DashboardPage() {
                     
                     {isVigente && (
                       <div className="mt-3 space-y-1.5 px-1 pt-2 border-t border-emerald-500/10">
-                        <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-2">
+                        <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 tracking-normal flex items-center gap-2">
                           <Calendar className="w-4 h-4" /> From: {user.subscriptionStart ? new Date(user.subscriptionStart).toISOString().split('T')[0].split('-').reverse().join('-') : 'N/A'}
                         </p>
-                        <p className="text-sm font-black text-black dark:text-white uppercase tracking-widest flex items-center gap-2">
+                        <p className="text-sm font-black text-black dark:text-white tracking-normal flex items-center gap-2">
                           <ArrowRight className="w-3.5 h-3.5" /> To: {user.subscriptionEnd ? new Date(user.subscriptionEnd).toISOString().split('T')[0].split('-').reverse().join('-') : 'N/A'}
                         </p>
                       </div>
@@ -237,15 +237,15 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  <div className="md:text-right pt-4 md:pt-1 md:pr-1 opacity-40 border-t md:border-t-0 border-black/50 dark:border-white/5 mt-4 md:mt-0">
-                    <span className="text-[9px] font-black text-black dark:text-white/60 uppercase tracking-widest block mb-1">Authenticated Account</span>
-                    <span className="text-lg font-black text-black dark:text-foreground tracking-[0.2em]">User ID: {String(user.customerNumber || 0).padStart(4, '0')}</span>
+                  <div className="md:text-right pt-4 md:pt-1 md:pr-1 border-t md:border-t-0 border-black/50 dark:border-white/5 mt-4 md:mt-0">
+                    <span className="text-xs font-black text-black tracking-normal block mb-1">Authenticated Account</span>
+                    <span className="text-xl font-black text-black tracking-tight">User ID: {String(user.customerNumber || 0).padStart(4, '0')}</span>
                   </div>
                 </div>
                 {isVigente && user.chosenPlan && (
                   <div className="mt-4 pt-4 border-t border-black/50 dark:border-white/5 flex items-center gap-2">
                     <Activity className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                    <span className="text-[12px] font-black text-emerald-600 dark:text-emerald-500/60 tracking-normal">
+                    <span className="text-xs font-black text-emerald-600 dark:text-emerald-500/60 tracking-normal">
                       {user.chosenPlan === "7" ? "Oracle Fusion 7 Days" : 
                        user.chosenPlan === "30" ? "Oracle Fusion 30 Days" : 
                        user.chosenPlan === "90" ? "Oracle Fusion 90 Days" : 
@@ -258,7 +258,7 @@ export default function DashboardPage() {
               {isVigente && (
                 <div className="bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-3xl border border-[#c0c0c0] dark:border-primary/20 rounded-[2rem] shadow-2xl p-6 mb-6 animate-in slide-in-from-top-4 duration-700 focus-within:border-primary/40 transition-colors">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-border dark:border-slate-950/10 dark:border-white/5 pb-4">
-                     <h3 className="text-[10px] font-black text-primary dark:text-blue-400 uppercase tracking-widest flex items-center gap-2">
+                     <h3 className="text-xs font-black text-primary dark:text-blue-400 tracking-normal flex items-center gap-2">
                         <ShieldAlert className="w-4 h-4" /> Oracle Fusion Access Credentials
                      </h3>
                   </div>
@@ -274,7 +274,7 @@ export default function DashboardPage() {
 
               <div className="bg-[#f2f2f2] dark:bg-slate-900/40 backdrop-blur-3xl border border-[#c0c0c0] dark:border-white/[0.05] rounded-[2rem] shadow-2xl p-6 transition-all">
                 <div className="flex items-center justify-between mb-6 border-b border-border dark:border-slate-950/10 dark:border-white/5 pb-4">
-                  <h3 className="text-xs font-black text-black dark:text-white uppercase tracking-widest">Profile Identity</h3>
+                  <h3 className="text-xs font-black text-black dark:text-white tracking-normal">Profile Identity</h3>
                   <ShieldCheck className="w-4 h-4 text-primary opacity-20" />
                 </div>
 
@@ -287,7 +287,7 @@ export default function DashboardPage() {
                   </div>
                   
                   <div className="border-t border-slate-950/10 dark:border-white/5 pt-6">
-                    <h4 className="text-[10px] font-black uppercase text-black dark:text-white tracking-widest mb-4">Billing Address</h4>
+                    <h4 className="text-xs font-black text-black dark:text-white tracking-normal mb-4">Billing Address</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <InputField name="companyName" label="Company" defaultValue={user.companyName} icon={<Building />} />
                       <div className="md:col-span-2">
@@ -305,7 +305,7 @@ export default function DashboardPage() {
                     <button
                       disabled={updating}
                       type="submit"
-                      className="px-8 py-4 bg-primary hover:bg-primary/90 text-white font-black uppercase text-[11px] tracking-widest rounded-xl transition-all shadow-xl shadow-primary/20 flex items-center gap-2 group disabled:opacity-50"
+                      className="px-8 py-4 bg-primary hover:bg-primary/90 text-white font-black text-xs tracking-normal rounded-xl transition-all shadow-xl shadow-primary/20 flex items-center gap-2 group disabled:opacity-50"
                     >
                       {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />}
                       Update Account
@@ -346,7 +346,7 @@ export default function DashboardPage() {
 function InputField({ name, label, defaultValue, placeholder, icon, readOnly = false }: any) {
   return (
     <div className="space-y-1.5 group">
-      <label className="text-[9px] font-black tracking-widest uppercase ml-1 block text-black dark:text-white">{label}</label>
+      <label className="text-xs font-black tracking-normal ml-1 block text-black dark:text-white">{label}</label>
       <div className="relative">
         <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-black dark:text-white/40 group-focus-within:text-primary transition-colors">
           <span className="[&>svg]:w-3.5 [&>svg]:h-3.5">{icon}</span>
@@ -356,7 +356,7 @@ function InputField({ name, label, defaultValue, placeholder, icon, readOnly = f
           defaultValue={defaultValue}
           placeholder={placeholder}
           readOnly={readOnly}
-          className={`w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white transition-all focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/40 text-[11px] ${readOnly ? 'opacity-90 cursor-default' : 'group-hover:bg-black/10 dark:group-hover:bg-slate-900/50'}`}
+          className={`w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white transition-all focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/40 text-xs ${readOnly ? 'opacity-90 cursor-default' : 'group-hover:bg-black/10 dark:group-hover:bg-slate-900/50'}`}
         />
       </div>
     </div>
@@ -373,7 +373,7 @@ function CredentialField({ label, value, icon, setGlobalNotification }: { label:
 
   return (
     <div className="space-y-1.5 group">
-      <label className="text-[9px] font-black tracking-widest uppercase ml-1 block text-black dark:text-white">{label}</label>
+      <label className="text-xs font-black tracking-normal ml-1 block text-black dark:text-white">{label}</label>
       <div className="relative flex items-center gap-2">
         <div className="relative flex-1">
           <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-black dark:text-white/40">
@@ -382,7 +382,7 @@ function CredentialField({ label, value, icon, setGlobalNotification }: { label:
           <input
             readOnly
             value={value || 'Refreshing...'}
-            className="w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white cursor-default focus:outline-none text-[11px]"
+            className="w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white cursor-default focus:outline-none text-xs"
           />
         </div>
         <CopyButton text={value || ''} onCopy={onCopy} />
@@ -404,7 +404,7 @@ function CopyButton({ text, onCopy }: { text: string; onCopy?: any }) {
     <button 
       type="button"
       onClick={handleCopy} 
-      className={`px-4 py-3 rounded-xl border border-slate-950/10 dark:border-white/10 font-black text-[9px] uppercase tracking-widest transition-all ${copied ? 'bg-emerald-500 text-foreground border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'bg-black/5 dark:bg-white/5 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:text-foreground'}`}
+      className={`px-4 py-3 rounded-xl border border-slate-950/10 dark:border-white/10 font-black text-xs tracking-normal transition-all ${copied ? 'bg-emerald-500 text-foreground border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'bg-black/5 dark:bg-white/5 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:text-foreground'}`}
     >
       {copied ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
     </button>
@@ -553,7 +553,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                   <form action={(fd) => handleUpdateStudent(u.id, fd)} className="grid grid-cols-1 md:grid-cols-12 gap-8">
                     <div className="md:col-span-4 space-y-6">
                        <div className="bg-white dark:bg-slate-900/50 p-6 rounded-3xl border border-slate-950/10 dark:border-white/5">
-                          <label className="text-[10px] font-black text-primary dark:text-primary-foreground uppercase tracking-widest block mb-4">Account Status</label>
+                          <label className="text-[12px] font-black text-primary dark:text-primary-foreground tracking-normal block mb-4">Account Status</label>
                           <div className="space-y-4">
                             <label className="flex items-center justify-between cursor-pointer group">
                               <span className="text-[11px] font-bold text-black dark:text-foreground group-hover:text-primary transition-colors">Access Active</span>
@@ -611,14 +611,14 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                        </div>
 
                        <div className="bg-white dark:bg-slate-900/50 p-6 rounded-3xl border border-slate-950/10 dark:border-white/5">
-                          <label className="text-[10px] font-black text-primary dark:text-primary-foreground uppercase tracking-widest block mb-4">Assignment Period</label>
+                          <label className="text-[12px] font-black text-primary dark:text-primary-foreground tracking-normal block mb-4">Assignment Period</label>
                           <div className="space-y-4">
                             <div>
-                               <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Start Date</label>
+                               <label className="text-[9px] font-black text-black dark:text-white tracking-normal mb-1 block">Start Date</label>
                                <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
                             </div>
                             <div>
-                               <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Selected Plan</label>
+                               <label className="text-[9px] font-black text-black dark:text-white tracking-normal mb-1 block">Selected Plan</label>
                                <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
                                   <option value="">No Plan</option>
                                   <option value="7">Oracle Fusion 7 days</option>
@@ -685,7 +685,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
 function InputAdmin({ name, label, defaultValue, readOnly }: any) {
   return (
     <div>
-      <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">{label}</label>
+      <label className="text-[12px] font-black text-black dark:text-white tracking-normal mb-1 block">{label}</label>
       <input 
         name={name} 
         defaultValue={defaultValue} 
@@ -751,12 +751,12 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                setGlobalNotification({ success: true, message: 'All URLs verified' });
              }}
              disabled={updating}
-             className="bg-black/5 dark:bg-white/5 hover:bg-white/10 text-black dark:text-foreground text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all border border-slate-950/20 dark:border-white/10 flex items-center gap-2 disabled:opacity-50"
+             className="bg-black/5 dark:bg-white/5 hover:bg-white/10 text-black dark:text-foreground text-[11px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all border border-slate-950/20 dark:border-white/10 flex items-center gap-2 disabled:opacity-50"
            >
              {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
              Health Url
            </button>
-           <button onClick={() => setEditingId('new')} className="bg-primary dark:bg-primary hover:bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all shadow-xl shadow-primary/40 flex items-center gap-2 border border-slate-950/20 dark:border-white/20">
+           <button onClick={() => setEditingId('new')} className="bg-primary dark:bg-primary hover:bg-primary/90 text-white text-[11px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all shadow-xl shadow-primary/40 flex items-center gap-2 border border-slate-950/20 dark:border-white/20">
              <Plus className="w-4 h-4" /> Add Asset
            </button>
         </div>
