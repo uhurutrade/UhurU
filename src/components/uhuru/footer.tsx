@@ -33,7 +33,7 @@ export default function Footer() {
                   </p>
               </div>
 
-              <div className="flex items-center gap-8 flex-shrink-0">
+              <div className="flex items-center gap-3 flex-shrink-0">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link href="https://www.linkedin.com/company/uhurutrade" aria-label="LinkedIn" prefetch={false} className="transition-transform hover:scale-125"><Linkedin className="h-4 w-4 text-foreground hover:text-primary" /></Link>
