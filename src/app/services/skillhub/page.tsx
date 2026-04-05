@@ -99,29 +99,29 @@ export default function SkillHubPage() {
       <div className="absolute top-0 -left-10 w-96 h-96 bg-slate-400 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.02] dark:opacity-20 animate-pulse transition-all duration-1000"></div>
       <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-slate-500 dark:bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.03] dark:opacity-20 animate-pulse animation-delay-2000 transition-all duration-1000"></div>
 
-      <div className="w-full max-w-[1400px] mx-auto z-10 lg:mt-16 mb-20 px-4 flex flex-col lg:flex-row gap-10 items-center lg:items-start justify-center relative transition-all duration-700">
+      <div className="w-full max-w-[1400px] mx-auto z-10 mt-6 md:mt-10 lg:mt-16 mb-20 px-4 md:px-6 flex flex-col lg:flex-row gap-8 lg:gap-10 items-center lg:items-start justify-center relative transition-all duration-700">
         
         {/* Login/Register Form Card */}
         <div className="w-full max-w-2xl lg:sticky lg:top-10 bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-2xl border border-[#c0c0c0] dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
           
           {view !== 'forgot' && (
-            <div className="flex border-b border-slate-800">
+            <div className="flex border-b border-white/5 dark:border-slate-800">
               <button 
                 onClick={() => { setView('login'); setStatus(null); }}
-                className={`flex-1 py-6 font-semibold flex items-center justify-center gap-2 transition-all ${view === 'login' ? 'bg-primary text-white shadow-inner' : 'text-black dark:text-white hover:text-primary hover:bg-slate-200 dark:hover:bg-slate-800/50'}`}
+                className={`flex-1 py-5 sm:py-6 font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center gap-2 transition-all ${view === 'login' ? 'bg-primary text-white shadow-inner' : 'text-slate-500 dark:text-white/60 hover:text-primary hover:bg-slate-200 dark:hover:bg-white/5'}`}
               >
-                <LogIn className="w-5 h-5" /> Sign In
+                <LogIn className="w-4 h-4 sm:w-5 sm:h-5" /> Sign In
               </button>
               <button 
                 onClick={() => { setView('register'); setStatus(null); }}
-                className={`flex-1 py-6 font-semibold flex items-center justify-center gap-2 transition-all ${view === 'register' ? 'bg-primary text-white shadow-inner' : 'text-black dark:text-white hover:text-primary hover:bg-slate-200 dark:hover:bg-slate-800/50'}`}
+                className={`flex-1 py-5 sm:py-6 font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center gap-2 transition-all ${view === 'register' ? 'bg-primary text-white shadow-inner' : 'text-slate-500 dark:text-white/60 hover:text-primary hover:bg-slate-200 dark:hover:bg-white/5'}`}
               >
-                <UserPlus className="w-5 h-5" /> Sign Up
+                <UserPlus className="w-4 h-4 sm:w-5 sm:h-5" /> Sign Up
               </button>
             </div>
           )}
 
-          <div className="p-8 pb-4 text-center">
+          <div className="p-6 sm:p-8 pb-4 text-center">
             {/* Uhuru Official Logo */}
             <div className="flex justify-center mb-6">
               <Logo />
@@ -131,11 +131,11 @@ export default function SkillHubPage() {
             <div className="flex flex-col items-center mb-6">
               <div className="font-black tracking-tighter text-foreground flex items-center gap-0.5 leading-none" 
                    style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
-                <span className="text-4xl sm:text-7xl text-black dark:text-white transition-all duration-500">Skill</span>
-                <span className="text-4xl sm:text-7xl text-primary drop-shadow-[0_0_20px_rgba(37,99,235,0.25)] sm:drop-shadow-[0_0_35px_rgba(37,99,235,0.3)] transition-all duration-500">Hub</span>
-                <div className="w-2.5 h-2.5 sm:w-4 sm:h-4 bg-primary rounded-full mt-auto mb-1.5 sm:mb-2.5 animate-pulse ml-1.5 sm:ml-2"></div>
+                <span className="text-5xl sm:text-7xl text-black dark:text-white transition-all duration-500">Skill</span>
+                <span className="text-5xl sm:text-7xl text-primary drop-shadow-[0_0_20px_rgba(37,99,235,0.25)] sm:drop-shadow-[0_0_35px_rgba(37,99,235,0.3)] transition-all duration-500">Hub</span>
+                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-full mt-auto mb-1.5 sm:mb-2.5 animate-pulse ml-1.5 sm:ml-2"></div>
               </div>
-              <p className="mt-4 text-xs sm:text-xl font-medium text-black dark:text-white tracking-wide text-center px-4">
+              <p className="mt-4 text-sm sm:text-xl font-medium text-black dark:text-white tracking-wide text-center px-4 leading-relaxed">
                 Get access to your Oracle Fusion instance for Learning
               </p>
             </div>
