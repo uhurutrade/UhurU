@@ -237,13 +237,13 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  <div className="md:text-right pt-4 md:pt-1 md:pr-1 opacity-40 border-t md:border-t-0 border-border/50 dark:border-slate-950/10 dark:border-white/5 mt-4 md:mt-0">
+                  <div className="md:text-right pt-4 md:pt-1 md:pr-1 opacity-40 border-t md:border-t-0 border-black/50 dark:border-white/5 mt-4 md:mt-0">
                     <span className="text-[9px] font-black text-black dark:text-white/60 uppercase tracking-widest block mb-1">Authenticated Account</span>
                     <span className="text-lg font-black text-black dark:text-foreground tracking-[0.2em]">User ID: {String(user.customerNumber || 0).padStart(4, '0')}</span>
                   </div>
                 </div>
                 {isVigente && user.chosenPlan && (
-                  <div className="mt-4 pt-4 border-t border-slate-950/10 dark:border-white/5 flex items-center gap-2">
+                  <div className="mt-4 pt-4 border-t border-black/50 dark:border-white/5 flex items-center gap-2">
                     <Activity className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                     <span className="text-[12px] font-black text-emerald-600 dark:text-emerald-500/60 tracking-normal">
                       {user.chosenPlan === "7" ? "Oracle Fusion 7 Days" : 
@@ -356,7 +356,7 @@ function InputField({ name, label, defaultValue, placeholder, icon, readOnly = f
           defaultValue={defaultValue}
           placeholder={placeholder}
           readOnly={readOnly}
-          className={`w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white transition-all focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/40 text-[11px] ${readOnly ? 'opacity-90 cursor-default' : 'group-hover:bg-black/10 dark:group-hover:bg-slate-900/50'}`}
+          className={`w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white transition-all focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/40 text-[11px] ${readOnly ? 'opacity-90 cursor-default' : 'group-hover:bg-black/10 dark:group-hover:bg-slate-900/50'}`}
         />
       </div>
     </div>
@@ -382,7 +382,7 @@ function CredentialField({ label, value, icon, setGlobalNotification }: { label:
           <input
             readOnly
             value={value || 'Refreshing...'}
-            className="w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white cursor-default focus:outline-none text-[11px]"
+            className="w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white cursor-default focus:outline-none text-[11px]"
           />
         </div>
         <CopyButton text={value || ''} onCopy={onCopy} />
@@ -415,8 +415,8 @@ function AdminCenter({ currentUserId, setGlobalNotification }: { currentUserId: 
   const [activeView, setActiveView] = useState<'students' | 'licenses'>('students');
 
   return (
-    <div className="bg-card/40 dark:bg-slate-900/60 backdrop-blur-3xl border border-border/50 dark:border-white/[0.05] rounded-[2.5rem] shadow-2xl h-full flex flex-col overflow-hidden">
-      <div className="flex overflow-x-auto border-b border-border dark:border-slate-950/10 dark:border-white/5 bg-secondary/20 dark:bg-slate-950/20 no-scrollbar">
+    <div className="bg-slate-200/60 dark:bg-slate-900/60 backdrop-blur-3xl border border-black/20 dark:border-white/[0.05] rounded-[2.5rem] shadow-2xl h-full flex flex-col overflow-hidden">
+      <div className="flex overflow-x-auto border-b border-black/20 dark:border-white/5 bg-black/5 dark:bg-slate-950/20 no-scrollbar">
         <TabButton active={activeView === 'students'} onClick={() => setActiveView('students')} icon={<Users className="w-4 h-4" />} label="Users" />
         <TabButton active={activeView === 'licenses'} onClick={() => setActiveView('licenses')} icon={<Table className="w-4 h-4" />} label="License Inventory" />
       </div>
@@ -690,7 +690,7 @@ function InputAdmin({ name, label, defaultValue, readOnly }: any) {
         name={name} 
         defaultValue={defaultValue} 
         readOnly={readOnly}
-        className={`w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-foreground dark:text-white focus:ring-1 focus:ring-primary outline-none transition-all ${readOnly ? 'opacity-90 cursor-default' : 'hover:bg-white dark:hover:bg-slate-900/50'}`} 
+        className={`w-full bg-slate-50 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-foreground dark:text-white focus:ring-1 focus:ring-primary outline-none transition-all ${readOnly ? 'opacity-90 cursor-not-allowed bg-slate-100' : 'hover:bg-white dark:hover:bg-slate-900/50'}`} 
       />
     </div>
   );
