@@ -377,7 +377,9 @@ export async function updateUserDetails(userId: string, formData: FormData) {
 
   // 2. Logic Check: Has the admin changed the BASE plan or start date?
   const currentStartIso = currentUser?.subscriptionStart ? new Date(currentUser.subscriptionStart).toISOString().split('T')[0] : "";
-  const baseChanged = plan !== (currentUser?.chosenPlan || "") || startStr !== currentStartIso;
+  const baseChanged = plan !== (currentUser?.chosenPlan || "") || 
+                     startStr !== currentStartIso || 
+                     isPaid !== currentUser?.isPaid;
 
   if (startDate && plan && baseChanged) {
     // RE-CALCULATE BASE from plan + start
