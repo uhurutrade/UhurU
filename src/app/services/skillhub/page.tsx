@@ -149,7 +149,7 @@ export default function SkillHubPage() {
                           required
                           placeholder="••••••••"
                           autoComplete="new-password"
-                          className="w-full pl-10 pr-4 py-3 bg-secondary/20 dark:bg-slate-900 border border-border dark:border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 dark:placeholder:text-white/50 text-sm dark:text-white"
+                          className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-black dark:border-white rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 dark:placeholder:text-white/50 text-sm dark:text-white"
                         />
                       </div>
                     </div>
@@ -312,7 +312,7 @@ function Input({ name, label, icon, placeholder, type = 'text', required = false
           placeholder={placeholder}
           required={required}
           autoComplete="off"
-          className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 dark:placeholder:text-white/50 text-sm shadow-sm dark:shadow-none dark:text-white"
+          className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-black dark:border-white rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 dark:placeholder:text-white/50 text-sm shadow-sm dark:shadow-none dark:text-white"
         />
       </div>
     </div>
