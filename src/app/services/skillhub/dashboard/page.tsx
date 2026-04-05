@@ -505,13 +505,13 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                          </span>
                        </div>
                        <div className="md:hidden overflow-hidden">
-                          <h4 className="font-bold text-black dark:text-foreground text-sm truncate flex items-center gap-3">
+                          <h4 className="font-black text-black dark:text-foreground text-base truncate flex items-center gap-3">
                              <div className="flex flex-col">
-                               <span className={`text-[8px] font-black tracking-wider shrink-0 ${u.isPaid ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-700 dark:text-red-500'}`}>
+                               <span className={`text-[11px] font-black tracking-normal shrink-0 ${u.isPaid ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-700 dark:text-red-500'}`}>
                                  {u.isPaid ? 'Active Plan' : 'Inactive Plan'}
                                </span>
                                {u.isPaid && (
-                                 <span className={`text-[7px] font-black tracking-tight shrink-0 ${u.licenses?.length > 0 ? 'text-emerald-700 dark:text-emerald-500' : 'text-amber-700 dark:text-amber-500'}`}>
+                                 <span className={`text-[11px] font-black tracking-normal shrink-0 ${u.licenses?.length > 0 ? 'text-emerald-700 dark:text-emerald-500' : 'text-amber-700 dark:text-amber-500'}`}>
                                    {u.licenses?.length > 0 ? 'Assigned' : 'Unassigned'}
                                  </span>
                                )}
@@ -519,12 +519,12 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                              {u.firstName} {u.lastName}
                              {u.isAdmin && <span className="text-[8px] text-primary dark:text-primary-foreground font-black border border-primary/20 px-1 rounded bg-primary/5">ADM</span>}
                           </h4>
-                          <p className="text-[9px] text-black dark:text-white font-mono truncate">{u.email}</p>
+                          <p className="text-[11px] text-black dark:text-white font-mono truncate">{u.email}</p>
                        </div>
                     </div>
                     <div className="hidden md:block overflow-hidden">
-                      <h4 className="font-black text-black dark:text-foreground flex items-center gap-4 truncate">
-                        <span className={`text-[9px] font-black tracking-[0.05em] shrink-0 ${u.isPaid ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-700 dark:text-red-500'}`}>
+                      <h4 className="font-black text-black dark:text-foreground flex items-center gap-4 truncate text-base">
+                        <span className={`text-[11px] font-black tracking-normal shrink-0 ${u.isPaid ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-700 dark:text-red-500'}`}>
                            {u.isPaid ? 'Active Plan' : 'Inactive Plan'}
                         </span>
                         {u.isPaid && (
@@ -744,10 +744,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xs font-black uppercase text-black dark:text-slate-100 tracking-widest flex items-center gap-2">
-           <Hash className="w-4 h-4 text-primary" /> Registry Entries
-        </h3>
+      <div className="flex justify-end items-center mb-4">
         <div className="flex items-center gap-3">
            <button 
              onClick={async () => {
@@ -759,13 +756,13 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                setGlobalNotification({ success: true, message: 'All URLs verified' });
              }}
              disabled={updating}
-             className="bg-black/5 dark:bg-white/5 hover:bg-white/10 text-black dark:text-foreground text-[11px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all border border-slate-950/20 dark:border-white/10 flex items-center gap-2 disabled:opacity-50"
+             className="bg-black/5 dark:bg-white/5 hover:bg-white/10 text-black dark:text-foreground text-[11px] font-black tracking-widest px-6 py-2.5 rounded-xl transition-all border border-slate-950/20 dark:border-white/10 flex items-center gap-2 disabled:opacity-50"
            >
              {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
              Health Url
            </button>
-           <button onClick={() => setEditingId('new')} className="bg-primary dark:bg-primary hover:bg-primary/90 text-white text-[11px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl transition-all shadow-xl shadow-primary/40 flex items-center gap-2 border border-slate-950/20 dark:border-white/20">
-             <Plus className="w-4 h-4" /> Add Asset
+           <button onClick={() => setEditingId('new')} className="bg-primary dark:bg-primary hover:bg-primary/90 text-white text-[11px] font-black tracking-widest px-6 py-2.5 rounded-xl transition-all shadow-xl shadow-primary/40 flex items-center gap-2 border border-slate-950/20 dark:border-white/20">
+             <Plus className="w-4 h-4" /> Add Licence
            </button>
         </div>
       </div>
@@ -816,17 +813,19 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                    <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-black dark:text-white border border-border/50 shadow-inner shrink-0">
                      {editingId === l.id ? <ChevronUp className="w-5 h-5 text-primary" /> : <ChevronDown className="w-5 h-5" />}
                    </div>
-                   <div className="w-20 h-10 rounded-xl bg-slate-200 dark:bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                      <span className="text-foreground font-black text-xs font-mono tracking-tighter">
-                        {l.purchaseOrder || '—'}
-                      </span>
+                   <div className="flex items-center gap-3 shrink-0">
+                     <div className="w-20 h-10 rounded-xl bg-slate-200 dark:bg-primary/10 border border-primary/20 flex items-center justify-center">
+                        <span className="text-foreground font-black text-xs font-mono tracking-tighter">
+                          {l.purchaseOrder || '—'}
+                        </span>
+                     </div>
+                     <span className={`text-[11px] font-black ${l.isAvailable ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-600'}`}>
+                        {l.isAvailable ? 'Working' : 'Occupied'}
+                     </span>
                    </div>
                    <div className="flex-1 overflow-hidden">
                       <div className="flex flex-wrap items-center gap-3 mb-1">
                         <h4 className="font-bold text-foreground text-sm truncate max-w-[300px] text-black dark:text-white">{l.urlLink}</h4>
-                        <span className={`text-[11px] font-black ${l.isAvailable ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-600'}`}>
-                           {l.isAvailable ? 'Working' : 'Occupied'}
-                        </span>
                         {l.assignedTo && (
                           <div className="flex items-center gap-2 text-[11px] font-black font-mono">
                              <span className="text-foreground">ID: {String(l.assignedTo.customerNumber || 0).padStart(4, '0')}</span>
