@@ -18,6 +18,17 @@ import SubPageHeader from '@/components/uhuru/subpage-header';
 import SkillHubHeader from '@/components/uhuru/skillhub-header';
 
 
+const formatDate = (date: any) => {
+  if (!date) return '—';
+  try {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '—';
+    return d.toISOString().split('T')[0].split('-').reverse().join('-');
+  } catch (e) {
+    return '—';
+  }
+};
+
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -199,10 +210,10 @@ export default function DashboardPage() {
                     {isVigente && (
                       <div className="mt-3 space-y-1.5 px-1 pt-2 border-t border-emerald-500/10">
                         <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 tracking-normal flex items-center gap-2">
-                          <Calendar className="w-4 h-4" /> From: {user.subscriptionStart ? new Date(user.subscriptionStart).toISOString().split('T')[0].split('-').reverse().join('-') : 'N/A'}
+                          <Calendar className="w-4 h-4" /> From: {formatDate(user.subscriptionStart)}
                         </p>
                         <p className="text-sm font-black text-black dark:text-white tracking-normal flex items-center gap-2">
-                          <ArrowRight className="w-3.5 h-3.5" /> To: {user.subscriptionEnd ? new Date(user.subscriptionEnd).toISOString().split('T')[0].split('-').reverse().join('-') : 'N/A'}
+                          <ArrowRight className="w-3.5 h-3.5" /> To: {formatDate(user.subscriptionEnd)}
                         </p>
                       </div>
                     )}
@@ -559,7 +570,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                        <div className="flex items-center gap-2">
                          <span className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em]">Ends</span>
                          <span className="text-sm font-black text-black dark:text-white font-mono tracking-tight bg-black/5 dark:bg-white/5 px-3 py-1 rounded-lg border border-black/5 dark:border-white/10">
-                           {u.subscriptionEnd ? new Date(u.subscriptionEnd).toISOString().split('T')[0].split('-').reverse().join('-') : 'N/A'}
+                           {formatDate(u.subscriptionEnd)}
                          </span>
                        </div>
                     </div>
@@ -911,7 +922,12 @@ function LicenseForm({ license, onSave, onCancel }: any) {
          </div>
          <div>
             <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Expiry</label>
-            <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
+            <input 
+              type="date" 
+              name="expiryDate" 
+              defaultValue={license?.expiryDate && !isNaN(new Date(license.expiryDate).getTime()) ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} 
+              className="w-full bg-slate-50 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" 
+            />
          </div>
          <div>
             <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Oracle Fusion Username</label>
