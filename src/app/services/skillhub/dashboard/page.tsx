@@ -9,9 +9,9 @@ import {
 import { 
   User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
   CheckCircle2, AlertCircle, LogOut, Save, UserCircle, Loader2,
-  ShieldCheck, Calendar, Users, ArrowRight, Table, ChevronDown, ChevronUp, 
-  Power, RefreshCw, Hash, Key, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck, AlertTriangle, ShieldAlert
+  ShieldCheck, Calendar, ArrowRight, RefreshCw, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck, AlertTriangle, ShieldAlert
 } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ContractingTerms } from '@/components/uhuru/ContractingTerms';
 import SubPageHeader from '@/components/uhuru/subpage-header';
@@ -37,10 +37,24 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function load() {
-      const data = await getCurrentUser();
-      if (!data) window.location.href = '/services/skillhub';
-      else setUser(data);
-      setLoading(false);
+      try {
+        const data = await getCurrentUser();
+        if (!data) {
+          window.location.href = '/services/skillhub';
+          return;
+        }
+        // Safety: ensure licenses exists as an array
+        const userWithSafety = {
+          ...data,
+          licenses: data.licenses || []
+        };
+        setUser(userWithSafety);
+      } catch (err) {
+        console.error('Error loading user:', err);
+        window.location.href = '/services/skillhub';
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);
@@ -335,7 +349,7 @@ export default function DashboardPage() {
            globalNotification.success ? <CheckCircle2 className="w-5 h-5" /> : 
            <AlertCircle className="w-5 h-5" />}
           <span className="text-sm font-black tracking-wide">
-            {globalNotification.message.toLowerCase().replace(/\b\w/g, s => s.toUpperCase())}
+            {(globalNotification.message || '').toLowerCase().replace(/\b\w/g, s => s.toUpperCase())}
           </span>
         </div>
       )}

@@ -38,9 +38,54 @@ export default function SkillHubPage() {
     setLoading(true);
     setStatus(null);
     try {
+      // Manual Validation for English Messages
+      const email = formData.get('email') as string;
+      const firstName = formData.get('firstName') as string;
+      const lastName = formData.get('lastName') as string;
+      const password = formData.get('password') as string;
+
+      const phone = formData.get('phone') as string;
+      const country = formData.get('country') as string;
+      const city = formData.get('city') as string;
+      const streetAddress = formData.get('streetAddress') as string;
+      const postcode = formData.get('postcode') as string;
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailRegex.test(email)) {
+        setStatus({ success: false, message: 'Please enter a valid email address.' });
+        setLoading(false);
+        return;
+      }
+      if (view === 'register') {
+        if (!firstName || !lastName) {
+          setStatus({ success: false, message: 'First and Last Name are required.' });
+          setLoading(false);
+          return;
+        }
+      }
+      if (view !== 'forgot' && !password) {
+        setStatus({ success: false, message: 'Password is required.' });
+        setLoading(false);
+        return;
+      }
+
       let result;
       if (view === 'login') result = await loginUser(formData);
-      else if (view === 'register') result = await registerUser(formData);
+      else if (view === 'register') {
+        const password = formData.get('password') as string;
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>\-_]).{8,}$/;
+        if (!passwordRegex.test(password)) {
+          setStatus({ 
+            success: false, 
+            message: 'Password must be at least 8 characters long and include: 1 Uppercase, 1 Number, and 1 Special Character.' 
+          });
+          setLoading(false);
+          const pwdInput = formRef.current?.querySelector('input[name="password"]') as HTMLInputElement;
+          if (pwdInput) pwdInput.value = '';
+          return;
+        }
+        result = await registerUser(formData);
+      }
       else result = await requestPasswordReset(formData);
 
       setStatus(result as any);
@@ -54,6 +99,10 @@ export default function SkillHubPage() {
             setStatus(null);
           }, 3000);
         }
+      } else {
+        // Clear password even on server-side errors (wrong pwd, duplicate email, etc.)
+        const pwdInput = formRef.current?.querySelector('input[name="password"]') as HTMLInputElement;
+        if (pwdInput) pwdInput.value = '';
       }
     } catch (error) {
       console.error('Auth error:', error);
@@ -112,7 +161,15 @@ export default function SkillHubPage() {
             </div>
           </div>
 
-          <form ref={formRef} action={handleAction} className="p-8 pt-4 space-y-6">
+          <form 
+            ref={formRef} 
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleAction(new FormData(e.currentTarget));
+            }}
+            className="p-8 pt-4 space-y-6" 
+            noValidate
+          >
             <div className={`grid gap-4 ${view === 'register' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
               
               {view === 'register' && (
@@ -152,6 +209,11 @@ export default function SkillHubPage() {
                           className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-black dark:border-white rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 dark:placeholder:text-white/50 text-sm dark:text-white"
                         />
                       </div>
+                      {view === 'register' && (
+                        <p className="mt-1.5 ml-1 text-[10px] font-black text-red-600 dark:text-red-900/80 tracking-tight leading-none">
+                          Min. 8 chars, 1 Uppercase, 1 Number & 1 Special Char
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -172,7 +234,7 @@ export default function SkillHubPage() {
                 {status.success ? <CheckCircle2 className="w-5 h-5 mt-0.5" /> : <AlertCircle className="w-5 h-5 mt-0.5" />}
                 <div className="text-sm">
                   <p className="font-semibold uppercase-to-titlecase">
-                    {status.message.toLowerCase().replace(/\b\w/g, s => s.toUpperCase())}
+                    {(status.message || 'Validation Error').toLowerCase().replace(/\b\w/g, s => s.toUpperCase())}
                   </p>
                   {status.errors && (
                     <ul className="list-disc list-inside mt-1 opacity-80 decoration-border">

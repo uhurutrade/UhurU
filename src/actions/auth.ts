@@ -18,14 +18,14 @@ const registerSchema = z.object({
   lastName: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(8),
-  companyName: z.string().optional(),
-  country: z.string().min(1),
-  streetAddress: z.string().min(1),
-  apartment: z.string().optional(),
-  city: z.string().min(1),
-  county: z.string().optional(),
-  postcode: z.string().min(1),
-  phone: z.string().min(5),
+  companyName: z.string().optional().or(z.literal("")),
+  country: z.string().optional().or(z.literal("")),
+  streetAddress: z.string().optional().or(z.literal("")),
+  apartment: z.string().optional().or(z.literal("")),
+  city: z.string().optional().or(z.literal("")),
+  county: z.string().optional().or(z.literal("")),
+  postcode: z.string().optional().or(z.literal("")),
+  phone: z.string().optional().or(z.literal("")),
 });
 
 export async function getCurrentUser() {
