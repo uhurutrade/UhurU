@@ -428,14 +428,6 @@ export async function updateUserDetails(userId: string, formData: FormData) {
         isPaid: isPaid,
         subscriptionStart: startDate,
         subscriptionEnd: endDate,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        companyName: data.companyName,
-        phone: data.phone,
-        country: data.country,
-        city: data.city,
-        streetAddress: data.streetAddress,
-        postcode: data.postcode,
       }
     });
     

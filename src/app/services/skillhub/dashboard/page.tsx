@@ -9,7 +9,8 @@ import {
 import { 
   User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
   CheckCircle2, AlertCircle, LogOut, Save, UserCircle, Loader2,
-  ShieldCheck, Calendar, ArrowRight, RefreshCw, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck, AlertTriangle, ShieldAlert
+  ShieldCheck, Calendar, ArrowRight, RefreshCw, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck, AlertTriangle, ShieldAlert,
+  ChevronUp, ChevronDown, Table, ChevronRight
 } from 'lucide-react';
 import { Users } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -315,10 +316,13 @@ export default function DashboardPage() {
                     <h4 className="text-base font-black text-black dark:text-white tracking-normal mb-4">Billing Address</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <InputField name="companyName" label="Company" defaultValue={user.companyName} icon={<Building />} />
+                      <InputField name="phone" label="Phone" defaultValue={user.phone} icon={<Phone />} />
                       <div className="md:col-span-2">
                         <InputField name="streetAddress" label="Address" defaultValue={user.streetAddress} icon={<Home />} />
                       </div>
+                      <InputField name="apartment" label="Apartment" defaultValue={user.apartment} icon={<Home />} />
                       <InputField name="city" label="City" defaultValue={user.city} icon={<Building2 />} />
+                      <InputField name="county" label="County" defaultValue={user.county} icon={<MapPin />} />
                       <InputField name="postcode" label="Zip Code" defaultValue={user.postcode} icon={<MapPin />} />
                       <div className="md:col-span-2">
                         <InputField name="country" label="Country" defaultValue={user.country} icon={<Globe />} />
@@ -386,6 +390,7 @@ function InputField({ name, label, defaultValue, placeholder, icon, readOnly = f
           readOnly={readOnly}
           required={required}
           className={`w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white transition-all focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/40 text-xs ${readOnly ? 'opacity-90 cursor-default' : 'group-hover:bg-black/10 dark:group-hover:bg-slate-900/50'}`}
+          placeholder={placeholder || "No Selected"}
         />
       </div>
     </div>
@@ -477,7 +482,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
   useEffect(() => {
     async function load() {
       const data = await getAllUsers();
-      setUsers(data); // No filtering out admin, show everyone
+      setUsers(data); 
       setLoading(false);
     }
     load();
@@ -515,191 +520,152 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
       {users.map((u) => {
         const isVigente = u.isPaid && u.subscriptionEnd && new Date(u.subscriptionEnd) > new Date();
         return (
-          <div key={`${u.id}-${u.chosenPlan}-${u.subscriptionEnd}`} className={`p-1 rounded-[2rem] transition-all duration-300 ${activeTab === u.id ? 'bg-white dark:bg-primary/5 ring-1 ring-primary/10 shadow-2xl' : 'hover:bg-black/5 dark:bg-white/5 ring-1 ring-transparent'}`}>
+          <div key={u.id} className={`p-1 rounded-[2rem] transition-all duration-300 ${activeTab === u.id ? 'bg-white dark:bg-primary/5 ring-1 ring-primary/10 shadow-2xl' : 'hover:bg-black/5 dark:bg-white/5 ring-1 ring-transparent'}`}>
             <div className="p-4">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex-1 cursor-pointer flex items-center gap-3 md:gap-4" onClick={() => setActiveTab(activeTab === u.id ? null : u.id)}>
-                  <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-black dark:text-white border border-border/50 shadow-inner shrink-0">
-                    {activeTab === u.id ? <ChevronUp className="w-5 h-5 text-primary dark:text-primary-foreground" /> : <ChevronDown className="w-5 h-5" />}
+                  {/* 1. Chevron First */}
+                  <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-black dark:text-white border border-border/50 shadow-inner shrink-0 hidden sm:flex">
+                    {activeTab === u.id ? <ChevronUp className="w-5 h-5 text-primary" /> : <ChevronDown className="w-5 h-5" />}
                   </div>
-                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 overflow-hidden">
-                    <div className="flex items-center gap-2">
-                       <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-200 dark:bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                         <span className="text-primary dark:text-primary-foreground font-black text-[10px] md:text-[11px] font-mono leading-none">
-                           {u.customerNumber ? u.customerNumber.toString().padStart(4,'0') : '—'}
+
+                  {/* 2. Customer Number Second (Blue Box) */}
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-200 dark:bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                    <span className="text-primary font-black text-[10px] md:text-[11px] font-mono">
+                      {String(u.customerNumber || 0).padStart(4, '0')}
+                    </span>
+                  </div>
+
+                  {/* 3. Status, PO, and Assigned Label in a row */}
+                  <div className="hidden md:flex items-center gap-2 mr-1 shrink-0">
+                     <span className={`text-[11px] font-black ${u.isPaid ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-600'}`}>
+                       {u.isPaid ? 'Active plan' : 'Inactive plan'}
+                     </span>
+                     {u.licenses?.length > 0 && (
+                       <span className="flex items-center gap-2">
+                         <span className="text-[11px] font-black font-mono text-emerald-700 dark:text-emerald-500">
+                           {u.licenses[0].purchaseOrder}
                          </span>
-                       </div>
-                       <div className="md:hidden overflow-hidden">
-                          <h4 className="font-black text-black dark:text-foreground text-sm sm:text-base truncate flex items-center gap-3">
-                             <div className="flex flex-col">
-                               <span className={`text-[11px] font-black tracking-normal shrink-0 ${u.isPaid ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-700 dark:text-red-500'}`}>
-                                 {u.isPaid ? 'Active Plan' : 'Inactive Plan'}
-                               </span>
-                               {u.isPaid && (
-                                 <span className={`text-[11px] font-black tracking-normal shrink-0 ${u.licenses?.length > 0 ? 'text-emerald-700 dark:text-emerald-500' : 'text-amber-700 dark:text-amber-500'}`}>
-                                   {u.licenses?.length > 0 ? 'Assigned' : 'Unassigned'}
-                                 </span>
-                               )}
-                             </div>
-                             {u.firstName} {u.lastName}
-                             {u.isAdmin && <span className="text-[8px] text-primary dark:text-primary-foreground font-black border border-primary/20 px-1 rounded bg-primary/5">ADM</span>}
-                          </h4>
-                          <p className="text-[11px] text-black dark:text-white font-mono truncate">{u.email}</p>
-                       </div>
-                    </div>
-                    <div className="hidden md:block overflow-hidden">
-                      <h4 className="font-black text-black dark:text-foreground flex items-center gap-4 truncate text-base">
-                        <span className={`text-[11px] font-black tracking-normal shrink-0 ${u.isPaid ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-700 dark:text-red-500'}`}>
-                           {u.isPaid ? 'Active Plan' : 'Inactive Plan'}
-                        </span>
-                        {u.isPaid && (
-                          <span className={`text-[9px] font-black tracking-[0.05em] shrink-0 ${u.licenses?.length > 0 ? 'text-emerald-700 dark:text-emerald-500' : 'text-amber-700 dark:text-amber-500 animate-pulse'}`}>
-                             {u.licenses?.length > 0 ? 'Assigned' : 'Unassigned'}
-                          </span>
-                        )}
-                        <span>{u.firstName} {u.lastName}</span>
-                        <span className="text-[10px] text-black dark:text-white font-mono font-medium ml-2">({u.email})</span>
-                        {u.isAdmin && <span className="text-[10px] text-primary dark:text-primary-foreground font-mono font-black border border-primary/20 px-4 rounded-md bg-primary/5 uppercase tracking-[0.2em]">ADMIN</span>}
+                         <span className="text-[11px] font-black text-yellow-700 dark:text-yellow-500 pl-1">
+                           Assigned
+                         </span>
+                       </span>
+                     )}
+                  </div>
+
+                  {/* 4. Name and Email */}
+                  <div className="flex-1 overflow-hidden pl-2">
+                    <div className="flex flex-col">
+                      <h4 className="font-black text-black dark:text-white text-sm sm:text-base truncate flex items-center gap-2">
+                        {u.firstName} {u.lastName}
+                        {u.isAdmin && <span className="text-[8px] bg-primary/10 text-primary px-1.5 py-0.5 rounded uppercase">Admin</span>}
                       </h4>
+                      <span className="text-[10px] text-black/40 dark:text-white/40 font-bold truncate">{u.email}</span>
                     </div>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-3 md:gap-6 pl-14 md:pl-0">
-                    <div className="text-right whitespace-nowrap">
-                       <div className="flex items-center gap-2">
-                         <span className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em]">Ends</span>
-                         <span className="text-sm font-black text-black dark:text-white font-mono tracking-tight bg-black/5 dark:bg-white/5 px-3 py-1 rounded-lg border border-black/5 dark:border-white/10">
-                           {formatDate(u.subscriptionEnd)}
-                         </span>
-                       </div>
-                    </div>
+                {/* 5. Expiration Date Far Right */}
+                <div className="flex items-center justify-end gap-6 pl-14 md:pl-0">
+                  <div className="text-right flex flex-col items-end">
+                    <span className="text-[9px] font-black text-black/40 dark:text-white/40 uppercase tracking-widest mb-1">Expiration</span>
+                    <span className={`text-xs font-black font-mono ${isVigente ? 'text-emerald-600' : 'text-red-500'}`}>
+                      {formatDate(u.subscriptionEnd)}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               {activeTab === u.id && (
                 <div className="mt-8 pt-8 border-t border-slate-950/10 dark:border-white/5 animate-in slide-in-from-top-4 duration-500">
-                  <form action={(fd) => handleUpdateStudent(u.id, fd)} className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                    <div className="md:col-span-4 space-y-6">
-                       <div className="bg-white dark:bg-slate-900/50 p-6 rounded-3xl border border-slate-950/10 dark:border-white/5">
-                          <label className="text-sm font-black text-black dark:text-primary-foreground tracking-normal block mb-4">Account Status</label>
-                          <div className="space-y-4">
-                            <label className="flex items-center justify-between cursor-pointer group">
-                              <span className="text-[11px] font-black text-black dark:text-foreground group-hover:text-primary transition-colors">Access Active</span>
-                              <input 
-                                type="checkbox" 
-                                name="isActive" 
-                                defaultChecked={u.isActive} 
-                                disabled={u.email === 'uhurutradeuk@gmail.com'}
-                                className={`w-5 h-5 rounded-md border-black/20 dark:border-white/20 accent-primary ${u.email === 'uhurutradeuk@gmail.com' ? 'bg-slate-950/50 cursor-not-allowed opacity-50' : 'bg-slate-950'}`} 
-                              />
-                            </label>
-                            <label className="flex items-center justify-between cursor-pointer group">
-                              <span className="text-[11px] font-black text-black dark:text-foreground group-hover:text-primary transition-colors">Payment Verified</span>
-                              <input 
-                                type="checkbox" 
-                                name="isPaid" 
-                                defaultChecked={u.isPaid} 
-                                onChange={(e) => {
-                                  const form = e.target.form;
-                                  if (!form) return;
-                                  const formData = new FormData(form);
-                                  const start = formData.get('start');
-                                  const plan = formData.get('chosenPlan');
-                                  
-                                  if (e.target.checked && (!start || !plan || plan === "")) {
-                                    e.target.checked = false;
-                                    setGlobalNotification({ success: false, message: 'Select Start Date & Plan First' });
-                                  }
-                                }}
-                                className="w-5 h-5 rounded-md border-2 border-black bg-white dark:bg-white/10 accent-primary cursor-pointer hover:bg-white/20 transition-all shadow-sm" 
-                              />
-                            </label>
-                            <label className="flex items-center justify-between">
-                               <div className="flex items-center gap-2">
-                                 <span className="text-[11px] font-black text-black dark:text-foreground">Licence Assigned</span>
-                                 {u.licenses?.length > 0 && (
-                                   <span className="text-[11px] bg-emerald-500/10 text-emerald-700 dark:text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/20 font-black">
-                                     {u.licenses[0].purchaseOrder}
-                                   </span>
-                                 )}
-                               </div>
-                               <input type="checkbox" disabled checked={u.licenses?.length > 0} className="w-5 h-5 rounded-md border-black/20 dark:border-white/10 bg-black/40 accent-emerald-500 cursor-not-allowed" />
-                            </label>
-                            <div className="pt-2 flex justify-center">
-                               <button 
-                                 type="button" 
-                                 onClick={() => handleForceReassign(u.id)}
-                                 className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary border border-black dark:border-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all group"
-                               >
-                                 <RefreshCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500" />
-                                 Rotate Asset
-                               </button>
-                            </div>
-                          </div>
-                       </div>
-
-                       <div className="bg-white dark:bg-slate-900/50 p-6 rounded-3xl border border-slate-950/10 dark:border-white/5">
-                          <label className="text-sm font-black text-black dark:text-primary-foreground tracking-normal block mb-4">Assignment Period</label>
-                          <div className="space-y-4">
-                            <div>
-                               <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Start Date</label>
-                               <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-white dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
-                            </div>
-                            <div>
-                               <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block">Selected Plan</label>
-                               <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
-                                  <option value="">No Plan</option>
-                                  <option value="7">Oracle Fusion 7 days</option>
-                                  <option value="30">Oracle Fusion 30 days</option>
-                                  <option value="90">Oracle Fusion 90 days</option>
-                               </select>
-                            </div>
-                            <div>
-                                <label className="text-[11px] font-black text-black dark:text-white tracking-normal mb-1 block flex items-center gap-1">
-                                  <Activity className="w-2.5 h-2.5" /> Adjust License Duration
-                                </label>
-                                <select name="addDays" defaultValue="0" className="w-full bg-white dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
-                                   <option value="0">Keep Current Expiry</option>
-                                   <option value="1">+1 Extra Day</option>
-                                   <option value="2">+2 Extra Days</option>
-                                   <option value="3">+3 Extra Days</option>
-                                   <option value="-1">-1 Day Less</option>
-                                   <option value="-2">-2 Days Less</option>
-                                   <option value="-3">-3 Days Less</option>
-                                </select>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-
-                    <div className="md:col-span-8">
-                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <InputAdmin name="firstName" label="First Name" defaultValue={u.firstName} readOnly={u.id !== currentUserId} required />
-                          <InputAdmin name="lastName" label="Last Name" defaultValue={u.lastName} readOnly={u.id !== currentUserId} required />
-                          <InputAdmin name="email" label="Email" defaultValue={u.email} readOnly required />
-                          <InputAdmin name="phone" label="Phone" defaultValue={u.phone} readOnly={u.id !== currentUserId} />
-                          <InputAdmin name="companyName" label="Company" defaultValue={u.companyName} readOnly={u.id !== currentUserId} />
-                           <div className="sm:col-span-2">
-                              <InputAdmin name="streetAddress" label="Address" defaultValue={u.streetAddress} readOnly={u.id !== currentUserId} />
+                  <form action={(formData) => handleUpdateStudent(u.id, formData)} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                     <div className="lg:col-span-4 space-y-6">
+                        <div className="bg-black/5 dark:bg-white/5 p-6 rounded-3xl border border-black/5 dark:border-white/5">
+                           <h5 className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">Subscription Control</h5>
+                           <div className="space-y-4">
+                              <label className="flex items-center gap-4 cursor-pointer group">
+                                 <input type="checkbox" name="isActive" defaultChecked={u.isActive} className="w-5 h-5 rounded border-slate-950/20 dark:border-white/20 bg-white dark:bg-slate-950 accent-primary" />
+                                 <span className="text-[11px] font-black text-black dark:text-white group-hover:text-primary tracking-normal transition-colors">Account Active</span>
+                              </label>
+                              <label className="flex items-center gap-4 cursor-pointer group">
+                                 <input type="checkbox" name="isPaid" defaultChecked={u.isPaid} className="w-5 h-5 rounded border-slate-950/20 dark:border-white/20 bg-white dark:bg-slate-950 accent-emerald-500" />
+                                 <span className="text-[11px] font-black text-black dark:text-white group-hover:text-emerald-500 tracking-normal transition-colors">Verified Payment</span>
+                              </label>
+                              <div>
+                                 <label className="text-[10px] font-black text-black/60 dark:text-white/60 mb-1.5 block">Plan Type</label>
+                                 <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:ring-1 focus:ring-primary">
+                                    <option value="">No Plan</option>
+                                    <option value="7">Oracle Fusion 7 days</option>
+                                    <option value="30">Oracle Fusion 30 days</option>
+                                    <option value="90">Oracle Fusion 90 days</option>
+                                 </select>
+                              </div>
+                              <div>
+                                 <label className="text-[10px] font-black text-black/60 dark:text-white/60 mb-1.5 block">Start Date</label>
+                                 <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-white dark:bg-slate-950 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:ring-1 focus:ring-primary" />
+                              </div>
+                              <div>
+                                 <label className="text-[10px] font-black text-black/60 dark:text-white/60 mb-1.5 block">Adjustment Selection</label>
+                                 <select name="addDays" className="w-full bg-white dark:bg-slate-950 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:ring-1 focus:ring-primary">
+                                    <option value="0">Keep Current Expiry</option>
+                                    <option value="1">+1 Extra Day</option>
+                                    <option value="2">+2 Extra Days</option>
+                                    <option value="3">+3 Extra Days</option>
+                                    <option value="-1">-1 Day Less</option>
+                                    <option value="-2">-2 Days Less</option>
+                                    <option value="-3">-3 Days Less</option>
+                                 </select>
+                              </div>
+                              <div className="pt-4 border-t border-black/5 dark:border-white/5">
+                                 <button 
+                                   type="button"
+                                   onClick={() => handleForceReassign(u.id)}
+                                   className="w-full py-3 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-700 dark:text-yellow-500 text-[10px] font-black uppercase tracking-widest rounded-xl border border-yellow-500/20 transition-all flex items-center justify-center gap-2"
+                                 >
+                                   <RefreshCw className="w-3.5 h-3.5" /> Rotate License
+                                 </button>
+                              </div>
                            </div>
-                           <InputAdmin name="city" label="City" defaultValue={u.city} readOnly={u.id !== currentUserId} />
-                           <InputAdmin name="postcode" label="Zip Code" defaultValue={u.postcode} readOnly={u.id !== currentUserId} />
+                        </div>
+
+                        {u.licenses?.[0] && (
+                          <div className="bg-emerald-500/5 p-6 rounded-3xl border border-emerald-500/10">
+                            <h5 className="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-2">Active Asset</h5>
+                            <p className="text-xl font-black text-foreground font-mono">{u.licenses[0].purchaseOrder}</p>
+                            <p className="text-[10px] text-black/40 dark:text-white/40 mt-1 truncate">{u.licenses[0].urlLink}</p>
+                          </div>
+                        )}
+                     </div>
+
+                     <div className="lg:col-span-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                           <InputAdmin name="firstName" label="First Name" defaultValue={u.firstName} readOnly required />
+                           <InputAdmin name="lastName" label="Last Name" defaultValue={u.lastName} readOnly required />
+                           <InputAdmin name="email" label="Email" defaultValue={u.email} readOnly required />
+                           <InputAdmin name="phone" label="Phone" defaultValue={u.phone} readOnly />
+                           <InputAdmin name="companyName" label="Company" defaultValue={u.companyName} readOnly />
                            <div className="sm:col-span-2">
-                             <InputAdmin name="country" label="Country" defaultValue={u.country} readOnly={u.id !== currentUserId} />
+                              <InputAdmin name="streetAddress" label="Address" defaultValue={u.streetAddress} readOnly />
                            </div>
-                       </div>
-                       
-                       <div className="mt-8 flex justify-end gap-3">
-                          <button type="button" onClick={() => setActiveTab(null)} className="px-6 py-3 text-[10px] font-black uppercase text-black dark:text-white hover:text-primary transition-colors">Cancel</button>
-                          <button 
-                            type="submit" 
-                            className="px-10 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl flex items-center gap-3 bg-primary dark:bg-primary hover:bg-primary/90 text-white shadow-primary/40 border border-slate-950/20 dark:border-white/20"
-                          >
-                            <Save className="w-4 h-4" /> Save Student Data
-                          </button>
-                       </div>
-                    </div>
+                           <InputAdmin name="apartment" label="Apartment" defaultValue={u.apartment} readOnly />
+                           <InputAdmin name="city" label="City" defaultValue={u.city} readOnly />
+                           <InputAdmin name="county" label="County" defaultValue={u.county} readOnly />
+                           <InputAdmin name="postcode" label="Zip Code" defaultValue={u.postcode} readOnly />
+                           <div className="sm:col-span-2">
+                             <InputAdmin name="country" label="Country" defaultValue={u.country} readOnly />
+                           </div>
+                        </div>
+                        
+                        <div className="mt-8 flex justify-end gap-3">
+                           <button type="button" onClick={() => setActiveTab(null)} className="px-6 py-3 text-[10px] font-black uppercase text-black dark:text-white hover:text-primary transition-colors">Cancel</button>
+                           <button 
+                             type="submit" 
+                             className="px-10 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl flex items-center gap-3 bg-primary text-white shadow-primary/40 border border-slate-950/20 dark:border-white/20"
+                           >
+                             <Save className="w-4 h-4" /> Update Subscription
+                           </button>
+                        </div>
+                     </div>
                   </form>
                 </div>
               )}
@@ -721,6 +687,7 @@ function InputAdmin({ name, label, defaultValue, readOnly, required = false }: a
       <input 
         name={name} 
         defaultValue={defaultValue} 
+        placeholder="No Selected"
         readOnly={readOnly}
         required={required}
         className={`w-full bg-slate-50 dark:bg-slate-950/50 border border-black dark:border-white/20 rounded-xl px-4 py-3 text-xs text-foreground dark:text-white focus:ring-1 focus:ring-primary outline-none transition-all ${readOnly ? 'opacity-90 cursor-not-allowed bg-slate-100' : 'hover:bg-white dark:hover:bg-slate-900/50'}`} 
@@ -949,12 +916,11 @@ function LicenseForm({ license, onSave, onCancel }: any) {
               </label>
               {license?.assignedTo && (
                 <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono font-black uppercase tracking-tighter whitespace-nowrap">
-                  Id: {String(license.assignedTo.customerNumber || 0).padStart(4, '0')}
+                   Id: {String(license.assignedTo.customerNumber || 0).padStart(4, '0')}
                 </span>
               )}
             </div>
          </div>
-         {/* Hidden since user said "me sobra" but logic needs it for now */}
          <input type="hidden" name="userId" value={license?.userId || ""} />
          <input type="hidden" name="lastUserId" value={license?.lastUserId || ""} />
          <input type="hidden" name="subscription" value={license?.subscription || "SkillHub 30 days (£59)"} />
