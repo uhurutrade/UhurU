@@ -36,6 +36,65 @@ export default function Hero() {
                 <Link href="/contact">Contact</Link>
               </Button>
             </div>
+
+            {/* Pricing Badges Row - below buttons */}
+            <div className="flex flex-row items-end justify-center gap-6 sm:gap-10 mt-8 flex-wrap">
+
+              {/* £18 - 7 Days */}
+              <Link href="/services/skillhub" className="group z-30 block">
+                <div
+                  className="flex flex-col items-center cursor-pointer transition-all duration-500 ease-in-out"
+                  style={{ transform: 'rotate(-14deg)' }}
+                  onMouseEnter={e => { 
+                    e.currentTarget.style.transform = 'rotate(-5deg) scale(1.12) translateY(-10px)';
+                  }}
+                  onMouseLeave={e => { 
+                    e.currentTarget.style.transform = 'rotate(-14deg)';
+                  }}
+                >
+                  <span className="text-primary dark:text-blue-500 font-black text-3xl md:text-4xl lg:text-[43px] tracking-tighter drop-shadow-none dark:drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£18</span>
+                  <span className="text-black dark:text-white font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5 whitespace-nowrap">7 Days Access</span>
+                  <span className="text-primary dark:text-blue-400 font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5">Oracle Fusion</span>
+                </div>
+              </Link>
+
+              {/* £59 - 30 Days */}
+              <Link href="/services/skillhub" className="group z-30 block">
+                <div
+                  className="flex flex-col items-center cursor-pointer transition-all duration-500 ease-in-out"
+                  style={{ transform: 'rotate(-10deg)' }}
+                  onMouseEnter={e => { 
+                    e.currentTarget.style.transform = 'rotate(-3deg) scale(1.12) translateY(-10px)';
+                  }}
+                  onMouseLeave={e => { 
+                    e.currentTarget.style.transform = 'rotate(-10deg)';
+                  }}
+                >
+                  <span className="text-primary dark:text-blue-500 font-black text-3xl md:text-4xl lg:text-[43px] tracking-tighter drop-shadow-none dark:drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£59</span>
+                  <span className="text-black dark:text-white font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5 whitespace-nowrap">30 Days Access</span>
+                  <span className="text-primary dark:text-blue-400 font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5">Oracle Fusion</span>
+                </div>
+              </Link>
+
+              {/* £147 - 90 Days */}
+              <Link href="/services/skillhub" className="group z-30 block">
+                <div
+                  className="flex flex-col items-center cursor-pointer transition-all duration-500 ease-in-out"
+                  style={{ transform: 'rotate(-7deg)' }}
+                  onMouseEnter={e => { 
+                    e.currentTarget.style.transform = 'rotate(-1deg) scale(1.12) translateY(-10px)';
+                  }}
+                  onMouseLeave={e => { 
+                    e.currentTarget.style.transform = 'rotate(-7deg)';
+                  }}
+                >
+                  <span className="text-primary dark:text-blue-500 font-black text-3xl md:text-4xl lg:text-[43px] tracking-tighter drop-shadow-none dark:drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)]">£147</span>
+                  <span className="text-black dark:text-white font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5 whitespace-nowrap">90 Days Access</span>
+                  <span className="text-primary dark:text-blue-400 font-black text-[10px] md:text-[11px] lg:text-[12px] tracking-normal mt-0.5">Oracle Fusion</span>
+                </div>
+              </Link>
+
+            </div>
           </div>
         </div>
       </div>
