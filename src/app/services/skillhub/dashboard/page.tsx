@@ -348,7 +348,7 @@ function InputField({ name, label, defaultValue, placeholder, icon, readOnly = f
           defaultValue={defaultValue}
           placeholder={placeholder}
           readOnly={readOnly}
-          className={`w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-white/5 border border-slate-950/10 dark:border-white/10 rounded-xl font-bold text-foreground transition-all focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/40 text-[11px] ${readOnly ? 'opacity-50 cursor-not-allowed bg-transparent' : 'group-hover:bg-black/10 dark:group-hover:bg-white/10'}`}
+          className={`w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white transition-all focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/40 text-[11px] ${readOnly ? 'opacity-90 cursor-default' : 'group-hover:bg-black/10 dark:group-hover:bg-slate-900/50'}`}
         />
       </div>
     </div>
@@ -374,7 +374,7 @@ function CredentialField({ label, value, icon, setGlobalNotification }: { label:
           <input
             readOnly
             value={value || 'Refreshing...'}
-            className="w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-white/5 border border-slate-950/10 dark:border-white/10 rounded-xl font-bold text-foreground cursor-default focus:outline-none text-[11px]"
+            className="w-full pl-9 pr-4 py-3 bg-black/5 dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl font-bold text-foreground dark:text-white cursor-default focus:outline-none text-[11px]"
           />
         </div>
         <CopyButton text={value || ''} onCopy={onCopy} />
@@ -605,11 +605,11 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                           <div className="space-y-4">
                             <div>
                                <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Start Date</label>
-                               <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-white dark:bg-slate-950 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" />
+                               <input type="date" name="start" defaultValue={u.subscriptionStart ? new Date(u.subscriptionStart).toISOString().split('T')[0] : ''} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
                             </div>
                             <div>
                                <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Selected Plan</label>
-                               <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950 border border-slate-950/10 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground">
+                               <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
                                   <option value="">No Plan</option>
                                   <option value="SkillHub 30 days (£59)">30 Days</option>
                                   <option value="SkillHub 90 days (£140)">90 Days</option>
@@ -665,7 +665,7 @@ function InputAdmin({ name, label, defaultValue, readOnly }: any) {
         name={name} 
         defaultValue={defaultValue} 
         readOnly={readOnly}
-        className={`w-full bg-slate-50 dark:bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-foreground focus:ring-1 focus:ring-primary outline-none transition-all ${readOnly ? 'opacity-40 grayscale cursor-not-allowed' : 'hover:bg-white dark:hover:bg-slate-950'}`} 
+        className={`w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-foreground dark:text-white focus:ring-1 focus:ring-primary outline-none transition-all ${readOnly ? 'opacity-90 cursor-default' : 'hover:bg-white dark:hover:bg-slate-900/50'}`} 
       />
     </div>
   );
@@ -854,26 +854,26 @@ function LicenseForm({ license, onSave, onCancel }: any) {
                 }
                 e.target.value = value;
               }}
-              className="w-full bg-slate-50 dark:bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" 
+              className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white"
               required 
             />
             <p className="text-[8px] text-black dark:text-white mt-1 uppercase font-bold tracking-tighter">Fixed Format: 00000-0</p>
          </div>
          <div>
             <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Oracle Fusion Url</label>
-            <input name="urlLink" defaultValue={license?.urlLink || ""} className="w-full bg-slate-50 dark:bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" required />
+            <input name="urlLink" defaultValue={license?.urlLink || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
          </div>
          <div>
             <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Expiry</label>
-            <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-50 dark:bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" />
+            <input type="date" name="expiryDate" defaultValue={license?.expiryDate ? new Date(license.expiryDate).toISOString().split('T')[0] : ''} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" />
          </div>
          <div>
             <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Oracle Fusion Username</label>
-            <input name="username" defaultValue={license?.username || ""} className="w-full bg-slate-50 dark:bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" required />
+            <input name="username" defaultValue={license?.username || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
          </div>
          <div>
             <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Oracle Fusion Password</label>
-            <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-50 dark:bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-black dark:text-foreground" required />
+            <input name="password" defaultValue={license?.password || ""} className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white" required />
          </div>
          <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/5">
             <label className="flex items-center gap-4 cursor-pointer group">

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { registerUser, loginUser, requestPasswordReset } from '@/actions/auth';
 import { 
   User, Mail, Lock, Building, MapPin, Building2, Phone, Globe, Home, 
-  ShieldCheck, LogIn, UserPlus, ArrowRight, CheckCircle2, AlertCircle, RefreshCw
+  ShieldCheck, LogIn, UserPlus, ArrowRight, CheckCircle2, AlertCircle, RefreshCw, Shield, BookOpen, AlertTriangle, FileText
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import SubPageHeader from '@/components/uhuru/subpage-header';
@@ -21,6 +21,40 @@ export default function SkillHubPage() {
       return () => clearTimeout(timer);
     }
   }, [status]);
+
+  const handlePrint = () => {
+    const printContent = document.getElementById('skillhub-terms')?.innerHTML;
+    if (!printContent) return;
+    const printWindow = window.open('', '', 'height=600,width=800');
+    if (!printWindow) return;
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>SkillHub Service Terms - Uhuru Trade Ltd</title>
+          <style>
+            body { font-family: sans-serif; padding: 2rem; color: #000; }
+            h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+            p, li { font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.5rem; }
+            h3 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+            .bg-primary\\/5 { background: #f3f4f6; padding: 1rem; border-radius: 8px; border: 1px solid #e5e7eb; }
+            ul { margin-left: 1.5rem; }
+            .footer-notes { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ccc; font-size: 0.8rem; color: #555; }
+            .no-print { display: none !important; }
+            svg { display: inline-block; width: 1em; height: 1em; margin-right: 0.5em; vertical-align: middle; }
+          </style>
+        </head>
+        <body>
+          ${printContent}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  };
 
   async function handleAction(formData: FormData) {
     setLoading(true);
@@ -52,14 +86,16 @@ export default function SkillHubPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#e5e5e5] dark:bg-background text-foreground flex flex-col items-center relative overflow-hidden font-sans transition-colors duration-300 pb-20">
+    <div className="min-h-screen bg-[#e5e5e5] dark:bg-background text-foreground flex flex-col relative overflow-hidden font-sans transition-colors duration-300 pb-20">
       <SubPageHeader backHref="/services" backText="Back to Services" />
       {/* Background Orbs */}
       <div className="absolute top-0 -left-10 w-96 h-96 bg-slate-400 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.02] dark:opacity-20 animate-pulse transition-all duration-1000"></div>
       <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-slate-500 dark:bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.03] dark:opacity-20 animate-pulse animation-delay-2000 transition-all duration-1000"></div>
 
-      <div className="w-full max-w-2xl z-10 my-10 px-4">
-        <div className="bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-2xl border border-[#c0c0c0] dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
+      <div className="w-full max-w-3xl mx-auto z-10 mt-10 mb-20 px-4 flex flex-col gap-6 items-center justify-start relative">
+        
+        {/* Login/Register Form Card */}
+        <div className="w-full max-w-2xl bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-2xl border border-[#c0c0c0] dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
           
           {view !== 'forgot' && (
             <div className="flex border-b border-slate-800">
@@ -133,7 +169,7 @@ export default function SkillHubPage() {
                           type="password"
                           required
                           placeholder="••••••••"
-                          className="w-full pl-10 pr-4 py-3 bg-secondary/20 dark:bg-slate-950/50 border border-border dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 text-sm"
+                          className="w-full pl-10 pr-4 py-3 bg-secondary/20 dark:bg-slate-900 border border-border dark:border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 dark:placeholder:text-white/50 text-sm dark:text-white"
                         />
                       </div>
                     </div>
@@ -199,6 +235,76 @@ export default function SkillHubPage() {
             )}
           </div>
         </div>
+
+        {/* Descriptive Text Panel BELOW login */}
+        <div id="skillhub-terms" className="w-full max-w-2xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-[#c0c0c0] dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-xl text-[10px] sm:text-[11px] lg:text-xs">
+          <div className="flex items-center gap-2 mb-4">
+            <Shield className="w-5 h-5 text-primary shrink-0" />
+            <h2 className="text-lg lg:text-xl font-black text-black dark:text-white tracking-tight leading-none" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
+              SkillHub Service Terms
+            </h2>
+          </div>
+
+          <div className="space-y-4 text-black/80 dark:text-white/80 leading-relaxed">
+            <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 dark:border-primary/10">
+              <p className="mb-2">
+                <strong>Uhuru Trade Ltd</strong> provides temporary access to SkillHub Cloud Instances exclusively for educational, research, and professional development purposes. These "Vision Instances" are pre-configured environments designed to allow consultants and students to explore functional and technical capabilities of the SkillHub ERP/SCM/HCM ecosystem without the risks associated with production data.
+              </p>
+              <p>
+                <strong>Uhuru Trade Ltd</strong> proporciona acceso temporal a instancias de SkillHub Cloud exclusivamente para fines educativos, de investigación y desarrollo profesional. Estas "instancias Vision" son entornos ya configurados que permiten explorar las capacidades del ecosistema SkillHub sin riesgos para los datos de producción.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-bold text-black dark:text-white mb-1.5 flex items-center gap-1.5 opacity-90">
+                <BookOpen className="w-3.5 h-3.5 text-primary shrink-0" /> 2. Permitted Use & Restrictions
+              </h3>
+              <ul className="list-disc list-inside space-y-1 ml-1 opacity-80">
+                <li>Access is granted for a fixed period (30/90 days) upon successful verification of the subscription.</li>
+                <li>Users may perform configurations, testing, and training exercises within the functional scope of the provided license.</li>
+                <li><strong>Strictly prohibited:</strong> Uploading real production data, PII (Personally Identifiable Information), or using the instance for commercial production.</li>
+                <li>Any attempt to bypass security measures or share credentials with unauthorized third parties will result in immediate termination without refund.</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-bold text-black dark:text-white mb-1.5 flex items-center gap-1.5 opacity-90">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" /> 3. Liability & Data Integrity
+              </h3>
+              <p className="opacity-80">
+                The provided instances are "sandbox" environments. Uhuru Trade Ltd does not guarantee the persistence of configurations or data uploaded by the user. Periodic maintenance, refreshes, or administrative resets may occur. Users are responsible for documenting their work externally. Uhuru Trade Ltd shall not be liable for any data loss, performance fluctuations, or service interruptions inherent to the cloud provider's infrastructure.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-bold text-black dark:text-white mb-1.5 flex items-center gap-1.5 opacity-90">
+                <RefreshCw className="w-3.5 h-3.5 text-emerald-500 shrink-0" /> 4. Service Continuity
+              </h3>
+              <p className="opacity-80">
+                Access credentials will remain active until the end of the contracted period. Upon expiration, the system will automatically revoke access and release the license to the general pool. Users wishing to continue must renew their subscription prior to the expiration date to ensure continuous access to the same instance (subject to availability).
+              </p>
+            </div>
+
+            <div className="footer-notes pt-4 border-t border-[#c0c0c0] dark:border-slate-800 mt-6 text-[9px] sm:text-[10px] text-black dark:text-white space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <p className="font-bold">© 2026 Uhuru Trade Ltd. - All Rights Reserved</p>
+                  <p>Unit 13 Freeland Park Wareham Road, Lytchett Matravers BH16 6FA Poole – UK</p>
+                </div>
+              </div>
+              
+              <div className="no-print flex flex-wrap items-center gap-2 font-bold uppercase tracking-wider">
+                <FileText className="w-3 h-3" />
+                <button type="button" onClick={handlePrint} className="hover:text-primary transition-colors hover:underline cursor-pointer">Download PDF</button>
+              </div>
+
+              <div className="no-print p-2 bg-[#e5e5e5] dark:bg-slate-950/50 rounded-lg leading-tight">
+                We use cookies to enhance your browsing experience and analyze site traffic. By clicking "Accept", you agree to our use of cookies. You can decline non-essential cookies. Read our Cookie Policy for more details.
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
@@ -219,7 +325,7 @@ function Input({ name, label, icon, placeholder, type = 'text', required = false
           type={type}
           placeholder={placeholder}
           required={required}
-          className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 text-sm shadow-sm dark:shadow-none"
+          className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground/30 dark:placeholder:text-white/50 text-sm shadow-sm dark:shadow-none dark:text-white"
         />
       </div>
     </div>
