@@ -16,6 +16,10 @@ export default function SkillHubPage() {
   const [status, setStatus] = useState<{ success: boolean; message: string; errors?: any } | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
+  const handleOpenTerms = () => {
+    window.open('/services/skillhub/terms', 'SkillHubTerms', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+  };
+
   useEffect(() => {
     if (formRef.current) {
       formRef.current.reset();
@@ -29,39 +33,6 @@ export default function SkillHubPage() {
     }
   }, [status]);
 
-  const handlePrint = () => {
-    const printContent = document.getElementById('skillhub-terms')?.innerHTML;
-    if (!printContent) return;
-    const printWindow = window.open('', '', 'height=600,width=800');
-    if (!printWindow) return;
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>SkillHub Service Terms - Uhuru Trade Ltd</title>
-          <style>
-            body { font-family: sans-serif; padding: 2rem; color: #000; }
-            h2 { font-size: 1.5rem; margin-bottom: 1rem; }
-            p, li { font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.5rem; }
-            h3 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-            .bg-primary\\/5 { background: #f3f4f6; padding: 1rem; border-radius: 8px; border: 1px solid #e5e7eb; }
-            ul { margin-left: 1.5rem; }
-            .footer-notes { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ccc; font-size: 0.8rem; color: #555; }
-            .no-print { display: none !important; }
-            svg { display: inline-block; width: 1em; height: 1em; margin-right: 0.5em; vertical-align: middle; }
-          </style>
-        </head>
-        <body>
-          ${printContent}
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 250);
-  };
 
   async function handleAction(formData: FormData) {
     setLoading(true);
@@ -304,7 +275,13 @@ export default function SkillHubPage() {
               
               <div className="no-print flex flex-wrap items-center gap-2 font-bold uppercase tracking-wider">
                 <FileText className="w-3 h-3" />
-                <button type="button" onClick={handlePrint} className="hover:text-primary transition-colors hover:underline cursor-pointer">Download PDF</button>
+                <button 
+                  type="button" 
+                  onClick={handleOpenTerms} 
+                  className="hover:text-primary transition-colors hover:underline cursor-pointer"
+                >
+                  Download PDF
+                </button>
               </div>
 
               <div className="no-print p-2 bg-[#e5e5e5] dark:bg-slate-950/50 rounded-lg leading-tight">

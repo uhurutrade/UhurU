@@ -6,33 +6,47 @@ import { FileText } from 'lucide-react';
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-[#e5e5e5] dark:bg-slate-950 text-foreground flex flex-col relative overflow-hidden font-sans transition-colors duration-500">
-      <SubPageHeader backHref="/services/skillhub" backText="Back to Login" />
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col items-center relative overflow-x-hidden font-sans transition-all duration-300">
       
-      {/* Background Orbs */}
-      <div className="absolute top-0 -left-10 w-96 h-96 bg-indigo-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse pointer-events-none"></div>
-      <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-purple-600/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse animation-delay-2000 pointer-events-none"></div>
+      {/* Document Header Controls */}
+      <div className="w-full no-print bg-slate-900 border-b border-indigo-500/20 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 sticky top-0 z-50 shadow-2xl">
+        <SubPageHeader backHref="/services/skillhub" backText="Back to Login" />
+        <button 
+          type="button"
+          onClick={() => window.print()}
+          className="group px-8 py-3 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 shadow-xl"
+        >
+          <FileText className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+          Download as PDF
+        </button>
+      </div>
 
-      <div className="flex-1 w-full max-w-5xl mx-auto z-10 px-4 py-12 md:py-20 lg:py-24">
-        <ContractingTerms />
-        
-        <div className="mt-12 flex justify-center pb-20 no-print">
-          <button 
-            type="button"
-            onClick={() => window.print()}
-            className="group px-10 py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(255,255,255,0.05)]"
-          >
-            <FileText className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-            Download PDF
-          </button>
+      <div className="w-full h-full flex-1 z-10 py-10 px-4 md:px-10 lg:px-20 print:p-0 print:m-0">
+        <div className="w-full max-w-none print:max-w-none shadow-none border-none dark:bg-white dark:text-slate-900">
+          <ContractingTerms />
         </div>
       </div>
       
       <style jsx global>{`
         @media print {
           .no-print { display: none !important; }
-          body { background: white !important; color: black !important; }
+          body, html { 
+            background: white !important; 
+            color: black !important; 
+            margin: 0 !important; 
+            padding: 0 !important;
+            width: 100% !important;
+          }
           * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+          #contracting-terms-document { 
+            box-shadow: none !important; 
+            border: none !important; 
+            border-radius: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+          }
         }
       `}</style>
     </div>
