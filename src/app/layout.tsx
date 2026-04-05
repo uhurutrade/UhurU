@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     default: 'UhurU - Tech & Finance Solutions',
     template: '%s | UhurU',
   },
-  description: 'AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments',
+  description: 'AI Agency • Corporate & IT Consulting • Smart Investments • Amazon FBA Business',
   keywords: ['AI Agency', 'Oracle Fusion Consulting', 'Redbook', 'IT Consulting', 'Amazon FBA', 'Smart Investments', 'FIN & SCM'],
   openGraph: {
     title: 'UhurU - Tech & Finance Solutions',

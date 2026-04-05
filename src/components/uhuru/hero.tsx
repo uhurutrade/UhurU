@@ -22,7 +22,7 @@ export default function Hero() {
               When we talk tech, money listens
             </h1>
             <p className="text-muted-foreground md:text-xl mx-auto max-w-[900px]">
-              AI Agency • Corporate & IT Consulting • Amazon FBA Business • Smart Investments
+              AI Agency • Corporate & IT Consulting • Smart Investments • Amazon FBA Business
             </p>
           </div>
           
