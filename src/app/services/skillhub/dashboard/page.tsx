@@ -505,7 +505,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                          </span>
                        </div>
                        <div className="md:hidden overflow-hidden">
-                          <h4 className="font-black text-black dark:text-foreground text-base truncate flex items-center gap-3">
+                          <h4 className="font-black text-black dark:text-foreground text-sm sm:text-base truncate flex items-center gap-3">
                              <div className="flex flex-col">
                                <span className={`text-[11px] font-black tracking-normal shrink-0 ${u.isPaid ? 'text-emerald-700 dark:text-emerald-500' : 'text-red-700 dark:text-red-500'}`}>
                                  {u.isPaid ? 'Active Plan' : 'Inactive Plan'}
@@ -809,7 +809,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
           <div key={l.id} className={`group p-1 rounded-[2rem] transition-all duration-300 ${editingId === l.id ? 'bg-white dark:bg-primary/5 ring-1 ring-primary/10 shadow-2xl' : 'hover:bg-black/5 dark:bg-white/5 ring-1 ring-transparent'}`}>
             <div className="p-4">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex-1 flex items-center gap-4 cursor-pointer" onClick={() => setEditingId(editingId === l.id ? null : l.id)}>
+                <div className="flex-1 flex flex-wrap items-center gap-4 cursor-pointer" onClick={() => setEditingId(editingId === l.id ? null : l.id)}>
                    <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-black dark:text-white border border-border/50 shadow-inner shrink-0">
                      {editingId === l.id ? <ChevronUp className="w-5 h-5 text-primary" /> : <ChevronDown className="w-5 h-5" />}
                    </div>
@@ -825,7 +825,7 @@ function LicenseInventory({ setGlobalNotification }: { setGlobalNotification: an
                    </div>
                    <div className="flex-1 overflow-hidden">
                       <div className="flex flex-wrap items-center gap-3 mb-1">
-                        <h4 className="font-bold text-foreground text-sm truncate max-w-[300px] text-black dark:text-white">{l.urlLink}</h4>
+                        <h4 className="font-bold text-foreground text-sm truncate max-w-full sm:max-w-[300px] text-black dark:text-white">{l.urlLink}</h4>
                         {l.assignedTo && (
                           <div className="flex items-center gap-2 text-[11px] font-black font-mono">
                              <span className="text-foreground">ID: {String(l.assignedTo.customerNumber || 0).padStart(4, '0')}</span>
