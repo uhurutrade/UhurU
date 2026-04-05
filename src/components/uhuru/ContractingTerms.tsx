@@ -1,5 +1,7 @@
 'use client';
 
+import { Shield, BookOpen, CheckCircle2, AlertCircle, AlertTriangle, RefreshCw } from 'lucide-react';
+
 export function ContractingTerms() {
   return (
     <div className="bg-[#f8fafc] dark:bg-slate-950/40 text-slate-900 dark:text-white/90 p-8 md:p-12 border border-slate-200 dark:border-white/10 shadow-2xl rounded-3xl max-w-4xl mx-auto font-sans backdrop-blur-3xl print:shadow-none print:border-none print:bg-white print:text-black print:p-0 print:m-0" id="contracting-terms-document">
