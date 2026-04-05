@@ -21,46 +21,46 @@ export default function Footer() {
   return (
     <footer className="w-full bg-zinc-100 dark:bg-background border-t">
       <TooltipProvider>
-        <div className="container mx-auto max-w-7xl px-4 py-8 md:px-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-4">
-              <div className="flex-shrink-0">
+        <div className="container mx-auto max-w-[1800px] px-6 py-8 md:px-12">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
+              <div className="flex-shrink-0 scale-90 origin-left">
                 <Logo />
               </div>
 
-              <div className="flex-1 text-center text-[10px] md:text-[11px] text-foreground/70 font-medium leading-relaxed max-w-3xl px-4">
+              <div className="flex-1 text-center text-[10px] md:text-[11px] text-foreground/70 font-medium leading-relaxed px-4 whitespace-nowrap">
                   <p>
                       © <Link href="/uhuru-statement-2024-2025" className="underline hover:text-primary transition-colors">2025</Link> All rights reserved. Uhuru Trade Ltd. Company no. 15883242 – Unit 13 Freeland Park Wareham Road. Lytchett <Link href="/rag_ucm" className="underline hover:text-primary transition-colors">Matravers</Link> – BH16 6FA Poole – UK <Link href="/privacy-policy" className="underline hover:text-primary transition-colors">Privacy Policy</Link> • <Link href="/cookie-policy" className="underline hover:text-primary transition-colors">Cookie Policy</Link>
                   </p>
               </div>
 
-              <div className="flex items-center gap-5 flex-shrink-0">
+              <div className="flex items-center gap-8 flex-shrink-0">
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Link href="https://www.linkedin.com/company/uhurutrade" aria-label="LinkedIn" prefetch={false} className="transition-transform hover:scale-110"><Linkedin className="h-4 w-4 text-foreground hover:text-primary" /></Link>
+                      <Link href="https://www.linkedin.com/company/uhurutrade" aria-label="LinkedIn" prefetch={false} className="transition-transform hover:scale-125"><Linkedin className="h-4 w-4 text-foreground hover:text-primary" /></Link>
                     </TooltipTrigger>
                     <TooltipContent><p>LinkedIn</p></TooltipContent>
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Link href="https://www.instagram.com/uhurutrade/" aria-label="Instagram" prefetch={false} className="transition-transform hover:scale-110"><Instagram className="h-4 w-4 text-foreground hover:text-primary" /></Link>
+                      <Link href="https://www.instagram.com/uhurutrade/" aria-label="Instagram" prefetch={false} className="transition-transform hover:scale-125"><Instagram className="h-4 w-4 text-foreground hover:text-primary" /></Link>
                     </TooltipTrigger>
                     <TooltipContent><p>Instagram</p></TooltipContent>
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Link href="https://wa.me/447517074605" aria-label="WhatsApp" prefetch={false} className="transition-transform hover:scale-110"><WhatsAppIcon /></Link>
+                      <Link href="https://wa.me/447517074605" aria-label="WhatsApp" prefetch={false} className="transition-transform hover:scale-125"><WhatsAppIcon /></Link>
                     </TooltipTrigger>
                     <TooltipContent><p>WhatsApp</p></TooltipContent>
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Link href="https://x.com/UhurUtradeUk" aria-label="X/Twitter" prefetch={false} className="transition-transform hover:scale-110"><XIcon /></Link>
+                      <Link href="https://x.com/UhurUtradeUk" aria-label="X/Twitter" prefetch={false} className="transition-transform hover:scale-125"><XIcon /></Link>
                     </TooltipTrigger>
                     <TooltipContent><p>X / Twitter</p></TooltipContent>
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Link href="https://t.me/uhurutradeuk" aria-label="Telegram" prefetch={false} className="transition-transform hover:scale-110"><Send className="h-4 w-4 text-foreground hover:text-primary" /></Link>
+                      <Link href="https://t.me/uhurutradeuk" aria-label="Telegram" prefetch={false} className="transition-transform hover:scale-125"><Send className="h-4 w-4 text-foreground hover:text-primary" /></Link>
                     </TooltipTrigger>
                     <TooltipContent><p>Telegram</p></TooltipContent>
                   </Tooltip>
