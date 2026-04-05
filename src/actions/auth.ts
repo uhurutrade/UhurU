@@ -351,8 +351,13 @@ export async function updateUserDetails(userId: string, formData: FormData) {
   const isPaid = formData.get('isPaid') === 'on';
   let isActive = formData.get('isActive') === 'on';
 
-  const targetUser = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
-  if (targetUser?.email === ADMIN_EMAIL) {
+  // 1. Fetch existing user first for comparison and extension
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, isPaid: true, subscriptionStart: true, subscriptionEnd: true, chosenPlan: true }
+  });
+
+  if (currentUser?.email === ADMIN_EMAIL) {
     isActive = true; // Protect superadmin
   }
 
@@ -366,25 +371,44 @@ export async function updateUserDetails(userId: string, formData: FormData) {
     }
   }
 
-  const startDate = startStr ? new Date(startStr) : null;
+   const startDate = startStr ? new Date(startStr) : null;
+  const extraDays = parseInt(formData.get('addDays') as string || "0");
   let endDate = null;
 
-  if (startDate && plan) {
+  // 2. Logic Check: Has the admin changed the BASE plan or start date?
+  const currentStartIso = currentUser?.subscriptionStart ? new Date(currentUser.subscriptionStart).toISOString().split('T')[0] : "";
+  const baseChanged = plan !== (currentUser?.chosenPlan || "") || startStr !== currentStartIso;
+
+  if (startDate && plan && baseChanged) {
+    // RE-CALCULATE BASE from plan + start
     endDate = new Date(startDate);
-    if (plan.includes('30 days')) {
+    if (plan === "7" || plan.includes('7 days')) {
+      endDate.setDate(endDate.getDate() + 7);
+    } else if (plan === "30" || plan.includes('30 days')) {
       endDate.setDate(endDate.getDate() + 30);
-    } else if (plan.includes('90 days')) {
+    } else if (plan === "90" || plan.includes('90 days')) {
       endDate.setDate(endDate.getDate() + 90);
     }
+  } else {
+    // KEEP PREVIOUS END DATE as base for potential extra days
+    endDate = currentUser?.subscriptionEnd ? new Date(currentUser.subscriptionEnd) : null;
+    
+    // Safety fallback: if there was no end date but there is a start date/plan
+    if (!endDate && startDate && plan) {
+       endDate = new Date(startDate);
+       if (plan === "7" || plan.includes('7 days')) endDate.setDate(endDate.getDate() + 7);
+       else if (plan === "30" || plan.includes('30 days')) endDate.setDate(endDate.getDate() + 30);
+       else if (plan === "90" || plan.includes('90 days')) endDate.setDate(endDate.getDate() + 90);
+    }
+  }
+
+  // 3. Apply manual adjustment (+/- extraDays) cumulatively
+  if (extraDays !== 0 && endDate) {
+    endDate.setDate(endDate.getDate() + extraDays);
   }
 
   // LICENSE MANAGEMENT
   try {
-    const currentUser = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { isPaid: true }
-    });
-
     if (currentUser?.isPaid && !isPaid) {
       // RELEASE LICENSE
       await prisma.license.updateMany({

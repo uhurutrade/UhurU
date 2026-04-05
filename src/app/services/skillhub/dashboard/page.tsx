@@ -185,10 +185,10 @@ export default function DashboardPage() {
                     {isVigente && (
                       <div className="mt-3 space-y-1.5 px-1 pt-2 border-t border-emerald-500/10">
                         <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-2">
-                          <Calendar className="w-4 h-4" /> From: {user.subscriptionStart ? new Date(user.subscriptionStart).toLocaleDateString() : 'N/A'}
+                          <Calendar className="w-4 h-4" /> From: {user.subscriptionStart ? new Date(user.subscriptionStart).toISOString().split('T')[0].split('-').reverse().join('-') : 'N/A'}
                         </p>
                         <p className="text-sm font-black text-black dark:text-white uppercase tracking-widest flex items-center gap-2">
-                          <ArrowRight className="w-3.5 h-3.5" /> To: {user.subscriptionEnd ? new Date(user.subscriptionEnd).toLocaleDateString() : 'N/A'}
+                          <ArrowRight className="w-3.5 h-3.5" /> To: {user.subscriptionEnd ? new Date(user.subscriptionEnd).toISOString().split('T')[0].split('-').reverse().join('-') : 'N/A'}
                         </p>
                       </div>
                     )}
@@ -532,12 +532,14 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                 </div>
                 
                 <div className="flex items-center gap-3 md:gap-6 pl-14 md:pl-0">
-                   <div className="text-right">
-                      <p className="text-[9px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest leading-none mb-1">Ends</p>
-                      <span className="text-[10px] font-black text-black dark:text-white font-mono">
-                        {u.subscriptionEnd ? new Date(u.subscriptionEnd).toLocaleDateString() : 'N/A'}
-                      </span>
-                   </div>
+                    <div className="text-right whitespace-nowrap">
+                       <div className="flex items-center gap-2">
+                         <span className="text-[10px] font-black text-black dark:text-white/40 uppercase tracking-[0.2em]">Ends</span>
+                         <span className="text-sm font-black text-black dark:text-white font-mono tracking-tight bg-black/5 dark:bg-white/5 px-3 py-1 rounded-lg border border-black/5 dark:border-white/10">
+                           {u.subscriptionEnd ? new Date(u.subscriptionEnd).toISOString().split('T')[0].split('-').reverse().join('-') : 'N/A'}
+                         </span>
+                       </div>
+                    </div>
                 </div>
               </div>
 
@@ -614,11 +616,25 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                                <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block">Selected Plan</label>
                                <select name="chosenPlan" defaultValue={u.chosenPlan || ""} className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
                                   <option value="">No Plan</option>
-                                  <option value="Oracle Fusion 7 days (£18)">Oracle Fusion 7 days</option>
-                                  <option value="Oracle Fusion 30 days (£59)">Oracle Fusion 30 days</option>
-                                  <option value="Oracle Fusion 90 days (£140)">Oracle Fusion 90 days</option>
+                                  <option value="7">Oracle Fusion 7 days</option>
+                                  <option value="30">Oracle Fusion 30 days</option>
+                                  <option value="90">Oracle Fusion 90 days</option>
                                </select>
                             </div>
+                            <div>
+                                <label className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 block flex items-center gap-1">
+                                  <Activity className="w-2.5 h-2.5" /> Adjust License Duration
+                                </label>
+                                <select name="addDays" defaultValue="0" className="w-full bg-white dark:bg-slate-950/50 border border-slate-950/10 dark:border-white/20 rounded-xl px-4 py-3 text-xs text-black dark:text-white">
+                                   <option value="0">Keep Current Expiry</option>
+                                   <option value="1">+1 Extra Day</option>
+                                   <option value="2">+2 Extra Days</option>
+                                   <option value="3">+3 Extra Days</option>
+                                   <option value="-1">-1 Day Less</option>
+                                   <option value="-2">-2 Days Less</option>
+                                   <option value="-3">-3 Days Less</option>
+                                </select>
+                             </div>
                           </div>
                        </div>
                     </div>
