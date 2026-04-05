@@ -147,6 +147,15 @@ export default function DashboardPage() {
     setHasReadTerms(false);
   };
 
+  const [isVigente, setIsVigente] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (user) {
+      const active = user.isAdmin || (user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date());
+      setIsVigente(!!active);
+    }
+  }, [user]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -156,8 +165,6 @@ export default function DashboardPage() {
   }
 
   if (!user) return null;
-
-  const isVigente = user.isAdmin || (user.isPaid && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date());
 
   return (
     <div className="min-h-screen bg-[#e5e5e5] dark:bg-background text-foreground relative overflow-hidden font-sans transition-colors duration-300">
