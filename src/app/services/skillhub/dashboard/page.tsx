@@ -126,9 +126,10 @@ export default function DashboardPage() {
 
   const handlePayPlan = () => {
     if (!hasReadTerms) return;
-    let url = 'https://amazon.es';
-    if (renewalPlan === "7") url = 'https://cnn.com';
-    else if (renewalPlan === "30") url = 'https://checkout.revolut.com/payment-link/5e7fc3a4-1313-4072-974b-9328a667b616';
+    let url = 'https://checkout.revolut.com/pay/d2d7728d-2252-4b68-8fcd-a752815d4b75'; // Default 30
+    if (renewalPlan === "7") url = 'https://checkout.revolut.com/pay/46502838-0b67-420d-a1d9-fd34bfe14e88';
+    else if (renewalPlan === "30") url = 'https://checkout.revolut.com/pay/d2d7728d-2252-4b68-8fcd-a752815d4b75';
+    else if (renewalPlan === "90") url = 'https://checkout.revolut.com/pay/9ddb9c6a-6764-4a60-93b7-d2b742ca02a8';
     
     const w = 800;
     const h = 700;
