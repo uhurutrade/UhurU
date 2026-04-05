@@ -140,7 +140,7 @@ const ChatWidgetContent = () => {
   };
 
   return (
-    <div className="fixed bottom-32 right-6 z-[9999]">
+    <div className="fixed bottom-40 right-6 z-[9999]">
        <TooltipProvider>
       {isOpen && (
           <div
