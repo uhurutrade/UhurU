@@ -295,14 +295,14 @@ export default function SkillHubPage() {
             {/* 01. PARTIES AND NATURE OF SERVICE */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <Users className="w-4 h-4 text-primary shrink-0" /> 01. Parties & Nature of Service
+                <Users className="w-4 h-4 text-primary shrink-0" /> 01. Parties & Service Definition
               </h3>
               <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 dark:border-primary/10 ml-1">
                 <p className="mb-2">
-                  This Agreement is entered into between <strong>Uhuru Trade Ltd.</strong> ("the Provider"), registered at Unit 13 Freeland Park, Wareham Road, Lytchett Matravers, BH16 6FA, Poole – UK, and the individual or entity acquiring the subscription ("the User").
+                  This Agreement is entered into between <strong>Uhuru Trade Ltd.</strong> ("the Provider"), registered at Unit 13 Freeland Park, Wareham Road, Lytchett Matravers, BH16 6FA, Poole – UK, and the individual or entity acquiring the service ("the User").
                 </p>
                 <p>
-                  SkillHub provides temporary access to SaaS environments ("Vision Instances" or "Sandboxes") of Oracle Fusion Cloud Release 13. Uhuru Trade Ltd. acts solely as a facilitator for educational and professional development purposes and is not the owner, developer, or official technical support for Oracle Corp.
+                  SkillHub is a managed training service that provides temporary access to remote educational environments ("Lab Instances") based on Oracle Fusion Cloud Release 13. The User acknowledges that Uhuru Trade Ltd. acts solely as a Technical Facilitator providing a pre-configured training platform for educational purposes. The Provider is not an affiliate, partner, or official representative of Oracle Corp.
                 </p>
               </div>
             </div>
@@ -310,12 +310,13 @@ export default function SkillHubPage() {
             {/* 02. LIMITED LICENSE AND EXCLUSIVE PURPOSE */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <BookOpen className="w-4 h-4 text-primary shrink-0" /> 02. Limited License & Purpose
+                <BookOpen className="w-4 h-4 text-primary shrink-0" /> 02. Limited Use & Educational Purpose
               </h3>
+              <p className="opacity-80 ml-2 mb-2">Access is granted for a fixed term as a professional training service subject to the following conditions:</p>
               <ul className="list-disc list-inside space-y-1.5 ml-2 opacity-80">
-                <li><strong>Educational Purpose Only:</strong> Strictly limited to self-study, research, and training. Live business management or consulting is prohibited.</li>
-                <li><strong>No Real Data & PII:</strong> Users must NOT upload real production data, actual financial records, or Personally Identifiable Information under any circumstances.</li>
-                <li><strong>Non-Resale Clause:</strong> Sub-leasing, selling, or paid training sessions using these credentials is prohibited.</li>
+                <li><strong>Strictly Educational:</strong> Use is limited exclusively to self-study, research, and professional development. Use for live commercial operations, production data processing, or business-critical consultancy is strictly prohibited.</li>
+                <li><strong>Prohibition of Real Data & PII:</strong> Users are strictly prohibited from uploading real production data, actual financial records, or Personally Identifiable Information (PII). As these are sandbox environments, the Provider does not guarantee the privacy, confidentiality, or persistence of any data uploaded.</li>
+                <li><strong>Non-Transferability:</strong> Access credentials are personal and non-transferable. Sub-leasing, selling access, or conducting paid training sessions using these credentials will result in immediate termination.</li>
               </ul>
             </div>
 
@@ -324,25 +325,23 @@ export default function SkillHubPage() {
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
                 <Lock className="w-4 h-4 text-red-500 shrink-0" /> 03. System Integrity & Security
               </h3>
-              <p className="opacity-80 ml-2 mb-2 font-semibold">Any violation of the following results in immediate account termination without refund:</p>
+              <p className="opacity-80 ml-2 mb-2 font-semibold">Any breach of the following protocols will result in immediate termination of the service without the right to a refund:</p>
               <ul className="list-disc list-inside space-y-1.5 ml-2 opacity-80">
-                <li><strong>Credentials:</strong> Sharing access credentials with third parties is strictly prohibited.</li>
-                <li><strong>Security Modifications:</strong> Changing Master Passwords or bypassing license restrictions is prohibited.</li>
-                <li><strong>Technical Access:</strong> Functional access only. Excludes SQL database access, server-level access, or network infrastructure control.</li>
+                <li><strong>Credentials & Security:</strong> Sharing credentials with third parties is prohibited. Users are forbidden from attempting to change Master/Admin passwords or modifying high-level security and license profiles.</li>
+                <li><strong>Technical Scope:</strong> Access is provided at the functional (UI) level only. This service does not include SQL database access, server-level OS access, or network infrastructure control.</li>
               </ul>
             </div>
 
             {/* 04. AVAILABILITY, MAINTENANCE, AND COMPENSATION */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <Activity className="w-4 h-4 text-amber-500 shrink-0" /> 04. Maintenance & Compensation
+                <Activity className="w-4 h-4 text-amber-500 shrink-0" /> 04. Availability, Maintenance, & Service Recovery
               </h3>
               <div className="space-y-2 opacity-80 ml-2">
-                <p>The infrastructure is operated by Oracle Corp. and subject to their global maintenance:</p>
                 <ul className="list-disc list-inside space-y-1.5 mt-2">
-                  <li><strong>Scheduled Maintenance:</strong> 1 to 2 days per week for standard Oracle updates is expected.</li>
-                  <li><strong>System Refreshes:</strong> Oracle may restore instances without notice. Any User data will be permanently lost.</li>
-                  <li><strong>Interruption Compensation:</strong> If an outage prevents use for over 48 consecutive hours in a week, the Provider will compensate by adding equivalent inactive days to the end of the subscription.</li>
+                  <li><strong>Infrastructure Maintenance:</strong> Standard unavailability of 1 to 2 days per week for global updates and maintenance is expected and is considered a standard feature of the service; therefore, it is not subject to compensation.</li>
+                  <li><strong>System Refreshes:</strong> The infrastructure owner may restore the instance to its "clean" state at any time without prior notice. Any configuration created by the User will be permanently lost. External documentation of work is the User’s sole responsibility.</li>
+                  <li><strong>Service Credit Policy:</strong> If the instance suffers a total outage preventing functional use for more than 48 consecutive hours within a single week (excluding scheduled maintenance), Uhuru Trade Ltd. will compensate the User by adding the equivalent number of inactive days to the end of the current subscription period. This "Service Credit" constitutes the sole and exclusive remedy available.</li>
                 </ul>
               </div>
             </div>
@@ -352,7 +351,7 @@ export default function SkillHubPage() {
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
                 <Scale className="w-4 h-4 text-emerald-500 shrink-0" /> 05. Limitation of Liability
               </h3>
-              <p className="opacity-80 ml-2">To the maximum extent permitted by UK laws, Uhuru Trade Ltd. shall not be liable for any loss of data, loss of profits, business interruption, or indirect damages.</p>
+              <p className="opacity-80 ml-2">To the maximum extent permitted by the laws of England and Wales: Uhuru Trade Ltd. provides the service on an "as is" and "as available" basis. The Provider shall not be liable for any loss of data, loss of profits, business interruption, or indirect damages. No warranty is provided that the functions contained in the instance will be uninterrupted or error-free.</p>
             </div>
 
             {/* 06. DELIVERY AND REFUND POLICY */}
@@ -361,17 +360,17 @@ export default function SkillHubPage() {
                 <CreditCard className="w-4 h-4 text-blue-500 shrink-0" /> 06. Delivery & Refund Policy
               </h3>
               <ul className="list-disc list-inside space-y-1.5 ml-2 opacity-80">
-                <li><strong>Provisioning:</strong> Credentials delivered via email within 24 hours of payment.</li>
-                <li><strong>No Refunds:</strong> Due to the digital consumption of the service, no refunds are issued once credentials are dispatched.</li>
+                <li><strong>Provisioning:</strong> Access credentials will be delivered via email within 24 hours of payment verification.</li>
+                <li><strong>No Refunds:</strong> Due to the immediate digital nature and consumption of the service, all sales are final once credentials have been dispatched, except as specifically permitted under the Service Credit Policy in Clause 04.</li>
               </ul>
             </div>
 
             {/* 07. JURISDICTION AND GOVERNING LAW */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <Globe className="w-4 h-4 text-indigo-500 shrink-0" /> 07. Jurisdiction
+                <Globe className="w-4 h-4 text-indigo-500 shrink-0" /> 07. Jurisdiction & Law
               </h3>
-              <p className="opacity-80 ml-2">Governed by the laws of England and Wales. Disputes are subject to the exclusive jurisdiction of the courts of the United Kingdom.</p>
+              <p className="opacity-80 ml-2">This Agreement is governed by and construed in accordance with the laws of England and Wales. Any disputes arising under or in connection with these terms shall be subject to the exclusive jurisdiction of the courts of the United Kingdom.</p>
             </div>
 
             <div className="footer-notes pt-6 border-t border-[#c0c0c0] dark:border-slate-800 mt-8 text-[9px] sm:text-[10px] text-black dark:text-white space-y-3">
