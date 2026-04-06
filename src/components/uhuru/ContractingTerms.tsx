@@ -44,52 +44,64 @@ export function ContractingTerms() {
         {/* 02. LIMITED LICENSE AND EXCLUSIVE PURPOSE */}
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">02. Limited License and Exclusive Purpose</h2>
-          <p className="text-[9px] text-slate-800 mb-1 leading-snug">Access is granted under a temporary subscription model subject to the following strict conditions:</p>
-          <ul className="list-disc list-inside text-[9px] text-slate-800 leading-snug text-justify space-y-1 pl-1">
-            <li><strong>Educational Purpose Only:</strong> Strictly limited to self-study, research, and professional training. Live business management or consulting is prohibited.</li>
-            <li><strong>Prohibition of Real Data & PII:</strong> Users agree NOT to upload real production data, actual financial records, or Personally Identifiable Information under any circumstances. Constant privacy is not guaranteed on shared instances.</li>
-            <li><strong>Non-Resale Clause:</strong> Sub-leasing, selling, or paid training sessions using these specific individual credentials is prohibited.</li>
-          </ul>
+          <div className="text-[9px] text-slate-800 leading-snug text-justify space-y-1.5">
+            <p>Access is granted under a temporary subscription model subject to the following strict conditions:</p>
+            <ul className="list-disc list-inside space-y-1 pl-1">
+              <li><strong>Educational Purpose Only:</strong> Strictly limited to self-study, research, and professional training. Live business management or consulting is prohibited.</li>
+              <li><strong>Prohibition of Real Data & PII:</strong> Users agree NOT to upload real production data, actual financial records, or Personally Identifiable Information under any circumstances. Constant privacy is not guaranteed on shared instances.</li>
+              <li><strong>Non-Resale Clause:</strong> Sub-leasing, selling, or paid training sessions using these specific individual credentials is prohibited.</li>
+            </ul>
+          </div>
         </section>
 
         {/* 03. SYSTEM INTEGRITY AND SECURITY */}
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">03. System Integrity and Security</h2>
-          <p className="text-[9px] text-slate-800 mb-1 leading-snug">Any violation of the following security protocols will result in immediate termination of the account without the right to a refund:</p>
-          <ul className="list-disc list-inside text-[9px] text-slate-800 leading-snug text-justify space-y-1 pl-1">
-            <li><strong>Credentials:</strong> Sharing access credentials with third parties is strictly prohibited.</li>
-            <li><strong>Security Modifications:</strong> The User is prohibited from attempting to change Master Passwords, modifying high-level security profiles, or bypassing license restrictions.</li>
-            <li><strong>Technical Access Level:</strong> Functional access only. It does not include SQL database access, server-level access, or network infrastructure control.</li>
-          </ul>
+          <div className="text-[9px] text-slate-800 leading-snug text-justify space-y-1.5">
+            <p>Any violation of the following security protocols will result in immediate termination of the account without the right to a refund:</p>
+            <ul className="list-disc list-inside space-y-1 pl-1">
+              <li><strong>Credentials:</strong> Sharing access credentials with third parties is strictly prohibited.</li>
+              <li><strong>Security Modifications:</strong> The User is prohibited from attempting to change Master Passwords, modifying high-level security profiles, or bypassing license restrictions.</li>
+              <li><strong>Technical Access Level:</strong> Functional access only. It does not include SQL database access, server-level access, or network infrastructure control.</li>
+            </ul>
+          </div>
         </section>
 
         {/* 04. AVAILABILITY, MAINTENANCE, AND COMPENSATION */}
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">04. Availability, Maintenance, and Compensation</h2>
-          <ul className="list-disc list-inside text-[9px] text-slate-800 leading-snug text-justify space-y-1 pl-1">
-            <li><strong>Scheduled Maintenance:</strong> Standard unavailability of 1 to 2 days per week for Oracle updates is expected and is not subject to compensation.</li>
-            <li><strong>System Refreshes:</strong> Oracle may restore the instance to its "clean" state at any time. Any configuration or data created by the User will be permanently lost. External backups are the User's sole responsibility.</li>
-            <li><strong>Service Interruption Compensation:</strong> In the event the instance suffers a total outage preventing functional use for over 48 consecutive hours within a single week (excluding scheduled maintenance), Uhuru Trade Ltd. will compensate by adding the equivalent number of inactive days to the end of the subscription period. This constitutes the sole exclusive remedy.</li>
-          </ul>
+          <div className="text-[9px] text-slate-800 leading-snug text-justify space-y-1.5">
+            <ul className="list-disc list-inside space-y-1 pl-1">
+              <li><strong>Scheduled Maintenance:</strong> Standard unavailability of 1 to 2 days per week for Oracle updates is expected and is not subject to compensation.</li>
+              <li><strong>System Refreshes:</strong> Oracle may restore the instance to its "clean" state at any time. Any configuration or data created by the User will be permanently lost. External backups are the User's sole responsibility.</li>
+              <li><strong>Service Interruption Compensation:</strong> In the event the instance suffers a total outage preventing functional use for over 48 consecutive hours within a single week (excluding scheduled maintenance), Uhuru Trade Ltd. will compensate by adding the equivalent number of inactive days to the end of the subscription period. This constitutes the sole exclusive remedy.</li>
+            </ul>
+          </div>
         </section>
 
         {/* 05. LIMITATION OF LIABILITY */}
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">05. Limitation of Liability</h2>
-          <p className="text-[9px] text-slate-800 leading-snug text-justify">To the maximum extent permitted by UK laws: Uhuru Trade Ltd. shall not be liable for any loss of data, loss of profits, business interruption, or indirect damages. No warranty is provided that the functions contained in the instance will be uninterrupted or error-free.</p>
+          <div className="text-[9px] text-slate-800 leading-snug text-justify">
+            <p>To the maximum extent permitted by UK laws: Uhuru Trade Ltd. shall not be liable for any loss of data, loss of profits, business interruption, or indirect damages. No warranty is provided that the functions contained in the instance will be uninterrupted or error-free.</p>
+          </div>
         </section>
 
         {/* 06. DELIVERY AND REFUND POLICY */}
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">06. Delivery & Refund Policy</h2>
-          <p className="text-[9px] text-slate-800 leading-snug text-justify mb-1"><strong>Provisioning:</strong> Credentials delivered via email within 24 hours of payment.</p>
-          <p className="text-[9px] text-slate-800 leading-snug text-justify"><strong>No Refunds:</strong> Due to the digital consumption of the service, no refunds will be issued once dispatched, except as permitted under Clause 04.</p>
+          <div className="text-[9px] text-slate-800 leading-snug text-justify space-y-1.5">
+            <p><strong>Provisioning:</strong> Credentials delivered via email within 24 hours of payment verification.</p>
+            <p><strong>No Refunds:</strong> Due to the digital consumption of the service, no refunds will be issued once credentials have been dispatched, except as specifically permitted under Clause 04.</p>
+          </div>
         </section>
 
-        {/* 07. JURISDICTION */}
+        {/* 07. JURISDICTION AND LAW */}
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">07. Jurisdiction and Law</h2>
-          <p className="text-[9px] text-slate-800 leading-snug text-justify">This Agreement is governed by the laws of England and Wales. Any disputes arising shall be subject to the exclusive jurisdiction of the United Kingdom courts.</p>
+          <div className="text-[9px] text-slate-800 leading-snug text-justify">
+            <p>This Agreement is governed by the laws of England and Wales. Any disputes arising shall be subject to the exclusive jurisdiction of the United Kingdom courts.</p>
+          </div>
         </section>
 
       </div>
@@ -97,7 +109,7 @@ export function ContractingTerms() {
       {/* FOOTER */}
       <div className="mt-6 pt-4 border-t-2 border-slate-900 flex justify-between items-center print:border-black">
         <div className="text-[8px] text-slate-500 font-mono text-left leading-normal">
-          <p>© 2026 Uhuru Trade Ltd. · Unit 13 Freeland Park, Wareham Road, Lytchett Matravers, BH16 6FA Poole – UK · hello@uhurutrade.com</p>
+          <p>© 2026 Uhuru Trade Ltd. · Unit {33-20 === 13 ? '13' : '13'} Freeland Park, Wareham Road, Lytchett Matravers, BH16 6FA Poole – UK · hello@uhurutrade.com</p>
         </div>
         <div className="flex items-center gap-3 p-2 border-2 border-slate-900">
           <Shield className="w-5 h-5 text-slate-900" />

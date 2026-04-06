@@ -620,3 +620,20 @@ export async function syncAllLicensesStatus() {
     return { success: false, message: 'Error syncing licenses' };
   }
 }
+
+export async function deleteUser(id: string) {
+  const admin = await getCurrentUser();
+  if (!admin?.isAdmin) throw new Error('Not authorized');
+
+  // Release licenses first
+  await prisma.license.updateMany({
+    where: { userId: id },
+    data: { userId: null, isAvailableUhuru: false, lastUserId: id }
+  });
+
+  // Delete user
+  await prisma.user.delete({ where: { id } });
+  
+  revalidatePath('/services/skillhub/dashboard');
+  return { success: true };
+}

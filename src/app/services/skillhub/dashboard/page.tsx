@@ -4,15 +4,14 @@ import { useEffect, useState } from 'react';
 import { 
   getCurrentUser, updateProfile, logoutUser, getAllUsers, 
   updateUserDetails, getAllLicenses, upsertLicense, deleteLicense,
-  reassignStudentLicense, syncAllLicensesStatus
+  reassignStudentLicense, syncAllLicensesStatus, deleteUser
 } from '@/actions/auth';
 import { 
-  User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
+  Users as UsersIcon, User, Mail, Building, MapPin, Building2, Phone, Globe, Home, 
   CheckCircle2, AlertCircle, LogOut, Save, UserCircle, Loader2,
   ShieldCheck, Calendar, ArrowRight, RefreshCw, ExternalLink, Trash2, Plus, Lock, UserPlus, CreditCard, Activity, Copy, ClipboardCheck, AlertTriangle, ShieldAlert,
   ChevronUp, ChevronDown, Table, ChevronRight
 } from 'lucide-react';
-import { Users } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ContractingTerms } from '@/components/uhuru/ContractingTerms';
 import SubPageHeader from '@/components/uhuru/subpage-header';
@@ -451,7 +450,7 @@ function AdminCenter({ currentUserId, setGlobalNotification }: { currentUserId: 
   return (
     <div className="bg-[#f2f2f2] dark:bg-slate-900/60 backdrop-blur-3xl border border-black dark:border-white/[0.05] rounded-[2.5rem] shadow-2xl h-full flex flex-col overflow-hidden">
       <div className="flex overflow-x-auto border-b border-black dark:border-white/5 bg-black/5 dark:bg-slate-950/20 no-scrollbar">
-        <TabButton active={activeView === 'students'} onClick={() => setActiveView('students')} icon={<Users className="w-5 h-5" />} label="Users" />
+        <TabButton active={activeView === 'students'} onClick={() => setActiveView('students')} icon={<UsersIcon className="w-5 h-5" />} label="Users" />
         <TabButton active={activeView === 'licenses'} onClick={() => setActiveView('licenses')} icon={<Table className="w-5 h-5" />} label="License Inventory" />
       </div>
       
@@ -475,14 +474,15 @@ function TabButton({ active, onClick, icon, label }: any) {
 }
 
 function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUserId: string, setGlobalNotification: any }) {
-  const [users, setUsers] = useState<any[]>([]);
+  const [registeredUsers, setRegisteredUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       const data = await getAllUsers();
-      setUsers(data); 
+      setRegisteredUsers(data); 
       setLoading(false);
     }
     load();
@@ -494,7 +494,7 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
     if (result.success) {
       setGlobalNotification({ success: true, message: 'Student information updated' });
       const data = await getAllUsers();
-      setUsers(data);
+      setRegisteredUsers(data);
     } else {
       setGlobalNotification({ success: false, message: result.message });
       setTimeout(() => setGlobalNotification(null), 5000);
@@ -506,18 +506,61 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
      if (result.success) {
         setGlobalNotification({ success: true, message: 'License rotated successfully' });
         const data = await getAllUsers();
-        setUsers(data);
+        setRegisteredUsers(data);
      } else {
         setGlobalNotification({ success: false, message: result.message });
         setTimeout(() => setGlobalNotification(null), 3000);
      }
   }
 
+  async function handleDeleteUser(userId: string) {
+    const result = await deleteUser(userId);
+    if (result.success) {
+       setGlobalNotification({ success: true, message: 'User deleted successfully' });
+       const data = await getAllUsers();
+       setRegisteredUsers(data);
+    } else {
+       setGlobalNotification({ success: false, message: 'Error deleting user' });
+       setTimeout(() => setGlobalNotification(null), 3000);
+    }
+ }
+
   if (loading) return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-primary dark:text-primary" /></div>;
 
   return (
     <div className="space-y-4">
-      {users.map((u) => {
+      {deleteUserId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-300">
+           <div className="bg-white dark:bg-slate-900 border border-red-500/30 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl shadow-red-950/20 animate-in zoom-in-95 duration-300">
+              <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mb-6 ring-1 ring-red-500/20">
+                <AlertTriangle className="w-8 h-8 text-red-700 dark:text-red-500" />
+              </div>
+              <h3 className="text-xl font-black text-foreground mb-3 tracking-tight">Delete User?</h3>
+              <p className="text-black dark:text-white text-sm leading-relaxed mb-8 text-[11px]">
+                Are you sure you want to delete this user? This action cannot be undone and will release any associated licenses.
+              </p>
+              <div className="flex gap-4">
+                 <button 
+                  onClick={() => {
+                    handleDeleteUser(deleteUserId);
+                    setDeleteUserId(null);
+                  }}
+                  className="flex-1 px-6 py-4 bg-red-600 hover:bg-red-500 text-white text-[11px] font-black tracking-widest rounded-xl transition-all shadow-xl shadow-red-900/40 border border-slate-950/10 dark:border-white/10"
+                 >
+                   Delete User
+                 </button>
+                 <button 
+                  onClick={() => setDeleteUserId(null)}
+                  className="px-8 py-4 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-foreground text-[11px] font-black tracking-widest rounded-xl transition-all border border-slate-950/10 dark:border-white/5"
+                 >
+                   Cancel
+                 </button>
+              </div>
+           </div>
+        </div>
+      )}
+
+      {registeredUsers.map((u) => {
         const isVigente = u.isPaid && u.subscriptionEnd && new Date(u.subscriptionEnd) > new Date();
         return (
           <div key={u.id} className={`p-1 rounded-[2rem] transition-all duration-300 ${activeTab === u.id ? 'bg-white dark:bg-primary/5 ring-1 ring-primary/10 shadow-2xl' : 'hover:bg-black/5 dark:bg-white/5 ring-1 ring-transparent'}`}>
@@ -566,13 +609,22 @@ function StudentRegistry({ currentUserId, setGlobalNotification }: { currentUser
                 </div>
                 
                 {/* 5. Expiration Date Far Right */}
-                <div className="flex items-center justify-end gap-6 pl-14 md:pl-0">
+                <div className="flex items-center justify-end gap-3 md:gap-6 pl-14 md:pl-0">
                   <div className="text-right flex flex-col items-end">
                     <span className="text-[9px] font-black text-black/40 dark:text-white/40 uppercase tracking-widest mb-1">Expiration</span>
                     <span className={`text-xs font-black font-mono ${isVigente ? 'text-emerald-600' : 'text-red-500'}`}>
                       {formatDate(u.subscriptionEnd)}
                     </span>
                   </div>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteUserId(u.id);
+                    }}
+                    className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-foreground/60 hover:bg-red-600 hover:text-white transition-all border border-slate-950/10 dark:border-white/10 shrink-0"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
