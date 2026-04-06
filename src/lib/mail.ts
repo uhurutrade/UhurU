@@ -15,9 +15,10 @@ interface SendEmailOptions {
   subject: string;
   text?: string;
   html?: string;
+  bcc?: string | string[];
 }
 
-export const sendEmail = async ({ to, subject, text, html }: SendEmailOptions) => {
+export const sendEmail = async ({ to, subject, text, html, bcc }: SendEmailOptions) => {
   try {
     console.log('Attempting to send email to:', to);
     console.log('Using SMTP User:', process.env.EMAIL_USER);
@@ -28,6 +29,7 @@ export const sendEmail = async ({ to, subject, text, html }: SendEmailOptions) =
       subject,
       text,
       html,
+      bcc,
     });
     console.log('Message sent: %s', info.messageId);
     return { success: true, messageId: info.messageId };

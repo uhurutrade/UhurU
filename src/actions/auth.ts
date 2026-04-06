@@ -190,6 +190,7 @@ export async function registerUser(formData: FormData) {
 
     await sendEmail({
       to: user.email,
+      bcc: ADMIN_EMAIL,
       subject: 'Welcome to SkillHub — Uhuru Trade',
       html: getWelcomeTemplate(user.firstName, dashboardUrl),
     });
