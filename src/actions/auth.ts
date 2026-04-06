@@ -8,6 +8,7 @@ import { cookies, headers } from 'next/headers';
 import { randomUUID } from 'crypto';
 import { sendEmail } from '@/lib/mail';
 import { getResetTemplate } from '@/lib/templates/reset';
+import { getWelcomeTemplate } from '@/lib/templates/welcome';
 import { revalidatePath } from 'next/cache';
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'super-secret-key');
@@ -179,6 +180,18 @@ export async function registerUser(formData: FormData) {
         password: hashedPassword,
         customerNumber: nextNumber,
       },
+    });
+
+    // SEND WELCOME EMAIL
+    const headerList = await headers();
+    const host = headerList.get('host');
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const dashboardUrl = `${protocol}://${host}/services/skillhub/dashboard`;
+
+    await sendEmail({
+      to: user.email,
+      subject: 'Welcome to SkillHub — Uhuru Trade',
+      html: getWelcomeTemplate(user.firstName, dashboardUrl),
     });
 
     // AUTO-LOGIN AFTER REGISTER
