@@ -284,7 +284,7 @@ export default function SkillHubPage() {
             <Shield className="w-8 h-8 text-primary shrink-0" />
             <div className="flex flex-col">
                <h2 className="text-lg lg:text-xl font-black text-black dark:text-white tracking-tight leading-none" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
-                 SKILLHUB TERMS OF SUBSCRIPTION
+                 SkillHub Managed Training Service Provisioning Agreement
                </h2>
                <span className="text-[10px] font-bold text-primary mt-1 uppercase tracking-widest">Version 2026.1</span>
             </div>
@@ -295,7 +295,7 @@ export default function SkillHubPage() {
             {/* 01. PARTIES AND NATURE OF SERVICE */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <Users className="w-4 h-4 text-primary shrink-0" /> 01. Parties & Service Definition
+                <Users className="w-4 h-4 text-primary shrink-0" /> 01. PARTIES AND SERVICE DEFINITION
               </h3>
               <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 dark:border-primary/10 ml-1">
                 <p className="mb-2">
@@ -310,7 +310,7 @@ export default function SkillHubPage() {
             {/* 02. LIMITED LICENSE AND EXCLUSIVE PURPOSE */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <BookOpen className="w-4 h-4 text-primary shrink-0" /> 02. Limited Use & Educational Purpose
+                <BookOpen className="w-4 h-4 text-primary shrink-0" /> 02. LIMITED USE AND EDUCATIONAL PURPOSE
               </h3>
               <p className="opacity-80 ml-2 mb-2">Access is granted for a fixed term as a professional training service subject to the following conditions:</p>
               <ul className="list-disc list-inside space-y-1.5 ml-2 opacity-80">
@@ -323,7 +323,7 @@ export default function SkillHubPage() {
             {/* 03. SYSTEM INTEGRITY AND SECURITY */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <Lock className="w-4 h-4 text-red-500 shrink-0" /> 03. System Integrity & Security
+                <Lock className="w-4 h-4 text-red-500 shrink-0" /> 03. SYSTEM INTEGRITY AND SECURITY
               </h3>
               <p className="opacity-80 ml-2 mb-2 font-semibold">Any breach of the following protocols will result in immediate termination of the service without the right to a refund:</p>
               <ul className="list-disc list-inside space-y-1.5 ml-2 opacity-80">
@@ -335,7 +335,7 @@ export default function SkillHubPage() {
             {/* 04. AVAILABILITY, MAINTENANCE, AND COMPENSATION */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <Activity className="w-4 h-4 text-amber-500 shrink-0" /> 04. Availability, Maintenance, & Service Recovery
+                <Activity className="w-4 h-4 text-amber-500 shrink-0" /> 04. AVAILABILITY, MAINTENANCE, AND SERVICE RECOVERY
               </h3>
               <div className="space-y-2 opacity-80 ml-2">
                 <ul className="list-disc list-inside space-y-1.5 mt-2">
@@ -349,7 +349,7 @@ export default function SkillHubPage() {
             {/* 05. LIMITATION OF LIABILITY (HOLD HARMLESS) */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <Scale className="w-4 h-4 text-emerald-500 shrink-0" /> 05. Limitation of Liability
+                <Scale className="w-4 h-4 text-emerald-500 shrink-0" /> 05. LIMITATION OF LIABILITY
               </h3>
               <p className="opacity-80 ml-2">To the maximum extent permitted by the laws of England and Wales: Uhuru Trade Ltd. provides the service on an "as is" and "as available" basis. The Provider shall not be liable for any loss of data, loss of profits, business interruption, or indirect damages. No warranty is provided that the functions contained in the instance will be uninterrupted or error-free.</p>
             </div>
@@ -357,7 +357,7 @@ export default function SkillHubPage() {
             {/* 06. DELIVERY AND REFUND POLICY */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <CreditCard className="w-4 h-4 text-blue-500 shrink-0" /> 06. Delivery & Refund Policy
+                <CreditCard className="w-4 h-4 text-blue-500 shrink-0" /> 06. DELIVERY AND REFUND POLICY
               </h3>
               <ul className="list-disc list-inside space-y-1.5 ml-2 opacity-80">
                 <li><strong>Provisioning:</strong> Access credentials will be delivered via email within 24 hours of payment verification.</li>
@@ -368,7 +368,7 @@ export default function SkillHubPage() {
             {/* 07. JURISDICTION AND GOVERNING LAW */}
             <div>
               <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
-                <Globe className="w-4 h-4 text-indigo-500 shrink-0" /> 07. Jurisdiction & Law
+                <Globe className="w-4 h-4 text-indigo-500 shrink-0" /> 07. JURISDICTION AND LAW
               </h3>
               <p className="opacity-80 ml-2">This Agreement is governed by and construed in accordance with the laws of England and Wales. Any disputes arising under or in connection with these terms shall be subject to the exclusive jurisdiction of the courts of the United Kingdom.</p>
             </div>

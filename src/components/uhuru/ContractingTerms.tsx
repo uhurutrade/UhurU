@@ -25,8 +25,8 @@ export function ContractingTerms() {
           </div>
         </div>
         <div className="text-right">
-          <h1 className="text-slate-900 text-lg font-black uppercase tracking-tight mb-1" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>PROVISIONING AGREEMENT</h1>
-          <p className="text-slate-500 font-mono text-[8px] uppercase tracking-[0.2em]">ID: UT-SKILLHUB-2026.1 | Effective Date: 06/04/2026</p>
+          <p className="text-slate-500 font-mono text-[8px] uppercase tracking-[0.2em] mb-1">ID: UT-SKILLHUB-2026.1 | EFFECTIVE DATE: 06/04/2026</p>
+          <h1 className="text-slate-900 text-lg font-black tracking-tight leading-tight" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>SkillHub Managed Training Service Provisioning Agreement</h1>
         </div>
       </div>
 
@@ -34,7 +34,7 @@ export function ContractingTerms() {
         
         {/* 01. PARTIES AND SERVICE DEFINITION */}
         <section>
-          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">01. Parties and Service Definition</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">01. PARTIES AND SERVICE DEFINITION</h2>
           <div className="text-[9px] text-slate-800 leading-snug text-justify space-y-1.5">
             <p>This Agreement is entered into between <strong>Uhuru Trade Ltd.</strong> ("the Provider"), registered at Unit 13 Freeland Park, Wareham Road, Lytchett Matravers, BH16 6FA, Poole – UK, and the individual or entity acquiring the service ("the User").</p>
             <p>SkillHub is a managed training service that provides temporary access to remote educational environments ("Lab Instances") based on Oracle Fusion Cloud Release 13. The User acknowledges that Uhuru Trade Ltd. acts solely as a Technical Facilitator providing a pre-configured training platform for educational purposes. The Provider is not an affiliate, partner, or official representative of Oracle Corp.</p>
@@ -43,7 +43,7 @@ export function ContractingTerms() {
 
         {/* 02. LIMITED USE AND EDUCATIONAL PURPOSE */}
         <section>
-          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">02. Limited Use and Educational Purpose</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">02. LIMITED USE AND EDUCATIONAL PURPOSE</h2>
           <div className="text-[9px] text-slate-800 leading-snug text-justify space-y-1.5">
             <p>Access is granted for a fixed term as a professional training service subject to the following conditions:</p>
             <ul className="list-disc list-inside space-y-1 pl-1">
@@ -56,7 +56,7 @@ export function ContractingTerms() {
 
         {/* 03. SYSTEM INTEGRITY AND SECURITY */}
         <section>
-          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">03. System Integrity and Security</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">03. SYSTEM INTEGRITY AND SECURITY</h2>
           <div className="text-[9px] text-slate-800 leading-snug text-justify space-y-1.5">
             <p>Any breach of the following protocols will result in immediate termination of the service without the right to a refund:</p>
             <ul className="list-disc list-inside space-y-1 pl-1">
@@ -68,7 +68,7 @@ export function ContractingTerms() {
 
         {/* 04. AVAILABILITY, MAINTENANCE, AND SERVICE RECOVERY */}
         <section>
-          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">04. Availability, Maintenance, and Service Recovery</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">04. AVAILABILITY, MAINTENANCE, AND SERVICE RECOVERY</h2>
           <div className="text-[9px] text-slate-800 leading-snug text-justify space-y-1.5">
             <ul className="list-disc list-inside space-y-1 pl-1">
               <li><strong>Infrastructure Maintenance:</strong> Standard unavailability of 1 to 2 days per week for global updates and maintenance is expected and is considered a standard feature of the service; therefore, it is not subject to compensation.</li>
@@ -80,7 +80,7 @@ export function ContractingTerms() {
 
         {/* 05. LIMITATION OF LIABILITY */}
         <section>
-          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">05. Limitation of Liability</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">05. LIMITATION OF LIABILITY</h2>
           <div className="text-[9px] text-slate-800 leading-snug text-justify">
             <p>To the maximum extent permitted by the laws of England and Wales: Uhuru Trade Ltd. provides the service on an "as is" and "as available" basis. The Provider shall not be liable for any loss of data, loss of profits, business interruption, or indirect damages. No warranty is provided that the functions contained in the instance will be uninterrupted or error-free.</p>
           </div>
@@ -88,7 +88,7 @@ export function ContractingTerms() {
 
         {/* 06. DELIVERY AND REFUND POLICY */}
         <section>
-          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">06. Delivery and Refund Policy</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">06. DELIVERY AND REFUND POLICY</h2>
           <div className="text-[9px] text-slate-800 leading-snug text-justify space-y-1.5">
             <ul className="list-disc list-inside space-y-1 pl-1">
               <li><strong>Provisioning:</strong> Access credentials will be delivered via email within 24 hours of payment verification.</li>
@@ -99,7 +99,7 @@ export function ContractingTerms() {
 
         {/* 07. JURISDICTION AND LAW */}
         <section>
-          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">07. Jurisdiction and Law</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">07. JURISDICTION AND LAW</h2>
           <div className="text-[9px] text-slate-800 leading-snug text-justify">
             <p>This Agreement is governed by and construed in accordance with the laws of England and Wales. Any disputes arising under or in connection with these terms shall be subject to the exclusive jurisdiction of the courts of the United Kingdom.</p>
           </div>
