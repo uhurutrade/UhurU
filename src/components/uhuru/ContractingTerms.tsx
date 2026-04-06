@@ -73,19 +73,18 @@ export function ContractingTerms() {
           </ul>
         </section>
 
-        {/* 05 & 06 COMBINED FOR SPACE OPTIMIZATION */}
-        <div className="grid grid-cols-2 gap-6">
-          <section>
-            <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">05. Limitation of Liability</h2>
-            <p className="text-[9px] text-slate-800 leading-snug text-justify">To the maximum extent permitted by UK laws: Uhuru Trade Ltd. shall not be liable for any loss of data, loss of profits, business interruption, or indirect damages. No warranty is provided that the functions contained in the instance will be uninterrupted or error-free.</p>
-          </section>
-          
-          <section>
-            <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">06. Delivery & Refund Policy</h2>
-            <p className="text-[9px] text-slate-800 leading-snug text-justify mb-1"><strong>Provisioning:</strong> Credentials delivered via email within 24 hours of payment.</p>
-            <p className="text-[9px] text-slate-800 leading-snug text-justify"><strong>No Refunds:</strong> Due to the digital consumption of the service, no refunds will be issued once dispatched, except as permitted under Clause 04.</p>
-          </section>
-        </div>
+        {/* 05. LIMITATION OF LIABILITY */}
+        <section>
+          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">05. Limitation of Liability</h2>
+          <p className="text-[9px] text-slate-800 leading-snug text-justify">To the maximum extent permitted by UK laws: Uhuru Trade Ltd. shall not be liable for any loss of data, loss of profits, business interruption, or indirect damages. No warranty is provided that the functions contained in the instance will be uninterrupted or error-free.</p>
+        </section>
+
+        {/* 06. DELIVERY AND REFUND POLICY */}
+        <section>
+          <h2 className="text-[10px] font-black uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1">06. Delivery & Refund Policy</h2>
+          <p className="text-[9px] text-slate-800 leading-snug text-justify mb-1"><strong>Provisioning:</strong> Credentials delivered via email within 24 hours of payment.</p>
+          <p className="text-[9px] text-slate-800 leading-snug text-justify"><strong>No Refunds:</strong> Due to the digital consumption of the service, no refunds will be issued once dispatched, except as permitted under Clause 04.</p>
+        </section>
 
         {/* 07. JURISDICTION */}
         <section>
@@ -97,11 +96,8 @@ export function ContractingTerms() {
 
       {/* FOOTER */}
       <div className="mt-6 pt-4 border-t-2 border-slate-900 flex justify-between items-center print:border-black">
-        <div className="text-[8px] text-slate-500 font-mono uppercase text-left leading-normal">
-          <p className="font-bold text-slate-900 mb-0.5 tracking-widest uppercase">COMPANY DETAILS: UHURU TRADE LTD.</p>
-          <p>Unit 13 Freeland Park, Wareham Road</p>
-          <p>Lytchett Matravers, BH16 6FA Poole – UK</p>
-          <p>Contact: hello@uhurutrade.com</p>
+        <div className="text-[8px] text-slate-500 font-mono text-left leading-normal">
+          <p>© 2026 Uhuru Trade Ltd. · Unit 13 Freeland Park, Wareham Road, Lytchett Matravers, BH16 6FA Poole – UK · hello@uhurutrade.com</p>
         </div>
         <div className="flex items-center gap-3 p-2 border-2 border-slate-900">
           <Shield className="w-5 h-5 text-slate-900" />
