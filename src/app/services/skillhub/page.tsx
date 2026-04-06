@@ -4,9 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import { registerUser, loginUser, requestPasswordReset } from '@/actions/auth';
 import { 
   User, Mail, Lock, Building, MapPin, Building2, Phone, Globe, Home, 
-  ShieldCheck, LogIn, UserPlus, ArrowRight, CheckCircle2, AlertCircle, RefreshCw, Shield, BookOpen, AlertTriangle, FileText
+  ShieldCheck, LogIn, UserPlus, ArrowRight, CheckCircle2, AlertCircle, RefreshCw, Shield, BookOpen, AlertTriangle, FileText,
+  Users, Activity, Scale, CreditCard
 } from 'lucide-react';
-import { ThemeToggle } from '@/components/theme-toggle';
 import SubPageHeader from '@/components/uhuru/subpage-header';
 import Logo from '@/components/uhuru/logo';
 
@@ -280,54 +280,101 @@ export default function SkillHubPage() {
 
         {/* Descriptive Text Panel BELOW login */}
         <div id="skillhub-terms" className="w-full max-w-2xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-[#c0c0c0] dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-xl text-[10px] sm:text-[11px] lg:text-xs">
-          <div className="flex items-center gap-2 mb-4">
-            <Shield className="w-5 h-5 text-primary shrink-0" />
-            <h2 className="text-lg lg:text-xl font-black text-black dark:text-white tracking-tight leading-none" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
-              SkillHub Service Terms
-            </h2>
+          <div className="flex items-center gap-3 mb-6">
+            <Shield className="w-8 h-8 text-primary shrink-0" />
+            <div className="flex flex-col">
+               <h2 className="text-lg lg:text-xl font-black text-black dark:text-white tracking-tight leading-none" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
+                 SKILLHUB TERMS OF SUBSCRIPTION
+               </h2>
+               <span className="text-[10px] font-bold text-primary mt-1 uppercase tracking-widest">Version 2026.1</span>
+            </div>
           </div>
 
-          <div className="space-y-4 text-black/80 dark:text-white/80 leading-relaxed">
-            <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 dark:border-primary/10">
-              <p className="mb-2">
-                <strong>Uhuru Trade Ltd</strong> provides temporary access to SkillHub Cloud Instances exclusively for educational, research, and professional development purposes. These "Vision Instances" are pre-configured environments designed to allow consultants and students to explore functional and technical capabilities of the SkillHub ERP/SCM/HCM ecosystem without the risks associated with production data.
-              </p>
-              <p>
-                <strong>Uhuru Trade Ltd</strong> proporciona acceso temporal a instancias de SkillHub Cloud exclusivamente para fines educativos, de investigación y desarrollo profesional. Estas "instancias Vision" son entornos ya configurados que permiten explorar las capacidades del ecosistema SkillHub sin riesgos para los datos de producción.
-              </p>
+          <div className="space-y-6 text-black/80 dark:text-white/80 leading-relaxed">
+            
+            {/* 01. PARTIES AND NATURE OF SERVICE */}
+            <div>
+              <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
+                <Users className="w-4 h-4 text-primary shrink-0" /> 01. Parties & Nature of Service
+              </h3>
+              <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 dark:border-primary/10 ml-1">
+                <p className="mb-2">
+                  This Agreement is entered into between <strong>Uhuru Trade Ltd.</strong> ("the Provider"), registered at Unit 13 Freeland Park, Wareham Road, Lytchett Matravers, BH16 6FA, Poole – UK, and the individual or entity acquiring the subscription ("the User").
+                </p>
+                <p>
+                  SkillHub provides temporary access to SaaS environments ("Vision Instances" or "Sandboxes") of Oracle Fusion Cloud Release 13. Uhuru Trade Ltd. acts solely as a facilitator for educational and professional development purposes and is not the owner, developer, or official technical support for Oracle Corp.
+                </p>
+              </div>
             </div>
 
+            {/* 02. LIMITED LICENSE AND EXCLUSIVE PURPOSE */}
             <div>
-              <h3 className="font-bold text-black dark:text-white mb-1.5 flex items-center gap-1.5 opacity-90">
-                <BookOpen className="w-3.5 h-3.5 text-primary shrink-0" /> 2. Permitted Use & Restrictions
+              <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
+                <BookOpen className="w-4 h-4 text-primary shrink-0" /> 02. Limited License & Purpose
               </h3>
-              <ul className="list-disc list-inside space-y-1 ml-1 opacity-80">
-                <li>Access is granted for a fixed period (30/90 days) upon successful verification of the subscription.</li>
-                <li>Users may perform configurations, testing, and training exercises within the functional scope of the provided license.</li>
-                <li><strong>Strictly prohibited:</strong> Uploading real production data, PII (Personally Identifiable Information), or using the instance for commercial production.</li>
-                <li>Any attempt to bypass security measures or share credentials with unauthorized third parties will result in immediate termination without refund.</li>
+              <ul className="list-disc list-inside space-y-1.5 ml-2 opacity-80">
+                <li><strong>Educational Purpose Only:</strong> Strictly limited to self-study, research, and training. Live business management or consulting is prohibited.</li>
+                <li><strong>No Real Data & PII:</strong> Users must NOT upload real production data, actual financial records, or Personally Identifiable Information under any circumstances.</li>
+                <li><strong>Non-Resale Clause:</strong> Sub-leasing, selling, or paid training sessions using these credentials is prohibited.</li>
               </ul>
             </div>
 
+            {/* 03. SYSTEM INTEGRITY AND SECURITY */}
             <div>
-              <h3 className="font-bold text-black dark:text-white mb-1.5 flex items-center gap-1.5 opacity-90">
-                <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" /> 3. Liability & Data Integrity
+              <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
+                <Lock className="w-4 h-4 text-red-500 shrink-0" /> 03. System Integrity & Security
               </h3>
-              <p className="opacity-80">
-                The provided instances are "sandbox" environments. Uhuru Trade Ltd does not guarantee the persistence of configurations or data uploaded by the user. Periodic maintenance, refreshes, or administrative resets may occur. Users are responsible for documenting their work externally. Uhuru Trade Ltd shall not be liable for any data loss, performance fluctuations, or service interruptions inherent to the cloud provider's infrastructure.
-              </p>
+              <p className="opacity-80 ml-2 mb-2 font-semibold">Any violation of the following results in immediate account termination without refund:</p>
+              <ul className="list-disc list-inside space-y-1.5 ml-2 opacity-80">
+                <li><strong>Credentials:</strong> Sharing access credentials with third parties is strictly prohibited.</li>
+                <li><strong>Security Modifications:</strong> Changing Master Passwords or bypassing license restrictions is prohibited.</li>
+                <li><strong>Technical Access:</strong> Functional access only. Excludes SQL database access, server-level access, or network infrastructure control.</li>
+              </ul>
             </div>
 
+            {/* 04. AVAILABILITY, MAINTENANCE, AND COMPENSATION */}
             <div>
-              <h3 className="font-bold text-black dark:text-white mb-1.5 flex items-center gap-1.5 opacity-90">
-                <RefreshCw className="w-3.5 h-3.5 text-emerald-500 shrink-0" /> 4. Service Continuity
+              <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
+                <Activity className="w-4 h-4 text-amber-500 shrink-0" /> 04. Maintenance & Compensation
               </h3>
-              <p className="opacity-80">
-                Access credentials will remain active until the end of the contracted period. Upon expiration, the system will automatically revoke access and release the license to the general pool. Users wishing to continue must renew their subscription prior to the expiration date to ensure continuous access to the same instance (subject to availability).
-              </p>
+              <div className="space-y-2 opacity-80 ml-2">
+                <p>The infrastructure is operated by Oracle Corp. and subject to their global maintenance:</p>
+                <ul className="list-disc list-inside space-y-1.5 mt-2">
+                  <li><strong>Scheduled Maintenance:</strong> 1 to 2 days per week for standard Oracle updates is expected.</li>
+                  <li><strong>System Refreshes:</strong> Oracle may restore instances without notice. Any User data will be permanently lost.</li>
+                  <li><strong>Interruption Compensation:</strong> If an outage prevents use for over 48 consecutive hours in a week, the Provider will compensate by adding equivalent inactive days to the end of the subscription.</li>
+                </ul>
+              </div>
             </div>
 
-            <div className="footer-notes pt-4 border-t border-[#c0c0c0] dark:border-slate-800 mt-6 text-[9px] sm:text-[10px] text-black dark:text-white space-y-3">
+            {/* 05. LIMITATION OF LIABILITY (HOLD HARMLESS) */}
+            <div>
+              <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
+                <Scale className="w-4 h-4 text-emerald-500 shrink-0" /> 05. Limitation of Liability
+              </h3>
+              <p className="opacity-80 ml-2">To the maximum extent permitted by UK laws, Uhuru Trade Ltd. shall not be liable for any loss of data, loss of profits, business interruption, or indirect damages.</p>
+            </div>
+
+            {/* 06. DELIVERY AND REFUND POLICY */}
+            <div>
+              <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
+                <CreditCard className="w-4 h-4 text-blue-500 shrink-0" /> 06. Delivery & Refund Policy
+              </h3>
+              <ul className="list-disc list-inside space-y-1.5 ml-2 opacity-80">
+                <li><strong>Provisioning:</strong> Credentials delivered via email within 24 hours of payment.</li>
+                <li><strong>No Refunds:</strong> Due to the digital consumption of the service, no refunds are issued once credentials are dispatched.</li>
+              </ul>
+            </div>
+
+            {/* 07. JURISDICTION AND GOVERNING LAW */}
+            <div>
+              <h3 className="font-bold text-black dark:text-white mb-2 flex items-center gap-1.5 opacity-90 text-[11px] sm:text-xs uppercase tracking-wider">
+                <Globe className="w-4 h-4 text-indigo-500 shrink-0" /> 07. Jurisdiction
+              </h3>
+              <p className="opacity-80 ml-2">Governed by the laws of England and Wales. Disputes are subject to the exclusive jurisdiction of the courts of the United Kingdom.</p>
+            </div>
+
+            <div className="footer-notes pt-6 border-t border-[#c0c0c0] dark:border-slate-800 mt-8 text-[9px] sm:text-[10px] text-black dark:text-white space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <p className="font-bold">© 2026 Uhuru Trade Ltd. - All Rights Reserved</p>

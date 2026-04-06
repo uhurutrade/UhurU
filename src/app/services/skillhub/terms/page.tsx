@@ -8,18 +8,15 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col items-center relative overflow-x-hidden font-sans transition-all duration-300">
       
-      {/* Document Header Controls */}
-      <div className="w-full no-print bg-slate-900 border-b border-blue-500/20 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 sticky top-0 z-50 shadow-2xl">
-        <SubPageHeader backHref="/services/skillhub" backText="Back to Login" />
-        <button 
-          type="button"
-          onClick={() => window.print()}
-          className="group px-8 py-3 bg-blue-600 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 shadow-xl"
-        >
-          <FileText className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-          Download as PDF
-        </button>
-      </div>
+      {/* Minimalistic floating print button */}
+      <button 
+        type="button"
+        onClick={() => window.print()}
+        className="fixed bottom-8 right-8 z-50 w-14 h-14 bg-black text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all no-print group"
+        title="Print or Save as PDF"
+      >
+        <FileText className="w-6 h-6 group-hover:-translate-y-1 transition-transform" />
+      </button>
 
       <div className="w-full h-full flex-1 z-10 py-10 px-4 md:px-10 lg:px-20 print:p-0 print:m-0">
         <div className="w-full max-w-none print:max-w-none shadow-none border-none dark:bg-white dark:text-slate-900">
@@ -42,8 +39,8 @@ export default function TermsPage() {
             box-shadow: none !important; 
             border: none !important; 
             border-radius: 0 !important;
-            padding: 0 !important;
-            margin: 0 !important;
+            padding: 40px !important;
+            margin: 0 auto !important;
             width: 100% !important;
             max-width: 100% !important;
           }
