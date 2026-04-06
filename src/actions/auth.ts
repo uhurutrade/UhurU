@@ -164,7 +164,7 @@ export async function registerUser(formData: FormData) {
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(result.data.password, 6);
+    const hashedPassword = await bcrypt.hash(result.data.password, 12);
     
     // GENERATE CUSTOMER NUMBER (36xx)
     const lastUser = await prisma.user.findFirst({
@@ -303,7 +303,7 @@ export async function resetPassword(formData: FormData) {
     return { success: false, message: 'Invalid or expired link.' };
   }
 
-  const hashedPassword = await bcrypt.hash(password, 6);
+  const hashedPassword = await bcrypt.hash(password, 12);
 
   await prisma.user.update({
     where: { id: user.id },
